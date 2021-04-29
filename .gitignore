@@ -1,7 +1,5 @@
 .idea
 
-#compiled
-_site
 vendor
 _site
 Gemfile.lock
