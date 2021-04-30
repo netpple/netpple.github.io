@@ -3,9 +3,6 @@ layout: page
 title: Welcome to Netpple
 permalink: /
 ---
-
-# Welcome to Netpple
-
 ## 새로운 글 
 
 <div class="section-index">

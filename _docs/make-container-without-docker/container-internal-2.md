@@ -6,3 +6,5 @@ comments: true
 <div class="responsive-wrap">
     <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vQ8Umma-Erc8I2_5CGfAVnzUYLzj0Aheq8XZoeLlJI5ox3pGdIwJHFP8FrObmKV1K2BbT9zgdZKTNUO/embed?start=false&loop=false&delayms=3000" frameborder="0" width="100%" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
 </div>
+
+[[슬라이드보기]](https://docs.google.com/presentation/d/1ROUHDBp1l7oP6wcCO-kfj9tQHHjDQg5gFm1FXr5IB1I/edit#){:target="_blank"}
