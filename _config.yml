@@ -14,13 +14,11 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 
-title: Docsy Jekyll
-email: your-email@domain.com
-author: Dinosaur Avocado
+title: netpple
+email: netpple30@gmail.com
+author: Sam Young Kim
 description: > # this means to ignore newlines until "baseurl:"
-  Write an awesome description for your new site here. You can edit this
-  line in _config.yml. It will appear in your document head meta (for
-  Google search results) and in your feed.xml site description.
+  Sam의 기술블로그 입니다.
 
 # DO NOT CHANGE THE LINE OF THIS FILE without editing .circleci/circle_urls.sh
 baseurl: "" # the subpath of your site, e.g. /blog
@@ -29,15 +27,15 @@ baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://netpple.github.io" # the base hostname & protocol for your site
 
 # Social (First three Required)
-repo: "https://github.com/vsoch/docsy-jekyll"
-github_user: "vsoch"
-github_repo: "docsy-jekyll"
+repo: "https://github.com/netpple/make-container-without-docker"
+github_user: "netpple"
+github_repo: "make-container-without-docker"
 github_branch: "master"
 
 # Optional
-twitter: vsoch
-linkedin: vsochat
-dockerhub: vanessa
+twitter: netpple@twitter.com
+facebook: sam.kim.56808
+home: netpple.github.io
 
 # Should there be feedback buttons at the bottom of pages?
 feedback: true
