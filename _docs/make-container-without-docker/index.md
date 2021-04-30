@@ -1,7 +1,4 @@
 ---
-layout: page
-title: Welcome to Netpple
-permalink: /
 title: 도커 없이 컨테이너 만들기  
 tags: 
  - container
@@ -23,7 +20,7 @@ description: 목차 및 실습환경 구성안내
 # 도커 없이 컨테이너 만들기
 
 
-들어가며 ..
+## 시작하며 ..
 
 지난 2년간 카카오 검색시스템의 클라우드 전환을 준비하면서 컨테이너 기술 관련하여 학습하고 교육했던 내용들을 정리하였습니다.  
 검색은 massive한 데이터와 트래픽을 다루는 대용량 분산처리 시스템인만큼 서비스 도입을 위해서는 컨테이너 인터널과 네트워킹,
@@ -37,32 +34,32 @@ description: 목차 및 실습환경 구성안내
 
 ![/docs/assets/img/make-container-without-docker-intro-1.png](/docs/assets/img/make-container-without-docker-intro-1.png){:width="200"}{:.align-left}
 
-컨테이너란 무엇일까요? 마법 상자를 열어 보도록 하겠습니다.제가 처음 도커를 접했을 때는 "vmware, virtualbox 와 뭐가 다르지?"  
-vmware처럼 OS이미지도 있었고 터미널 환경에서 동작하는 모습 역시 똑같아 보였거든요.그렇게 시작하게 되었습니다.  
-도커는 무엇이고 컨테이너는 무엇인지 실체가 궁금하더라구요
+[컨테이너란 무엇일까요? 마법 상자를 열어 보도록 하겠습니다.제가 처음 도커를 접했을 때는 "vmware, virtualbox 와 뭐가 다르지?" 
+vmware처럼 OS이미지도 있었고 터미널 환경에서 동작하는 모습 역시 똑같아 보였거든요.그렇게 시작하게 되었습니다. 
+도커는 무엇이고 컨테이너는 무엇인지 실체가 궁금하더라구요](container-internal-1)
 
 
 ### [2편 container internal (2)](https://docs.google.com/presentation/d/1ROUHDBp1l7oP6wcCO-kfj9tQHHjDQg5gFm1FXr5IB1I/edit#){:target="_blank"}
 
 ![/docs/assets/img/make-container-without-docker-intro-2.png](/docs/assets/img/make-container-without-docker-intro-2.png){:width="200"}{:.align-left}
-컨테이너의 발전과정을 살펴봅니다. 컨테이너가 신기술, 유행 같은 것이라고 생각했었는데, 나름 역사와 사연이 많은 친구네요 :-)  
-chroot로 시작하여 지금의 컨테이너로 성장하기까지 어떤 문제들이 있었고 그러한 문제들을 어떻게 해결하여 왔는지를 다뤄봅니다.
+[컨테이너의 발전과정을 살펴봅니다. 컨테이너가 신기술, 유행 같은 것이라고 생각했었는데, 나름 역사와 사연이 많은 친구네요 :-)  
+chroot로 시작하여 지금의 컨테이너로 성장하기까지 어떤 문제들이 있었고 그러한 문제들을 어떻게 해결하여 왔는지를 다뤄봅니다.](container-internal-2)
 
 
 ### [3편 network namespace (1)](https://docs.google.com/presentation/d/1NhzhNDiWTCIKCViWPW8Wvza8GrT56xugymX5TV-WLbc/edit#){:target="_blank"}
 
 ![/docs/assets/img/make-container-without-docker-intro-3.png](/docs/assets/img/make-container-without-docker-intro-3.png){:width="200"}{:.align-left}
 
-서비스 운영 중에 네트웍 장애를 만나면 곤란하곤 하는데요.     
+[서비스 운영 중에 네트웍 장애를 만나면 곤란하곤 하는데요.     
 컨테이너는 가상 네트웍을 기반으로 하고 있고 이 위에서 컨테이너 간의 통신이 어떻게 이루어지는지를 잘 이해하고 있으면 개발과 운영에 많은 도움이 됩니다.  
-network namespace 3,4편 그리고 overlay network 7,8편에서 다룰 예정입니다.
+network namespace 3,4편 그리고 overlay network 7,8편에서 다룰 예정입니다.](network-namespace-1)
 
 
-### 4편 network namespace (2)
+### [4편 network namespace (2)](/2019/hello-world)
 
 준비 중입니다 
 
-### 5편 Mount Namespace
+### [5편 Mount Namespace](/docs/example-page)
 
 준비 중입니다
 
@@ -124,23 +121,7 @@ ubuntu1804                running (virtualbox)
 VM 접속
 ```bash
 $ vagrant ssh ubuntu1804
-Welcome to Ubuntu 18.04.5 LTS (GNU/Linux 4.15.0-128-generic x86_64)
 
- * Documentation:  https://help.ubuntu.com
- * Management:     https://landscape.canonical.com
- * Support:        https://ubuntu.com/advantage
-
-  System information as of Fri Apr 30 01:50:02 UTC 2021
-
-  System load:  0.08              Users logged in:        0
-  Usage of /:   4.4% of 61.80GB   IP address for eth0:    10.0.2.15
-  Memory usage: 14%               IP address for eth1:    192.168.104.2
-  Swap usage:   0%                IP address for docker0: 172.17.0.1
-  Processes:    114
-
-
-This system is built by the Bento project by Chef Software
-More information can be found at https://github.com/chef/bento
 vagrant@ubuntu1804:~$
 ```
 
