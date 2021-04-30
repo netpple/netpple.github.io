@@ -46,7 +46,10 @@
                     <p>{{ child.description }}</p>
                  </div>{% endfor %}
               </div>{% endif %}
-              {% include feedback.html %}
+<!--              {% include feedback.html %}-->
+               {% if page.comments %}
+                    {% include comment.html %}
+               {% endif %}
            </div>
           </main>
         </div>

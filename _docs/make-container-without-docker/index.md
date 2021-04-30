@@ -42,6 +42,7 @@ vmware처럼 OS이미지도 있었고 터미널 환경에서 동작하는 모습
 ### [2편 container internal (2)](https://docs.google.com/presentation/d/1ROUHDBp1l7oP6wcCO-kfj9tQHHjDQg5gFm1FXr5IB1I/edit#){:target="_blank"}
 
 ![/docs/assets/img/make-container-without-docker-intro-2.png](/docs/assets/img/make-container-without-docker-intro-2.png){:width="200"}{:.align-left}
+
 [컨테이너의 발전과정을 살펴봅니다. 컨테이너가 신기술, 유행 같은 것이라고 생각했었는데, 나름 역사와 사연이 많은 친구네요 :-)  
 chroot로 시작하여 지금의 컨테이너로 성장하기까지 어떤 문제들이 있었고 그러한 문제들을 어떻게 해결하여 왔는지를 다뤄봅니다.](container-internal-2)
 
