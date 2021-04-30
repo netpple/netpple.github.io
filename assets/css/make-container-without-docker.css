@@ -2,4 +2,4 @@ img.align-left{
     float:left;
     padding: 0px 20px 0px 0px;
 }
-.responsive-wrap iframe{ max-width: 100%;}
+.responsive-wrap iframe{ height: 60vh;}

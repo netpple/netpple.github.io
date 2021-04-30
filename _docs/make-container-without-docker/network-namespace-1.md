@@ -10,5 +10,5 @@ description: network namespace
 network namespace 3,4편 그리고 overlay network 7,8편에서 다룰 예정입니다.
 
 <div class="responsive-wrap">
-    <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vTOsEXasBt7H7qHJNNNOn4RQKzgWnsXQriK0hh2UEAP2AyKr4gnFqlEPF0nOe8no55mByBhzrqdZR7U/embed?start=false&loop=false&delayms=3000" frameborder="0" width="960" height="569" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+    <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vTOsEXasBt7H7qHJNNNOn4RQKzgWnsXQriK0hh2UEAP2AyKr4gnFqlEPF0nOe8no55mByBhzrqdZR7U/embed?start=false&loop=false&delayms=3000" frameborder="0" width="80%" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
 </div>
