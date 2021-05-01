@@ -4,12 +4,9 @@
             <span class="navbar-logo"></span>{% include logo.svg %}<span class="text-uppercase font-weight-bold">{{ site.title }}</span>
 	</a>
 	<div class="td-navbar-nav-scroll ml-md-auto" id="main_navbar">
-		<ul class="navbar-nav mt-2 mt-lg-0">{% if site.repo %}
-			<li class="nav-item mr-4 mb-2 mb-lg-0">
-                            <a class="nav-link" href="{{ site.repo }}" target="_blank"><span>GitHub</span></a>
-			</li>{% endif %}{% for link in site.data.navigation %}
-			<li class="nav-item mr-4 mb-2 mb-lg-0">
-                            <a class="nav-link" href="{% if link.url %}{{ site.baseurl }}/{{ link.url }}{% else %}{{ link.external_url }}{% endif %}" ><span>{{ link.title }}</span></a>
+		<ul class="navbar-nav mt-2 mt-lg-0">
+            {% for link in site.data.navigation %}<li class="nav-item mr-4 mb-2 mb-lg-0">
+              <a class="nav-link" href="{% if link.url %}{{ site.baseurl }}/{{ link.url }}{% else %}{{ link.external_url }}{% endif %}" ><span>{{ link.title }}</span></a>
 			</li>{% endfor %}
 		</ul>
 	</div>
@@ -18,7 +15,7 @@
         </div>
 
 	<div class="navbar-nav d-none d-lg-block">
-          <a class="gh-source" data-gh-source="github" href="{{ site.repo }}" title="Go to repository" data-md-state="done">
+          <a class="gh-source" data-gh-source="github" href="{{ site.repo }}" title="Go to repository" data-md-state="done" target="_blank">
           <div class="gh-source__repository">
             <i class="fab fa fa-github fa-2x" style='padding-right:20px; float:left; margin-top:5px'></i>
             {{ site.github_user }}/{{ site.github_repo }}
