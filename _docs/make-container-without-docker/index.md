@@ -2,18 +2,10 @@
 title: 도커 없이 컨테이너 만들기  
 tags: 
  - container
- - linux
  - namespace
  - cgroup
  - chroot
- - pivot_root
- - network
- - pid
- - mount
- - overlay
- - union
- - filesystem
- - proc  
+ - pivot_root 
 description: 목차 및 실습환경 구성안내
 rightpanel: true
 ---

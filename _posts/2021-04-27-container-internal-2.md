@@ -1,7 +1,10 @@
 ---
 title: 도커 없이 컨테이너 만들기 2편
+description: 1편에 이어 chroot의 탈옥문제를 해결하는 pivot_root를 다루고 남은 문제들을 해결하는 컨테이너의 발전과정에 대해 얘기합니다.
 date: 2021-04-27 12:39:00 +09:00
-categories: 도커 없이 컨테이너 만들기  
+oriurl: /docs/make-container-without-docker/container-internal-2
+categories: 도커 없이 컨테이너 만들기
+image: /docs/assets/img/make-container-without-docker-intro-2.png
 badges:
 - type: info
   tag: info-badge

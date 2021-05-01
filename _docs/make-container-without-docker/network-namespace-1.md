@@ -1,6 +1,7 @@
 ---
-title: 네트워크 네임스페이스 (1)
+title: 3편.네트워크 네임스페이스(1)
 description: 네트워크 네임스페이스를 이해하기 위한 네트워크 기초 개념들을 다루고 네트워크 네임스페이 실습과 함께 컨테이너 환경에서의 가상 네트워크 구축이 어떻게 이루어지는지를 학습합니다.
+date: 2021-04-29 11:41:00 +09:00
 comments: true
 image: https://netpple.github.io/docs/assets/img/make-container-without-docker-intro-3.png
 ---

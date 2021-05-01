@@ -4,11 +4,6 @@ title: Documentation
 permalink: /docs/
 ---
 
-# Documentation
-
-Welcome to the {{ site.title }} Documentation pages! Here you can quickly jump to a 
-particular page.
-
 <div class="section-index">
     <hr class="panel-line">
     {% for post in site.docs  %}        

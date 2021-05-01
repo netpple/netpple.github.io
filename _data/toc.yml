@@ -1,5 +1,6 @@
 - title: Documentation
-  url: "docs"
+  url: "docs/make-container-without-docker"
+#  url: "docs"
   links:
     - title: "도커 없이 컨테이너 만들기"
       url: "docs/make-container-without-docker"
@@ -28,14 +29,3 @@
           url: "docs/make-container-without-docker/pid-namespace"
         - title: 10편.USER 네임스페이스
           url: "docs/make-container-without-docker/user-namespace"
-    - title: "Extras"
-      url: "docs/extras"
-      children:
-        - title: Quizzes
-          url: "docs/extras/example-quiz"
-        - title: Tags Page
-          url: "tags"
-    - title: "About"
-      url: "about"
-    - title: "News"
-      url: "news"
