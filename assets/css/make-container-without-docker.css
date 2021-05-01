@@ -5,4 +5,7 @@ img.align-left{
 .align-right{
     float:right;
 }
-.responsive-wrap iframe{ height: 45vw;}
+.responsive-wrap iframe{height: 38vw;}
+@media ( max-width: 768px ) {
+    .responsive-wrap iframe{height: 60vw;}
+}
