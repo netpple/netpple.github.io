@@ -4,7 +4,7 @@ description: 3편에 이어서 네트워크 네임스페이스를 외부 네트�
 date: 2021-05-03 17:15:00 +09:00
 oriurl: /docs/make-container-without-docker/network-namespace-2
 categories: 도커 없이 컨테이너 만들기
-image: /docs/assets/img/make-container-without-docker-intro-4.png
+image: https://netpple.github.io/docs/assets/img/make-container-without-docker-intro-4.png
 badges:
 - type: info
   tag: info-badge

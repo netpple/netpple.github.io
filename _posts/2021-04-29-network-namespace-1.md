@@ -4,7 +4,7 @@ description: 네트워크 네임스페이스를 이해하기 위한 네트워크
 date: 2021-04-29 11:41:00 +09:00
 oriurl: /docs/make-container-without-docker/network-namespace-1
 categories: 도커 없이 컨테이너 만들기
-image: /docs/assets/img/make-container-without-docker-intro-3.png
+image: https://netpple.github.io/docs/assets/img/make-container-without-docker-intro-3.png
 badges:
 - type: info
   tag: info-badge

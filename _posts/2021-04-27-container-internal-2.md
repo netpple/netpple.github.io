@@ -4,7 +4,7 @@ description: 1편에 이어 chroot의 탈옥문제를 해결하는 pivot_root를
 date: 2021-04-27 12:39:00 +09:00
 oriurl: /docs/make-container-without-docker/container-internal-2
 categories: 도커 없이 컨테이너 만들기
-image: /docs/assets/img/make-container-without-docker-intro-2.png
+image: https://netpple.github.io/docs/assets/img/make-container-without-docker-intro-2.png
 badges:
 - type: info
   tag: info-badge
