@@ -6,8 +6,8 @@ oriurl: /docs/make-container-without-docker/network-namespace-2
 categories: 도커 없이 컨테이너 만들기
 image: https://netpple.github.io/docs/assets/img/make-container-without-docker-intro-4.png
 badges:
-- type: info
-  tag: info-badge
+- type: light
+  tag: new
 ---
 
 서비스 운영 중에 네트웍 장애를 만나면 곤란하곤 하는데요. 컨테이너는 가상 네트웍을 기반으로 하고 있고 이 위에서 컨테이너 간의
