@@ -97,3 +97,10 @@ rightpanel: true  --> 우측날개 사용여부 (내가 추가)
 ## jekyll 관련 알아두면 좋은 것
 ### date
 - 날짜가 미래 날짜이면 "_site"폴더로 배포되지 않습니다. 글 쓸 때 유용한 것 같아요 :-)
+
+### drafts
+- _drafts 폴더를 만들고 거기에 문서를 저장합니다
+- 그리고 아래와 같이 --drafts 옵션을 주어 실행하면 확인이 가능합니다 
+```shell
+bundle exec jekyll serve --drafts
+```
