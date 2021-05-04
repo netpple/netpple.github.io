@@ -15,6 +15,12 @@ permalink: /
         {% if post.badges %}{% for badge in post.badges %}<span class="badge badge-{{ badge.type }}">{{ badge.tag }}</span>{% endfor %}{% endif %}
         </a> <span class="post-date" style="font-style: italic;">{{ post.date | date: "%m/%d %H:%m, %Y" }}</span>
     </h5>
-    <p>{{ post.description }}</p>
+    <p>
+    {{ post.description }}<br/>
+    {% if post.histories %}{% for history in post.histories %}
+        <span>- {{ history.description }}</span>
+        <span class="post-date" style="font-style: italic;">{{ history.date | date: "%m/%d %H:%m, %Y" }}</span><br/>
+    {% endfor %}{% endif %}
+    </p>
     </div>{% endfor %}
 </div>

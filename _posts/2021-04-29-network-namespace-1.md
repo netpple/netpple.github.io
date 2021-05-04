@@ -9,6 +9,9 @@ image: https://netpple.github.io/docs/assets/img/make-container-without-docker-i
 badges:
 - type: info
   tag: updated
+histories:
+- date: 2021-05-03 21:35:00 +09:00
+  description: 실습 안내페이지 업데이트  
 ---
 
 서비스 운영 중에 네트웍 장애를 만나면 곤란하곤 하는데요. 컨테이너는 가상 네트웍을 기반으로 하고 있고 이 위에서 컨테이너 간의

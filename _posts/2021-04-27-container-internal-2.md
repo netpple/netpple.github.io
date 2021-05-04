@@ -9,6 +9,9 @@ image: https://netpple.github.io/docs/assets/img/make-container-without-docker-i
 badges:
 - type: info
   tag: updated
+histories:
+- date: 2021-05-03 21:35:00 +09:00
+  description: 실습 안내페이지 업데이트
 ---
 
 컨테이너의 발전과정을 살펴봅니다. 컨테이너가 신기술, 유행 같은 것이라고 생각했었는데, 나름 역사와 사연이 많은 친구네요 :-)  
