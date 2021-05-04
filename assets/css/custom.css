@@ -1,3 +1,9 @@
+/* for comment_utterances*/
+.utterances {
+    max-width: 100% !important;
+}
+
+/* for make-container-without-docker */
 img.align-left{
     float:left;
     padding: 0px 20px 0px 0px;
