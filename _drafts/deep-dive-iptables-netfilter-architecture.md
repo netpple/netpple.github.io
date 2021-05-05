@@ -15,18 +15,18 @@ rightpanel: true
 원문: [https://www.digitalocean.com/community/tutorials/a-deep-dive-into-iptables-and-netfilter-architecture](https://www.digitalocean.com/community/tutorials/a-deep-dive-into-iptables-and-netfilter-architecture){:target="_blank"}    
 번역: [https://www.kangtaeho.com/66?fbclid=IwAR3nWnRib_t6l4npxG6az5iyyZe616wj1YapGlvvSUUBP-zPFyQf7V4i888](https://www.kangtaeho.com/66?fbclid=IwAR3nWnRib_t6l4npxG6az5iyyZe616wj1YapGlvvSUUBP-zPFyQf7V4i888){:target="_blank"}
 
-## What are IPTables and Netfilter?  
+### What are IPTables and Netfilter?  
 iptables는 방화벽 소프트웨어이고 커널의 네트웍 스택에서 netfilter hook과 상호작용하는 방식으로 동작합니다.  
 모든 네트웍 패킷은 스택을 통과할 때 넷필터 훅들을 트리거 하는데, 이러한 훅들을 등록한 프로그램들이 주요지점에서
 트래픽과 상호작용하도록 허용합니다.  
 iptables와 연관된 커널모듈들은 트랙픽이  방화벽규칙을 준수하는지 확인하기 위하여 이 훅들에 등록됩니다.
 
-### iptables
+#### iptables
 - basic firewall software
 - works by interacting /w the packet filtering hooks in the kernel's n/w stack  
 
 
-### netfilter
+#### netfilter
 - these kernel hooks are known as the netfilter framework
 
 ```
@@ -36,24 +36,26 @@ netfilter hook에 (firewall 관련한) kernel modules들을 등록해두고
 traffic이 지나갈때 상호작용
 ```
 
-## Netfilter hooks
-### netfilter hooks
+--- 
+
+### Netfilter hooks
+#### netfilter hooks
 1. NF_IP_PRE_ROUTING : incoming 트래픽을 라우팅 하기 전에 트리거
 2. NF_IP_LOCAL_IN : incoming 패킷의 목적지가 "로컬" 라우팅 이후 트리거
 3. NF_IP_FORWARD : incoming 패킷이 다른 호스트로 포워딩되는 경우로 해당 호스트로 라우팅 이후 트리거
 4. NF_IP_LOCAL_OUT : 로컬에서 생성된 Outbound 트래픽에 의해 트리거
 5. NF_IP_POST_ROUTING : 라우팅 이후 Outbound or 포워딩 트래픽에 의해 트리거  
    
-### 훅 트리거 및 커널모듈 처리 과정
+#### 훅 트리거 및 커널모듈 처리 과정
 1. 위의 5가지 hook에 "커널모듈"을 등록하고
 2. 모듈들은 hook이 트리거 되었을 때 호출 순서를 결정하기 위한 "priority number(우선순위)"를 제공해야 함
 3. hook이 트리거 되면 각 모듈들은 차례로 호출되고
 4. 각 모듈은 패킷에 무엇을 처리해야 하는지 표시한 이후에 netfilter 프레임웍에 "결정" (decision)을 반환합니다.
 
+--- 
+### iptables "tables와 chains"
 
-## iptables "tables와 chains"
-
-### tables (define general aim of the rules)
+#### tables (define general aim of the rules)
 - Organize its rules : (general) 룰을 구성한다.
 - 룰 분류 : 어떠한 결정(nat or filter)을 하느냐?
   Classify rules according to the type of decisions they are used to make
@@ -62,7 +64,7 @@ traffic이 지나갈때 상호작용
 - 각 테이블 내의 규칙들은 분리된 chains로 더 조직화(organized) 된다
   
 
-### chains (determine when rules will be evaluated)
+#### chains (determine when rules will be evaluated)
 - 직접적으로 해당 chain을 트리거하는 netfilter hook을 나타냄
 - Chain은 "언제 룰을 평가(evaluate)"하는 지를 결정함
 - Built-in Chains (associated /w NetFilter Hooks)
@@ -76,8 +78,8 @@ traffic이 지나갈때 상호작용
 - 어떤 유형의 결정은 네트웍 스택 상의 어떤 포인트에서만 의미가 있는데,  모든 테이블이 각각의 커널훅에 등록된 체인을 가지지 못할 수도 있다.
 
 
-
-## Which Tables are Available?
+--- 
+### Which Tables are Available?
 These represent distinct sets of rules, organized by area of concern, for evaluating packets.
 패킷을 평가하기 위한 고려해야할 영역으로 구성된 명확한 룰셋을 나타냅니다.
 - The Filter Table : 필터링. 패킷의 전송여부를 결정
@@ -87,7 +89,8 @@ These represent distinct sets of rules, organized by area of concern, for evalua
 - The Security Table : 패킷에 SELinux 보안 context 마킹하는데 사용
 
 
-## Which Chains are Implemented in Each Table?
+--- 
+### Which Chains are Implemented in Each Table?
 
 각 table raw 에 대해서는 left --> right 순서로 chain 이 평가됨
 그리고 (nf hook별로 평가되는) chain column은 top --> down 순서로 평가됨
@@ -101,10 +104,7 @@ packet --(trigger)--> nf hook --(trigger)--> chain
 위의 표에서 packet이 nf hook을 트리거 하면 nf hook에 등록된 chain의 처리순서는 top-to-bottom이다.
 The hooks(columns) that a packet will trigger depend on whether it is an incoming or outgoing packet, the routing decisions that are made, and whether the packet passes filtering criteria.
 
-
-
-
-### Chain Traversal Order (체인 순회 순서)  
+#### Chain Traversal Order (체인 순회 순서)  
 - packet의 경로는  nf 훅을 왼쪽에서 오른쪽 방향으로 통과하고, 각 hook 에서 테이블 우선순위( 위에서 아래) 로 평가된다.
 - "패킷이 트리거하는 후크 (열)는 들어오는 패킷인지 나가는 패킷인지, 라우팅 결정을 내리고 패킷이 필터링 기준을 통과하는지 여부에 따라 다릅니다."
 - incoming packet  목적지가 로컬호스트 :  PERROUTING --> INPUT
@@ -113,12 +113,14 @@ The hooks(columns) that a packet will trigger depend on whether it is an incomin
 - incoming packet  목적지가 다른호스트 :  PREROUTING --> FORWARD --> POSTROUTING
 - 내부에서 생성된 packet : OUTPUT --> POSTROUTING
 
-## IPTables Rules
+
+--- 
+### IPTables Rules
 - Rules are placed within a specific chain of a specific table. ( Rule 은 table과 chain matrix에 대해서 정의되네)
 - As each chain is called, the packet in question will be checked against each rule within the chain in order. (패킷은 순서대로 체인 내의 각 룰에 대해 체크된다)
 - Each rule has a matching component and an action(or target) component.
 
-### matching
+#### matching
 ```
 룰에서 매칭은 어떤 기준을 충족하는지 패킷을 조사하는 것이지.. 
 무엇을 조사하고 어떤 기준을 만족하는지 결정해서 action(targets)으로 연결하기 위한 것이다.  
@@ -136,16 +138,16 @@ matching system : 매우 유연(flexible)하고 확장성있다.
   - connection state among other criteria
 
 
-### targets (action)  
+#### targets (action)  
 
 패킷이 룰의 매칭 기준을 충족하면 트리거 된다.   
 타겟은 일반적으로 2 카테고리로 나누어진다.
 
-#### Terminating targets  
+##### Terminating targets  
 액션을 수행하고 평가를 종료함. nf hook에 제어를 리턴함.   
 "리턴값"에 따라 훅은 패킷의 드롭 여부를 결정함  
 
-#### Non-terminating targets  
+##### Non-terminating targets  
 액션을 수행하고  평가를 계속함. 
 각 체인이 결과적으로 종료 결정을 해야 하더라도 몇 몇 non-terminating targets은 사전에 실행될 수 있다.  
 
@@ -162,7 +164,7 @@ matching system : 매우 유연(flexible)하고 확장성있다.
 룰 안에서 "activated extensions"이나 "matching clauses"에 따라서
 Target Availability에 영향을 줄 수 있습니다.
 
-#### Rule 주요 설정
+##### Rule 주요 설정
 - -A : append , 해당 chain 끝 행에 룰 추가
 - -I [chain] [number] : insert , 해당 [chain] [number] 행에 룰을 삽입
 - -D : delete , 행 번호를 지정하여 룰 삭제
@@ -178,17 +180,19 @@ Target Availability에 영향을 줄 수 있습니다.
 - -i : input interface
 - -o : output interface
 
-## Jumping to User-Defined Chains
-### jump target
+
+---
+### Jumping to User-Defined Chains
+#### jump target
 -  non-terminating target의 특별한 부류
 - 평가를 다른 체인으로 이동시키는 action 이다.
 - (호출한) 기존 체인의 심플 확장
 - -j : jump ,  jumping 으로 이동할 chain 지정
 
-### built-in chains
+#### built-in chains
 intimately tied to the nf hooks that called them
 
-### user-defined chains
+#### user-defined chains
 chain created by users for organizational purposes (* NOT registered /w nf hook)  
 - rules can be placed
 - can ONLY be reached by "Jumping" from a rule
@@ -199,7 +203,8 @@ chain created by users for organizational purposes (* NOT registered /w nf hook)
 이러한 구조(user-defined chains)는 greater organization을 가능하게 하고 more robust branching을 위해 필요한 프레임웍을 제공한다.
 
 
-## IPTables and Connection Tracking
+---
+### IPTables and Connection Tracking
 - Connection Tracking System : netfilter framework의 상위(top)에 구현. raw table과 connection state matching 기준에 대해 논의할 때 소개됨.
 - Connection Tracking은 iptables가 "연결 중인 컨텍스트에서 보이는 패킷에 대해서 결정"하도록 한다.
 - Connection Tracking System은 iptables에 "stateful operations"을 제공한다.
@@ -209,7 +214,7 @@ chain created by users for organizational purposes (* NOT registered /w nf hook)
 - "raw chains (중 하나)에서 [NOTRACK target]으로 mark된" 패킷은 connection tracking routines을 bypass 한다.
 
 
-### Available States
+#### Available States
 Connections tracked by the connection tracking system will be in one of the following states:
 CTS로 트래킹되는 커넥션들은 다음 states 들을 가진다.
 - NEW : When a packet arriveds that is not associated with an existing connection, but is not invalid as a first packet, a new connection will be added to the system with this label. This happens for both connection-aware protocols like TCP and for connectionless like UDP.
@@ -230,6 +235,7 @@ CTS에서 트래킹되는 "State"는 "커넥션 라이프타임의 특정 포인
 This provides the functionality needed for more thorough and secure rules.
 이것은 보다 철저하고 안전한 룰들에 필요한 기능을 제공한다.
 
+
 ## Conclusion
 
 netfilter (packet filtering framework)와 iptables (firewall) 은 리눅스 서버에서 가장 기본적인 firewall 솔루션 들이다.
@@ -239,7 +245,7 @@ The iptables leverages these capabilities to provide a flexible, extensible meth
 
 
 ---
-예시)
+### iptables 사용예
 ```
 $ iptables -t nat -A POSTROUTING -s 192.168.1.0/24 -j MASQUERADE
 ```
@@ -312,7 +318,7 @@ iptables -A OUTPUT -p tcp --sport 22 -d 10.10.10.10 -m state --state ESTABLISHED
 -j ACCEPT (chain)으로 jump 해라
 
 
-Quiz
+### Quiz
 
 Q1) 출발지 주소가 192.168.0.111 인 모든 포트 접속 차단
 ```
@@ -356,7 +362,7 @@ Q7) br0 interface에 대하여 in/out FORWARD 허용
 -A FORWARD -o br0 -j ACCEPT
 ```
 
-사례
+### 사례
 k8s Service : https://ssup2.github.io/theory_analysis/Kubernetes_Service_Proxy/
 
 
