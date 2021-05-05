@@ -4,6 +4,7 @@ title: Welcome to Netpple
 permalink: /
 ---
 ## 새로운 글 
+{% if site.posts.size > 0 %}
 <div class="section-index">
     <hr class="panel-line">
     {% for post in site.posts %}
@@ -23,7 +24,9 @@ permalink: /
     </p>
     </div>{% endfor %}
 </div>
+{% endif %}
 
+{% if site.docs.size > 0 %}
 {% assign docs = site.docs | where:'label', '도커 없이 컨테이너 만들기' %}
 
 <div class="section-index">
@@ -45,3 +48,4 @@ permalink: /
     </p>
     </div>{% endfor %}
 </div>
+{% endif %}
