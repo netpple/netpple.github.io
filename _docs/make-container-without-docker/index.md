@@ -27,7 +27,7 @@ rightpanel: true
 {% assign docs = site.docs | where:'label', '도커 없이 컨테이너 만들기' %}
 
 {% for post in docs %}
-### [{{ post.title }}](container-internal-1)
+### [{{ post.title }}]({{ post.url }})
 
 ![{{ post.image }}]({{ post.image }}){:width="200"}{:.align-left}
 
