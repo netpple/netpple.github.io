@@ -31,11 +31,6 @@ rightpanel: true
 - its own process tree ~ separate view of process hierarchy
 
 
-With the introduction of Linux namespaces, it became possible to have multiple “nested” process trees. 
-Each process tree can have an entirely isolated set of processes. 
-This can ensure that processes belonging to one process tree cannot inspect or kill - in fact cannot even know of the existence of - processes in other sibling or parent process trees.
-
-
 ### pid 1 (init process) in a namespace
 1. signal 처리를 해줘야 함
 2. reaping (zombie, orphan) 처리를 해줘야 함
