@@ -2,23 +2,24 @@
 title: Understanding how uid and gid work in Docker containers
 version: v0.1
 description: User namespace와 컨테이너의 UID/GID 동작을 이해하기 좋은 글입니다. 
-date: 2021-05-05 12:25 +09:00
+date: 2021-05-05 17:55 +09:00
 categories: container
 badges:
 - type: info
   tag: 번역
-  rightpanel: true
+rightpanel: false
 ---
-# Understanding how uid and gid work in Docker containers
 원문 : [https://medium.com/@mccode/understanding-how-uid-and-gid-work-in-docker-containers-c37a01d01cf](https://medium.com/@mccode/understanding-how-uid-and-gid-work-in-docker-containers-c37a01d01cf){:target="_blank"}
+
 
 프로세스와 호스트 사이의 UID/GID 매핑은 Secure 측면에서 중요합니다.  
 UID, GID space는 커널이 관리하는데요.   
 파일의 권한 여부 확인은 UID, GID를 검사하여 판단합니다.    
 컨테이너라는 것은 Single Kernel (커널은 하나)을 공유하지요.  
 따라서 같은 커널 아래서 Same UID는 Same User를 의미합니다.  
-하지만, Username은 커널 요소가 아닙니다.(Not part of kernel)   
+하지만, Username은 커널 요소가 아닙니다.(Not part of kernel)
 즉 외부툴이 관리하는 요소입니다. (managed by external tools, /etc/passwd, LDAP, Kerberos, ...)    
+<!--more-->
 
 [리눅스 권한 참고 : http://blog.naver.com/PostView.nhn?blogId=geonil87&logNo=221022779618](http://blog.naver.com/PostView.nhn?blogId=geonil87&logNo=221022779618){:target="_blank"}
 ![how-uid-gid-work-in-container-drwx.png](/assets/img/how-uid-gid-work-in-container-drwx.png)  

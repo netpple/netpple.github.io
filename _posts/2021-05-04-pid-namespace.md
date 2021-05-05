@@ -7,10 +7,8 @@ categories: container
 badges:
 - type: info
   tag: 번역
-rightpanel: true
+rightpanel: false
 ---
-
-# pid namespace
 원문: [The Curious Case of Pid Namespaces](https://hackernoon.com/the-curious-case-of-pid-namespaces-1ce86b6bc900){:target="_blank"}
 
 
@@ -20,6 +18,9 @@ rightpanel: true
 - from 1 (kernel pid == 0)
 - tree-like structure
 - tracking process ~ parent <--> child 
+
+
+<!--more-->
 
 
 ### pid namespace?

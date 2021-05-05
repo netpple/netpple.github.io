@@ -29,3 +29,10 @@
 #          url: "docs/make-container-without-docker/pid-namespace"
 #        - title: 10편.USER 네임스페이스
 #          url: "docs/make-container-without-docker/user-namespace"
+- title: "2021"
+  url: "news/"
+  links:
+    - title: "[05/05] Understanding how uid and gid work in Docker containers"
+      url: "2021/how-uid-gid-work-in-container/"
+    - title: "[05/04] The Curious Case of Pid Namespaces"
+      url: "2021/pid-namespace/"
