@@ -1,0 +1,234 @@
+[etcd공식 : https://etcd.io/](https://etcd.io/)
+[github : https://github.com/etcd-io/etcd](https://github.com/etcd-io/etcd)   
+[etcdctl : https://github.com/etcd-io/etcd/tree/master/etcdctl](https://github.com/etcd-io/etcd/tree/master/etcdctl)  
+
+ETCD 개념 (IBM)
+
+https://www.ibm.com/cloud/learn/etcd (19.12.18)
+
+ETCD, the fault-tolerant open source key-value database that serves as the primary data backbone for kubernetes and other distributed platforms.
+
+What is etcd?
+(요약)
+- etcd는 분산 key/value 저장소
+- 분산 coordinating을 위한 single/consitent 저장소
+- etc + d
+- k8s, cloud foundry 등 많이들 사용
+
+"etcd is an open source distributed key-value store used to hold and manage the critical information that distributed systems need to keep running. Most notably, it manages the configuration data, state data, and metadata for Kubernetes, the popular container orchestration platform."
+```
+etcd는 오픈소스 "분산 키/밸류 스토어"로 분산시스템의 동작을 지속하는데 필요한 중요한(critical) 정보들을 관리하는데 사용됩니다. 
+주목할만한 점은 etcd가 가장 인기있는 컨테이너 오케스트레이션 플랫폼인 쿠버네티스의 설정데이터, 상태데이터, 메타데이터들을 관리합니다. 
+```
+
+"Like all distributed workloads, containerized workloads have complex management requirements that become more complex as the workload scales. Kubernetes simplifies the process of managing these workloads by coordinating tasks such as configuration, deployment, service discovery, load balancing, job scheduling, and health monitoring across the across all clusters, which can run on multiple machines in multiple locations."
+```
+모든 분산 워크로드와 마찬가지로 "컨테이너화 된 워크로드"에는 워크로드 확장됨에 따른 "복잡한 관리 요구사항"이 생깁니다. Kubernetes는 여러 위치의 여러 컴퓨터에서 실행될 수 있는 모든 클러스터에서 configuration, deployment, service discovery,load balancing, job scheduling 및 상태 모니터링과 같은 작업을 조정하여 이러한 작업 부하를 관리하는 프로세스를 단순화합니다. ("~ 코디네이션에 대한 얘기")
+```
+
+"But to achieve this coordination, Kubernetes needs a data store that provides a single, consistent source of the truth about the status of the system—all its clusters and pods and the application instances within them—at any given point in time. etcd is the data store used to create and maintain this version of the truth."
+```
+하지만 이러한 "코디네이션"을 하려면, 쿠버네티스는 특정 시점에 시스템 상태에 대한 하나(single)의 일관된(consistent) 소스를 제공하는 데이터 저장소를 필요로 합니다. 
+(여기서 소스는 실제 시스템 상태에 대한 소스를 말하며 모든 클러스터와 파드, 그리고 거기에 속해 있는 어플리케이션 인스턴스들을 포함합니다.)
+"ETCD"가 이러한 역할을 담당하는 데이터 스토어 입니다. 
+```
+
+etcd serves a similar role for Cloud Foundry—the open source, multicloud Platform-as-a-Service (PaaS)—and is a viable option for coordinating critical system and metadata across clusters of any distributed application. The name “etcd” comes from a naming convention within the Linux directory structure: In UNIX, all system configuration files for a single system are contained in a folder called “/etc;” “d” stands for “distributed.”
+```
+etcd는 Clound Foundry (OSS, PaaS)에서도 유사한 용도로 사용되며 중요한 시스템과 분산어플리케이션의 클러스터 간 메타데이터 코디네이팅을 위한 유용한 옵션입니다. 
+"etcd"라는 이름은 리눅스의 디렉토리 구조의 네이밍 컨벤션으로 부터 왔는데, 유닉스에서 모든 시스템 설정파일들이 들어있는 "/etc" 에 분산(distributed)을 의미하는 "d"를 합쳐 만들었습니다.  'etc + d'
+```
+
+Why etcd?
+It’s no small task to serve as the data backbone that keeps a distributed workload running. But etcd is built for the task, designed from the ground up for the following qualities:
+```
+분산 워크로드를 계속 유지하는 데이터 백본 역할을하는 것은 쉬운 일이 아닙니다. 그러나 etcd는 다음과 같은 자질을 위해 처음부터 설계된 작업을 위해 만들어졌습니다.
+```
+
+- Fully replicated: Every node in an etcd cluster has access the full data store.
+```
+전체 복제 ~ etcd 클러스터 내 모든 노드들이 전체 데이터에 접근가능
+
+
+* Full replicated : Stores multiple copies of each database fragment at multiple sites
+```
+
+- Highly available: etcd is designed to have no single point of failure and gracefully tolerate hardware failures and network partitions.
+```
+고가용성 ~ No SPOF. 하드웨어 장애/네트워크 단절(partition)에 대한 내성
+
+
+* A network partition refers to a network split between nodes due to the failure of network devices. Example: When switch between two subnets fails, there is a partition between nodes.
+```
+
+- Reliably consistent: Every data ‘read’ returns the latest data ‘write’ across all clusters.
+```
+Consistency 보장 ~ 모든 데이터의 'read' 시 클러스터에서 가장 최근에 'write'한 데이터를 return 
+```
+
+- Fast: etcd has been benchmarked at 10,000 writes per second.
+```
+초당 10k writes 성능
+```
+
+- Secure: etcd supports automatic Transport Layer Security (TLS) and optional secure socket layer (SSL) client certificate authentication. Because etcd stores vital and highly sensitive configuration data, administrators should implement role-based access controls within the deployment and ensure that team members interacting with etcd are limited to the least-privileged level of access necessary to perform their jobs
+```
+etcd는 TLS와 선택적으로 SSL클라이언트 인증 지원합니다. etcd는 민감한 설정데이터들을 저장하고 있기 때문에, 관리자는 deployment 내에  RBAC를 구현해야 하고, 팀구성원들이 job을 수행하는데 필요한 최소한의 접근권한 수준으로 etcd 사용을 제한하여야 합니다. 
+```
+
+- Simple: Any application, from simple web apps to highly complex container orchestration engines such as Kubernetes, can read or write data to etcd using standard HTTP/JSON  tools.
+```
+어떤 어플리케이션(간단한 웹앱 ~ 복잡한 컨테이너 오케스트레이션 엔진 like k8s)도 standard HTTP/JSON 툴을 사용하여 etcd에 데이터를 read/write 가능합니다. 
+```
+
+Note that because etcd’s performance is heavily dependent upon storage disk speed, it’s highly recommended to use SSDs in etcd environments. For more information this and other etcd storage requirements, check out “Using Fio to Tell Whether Your Storage is Fast Enough for etcd.”
+```
+etcd의 성능은 디스크 성능과 아주 밀접하기 때문에 SSD를 사용할 것을 강력히 추천합니다. 
+```
+
+Raft consensus algorithm *Raft 뗏목 
+참고 : https://suckzoo.github.io/tech/2018/01/03/raft-1.html, https://raft.github.io/
+* 논문: https://www.usenix.org/system/files/conference/atc14/atc14-paper-ongaro.pdf
+  (요약)
+- Raft "합의"(Consensus) 알고리즘
+- 리더를 선출
+- 선출된 리더가 팔로워들의 replication을 관리
+- 리더는 클라이언트의 요청을 팔로워들에 전달하고 팔로워들이 모두 이를 저장하면 클라이언트에 결과를 리턴함
+- 리더로 부터 일정시간 내 메시지 수신이 실패하면 새로운 리더를 선출
+- 각 팔로워가 자신을 후보로 내세우고, 다른 팔로워들이 가용여부에 따라 투표
+- 선출된 리더는 리플리케이션을 관리하기 시작하는데 이 프로세스는  etcd 노드들의 가용성은 높게, 그리고 복제 데이터 저장소는 일관되게 유지하도록 자체 반복됨
+
+etcd is built on the Raft consensus algorithm to ensure data store consistency across all nodes in a cluster—table stakes for a fault-tolerant distributed system.
+```
+etcd는 Raft 합의 알고리즘을 기반으로하여 클러스터의 모든 노드에서 데이터 저장소 일관성을 보장합니다.
+```
+
+Raft achieves this consistency via an elected leader node that manages replication for the other nodes in the cluster, called followers. The leader accepts requests from the clients, which it then forwards to follower nodes. Once the leader has ascertained that a majority of follower nodes have stored each new request as a log entry, it applies the entry to its local state machine and returns the result of that execution—a ‘write’—to the client. If followers crash or network packets are lost, the leader retries until all followers have stored all log entries consistently.
+```
+Raft는 선출된 리더노드를 통해서 일관성을 달성합니다. 리더노드는 follower라고 부르는 클러스터의 다른 노드들의 리플리케이션을 관리합니다. 
+리더는 클라이언트의 요청을 받아서 팔로워 노드들에게 전달합니다. 
+일단 리더가 다수의 팔로워 노드에서 각각의 새로운 요청을 로그 엔트리에 저장한 것을 확인하면, 해당 엔트리를 local state machine에 저장하고 클라이언트에 실행 결과를 리턴합니다 (a 'write'). 
+만약 팔로워에 크래시나 네트웍 패킷손실이 발생하면, 리더는 모든 팔로워가 모든 로그 엔트리를 일관되게 저장할 때까지 retry 합니다. 
+```
+
+
+
+If a follower node fails to receive a message from the leader within a specified time interval, an election is held to choose a new leader. The follower declares itself a candidate, and the other followers vote for it or any other node based on its availability. Once the new leader is elected, it begins managing replication, and the process repeats itself. This process enables all etcd nodes to maintain highly available, consistently replicated copes of the data store.
+```
+팔로워 노드가 정해진 시간 내에 리더로 부터 메시지를 수신하는데 실패하면, 새로운 리더를 선출합니다. 
+팔로워는 자신을 후보로 선출하고, 다른 팔로워들은 후보들의 가용여부에 따라 투표합니다. 
+새로운 리더가 선출되면, 리플리케이션을 관리하기 시작하는데 그 프로세스 자체가 반복됩니다. 
+이 프로세스는 모든 etcd 노드들을 가용성 높게, 그리고 일관되게 복제된 데이터 저장소를 유지할 수 있습니다. 
+```
+
+
+
+etcd and kubernetes
+
+etcd is included among the core Kubernetes components and serves as the primary key-value store for creating a functioning, fault-tolerant Kubernetes cluster. The Kubernetes API server stores each cluster’s state data in etcd. Kubernetes uses etcd’s “watch” function to monitor this data and to reconfigure itself when changes occur. The “watch” function stores values representing the actual and ideal state of the cluster and can initiate a response when they diverge.
+```
+etcd는 k8s 코어 컴포넌트 중 하나이고 쿠버네티스 클러스터의 일순위 key-value 저장소입니다. 
+k8s api server는 클러스터 상태 데이터를 etcd에 저장합니다. 
+k8s는 데이터를 모니터링하고 변경이 발생했을 때 스스로 재설정하기 위해 etcd의 "watch" function을 사용합니다. 
+"watch" function은 클러스터의 실제 상태와 ideal(desired) 상태를 나타내는 값들을 저장하고, 두 값이 서로 달라질 때 response를 보내줄 수 있습니다. 
+```
+
+CoreOS and the history and maintanance of etcd
+
+etcd was created by the same team responsible for designing CoreOS Container Linux, a widely used container operating system that can be run and managed efficiently on a massive scale. They originally built etcd on Raft to coordinate multiple copies of Container Linux simultaneously, to ensure uninterrupted application uptime.
+
+In December 2018, the team donated etcd to the Cloud Native Computing Foundation (CNCF), a neutral nonprofit organization that maintains etcd’s source code, domains, hosted services, cloud infrastructure, and other project property as open source resources for the container-based cloud development community. CoreOS has merged with Red Hat.
+
+```
+etcd는 CoreOS Container Linux 개발팀에서 만들었고, 컨테이너 오퍼레이팅 시스템에 폭넓게 사용됐습니다. 
+etcd는 기본적으로 무중단 어플리케이션을 보장하기 위해, 동시에 리눅스 컨테이너 여러개를 코디네이트 하기 위해 Raft 위에 구현 되었습니다. 
+
+
+2018.12 etcd는 CNCF(Cloud Native Computing Foundation)에 기부되었습니다.
+CoreOS는 Red Hat에 합병되었습니다. 
+```
+
+etcd vs. ZooKeeper vs. Consul
+"Other" databases have been developed to manage coordinate information between across distributed application clusters. The two most commonly compared to etcd are ZooKeeper and Consul.
+```
+(기존과는 좀) 다른 데이터베이스들이 개발되었어요 분산어플리케이션 클러스터 사이에서 코디네이트 정보를 관리하는 DB들입니다. 
+etcd와 가장 많이 비교되는 Zookeeper와 Consul 입니다. 
+```
+
+ZooKeeper
+ZooKeeper was originally created to coordinate configuration data and metadata across Apache Hadoop clusters. (Apache Hadoop is an open source framework, or collection of applications, for storing and processing large volumes of data on clusters of commodity hardware.) ZooKeeper is older than etcd, and lessons learned from working with ZooKeeper influenced etcd’s design.
+```
+주키퍼는 기본적으로 아파치 하둡 클러스터에서 config.데이터와 메타데이터를 코디네이트하기 위해 만들어 졌습니다. 
+(아파치하둡은 대용량 데이터를 저장하고 처리하는 오픈소스 프레임웍 or 어플리케이션 집합입니다. 
+주키퍼는 etcd 보다 오래됐고, 주키퍼의 사용경험/교훈은 etcd 디자인에 영향을 주었습니다. 
+```
+
+
+As a result, etcd has some important capabilities that ZooKeeper does not. For example, unlike ZooKeeper, etcd can do the following:
+
+- Allow for dynamic reconfiguration of cluster membership.
+- Remain stable while performing read/write operations under high loads.
+- Maintain a multi-version concurrency control data model.
+- Offer reliable key monitoring that never drops events without giving a notification.
+- Use concurrency primitives that decouple connections from sessions.
+- Support a wide range of languages and frameworks (ZooKeeper has its own custom Jute RPC protocol that supports limited language bindings).
+
+```
+결과적으로 etcd는 "주키퍼에서 제공하지 않는 몇가지 중요한 기능"을 가지게 되었습니다. (다음의 것들입니다)
+ㄴ 클러스터 멤버쉽을 동적으로 재설정이 가능합니다. 
+ㄴ 고부하 상황에서 read/write 수행 시에 안정적입니다. 
+ㄴ 동시에 여러 버전의 제어 데이터모델을 유지할 수 있습니다. 
+ㄴ 신뢰성 있는 키 모니터링을 제공합니다. (노티 없이 결코 이벤트를 중단하지 않습니다.)
+ㄴ 세션에서 연결을 분리하는 concurrency primitives(동시성 기본기능?)를 사용
+ㄴ 폭넓은 언어와 프레임웍 지원 (주키퍼는 자체 커스텀 Jute RPC protocol을 사용하여 제한적임)
+```
+
+Consul
+Consul is a service networking solution for distributed systems, the capabilities of which sit somewhere between those of etcd and the Istio service mesh for Kubernetes. Like etcd, Consul includes a distributed key-value store based on the Raft algorithm and supports HTTP/JSON application programming interfaces (APIs). Both offer dynamic cluster membership configuration, but Consul doesn’t control as strongly against multiple concurrent versions of configuration data, and the maximum database size with which it will reliably work is smaller.
+```
+콘술은 분산시스템을 위한 "서비스 네트워킹" 솔루션으로, 기능적으로 etcd (코디네이터) 부류와 Istio 같은 "서비스메쉬" 부류 사이 어디쯤에 자리합니다. 
+etcd처럼 콘술은 Raft 알고리즘 기반의 분산 키밸류 저장소를 포함하고 HTTP/JSON api를 제공합니다. 
+둘 다 동적 클러스터 멤버십 설정을 제공합니다만, 콘술은 멀티버전의 config. 데이터 동시제공 측면에서는 (etcd만큼) 강력하지 않고,최대 db size가 더 작습니다. 
+```
+
+
+etcd vs. Redis
+
+Like etcd, Redis is an open source tool, but their basic functionalities are different.
+
+```
+etcd 처럼 레디스도 오픈소스 이지만 기본적인 기능들이 서로 다릅니다. 
+```
+
+
+Redis is an in-memory data store and can function as a database, cache, or message broker. Redis supports a wider variety of data types and structures than etcd and has much faster read/write performance.
+
+```
+레디스는  인메모리 데이터 스토어이고 데이터베이스, 캐시, 메시지브로커의 기능을 수행할 수 있습니다. 
+레디스는 etcd 보다 다양한 데이터 타입과 구조를 제공하고 read/write 성능이 훨씬 빠릅니다.
+```
+
+
+But etcd has superior fault tolerance, stronger failover and continuous data availability capabilities, and, most importantly, etcd persists all stored data to disk, essentially sacrificing speed for greater reliability and guaranteed consistency. For these reasons, Redis is better suited for serving as a distributed memory caching system than for storing and distributed system configuration information.
+
+```
+하지만 etcd는 fault tolerance와 failover, 그리고 지속적인 데이터 가용성 측면에서 더 뛰어나고, 가장 중요하게는, etcd는 본질적으로 속도를 희생하는 대신에 더 높은 신뢰성과 일관성을 보장하기 위해 모든 데이터를 디스크에 저장합니다. 
+이러한 이유들로 레디스는 분산시스템 config 정보를 저장 및 분산(코디네이팅)하는 것보다는 분산 "메모리캐싱" 시스템에 더 적합합니다. 
+```
+
+
+
+---
+[ ETCD 커맨드 ]
+k8s /w External ETCD on Host
+ETCD 설치
+쿠버네티스 ETCD 다중화 - "external etcd"
+
+
+
+
+
+
+
+
+
