@@ -18,3 +18,8 @@ badges:
 </div>
 
 [[슬라이드 보기]](https://docs.google.com/presentation/d/1ROUHDBp1l7oP6wcCO-kfj9tQHHjDQg5gFm1FXr5IB1I/edit#){:target="_blank"}
+
+
+### references
+
+- [컨테이너 요약/실습 : http://tailhook.github.io/containers-tutorial/#/step-27](http://tailhook.github.io/containers-tutorial/#/step-27){:target="_blank"}

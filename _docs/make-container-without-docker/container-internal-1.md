@@ -23,10 +23,10 @@ rightpanel: false
 [[슬라이드 보기]](https://docs.google.com/presentation/d/1Z9RcxEy0I5Xq6yd6JHQ8hBTgsfjcwHJ2NoHkl_KL3TY/edit#){:target="_blank"}
 
 ### references
-- [container internal (detail) : https://leezhenghui.github.io/microservices/2018/10/20/build-a-scalable-system-runtime-challenges.html](https://leezhenghui.github.io/microservices/2018/10/20/build-a-scalable-system-runtime-challenges.html) 
-- [container internal (detail) : https://itnext.io/breaking-down-containers-part-0-system-architecture-37afe0e51770](https://itnext.io/breaking-down-containers-part-0-system-architecture-37afe0e51770)
-- [chroot/namespaces : https://medium.com/@saschagrunert/demystifying-containers-part-i-kernel-space-2c53d6979504](https://medium.com/@saschagrunert/demystifying-containers-part-i-kernel-space-2c53d6979504])
-- [chroot (detail) : https://blog.selectel.com/containerization-mechanisms-namespaces/](https://blog.selectel.com/containerization-mechanisms-namespaces/)
-- [namespace/process : https://ssup2.github.io/onebyone_container/3.4.Namespace_with_Process/](https://ssup2.github.io/onebyone_container/3.4.Namespace_with_Process/)
-- [Mount namespace: https://milhouse93.tistory.com/85](https://milhouse93.tistory.com/85)
-- [Capabilities : https://man7.org/linux/man-pages/man7/capabilities.7.html](https://man7.org/linux/man-pages/man7/capabilities.7.html])
+- [container internal (detail) : https://leezhenghui.github.io/microservices/2018/10/20/build-a-scalable-system-runtime-challenges.html](https://leezhenghui.github.io/microservices/2018/10/20/build-a-scalable-system-runtime-challenges.html){:target="_blank"} 
+- [container internal (detail) : https://itnext.io/breaking-down-containers-part-0-system-architecture-37afe0e51770](https://itnext.io/breaking-down-containers-part-0-system-architecture-37afe0e51770){:target="_blank"}
+- [chroot/namespaces : https://medium.com/@saschagrunert/demystifying-containers-part-i-kernel-space-2c53d6979504](https://medium.com/@saschagrunert/demystifying-containers-part-i-kernel-space-2c53d6979504]){:target="_blank"}
+- [chroot (detail) : https://blog.selectel.com/containerization-mechanisms-namespaces/](https://blog.selectel.com/containerization-mechanisms-namespaces/){:target="_blank"}
+- [namespace/process : https://ssup2.github.io/onebyone_container/3.4.Namespace_with_Process/](https://ssup2.github.io/onebyone_container/3.4.Namespace_with_Process/){:target="_blank"}
+- [Mount namespace: https://milhouse93.tistory.com/85](https://milhouse93.tistory.com/85){:target="_blank"}
+- [Capabilities : https://man7.org/linux/man-pages/man7/capabilities.7.html](https://man7.org/linux/man-pages/man7/capabilities.7.html]){:target="_blank"}
