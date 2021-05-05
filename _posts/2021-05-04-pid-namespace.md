@@ -72,8 +72,7 @@ single 프로세스에서 systemd와 같은 advanced init system은 과하다
 
 
 ### Multiple Containers in a Pod
-
-#### 관련 프로세스를 함께 실행 vs 프로세스 의존성 격리
+관련 프로세스를 함께 실행 vs 프로세스 의존성 격리
 ```
  the idea of Pod 
 ~ Pod is a set of related containers that share some namespaces.
@@ -108,22 +107,19 @@ a small box filled with sand for children to play in
 
 
 #### rkt Pod
-pod's systemd with no running units and then communicates with pod's systemd to start new apps on demand  
-
-#### elegant but attack vector 
-because init process(systemd) has additional privileges
+pod's systemd with no running units and then communicates with pod's systemd to start new apps on demand    
+elegant but attack vector : because init process(systemd) has additional privileges
 - 호스트 파일시스템에 대한 접근권한을 가짐
 - 모든 권한을 가지고 있음 : "새로운 컨테이너"를 실행하기 위해서 필요한 권한Set을 미리 알 수 없기 때문임
 - pod의 systemd가 pod내 모든 프로세스에서 보임
 
 
 #### non-sandbox model
-init process start child processes  
-and then drop privileges
+init process start child processes and then drop privileges
 
 
 ### Sandbox and Pid namespace
-init, sandboxes, pid namespaces 를 다루는 몇가지 방법이 있고 각각이 몇몇 단점들을 가지고 있다.
+init, sandbox, pid namespace를 다루는 몇가지 방법들이 있고 각각이 장단점들이 있습니다. 
 
 #### Types
 1. Pid namespaces are not created along with the sandbox. each container gets its own pid namespaces.
