@@ -13,16 +13,14 @@ rightpanel: false
 
 
 프로세스와 호스트 사이의 UID/GID 매핑은 Secure 측면에서 중요합니다.  
-UID, GID space는 커널이 관리하는데요.   
-파일의 권한 여부 확인은 UID, GID를 검사하여 판단합니다.    
-컨테이너라는 것은 Single Kernel (커널은 하나)을 공유하지요.  
-따라서 같은 커널 아래서 Same UID는 Same User를 의미합니다.  
+UID, GID space는 커널이 관리하는데요. 파일의 권한 확인은 UID, GID를 검사하여 판단합니다.    
+컨테이너는 호스트의 커널(Single kernel)을 공유합니다.<!--more-->
+따라서 동일한 커널 아래서 Same UID는 Same User를 의미합니다.  
 하지만, Username은 커널 요소가 아닙니다.(Not part of kernel)
-즉 외부툴이 관리하는 요소입니다. (managed by external tools, /etc/passwd, LDAP, Kerberos, ...)    
-<!--more-->
+Username은 외부툴이 관리하는 요소입니다. (managed by external tools, /etc/passwd, LDAP, Kerberos, ...)
 
-[리눅스 권한 참고 : http://blog.naver.com/PostView.nhn?blogId=geonil87&logNo=221022779618](http://blog.naver.com/PostView.nhn?blogId=geonil87&logNo=221022779618){:target="_blank"}
-![how-uid-gid-work-in-container-drwx.png](/assets/img/how-uid-gid-work-in-container-drwx.png)  
+[참고 : 리눅스 퍼미션, 권한(chmod,chown,umask)](http://blog.naver.com/PostView.nhn?blogId=geonil87&logNo=221022779618){:target="_blank"}  
+![how-uid-gid-work-in-container-drwx.png](/assets/img/how-uid-gid-work-in-container-drwx.png){:width="400px"}    
 (2)소유자 권한 (3)그룹 권한 (4) 그 외 사용자
 * (1) d (directory) ~ c (특수파일), b (블럭구조 특수파일), l (심볼릭링크), - (일반파일)
 * (참고) 특수권한 : s (SetUID, SetGID, 파일소유자, 그룹소유자 권한으로 실행), t (Sticky Bit, 공유디렉토리로 사용)

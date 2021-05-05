@@ -1,7 +1,7 @@
 ---
 title: A Deep Dive into Iptables and Netfilter Architecture
 version: v0.1
-description: netfilter와 iptables 이해하기에 좋은 자료입니다.
+description: netfilter와 iptables를 이해하기에 좋은 자료입니다.
 date: 2021-05-05 12:25 +09:00
 categories: network
 badges:
@@ -9,17 +9,14 @@ badges:
   tag: 번역
 rightpanel: true
 ---
-# A Deep Dive into Iptables and Netfilter Architecture
-
-
 원문: [https://www.digitalocean.com/community/tutorials/a-deep-dive-into-iptables-and-netfilter-architecture](https://www.digitalocean.com/community/tutorials/a-deep-dive-into-iptables-and-netfilter-architecture){:target="_blank"}    
 번역: [https://www.kangtaeho.com/66?fbclid=IwAR3nWnRib_t6l4npxG6az5iyyZe616wj1YapGlvvSUUBP-zPFyQf7V4i888](https://www.kangtaeho.com/66?fbclid=IwAR3nWnRib_t6l4npxG6az5iyyZe616wj1YapGlvvSUUBP-zPFyQf7V4i888){:target="_blank"}
 
 ### What are IPTables and Netfilter?  
 iptables는 방화벽 소프트웨어이고 커널의 네트웍 스택에서 netfilter hook과 상호작용하는 방식으로 동작합니다.  
 모든 네트웍 패킷은 스택을 통과할 때 넷필터 훅들을 트리거 하는데, 이러한 훅들을 등록한 프로그램들이 주요지점에서
-트래픽과 상호작용하도록 허용합니다.  
-iptables와 연관된 커널모듈들은 트랙픽이  방화벽규칙을 준수하는지 확인하기 위하여 이 훅들에 등록됩니다.
+트래픽과 상호작용하도록 허용합니다.<!--more--> 
+iptables와 연관된 커널모듈들은 트랙픽이 방화벽규칙을 준수하는지 확인하기 위하여 이 훅들에 등록됩니다.
 
 #### iptables
 - basic firewall software
@@ -83,29 +80,29 @@ traffic이 지나갈때 상호작용
 These represent distinct sets of rules, organized by area of concern, for evaluating packets.
 패킷을 평가하기 위한 고려해야할 영역으로 구성된 명확한 룰셋을 나타냅니다.
 - The Filter Table : 필터링. 패킷의 전송여부를 결정
-- The NAT Table :  nat. packet의 src, dst address의 수정/방법 여부를 결정. 패킷이 network으로 direct access가 불가능한 경우에 주로 사용
-- The Mangle Table : IP헤더변조 (TTL값 조정, 네트웍 홉 수 조정 등). 네트웍 추가 처리를 위한 내부커널 "표시"를 마킹.
+- The NAT Table : NAT패킷의 src, dst address의 수정/방법 여부를 결정. 패킷이 network으로 direct access가 불가능한 경우에 주로 사용
+- The Mangle Table : IP 헤더변조 (TTL값 조정, 네트웍 홉 수 조정 등). 네트웍 추가 처리를 위한 내부커널 "표시"를 마킹.
 - The Raw Table : connection tracking을 위한 패킷 마킹 메커니즘 제공
 - The Security Table : 패킷에 SELinux 보안 context 마킹하는데 사용
 
 
 --- 
 ### Which Chains are Implemented in Each Table?
-
-각 table raw 에 대해서는 left --> right 순서로 chain 이 평가됨
-그리고 (nf hook별로 평가되는) chain column은 top --> down 순서로 평가됨
-DNAT :  alter the Dest. Network Address of a packet
-SNAT:  alter the Src. Network Address of a packet
+![deep-dive-iptables-netfilter-architecture-table.png](/assets/img/deep-dive-iptables-netfilter-architecture-table.png)
+위의 표에서 각 table 열(raw, mangle, nat, ...)에 대하여 왼쪽에서 오른쪽 방향로 chain 이 평가됨
+그리고 (넷필터 훅 별로 평가되는) chain column(PREROUTING, INPUT, ...)은 위에서 아래 방향으로 평가됨
+DNAT : 패킷의 목적지 주소 변조
+SNAT : 패킷의 출발지 주소 변조
 
 ```
 packet --(trigger)--> nf hook --(trigger)--> chain
 ```
 
-위의 표에서 packet이 nf hook을 트리거 하면 nf hook에 등록된 chain의 처리순서는 top-to-bottom이다.
+위의 표에서 packet이 넷필터 hook을 트리거 하면 nf hook에 등록된 chain의 처리순서는 top-to-bottom 입니다.
 The hooks(columns) that a packet will trigger depend on whether it is an incoming or outgoing packet, the routing decisions that are made, and whether the packet passes filtering criteria.
 
 #### Chain Traversal Order (체인 순회 순서)  
-- packet의 경로는  nf 훅을 왼쪽에서 오른쪽 방향으로 통과하고, 각 hook 에서 테이블 우선순위( 위에서 아래) 로 평가된다.
+- packet의 경로는 넷필터 훅을 왼쪽에서 오른쪽 방향으로 통과하고, 각 hook 에서 테이블 우선순위( 위에서 아래) 로 평가된다.
 - "패킷이 트리거하는 후크 (열)는 들어오는 패킷인지 나가는 패킷인지, 라우팅 결정을 내리고 패킷이 필터링 기준을 통과하는지 여부에 따라 다릅니다."
 - incoming packet  목적지가 로컬호스트 :  PERROUTING --> INPUT
     1. PREROUTING : raw --> mangle --> nat tables 순서로 평가됨
