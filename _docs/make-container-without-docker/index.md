@@ -1,5 +1,6 @@
 ---
-title: 도커 없이 컨테이너 만들기  
+title: 도커 없이 컨테이너 만들기
+date: 2021-04-20 07:25:00 +09:00
 tags: 
  - container
  - namespace
@@ -23,39 +24,22 @@ rightpanel: true
 
 ## 목차
 
-### [1편.컨테이너 인터널 (1)](container-internal-1)
+{% assign docs = site.docs | where:'label', '도커 없이 컨테이너 만들기' %}
 
-![/docs/assets/img/make-container-without-docker-intro-1.png](/docs/assets/img/make-container-without-docker-intro-1.png){:width="200"}{:.align-left}
+{% for post in docs %}
+### [{{ post.title }}](container-internal-1)
 
-컨테이너란 무엇일까요? 마법 상자를 열어 보도록 하겠습니다.제가 처음 도커를 접했을 때는 "vmware, virtualbox 와 뭐가 다르지?" 
-vmware처럼 OS이미지도 있었고 터미널 환경에서 동작하는 모습 역시 똑같아 보였거든요.그렇게 시작하게 되었습니다. 
-도커는 무엇이고 컨테이너는 무엇인지 실체가 궁금하더라구요
+![{{ post.image }}]({{ post.image }}){:width="200"}{:.align-left}
 
-
-### [2편.컨테이너 인터널 (2)](container-internal-2)
-
-![/docs/assets/img/make-container-without-docker-intro-2.png](/docs/assets/img/make-container-without-docker-intro-2.png){:width="200"}{:.align-left}
-
-컨테이너의 발전과정을 살펴봅니다. 컨테이너가 신기술, 유행 같은 것이라고 생각했었는데, 나름 역사와 사연이 많은 친구네요 :-)  
-chroot로 시작하여 지금의 컨테이너로 성장하기까지 어떤 문제들이 있었고 그러한 문제들을 어떻게 해결하여 왔는지를 다뤄봅니다.
+<span class="badge badge-info">{{ post.version | default: "v1.0" }}</span>
+{% if post.badges %}{% for badge in post.badges %}<span class="badge badge-{{ badge.type }}">{{ badge.tag }}</span>{% endfor %}{% endif %}
+<span class="post-date" style="font-style: italic;">{{ post.date | date: "%m/%d %H:%m, %Y" }}</span>  
+{{ post. description }}
 
 
-### [3편.네트워크 네임스페이스 (1)](network-namespace-1)
+{% endfor %}
 
-![/docs/assets/img/make-container-without-docker-intro-3.png](/docs/assets/img/make-container-without-docker-intro-3.png){:width="200"}{:.align-left}
-
-서비스 운영 중에 네트웍 장애를 만나면 곤란하곤 하는데요.     
-컨테이너는 가상 네트웍을 기반으로 하고 있고 이 위에서 컨테이너 간의 통신이 어떻게 이루어지는지를 잘 이해하고 있으면 개발과 운영에 많은 도움이 됩니다.  
-network namespace 3,4편 그리고 overlay network 7,8편에서 다룰 예정입니다.
-
-
-### [4편 네트워크 네임스페이스 (2)](network-namespace-2)
-
-![/docs/assets/img/make-container-without-docker-intro-3.png](/docs/assets/img/make-container-without-docker-intro-4.png){:width="200"}{:.align-left}
-
-3편에 이어서 네트워크 네임스페이스를 외부 네트워크와 통신이 가능하도록 구성해 봅니다. 그리고 3,4편에서 다룬 내용을 바탕으로 도커 컨테이너의 네트워크 구성과 비교해 봅니다.
-
-
+  
 ### 5편 Mount Namespace
 
 준비 중입니다
