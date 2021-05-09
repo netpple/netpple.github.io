@@ -32,6 +32,8 @@
 - title: "2021"
   url: "news/"
   links:
+    - title: "[05/09] CRIU - Checkpoint/Restore In User space"
+      url: "2021/criu-live-container-migration/"
     - title: "[05/05] Understanding how uid and gid work in Docker containers"
       url: "2021/how-uid-gid-work-in-container/"
     - title: "[05/04] The Curious Case of Pid Namespaces"

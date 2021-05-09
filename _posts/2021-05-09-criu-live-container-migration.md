@@ -1,8 +1,15 @@
-# CRIU
-
-### CRIU (Checkpoint/Restore In User space)
-
-[https://access.redhat.com/articles/2455211?extIdCarryOver=true&sc_cid=701f2000001OH6pAAG](https://access.redhat.com/articles/2455211?extIdCarryOver=true&sc_cid=701f2000001OH6pAAG)
+---
+title: CRIU - Checkpoint/Restore In User space
+version: v0.1
+description: Container Live Migration
+date: 2021-05-09 23:35 +09:00
+categories: container
+badges:
+- type: info
+  tag: 번역/요약
+  rightpanel: false
+---
+원문: [https://access.redhat.com/articles/2455211?extIdCarryOver=true&sc_cid=701f2000001OH6pAAG](https://access.redhat.com/articles/2455211?extIdCarryOver=true&sc_cid=701f2000001OH6pAAG)
 
 - 초기에는 리눅스 커뮤니티 인정을 못받았군 ...
 - 초기의 in-kernel checkpoint/restore 접근방법은 실패했네
@@ -32,9 +39,3 @@
 - 공식 git : [https://github.com/checkpoint-restore/criu](https://github.com/checkpoint-restore/criu)
 - 개요 /요약: [https://www.redhat.com/en/blog/checkpointrestore-container-migration](https://www.redhat.com/en/blog/checkpointrestore-container-migration)
 - CRIU (IBM) 소개 장표 : [https://www.slideshare.net/tommylee98229/4-ibm-crui](https://www.slideshare.net/tommylee98229/4-ibm-crui)
-
-[(번역, ing) Introduction to CRIU and Live Migration](https://www.notion.so/ing-Introduction-to-CRIU-and-Live-Migration-b7b3d7323a594a8cbb1e2986e1204db5)
-
-[(사례) CRIU ~ 구글 Borg ](https://www.notion.so/CRIU-Borg-04091985c70a40c990bdc46d9b4572e7)
-
-[(실습) CRIU](https://www.notion.so/CRIU-7d09632049094f3b9941947d1863f056)
