@@ -9,7 +9,7 @@ image: https://netpple.github.io/docs/assets/img/make-container-without-docker-i
 badges:
 - type: info
   tag: updated
-  histories:
+histories:
 - date: 2021-05-03 21:35:00 +09:00
   description: 실습 안내페이지 업데이트
 ---

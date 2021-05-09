@@ -7,7 +7,9 @@ categories: container
 badges:
 - type: info
   tag: 번역/요약
-  rightpanel: false
+- type: light
+  tag: new
+rightpanel: false
 ---
 원문: [https://access.redhat.com/articles/2455211?extIdCarryOver=true&sc_cid=701f2000001OH6pAAG](https://access.redhat.com/articles/2455211?extIdCarryOver=true&sc_cid=701f2000001OH6pAAG)
 

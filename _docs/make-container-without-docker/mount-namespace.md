@@ -8,7 +8,7 @@ image: https://netpple.github.io/docs/assets/img/make-container-without-docker-i
 badges:
 - type: light
   tag: new
-  histories:
+histories:
 - date: 2021-05-09 23:15:00 +09:00
   description: 최초 게시
 ---
