@@ -17,18 +17,18 @@
           url: "docs/make-container-without-docker/network-namespace-1"
         - title: 4편.네트워크 네임스페이스(2)
           url: "docs/make-container-without-docker/network-namespace-2"
-#        - title: 5편.마운트 네임스페이스(1)
-#          url: "docs/make-container-without-docker/mount-namespace-1"
-#        - title: 6편.마운트 네임스페이스(2)
-#          url: "docs/make-container-without-docker/mount-namespace-2"
-#        - title: 7편.오버레이 네트워크(1)
+        - title: 5편.마운트 네임스페이스
+          url: "docs/make-container-without-docker/mount-namespace"
+#        - title: 6편.오버레이 네트워크(1)
 #          url: "docs/make-container-without-docker/overlay-network-1"
-#        - title: 8편.오버레이 네트워크(2)
+#        - title: 7편.오버레이 네트워크(2)
 #          url: "docs/make-container-without-docker/overlay-network-2"
-#        - title: 9편.PID 네임스페이스
+#        - title: 8편.PID 네임스페이스
 #          url: "docs/make-container-without-docker/pid-namespace"
-#        - title: 10편.USER 네임스페이스
+#        - title: 9편.USER 네임스페이스
 #          url: "docs/make-container-without-docker/user-namespace"
+#        - title: 10편.USER 네임스페이스
+#          url: "docs/make-container-without-docker/runc"
 - title: "2021"
   url: "news/"
   links:

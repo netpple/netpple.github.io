@@ -39,32 +39,24 @@ rightpanel: true
 
 {% endfor %}
 
-  
-### 5편 Mount Namespace
+
+### 6편 Overlay Network (1)
 
 준비 중입니다
 
-### 6편 Overlay Filesystem
+### 7편 Overlay Network (2)
 
 준비 중입니다
 
-### 7편 Overlay Network (1)
+### 8편 Pid namespace
 
 준비 중입니다
 
-### 8편 Overlay Network (2)
+### 9편 User namespace
 
 준비 중입니다
 
-### 9편 Pid namespace
-
-준비 중입니다
-
-### 10편 User namespace
-
-준비 중입니다
-
-### 11편 RunC
+### 10편 RunC
 
 준비 중입니다
 

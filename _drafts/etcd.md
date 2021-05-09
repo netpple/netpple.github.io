@@ -8,7 +8,7 @@ https://www.ibm.com/cloud/learn/etcd (19.12.18)
 
 ETCD, the fault-tolerant open source key-value database that serves as the primary data backbone for kubernetes and other distributed platforms.
 
-What is etcd?
+What is etcd?  
 (요약)
 - etcd는 분산 key/value 저장소
 - 분산 coordinating을 위한 single/consitent 저장소
@@ -16,75 +16,61 @@ What is etcd?
 - k8s, cloud foundry 등 많이들 사용
 
 "etcd is an open source distributed key-value store used to hold and manage the critical information that distributed systems need to keep running. Most notably, it manages the configuration data, state data, and metadata for Kubernetes, the popular container orchestration platform."
-```
+
 etcd는 오픈소스 "분산 키/밸류 스토어"로 분산시스템의 동작을 지속하는데 필요한 중요한(critical) 정보들을 관리하는데 사용됩니다. 
 주목할만한 점은 etcd가 가장 인기있는 컨테이너 오케스트레이션 플랫폼인 쿠버네티스의 설정데이터, 상태데이터, 메타데이터들을 관리합니다. 
-```
 
-"Like all distributed workloads, containerized workloads have complex management requirements that become more complex as the workload scales. Kubernetes simplifies the process of managing these workloads by coordinating tasks such as configuration, deployment, service discovery, load balancing, job scheduling, and health monitoring across the across all clusters, which can run on multiple machines in multiple locations."
-```
+
+"Like all distributed workloads, containerized workloads have complex management requirements that become more complex as the workload scales. Kubernetes simplifies the process of managing these workloads by coordinating tasks such as configuration, deployment, service discovery, load balancing, job scheduling, and health monitoring across the across all clusters, which can run on multiple machines in multiple locations."  
+
 모든 분산 워크로드와 마찬가지로 "컨테이너화 된 워크로드"에는 워크로드 확장됨에 따른 "복잡한 관리 요구사항"이 생깁니다. Kubernetes는 여러 위치의 여러 컴퓨터에서 실행될 수 있는 모든 클러스터에서 configuration, deployment, service discovery,load balancing, job scheduling 및 상태 모니터링과 같은 작업을 조정하여 이러한 작업 부하를 관리하는 프로세스를 단순화합니다. ("~ 코디네이션에 대한 얘기")
-```
 
-"But to achieve this coordination, Kubernetes needs a data store that provides a single, consistent source of the truth about the status of the system—all its clusters and pods and the application instances within them—at any given point in time. etcd is the data store used to create and maintain this version of the truth."
-```
+
+"But to achieve this coordination, Kubernetes needs a data store that provides a single, consistent source of the truth about the status of the system—all its clusters and pods and the application instances within them—at any given point in time. etcd is the data store used to create and maintain this version of the truth."  
+
 하지만 이러한 "코디네이션"을 하려면, 쿠버네티스는 특정 시점에 시스템 상태에 대한 하나(single)의 일관된(consistent) 소스를 제공하는 데이터 저장소를 필요로 합니다. 
 (여기서 소스는 실제 시스템 상태에 대한 소스를 말하며 모든 클러스터와 파드, 그리고 거기에 속해 있는 어플리케이션 인스턴스들을 포함합니다.)
 "ETCD"가 이러한 역할을 담당하는 데이터 스토어 입니다. 
-```
 
-etcd serves a similar role for Cloud Foundry—the open source, multicloud Platform-as-a-Service (PaaS)—and is a viable option for coordinating critical system and metadata across clusters of any distributed application. The name “etcd” comes from a naming convention within the Linux directory structure: In UNIX, all system configuration files for a single system are contained in a folder called “/etc;” “d” stands for “distributed.”
-```
+
+etcd serves a similar role for Cloud Foundry—the open source, multicloud Platform-as-a-Service (PaaS)—and is a viable option for coordinating critical system and metadata across clusters of any distributed application. The name “etcd” comes from a naming convention within the Linux directory structure: In UNIX, all system configuration files for a single system are contained in a folder called “/etc;” “d” stands for “distributed.”  
+
 etcd는 Clound Foundry (OSS, PaaS)에서도 유사한 용도로 사용되며 중요한 시스템과 분산어플리케이션의 클러스터 간 메타데이터 코디네이팅을 위한 유용한 옵션입니다. 
 "etcd"라는 이름은 리눅스의 디렉토리 구조의 네이밍 컨벤션으로 부터 왔는데, 유닉스에서 모든 시스템 설정파일들이 들어있는 "/etc" 에 분산(distributed)을 의미하는 "d"를 합쳐 만들었습니다.  'etc + d'
-```
+
 
 Why etcd?
-It’s no small task to serve as the data backbone that keeps a distributed workload running. But etcd is built for the task, designed from the ground up for the following qualities:
-```
-분산 워크로드를 계속 유지하는 데이터 백본 역할을하는 것은 쉬운 일이 아닙니다. 그러나 etcd는 다음과 같은 자질을 위해 처음부터 설계된 작업을 위해 만들어졌습니다.
-```
+It’s no small task to serve as the data backbone that keeps a distributed workload running. But etcd is built for the task, designed from the ground up for the following qualities:  
 
-- Fully replicated: Every node in an etcd cluster has access the full data store.
-```
-전체 복제 ~ etcd 클러스터 내 모든 노드들이 전체 데이터에 접근가능
+분산 워크로드를 계속 유지하는 데이터 백본 역할을하는 것은 쉬운 일이 아닙니다. 그러나 etcd는 다음과 같은 자질을 위해 처음부터 설계된 작업을 위해 만들어졌습니다.  
 
 
-* Full replicated : Stores multiple copies of each database fragment at multiple sites
-```
-
-- Highly available: etcd is designed to have no single point of failure and gracefully tolerate hardware failures and network partitions.
-```
-고가용성 ~ No SPOF. 하드웨어 장애/네트워크 단절(partition)에 대한 내성
+- Fully replicated: Every node in an etcd cluster has access the full data store.  
+전체 복제 ~ etcd 클러스터 내 모든 노드들이 전체 데이터에 접근가능  
+Full replicated : Stores multiple copies of each database fragment at multiple sites
 
 
-* A network partition refers to a network split between nodes due to the failure of network devices. Example: When switch between two subnets fails, there is a partition between nodes.
-```
+- Highly available: etcd is designed to have no single point of failure and gracefully tolerate hardware failures and network partitions.  
+고가용성 ~ No SPOF. 하드웨어 장애/네트워크 단절(partition)에 대한 내성  
+A network partition refers to a network split between nodes due to the failure of network devices. Example: When switch between two subnets fails, there is a partition between nodes.
 
-- Reliably consistent: Every data ‘read’ returns the latest data ‘write’ across all clusters.
-```
+- Reliably consistent: Every data ‘read’ returns the latest data ‘write’ across all clusters.  
 Consistency 보장 ~ 모든 데이터의 'read' 시 클러스터에서 가장 최근에 'write'한 데이터를 return 
-```
 
-- Fast: etcd has been benchmarked at 10,000 writes per second.
-```
+- Fast: etcd has been benchmarked at 10,000 writes per second.  
 초당 10k writes 성능
-```
 
-- Secure: etcd supports automatic Transport Layer Security (TLS) and optional secure socket layer (SSL) client certificate authentication. Because etcd stores vital and highly sensitive configuration data, administrators should implement role-based access controls within the deployment and ensure that team members interacting with etcd are limited to the least-privileged level of access necessary to perform their jobs
-```
+
+- Secure: etcd supports automatic Transport Layer Security (TLS) and optional secure socket layer (SSL) client certificate authentication. Because etcd stores vital and highly sensitive configuration data, administrators should implement role-based access controls within the deployment and ensure that team members interacting with etcd are limited to the least-privileged level of access necessary to perform their jobs  
 etcd는 TLS와 선택적으로 SSL클라이언트 인증 지원합니다. etcd는 민감한 설정데이터들을 저장하고 있기 때문에, 관리자는 deployment 내에  RBAC를 구현해야 하고, 팀구성원들이 job을 수행하는데 필요한 최소한의 접근권한 수준으로 etcd 사용을 제한하여야 합니다. 
-```
 
-- Simple: Any application, from simple web apps to highly complex container orchestration engines such as Kubernetes, can read or write data to etcd using standard HTTP/JSON  tools.
-```
-어떤 어플리케이션(간단한 웹앱 ~ 복잡한 컨테이너 오케스트레이션 엔진 like k8s)도 standard HTTP/JSON 툴을 사용하여 etcd에 데이터를 read/write 가능합니다. 
-```
 
-Note that because etcd’s performance is heavily dependent upon storage disk speed, it’s highly recommended to use SSDs in etcd environments. For more information this and other etcd storage requirements, check out “Using Fio to Tell Whether Your Storage is Fast Enough for etcd.”
-```
+- Simple: Any application, from simple web apps to highly complex container orchestration engines such as Kubernetes, can read or write data to etcd using standard HTTP/JSON  tools.  
+어떤 어플리케이션(간단한 웹앱 ~ 복잡한 컨테이너 오케스트레이션 엔진 like k8s)도 standard HTTP/JSON 툴을 사용하여 etcd에 데이터를 read/write 가능합니다.
+
+Note that because etcd’s performance is heavily dependent upon storage disk speed, it’s highly recommended to use SSDs in etcd environments. For more information this and other etcd storage requirements, check out “Using Fio to Tell Whether Your Storage is Fast Enough for etcd.”  
 etcd의 성능은 디스크 성능과 아주 밀접하기 때문에 SSD를 사용할 것을 강력히 추천합니다. 
-```
+
 
 Raft consensus algorithm *Raft 뗏목 
 참고 : https://suckzoo.github.io/tech/2018/01/03/raft-1.html, https://raft.github.io/
@@ -215,20 +201,3 @@ But etcd has superior fault tolerance, stronger failover and continuous data ava
 하지만 etcd는 fault tolerance와 failover, 그리고 지속적인 데이터 가용성 측면에서 더 뛰어나고, 가장 중요하게는, etcd는 본질적으로 속도를 희생하는 대신에 더 높은 신뢰성과 일관성을 보장하기 위해 모든 데이터를 디스크에 저장합니다. 
 이러한 이유들로 레디스는 분산시스템 config 정보를 저장 및 분산(코디네이팅)하는 것보다는 분산 "메모리캐싱" 시스템에 더 적합합니다. 
 ```
-
-
-
----
-[ ETCD 커맨드 ]
-k8s /w External ETCD on Host
-ETCD 설치
-쿠버네티스 ETCD 다중화 - "external etcd"
-
-
-
-
-
-
-
-
-
