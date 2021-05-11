@@ -2,11 +2,13 @@
 title: A Deep Dive into Iptables and Netfilter Architecture
 version: v0.1
 description: netfilter와 iptables를 이해하기에 좋은 자료입니다.
-date: 2021-05-05 12:25 +09:00
+date: 2021-05-11 21:25 +09:00
 categories: network
 badges:
 - type: info
   tag: 번역
+- type: light
+  tag: new
 rightpanel: true
 ---
 원문: [https://www.digitalocean.com/community/tutorials/a-deep-dive-into-iptables-and-netfilter-architecture](https://www.digitalocean.com/community/tutorials/a-deep-dive-into-iptables-and-netfilter-architecture){:target="_blank"}    
@@ -88,7 +90,7 @@ These represent distinct sets of rules, organized by area of concern, for evalua
 
 --- 
 ### Which Chains are Implemented in Each Table?
-![deep-dive-iptables-netfilter-architecture-table.png](/assets/img/deep-dive-iptables-netfilter-architecture-table.png)
+![deep-dive-iptables-netfilter-architecture-table.png](/assets/img/deep-dive-iptables-netfilter-architecture-table.png)  
 위의 표에서 각 table 열(raw, mangle, nat, ...)에 대하여 왼쪽에서 오른쪽 방향로 chain 이 평가됨
 그리고 (넷필터 훅 별로 평가되는) chain column(PREROUTING, INPUT, ...)은 위에서 아래 방향으로 평가됨
 DNAT : 패킷의 목적지 주소 변조

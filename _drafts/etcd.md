@@ -2,9 +2,7 @@
 [github : https://github.com/etcd-io/etcd](https://github.com/etcd-io/etcd)   
 [etcdctl : https://github.com/etcd-io/etcd/tree/master/etcdctl](https://github.com/etcd-io/etcd/tree/master/etcdctl)  
 
-ETCD 개념 (IBM)
-
-https://www.ibm.com/cloud/learn/etcd (19.12.18)
+원문 : [https://www.ibm.com/cloud/learn/etcd (19.12.18)](https://www.ibm.com/cloud/learn/etcd)
 
 ETCD, the fault-tolerant open source key-value database that serves as the primary data backbone for kubernetes and other distributed platforms.
 
