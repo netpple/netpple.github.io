@@ -1,5 +1,5 @@
 ---
-title: CRIU - Checkpoint/Restore In User space
+title: Container Live Migration (CRIU)
 version: v0.1
 description: Container Live Migration
 date: 2021-05-09 23:35 +09:00
@@ -13,9 +13,11 @@ rightpanel: false
 ---
 원문: [https://access.redhat.com/articles/2455211?extIdCarryOver=true&sc_cid=701f2000001OH6pAAG](https://access.redhat.com/articles/2455211?extIdCarryOver=true&sc_cid=701f2000001OH6pAAG)
 
-- 초기에는 리눅스 커뮤니티 인정을 못받았군 ...
-- 초기의 in-kernel checkpoint/restore 접근방법은 실패했네
-- user space에서 처리하고 최대한 기존 인터페이스를 활용하는 방향으로 선회
+# CRIU
+
+- 초기에는 리눅스 커뮤니티 인정을 못받음
+- 초기에는 in-kernel checkpoint/restore 접근방법을 취함
+- 이후 user space에서 처리하고 최대한 기존 인터페이스를 활용하는 방향으로 선회 
 - CRIU에 중요한 인터페이스 중 하나로 "ptrace" 가 있음.
 - ptrace를 통해 프로세스를 포착(seize)하고
 - 프로세스의 "메모리 페이지"를 이미지 파일로 덤프함
@@ -31,12 +33,12 @@ rightpanel: false
     - why Same PID?
         - parent-child process tree 를 정확히 복원하기 위함
         - re-parent가 불가능하기 때문임
-    - 그럼 어떻게 원하는(Same) PID로 fork하지 ?
+    - 그럼 어떻게 원하는(Same) PID로 fork ?
         - /proc/sys/kernel/ns_last_pid
         - ns_last_pid 값을 조정해서 (privileged 필요) 가능 (But,.. 그리 쉽지 않음)
         - clone3(kernel 5.3+ )와 set_tid(kernel 5.5+) ~ 원하는 pid를 지정가능
 
-컨테이너 마이그레이션 관련 참고
+Container Migration 관련 참고
 
 - 공식 git : [https://github.com/checkpoint-restore/criu](https://github.com/checkpoint-restore/criu)
 - 개요 /요약: [https://www.redhat.com/en/blog/checkpointrestore-container-migration](https://www.redhat.com/en/blog/checkpointrestore-container-migration)
