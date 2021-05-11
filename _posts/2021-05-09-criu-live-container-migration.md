@@ -15,8 +15,9 @@ rightpanel: false
 
 # CRIU
 
-- 초기에는 리눅스 커뮤니티 인정을 못받음
-- 초기에는 in-kernel checkpoint/restore 접근방법을 취함
+CRIU - Checkpoint/Restore in user space  
+- 프로세스의 현재 상태를 덤프하고 그대로 복구하는 기술
+- 초기에는 in-kernel checkpoint/restore 접근방법을 취했는데 리눅스 커뮤니티 인정을 못받음
 - 이후 user space에서 처리하고 최대한 기존 인터페이스를 활용하는 방향으로 선회 
 - CRIU에 중요한 인터페이스 중 하나로 "ptrace" 가 있음.
 - ptrace를 통해 프로세스를 포착(seize)하고
