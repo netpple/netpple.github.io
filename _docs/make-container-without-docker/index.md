@@ -40,10 +40,6 @@ rightpanel: true
 {% endfor %}
 
 
-### 6편 Overlay Network (1)
-
-준비 중입니다
-
 ### 7편 Overlay Network (2)
 
 준비 중입니다
