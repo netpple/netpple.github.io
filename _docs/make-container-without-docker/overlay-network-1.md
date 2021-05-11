@@ -20,7 +20,7 @@ histories:
 [[슬라이드 보기]](https://docs.google.com/presentation/d/10JRQpeRHKhrl_FS-IWyCENRF9mjedXlxZbX8o0MEoFk/edit?usp=sharing){:target="_blank"}
 
 ### 환경 구성
-git branch(overlay-nw): [https://github.com/netpple/make-container-without-docker/tree/overlay-nw](https://github.com/netpple/make-container-without-docker/tree/overlay-nw){:target="_blank"}
+git: [https://github.com/netpple/make-container-without-docker/tree/overlay-nw](https://github.com/netpple/make-container-without-docker/tree/overlay-nw){:target="_blank"}
 
 Git clone
 ```bash
