@@ -34,7 +34,7 @@
   links:
     - title: "[05/11] A Deep Dive into Iptables and Netfilter Architecture"
       url: "2021/deep-dive-iptables-netfilter-architecture/"
-    - title: "[05/09] CRIU - Checkpoint/Restore In User space"
+    - title: "[05/09] Container Live Migration (CRIU)"
       url: "2021/criu-live-container-migration/"
     - title: "[05/05] Understanding how uid and gid work in Docker containers"
       url: "2021/how-uid-gid-work-in-container/"
