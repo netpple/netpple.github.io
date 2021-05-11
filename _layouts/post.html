@@ -7,3 +7,12 @@ layout: page
 {% if page.badges %}{% for badge in page.badges %}<span class="badge badge-{{ badge.type }}">{{ badge.tag }}</span>{% endfor %}{% endif %}
 <span class="badge badge-info">{{ page.version | default: "v1.0" }}</span>
 {{ content }}
+
+<!-- HITS! -->
+<div style="text-align: center;">
+    <a href="http://hits.dwyl.com/{{ site.url | remove_first: 'https://' | remove_first: 'http://' }}{{ page.url }}"
+       target="_blank">
+        <img
+                src="http://hits.dwyl.com/{{ site.url | remove_first: 'https://' | remove_first: 'http://' }}{{ page.url }}.svg" />
+    </a>
+</div>
