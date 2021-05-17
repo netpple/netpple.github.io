@@ -7,6 +7,8 @@ tags:
  - cgroup
  - chroot
  - pivot_root 
+ - overlayfs
+ - overlaynw
 description: 목차 및 실습환경 구성안내
 rightpanel: true
 ---
@@ -38,11 +40,6 @@ rightpanel: true
 
 
 {% endfor %}
-
-
-### 7편 Overlay Network (2)
-
-준비 중입니다
 
 ### 8편 Pid namespace
 
