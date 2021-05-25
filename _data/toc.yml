@@ -23,8 +23,8 @@
           url: "docs/make-container-without-docker/overlay-network-1"
         - title: 7편.다이내믹 오버레이 네트워크
           url: "docs/make-container-without-docker/overlay-network-2"
-#        - title: 8편.PID 네임스페이스
-#          url: "docs/make-container-without-docker/pid-namespace"
+        - title: 8편.PID 네임스페이스
+          url: "docs/make-container-without-docker/pid-namespace"
 #        - title: 9편.USER 네임스페이스
 #          url: "docs/make-container-without-docker/user-namespace"
 #        - title: 10편.USER 네임스페이스
