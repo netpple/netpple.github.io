@@ -6,9 +6,6 @@ description: 서비스 운영 중에 네트웍 장애를 만나면 곤란하곤 
 date: 2021-04-29 11:41:00 +09:00
 comments: true
 image: https://netpple.github.io/docs/assets/img/make-container-without-docker-intro-3.png
-badges:
-- type: info
-  tag: updated
 histories:
 - date: 2021-05-03 21:35:00 +09:00
   description: 실습 안내페이지 업데이트

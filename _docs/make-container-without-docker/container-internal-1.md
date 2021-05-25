@@ -6,9 +6,6 @@ description: 컨테이너란 무엇일까요? 마법 상자를 열어 보도록 
 label: 도커 없이 컨테이너 만들기
 comments: true
 image: https://netpple.github.io/docs/assets/img/make-container-without-docker-intro-1.png
-badges:
-- type: info
-  tag: updated
 histories:
 - date: 2021-05-04 22:45:00 +09:00
   description: reference 업데이트

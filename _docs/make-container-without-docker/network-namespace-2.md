@@ -5,9 +5,6 @@ date: 2021-05-03 17:15:00 +09:00
 label: 도커 없이 컨테이너 만들기
 comments: true
 image: https://netpple.github.io/docs/assets/img/make-container-without-docker-intro-4.png
-badges:
-- type: info
-  tag: updated
 histories:
 - date: 2021-05-03 17:15:00 +09:00
   description: 최초 게시

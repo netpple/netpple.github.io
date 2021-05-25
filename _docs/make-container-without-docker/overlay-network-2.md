@@ -6,9 +6,6 @@ description: 클라우드 위에서 컨테이너에 가상 IP를 부여하고 �
 date: 2021-05-17 23:38:00 +09:00
 comments: true
 image: https://netpple.github.io/docs/assets/img/make-container-without-docker-intro-7.png
-badges:
-- type: info
-  tag: updated
 histories:
 - date: 2021-05-17 23:38:00 +09:00
   description: 최초 등록
