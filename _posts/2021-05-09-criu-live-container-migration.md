@@ -1,6 +1,6 @@
 ---
 title: Container Live Migration (CRIU)
-version: v0.1
+version: v1.0
 description: Container Live Migration
 date: 2021-05-09 23:35 +09:00
 categories: container

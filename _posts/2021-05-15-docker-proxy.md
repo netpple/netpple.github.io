@@ -1,12 +1,9 @@
 ---
 title: docker-proxy
-version: v0.1
+version: v1.0
 description: docker-proxy란 무엇이고 왜쓰는가? iptables로도 충분할 것 같은데.. 왜 굳이 프로세스를 띄워서 사용할까요
 date: 2021-05-15 08:32 +09:00
 categories: container
-badges:
-- type: light
-  tag: new
 rightpanel: true
 ---
 ### docker-proxy란?

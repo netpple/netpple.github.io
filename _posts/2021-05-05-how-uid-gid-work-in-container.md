@@ -1,6 +1,6 @@
 ---
 title: Understanding how uid and gid work in Docker containers
-version: v0.1
+version: v1.0
 description: User namespace와 컨테이너의 UID/GID 동작을 이해하기 좋은 글입니다. 
 date: 2021-05-05 17:55 +09:00
 categories: container

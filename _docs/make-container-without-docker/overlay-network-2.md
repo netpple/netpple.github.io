@@ -7,8 +7,8 @@ date: 2021-05-17 23:38:00 +09:00
 comments: true
 image: https://netpple.github.io/docs/assets/img/make-container-without-docker-intro-7.png
 badges:
-- type: light
-  tag: new
+- type: info
+  tag: updated
 histories:
 - date: 2021-05-17 23:38:00 +09:00
   description: 최초 등록

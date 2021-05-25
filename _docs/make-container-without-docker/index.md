@@ -41,15 +41,17 @@ rightpanel: true
 
 {% endfor %}
 
-### 8편 Pid namespace
-
-준비 중입니다
+  
 
 ### 9편 User namespace
 
 준비 중입니다
 
-### 10편 RunC
+### 10편 도커 없이 컨테이너 만들기
+
+준비 중입니다
+
+### 11편 도커 
 
 준비 중입니다
 

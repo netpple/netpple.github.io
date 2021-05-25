@@ -1,14 +1,12 @@
 ---
 title: A Deep Dive into Iptables and Netfilter Architecture
-version: v0.1
+version: v1.0
 description: netfilter와 iptables를 이해하기에 좋은 자료입니다.
 date: 2021-05-11 21:25 +09:00
 categories: network
 badges:
 - type: info
   tag: 번역
-- type: light
-  tag: new
 rightpanel: true
 ---
 원문: [https://www.digitalocean.com/community/tutorials/a-deep-dive-into-iptables-and-netfilter-architecture](https://www.digitalocean.com/community/tutorials/a-deep-dive-into-iptables-and-netfilter-architecture){:target="_blank"}    

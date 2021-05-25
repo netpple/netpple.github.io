@@ -6,9 +6,6 @@ description: 분산환경에서 컨테이너 간의 통신은 어떻게 이루�
 date: 2021-05-11 22:38:00 +09:00
 comments: true
 image: https://netpple.github.io/docs/assets/img/make-container-without-docker-intro-6.png
-badges:
-- type: light
-  tag: new
 histories:
 - date: 2021-05-11 22:38:00 +09:00
   description: 최초 등록

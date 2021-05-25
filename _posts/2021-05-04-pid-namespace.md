@@ -1,6 +1,6 @@
 ---
 title: The Curious Case of Pid Namespaces
-version: v0.1
+version: v1.0
 description: pid namespace 관련하여 좋은 글이 있어 번역/정리 해보았습니다.
 date: 2021-05-04 21:55 +09:00
 categories: container
