@@ -4,10 +4,7 @@ description: pid namespace는 컨테이너 안에서 독자적인 "process tree"
 date: 2021-05-25 09:00:00 +09:00  
 label: 도커 없이 컨테이너 만들기  
 comments: true  
-image: https://netpple.github.io/docs/assets/img/make-container-without-docker-intro-8.png  
-badges:
-- type: light  
-  tag: new  
+image: https://netpple.github.io/docs/assets/img/make-container-without-docker-intro-8.png   
 histories:  
 - date: 2021-05-25 09:00:00 +09:00  
   description: 최초 게시  

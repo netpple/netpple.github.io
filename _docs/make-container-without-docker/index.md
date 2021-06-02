@@ -41,11 +41,6 @@ rightpanel: true
 
 {% endfor %}
 
-  
-
-### 9편 User namespace
-
-준비 중입니다
 
 ### 10편 도커 없이 컨테이너 만들기
 
