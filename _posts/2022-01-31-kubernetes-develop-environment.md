@@ -77,10 +77,9 @@ SCRIPT
 
 # privileged: false (vagrant)
 $git_clone = <<-SCRIPT
-git clone https://github.com/kubernetes/kubernetes.git
-cd kubernetes
-git checkout ${K8S_GIT_TAG}
+git clone https://github.com/kubernetes/kubernetes.git --branch ${K8S_GIT_TAG} --single-branchcd kubernetes
 ## build
+cd kubernetes
 sudo make clean
 sudo make all WHAT=cmd/kubelet GOFLAGS=-v
 SCRIPT
@@ -92,3 +91,17 @@ make 옵션
     - 특정 컴포넌트 빌드 예) make all WHAT=cmd/kubelet
       컴포넌트: kubelet,kube-apiserver,kube-controller-manager,kube-scheduler,kube-proxy,kubectl,kubeadm,...
 - make release : 빌드 + 이미지
+
+**Faq**
+
+```bash
+# kubernetes 버전 확인
+ls CHANGELOG
+CHANGELOG-1.19.md  OWNERS  README.md
+
+# 빌드 버전 확인
+_output/bin/kubelet --version
+Kubernetes v1.19.16-dirty   # *-dirty means "Source code modification"
+```
+
+참고: [How is the Kubernetes version number generated](https://programmerall.com/article/49281124717/)
