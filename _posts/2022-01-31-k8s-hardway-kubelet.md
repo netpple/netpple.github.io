@@ -74,7 +74,8 @@ sudo chmod +x kubelet
 ```bash
 sudo swapoff -a
 mkdir manifests
-sudo ./kubelet --pod-manifest-path=$PWD/manifests
+# sudo docker info | grep 'Cgroup Driver'
+sudo ./kubelet --pod-manifest-path=$PWD/manifests --cgroup-driver cgroupfs 
 ```
 
 kubelet (1.19.5) 기동 로그
