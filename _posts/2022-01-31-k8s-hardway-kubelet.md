@@ -67,7 +67,7 @@ sudo swapoff -a
 sudo wget https://storage.googleapis.com/kubernetes-release/release/v1.19.5/bin/linux/amd64/kubelet
 sudo chmod +x kubelet
 mkdir manifests
-./kubelet --pod-manifest-path=$PWD/manifests
+sudo ./kubelet --pod-manifest-path=$PWD/manifests
 ```
 
 kubelet (1.19.5) 기동 로그
