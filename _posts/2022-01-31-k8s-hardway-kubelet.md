@@ -62,12 +62,19 @@ end
 
 ## kubelet 기동
 
+다운로드 (.. or 직접빌드:[/2022/kubernetes-develop-environment/](/2022/kubernetes-develop-environment/))
+
 ```bash
-sudo swapoff -a
 sudo wget https://storage.googleapis.com/kubernetes-release/release/v1.19.5/bin/linux/amd64/kubelet
 sudo chmod +x kubelet
+```
+
+기동
+
+```bash
+sudo swapoff -a
 mkdir manifests
-sudo ./kubelet --pod-manifest-path=$PWD/manifests
+sudo ./kubelet **--pod-manifest-path**=$PWD/manifests
 ```
 
 kubelet (1.19.5) 기동 로그
