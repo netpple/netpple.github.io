@@ -1,7 +1,7 @@
 ---
-title: k8s 개발환경 셋업
+title: k8s 빌드환경 셋업
 version: v1.0
-description: kubernetes 개발 환경 셋업용 Vagrantfile
+description: kubernetes 빌드환경 셋업 Vagrantfile
 date: 2022-01-31 08:00 +09:00
 categories: kubernetes
 badges:

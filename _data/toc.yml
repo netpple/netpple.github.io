@@ -34,7 +34,9 @@
   links:
     #    - title: "[] "
     #      url: ""
-    - title: "k8s 개발환경 셋업"
+    - title: "k8s hardway (1)"
+      url: "2022/k8s-hardway-kubelet"
+    - title: "k8s 빌드환경"
       url: "2022/kubernetes-develop-environment"
     - title: "airflow"
       url: "2021/airflow/"
