@@ -74,7 +74,7 @@ sudo chmod +x kubelet
 ```bash
 sudo swapoff -a
 mkdir manifests
-sudo ./kubelet **--pod-manifest-path**=$PWD/manifests
+sudo ./kubelet --pod-manifest-path=$PWD/manifests
 ```
 
 kubelet (1.19.5) 기동 로그
