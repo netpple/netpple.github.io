@@ -79,7 +79,7 @@ SCRIPT
 $git_clone = <<-SCRIPT
 git clone https://github.com/kubernetes/kubernetes.git
 cd kubernetes
-git checkout -b ${K8S_GIT_TAG}
+git checkout ${K8S_GIT_TAG}
 ## build
 sudo make clean
 sudo make all WHAT=cmd/kubelet GOFLAGS=-v
