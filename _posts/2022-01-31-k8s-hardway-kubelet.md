@@ -14,6 +14,13 @@ badges:
 
 - kubelet 구버전이랑 옵션이 달라서 약간 수정함
 
+## 개요
+
+kubelet을 standalone으로 직접 기동하여 봅니다. pod 명세를 특정 경로(manifests)에 파일로 저장하면 static-pods를 띄우도록 구성해 봅니다.
+
+![/assets/img/k8s-hardway-kubelet-manifests.png](/assets/img/k8s-hardway-kubelet-manifests.png)
+
+
 ## 실습 환경
 Vagrant/VirtualBox (macOS BigSur 11.5)
 ```ruby
