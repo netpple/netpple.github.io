@@ -1,6 +1,5 @@
 - title: Documentation
   url: "docs/make-container-without-docker"
-#  url: "docs"
   links:
     - title: "도커 없이 컨테이너 만들기"
       url: "docs/make-container-without-docker"
@@ -29,6 +28,25 @@
           url: "docs/make-container-without-docker/user-namespace"
         - title: 10편.도커 없이 컨테이너 만들기
           url: "docs/make-container-without-docker/make-container"
+    - title: "쿠버네티스 딥다이브"
+      url: "docs/deepdive-into-kubernetes"
+      children:
+        - title: 목차
+          url: "docs/deepdive-into-kubernetes#목차"
+        - title: kubernetes hardway
+          url: "docs/deepdive-into-kubernetes/k8s-hardway"
+        - title: kubernetes live debugging
+          url: "docs/deepdive-into-kubernetes/k8s-debugging"
+        - title: kubernetes certificates
+          url: "docs/deepdive-into-kubernetes/k8s-certificates"
+        - title: kube-apiserver
+          url: "docs/deepdive-into-kubernetes/k8s-apiserver"
+        - title: kube-scheduler
+          url: "docs/deepdive-into-kubernetes/k8s-scheduler"
+        - title: kube-controller-manager
+          url: "docs/deepdive-into-kubernetes/k8s-controller-manager"
+        - title: kubelet
+          url: "docs/deepdive-into-kubernetes/k8s-kubelet"
 - title: "Posts"
   url: "news/"
   links:
