@@ -4,13 +4,12 @@ date: 2022-05-20 07:25:00 +09:00
 tags:
  - kubernetes
  - container
- - kubeapiserver
- - kubescheduler
- - kubecontrollermanager
+ - apiserver
+ - scheduler
+ - controller
  - kubelet
  - etcd
  - kubeproxy
- - flannel
 description: 목차 안내
 rightpanel: true
 ---

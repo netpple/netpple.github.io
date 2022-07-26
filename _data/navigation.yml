@@ -1,4 +1,6 @@
-#- title: About
-#  url: about
-#- title: Documentation
-#  url: docs
+- title: "도커 없이 컨테이너 만들기"
+  url: docs/make-container-without-docker
+- title: "쿠버네티스 딥다이브"
+  url: "docs/deepdive-into-kubernetes"
+- title: About
+  url: about
