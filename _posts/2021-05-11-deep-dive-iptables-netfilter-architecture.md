@@ -9,6 +9,7 @@ badges:
   tag: 번역
 rightpanel: true
 ---
+<!--more-->
 원문: [https://www.digitalocean.com/community/tutorials/a-deep-dive-into-iptables-and-netfilter-architecture](https://www.digitalocean.com/community/tutorials/a-deep-dive-into-iptables-and-netfilter-architecture){:target="_blank"}    
 번역: [https://www.kangtaeho.com/66?fbclid=IwAR3nWnRib_t6l4npxG6az5iyyZe616wj1YapGlvvSUUBP-zPFyQf7V4i888](https://www.kangtaeho.com/66?fbclid=IwAR3nWnRib_t6l4npxG6az5iyyZe616wj1YapGlvvSUUBP-zPFyQf7V4i888){:target="_blank"}
 

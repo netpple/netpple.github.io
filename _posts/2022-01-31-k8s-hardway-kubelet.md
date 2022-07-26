@@ -9,7 +9,7 @@ badges:
   tag: 실습
   rightpanel: false
 ---
-
+<!--more-->
 참고: [https://kamalmarhubi.com/blog/2015/08/27/what-even-is-a-kubelet/](https://kamalmarhubi.com/blog/2015/08/27/what-even-is-a-kubelet/) 
 
 - kubelet 구버전이랑 옵션이 달라서 약간 수정함

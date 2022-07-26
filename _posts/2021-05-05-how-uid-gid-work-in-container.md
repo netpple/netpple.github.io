@@ -9,6 +9,7 @@ badges:
   tag: 번역
 rightpanel: false
 ---
+<!--more-->
 원문 : [https://medium.com/@mccode/understanding-how-uid-and-gid-work-in-docker-containers-c37a01d01cf](https://medium.com/@mccode/understanding-how-uid-and-gid-work-in-docker-containers-c37a01d01cf){:target="_blank"}
 
 

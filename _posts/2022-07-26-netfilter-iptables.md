@@ -10,7 +10,7 @@ badges:
   tag: 교육
 rightpanel: false
 ---
-
+<!--more-->
 <div class="responsive-wrap">
   <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vS5h5wUOVgN0NkFygNOumy219RjJ3ADmrn-D7sdUojbczjuIMKxa7r3kEbyz3B_nC4LmoikJhNdNb8g/embed?start=false&loop=false&delayms=3000" frameborder="0" width="100%" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
 </div>

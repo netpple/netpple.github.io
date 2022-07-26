@@ -9,6 +9,7 @@ badges:
   tag: 번역
 rightpanel: false
 ---
+<!--more-->
 원문: [The Curious Case of Pid Namespaces](https://hackernoon.com/the-curious-case-of-pid-namespaces-1ce86b6bc900){:target="_blank"}
 
 

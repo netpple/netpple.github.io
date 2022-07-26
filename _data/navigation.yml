@@ -1,3 +1,5 @@
+- title: "Posts"
+  url: "news/"
 - title: "도커 없이 컨테이너 만들기"
   url: docs/make-container-without-docker
 - title: "쿠버네티스 딥다이브"
