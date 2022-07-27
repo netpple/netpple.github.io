@@ -20,9 +20,9 @@ permalink: /about/
 ## Skills
 
 - Programming Languages
-    - Java, Python, Go
+  - Java, Python, Go
 - Back-end development
-    - Linux, Container, Kubernetes, ArgoCD, Argo Workflows, Prometheus, Grafana, Couchbase, Redis, etcd, Hadoop
+  - Linux, Container, Kubernetes, ArgoCD, Argo Workflows, Prometheus, Grafana, Couchbase, Redis, etcd, Hadoop
 
 ## Work Experience
 
@@ -57,21 +57,22 @@ permalink: /about/
   - 금융/공공/제조 등 다양한 도메인 프로젝트 개발 리드 경험 (5~10명)
   - (전문연구요원), 전자문서관리시스템 개발  (Java, Oracle)
 - 스페이스링크 기술연구소 (전문연구요원, 2005), 위성장비관리시스템 개발 (Delphi, Informix)
-- 한국아이오테크 (2002 ~ 2004), 업무관리시스템 개발 (PHP, mysql)
-- 올퍼스트 (2000 ~ 2002), 부동산포털사이트 개발 (PHP, mysql, flash)
+- 한국아이오테크 (2002 ~ 2004), 업무관리시스템 개발 (PHP, MySQL)
+- 올퍼스트 (2000 ~ 2002), 부동산포털사이트 개발 (PHP, MySQL, flash)
 
 ## Publications
 
-- 사내 블로그 기고 (링크)
+- 사내 블로그 기고
+  - [서비스 개발자를 위한 컨테이너 뽀개기 (a.k.a 컨테이너인터널)](https://tech.kakaoenterprise.com/150)
 - 블로그 운영
-    - 개인 기술 블로그 운영 [https://netpple.github.io/](https://netpple.github.io/)
-    - Kubernetes Deepdivers 블로그 운영 [https://blog.deepdivers.dev/](https://blog.deepdivers.dev/)
+  - 개인 기술 블로그 운영 [https://netpple.github.io/](https://netpple.github.io/)
+  - Kubernetes Deepdivers 블로그 운영 [https://blog.deepdivers.dev/](https://blog.deepdivers.dev/)
 - 발표 자료
-    - [도커 없이 컨테이너 만들기 시리즈](https://netpple.github.io/docs/make-container-without-docker/)
-    - [쿠버네티스 딥다이브 시리즈](https://netpple.github.io/docs/deepdive-into-kubernetes/)
-    - [Kubernetes 스케줄러 동작 원리와 Scheduling Framework 이해](https://blog.deepdivers.dev/kubernetes-scheduler/1)
+  - [도커 없이 컨테이너 만들기 시리즈](https://netpple.github.io/docs/make-container-without-docker/)
+  - [쿠버네티스 딥다이브 시리즈](https://netpple.github.io/docs/deepdive-into-kubernetes/)
+  - [Kubernetes 스케줄러 동작 원리와 Scheduling Framework 이해](https://blog.deepdivers.dev/kubernetes-scheduler/1)
 - 논문
-    - A Design and Implementation of Enterprise Information Systems based on Knowledge Management (2004.12)
+  - A Design and Implementation of Enterprise Information Systems based on Knowledge Management (2004.12)
 
 ## Education
 
