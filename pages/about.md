@@ -5,7 +5,7 @@ permalink: /about/
 
 # About Sam
 
-김삼영 netpple30@gmail.com / [https://netpple.github.io](https://netpple.github.io)  / [LinkedIn](https://www.linkedin.com/in/sam-kim-aab7b227/)
+김삼영 netpple30@gmail.com / [https://netpple.github.io](https://netpple.github.io)  / [LinkedIn](https://www.linkedin.com/in/sam0-kim/)
 
 ## Interests
 
