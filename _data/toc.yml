@@ -52,6 +52,8 @@
   links:
     #    - title: "[] "
     #      url: ""
+    - title: "What is etcd"
+      url: "2022/etcd"
     - title: "Netfilter and iptables"
       url: "2022/netfilter-iptables"
     - title: "k8s hardway (1)"

@@ -64,9 +64,13 @@ permalink: /about/
 
 - 사내 블로그 기고
   - [서비스 개발자를 위한 컨테이너 뽀개기 (a.k.a 컨테이너인터널)](https://tech.kakaoenterprise.com/150)
+  - [[컨테이너 인터널#1] 컨테이너 톺아보기](https://tech.kakaoenterprise.com/154)
+  - [[컨테이너 인터널#2] 컨테이너 파일시스템](https://tech.kakaoenterprise.com/171)
 - 블로그 운영
   - 개인 기술 블로그 운영 [https://netpple.github.io/](https://netpple.github.io/)
   - Kubernetes Deepdivers 블로그 운영 [https://blog.deepdivers.dev/](https://blog.deepdivers.dev/)
+- 발표 영상
+  - if(kakao)dev2022 이게돼요? 도커없이 컨테이너 만들기 [https://if.kakao.com/2022/session/104](https://if.kakao.com/2022/session/104)
 - 발표 자료
   - [도커 없이 컨테이너 만들기 시리즈](https://netpple.github.io/docs/make-container-without-docker/)
   - [쿠버네티스 딥다이브 시리즈](https://netpple.github.io/docs/deepdive-into-kubernetes/)
