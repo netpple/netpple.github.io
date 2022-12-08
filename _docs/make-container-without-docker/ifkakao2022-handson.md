@@ -15,5 +15,5 @@ histories:
 <div class="responsive-wrap">
   <iframe src="https://if.kakao.com/2022/session/104" frameborder="0" width="100%" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
 </div>
-
+<span>2022.12.09 (금) 12:00 핸즈온이 열립니다</span>
 [[홍보영상 보기]](https://www.youtube.com/watch?v=EO5AdwO5NTc#){:target="_blank"}
