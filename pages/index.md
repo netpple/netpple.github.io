@@ -15,7 +15,7 @@ permalink: /
     <h5><a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}
         <span class="badge badge-info">{{ post.version | default: "v1.0" }}</span>
         {% if post.badges %}{% for badge in post.badges %}<span class="badge badge-{{ badge.type }}">{{ badge.tag }}</span>{% endfor %}{% endif %}
-        </a> <span class="post-date" style="font-style: italic;">{{ post.date | date: "%m/%d %H:%M, %Y" }}</span>
+        </a> 
     </h5>
     <p>
     {{ post.description }}<br/>
