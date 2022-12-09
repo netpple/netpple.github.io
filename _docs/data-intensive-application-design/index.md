@@ -15,6 +15,8 @@ rightpanel: true
 
 # 데이터 중심 애플리케이션 
 
+![https://netpple.github.io/docs/assets/img/data-intensive-application-design-1.png](https://netpple.github.io/docs/assets/img/data-intensive-application-design-1.png){:width="400"}
+
 
 ## 시작하며 ..
 지난 6개월 간 "데이터 중심 애플리케이션"의 Part2 "분산데이터" 스터디 했던 내용들을 정리하였습니다.  
