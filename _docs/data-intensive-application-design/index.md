@@ -8,7 +8,8 @@ tags:
  - consensus
  - transaction
  - distributedsystem
-description: 목차 안내
+description: 목차 안내  
+image: https://netpple.github.io/docs/assets/img/data-intensive-application-design-1.png  
 rightpanel: true
 ---
 
