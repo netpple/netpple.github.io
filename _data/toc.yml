@@ -1,6 +1,19 @@
 - title: Documentation
   url: "docs/make-container-without-docker"
   links:
+    - title: "데이터 중심 애플리케이션 설계"
+      url: "docs/data-intensive-application-design"
+      children:
+        - title: 5.복제
+          url: "docs/data-intensive-application-design/5-replication"
+        - title: 6.파티셔닝
+          url: "docs/data-intensive-application-design/6-partitioning"
+        - title: 7.트랜잭션
+          url: "docs/data-intensive-application-design/7-transaction"
+        - title: 8.분산시스템의 골칫거리
+          url: "docs/data-intensive-application-design/8-trouble-distributed-system"
+        - title: 9.일관성과 합의
+          url: "docs/data-intensive-application-design/9-consistency-consensus"
     - title: "도커 없이 컨테이너 만들기"
       url: "docs/make-container-without-docker"
       children:
