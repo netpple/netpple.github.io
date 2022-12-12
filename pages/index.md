@@ -9,7 +9,7 @@ permalink: /
 
 <div class="section-index">
     <hr class="panel-line">
-    {% for post in docs reversed  %}
+    {% for post in docs reversed %}
     <div class="entry">
     <p><a href="{{ post.url | prepend: site.baseurl }}"><img src="{{ post.image }}" width="100%"/></a></p>
     <h5><a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}
