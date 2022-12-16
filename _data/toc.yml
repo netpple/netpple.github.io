@@ -68,7 +68,7 @@
     #    - title: "[] "
     #      url: ""
     - title: "Istio 실습"
-      url: "2022/istio"
+      url: "2022/Istio"
     - title: "What is etcd"
       url: "2022/etcd"
     - title: "Netfilter and iptables"
