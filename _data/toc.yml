@@ -67,7 +67,9 @@
   links:
     #    - title: "[] "
     #      url: ""
-    - title: "Istio 실습"
+    - title: "Envoy Proxy"
+      url: "2022/Istio-ch3-envoy"
+    - title: "Istio Sidecar"
       url: "2022/Istio"
     - title: "What is etcd"
       url: "2022/etcd"
