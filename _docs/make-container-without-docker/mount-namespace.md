@@ -14,3 +14,5 @@ histories:
 </div>
 
 [[슬라이드 보기]](https://docs.google.com/presentation/d/1rQQzmg83m_lU6mcIy2eZSXDlLqKmJB748GfPeHDWTeI/edit#){:target="_blank"}
+
+사내 블로그(카카오 엔터프라이즈)에 기고한 [컨테이너 파일시스템](https://tech.kakaoenterprise.com/171) 문서도 함께 참고해 주세요. 발표 장표를 보충할 설명들을 자세하게 기술해 두었습니다.

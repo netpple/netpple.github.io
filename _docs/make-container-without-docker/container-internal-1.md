@@ -19,6 +19,8 @@ rightpanel: false
 
 [[슬라이드 보기]](https://docs.google.com/presentation/d/1Z9RcxEy0I5Xq6yd6JHQ8hBTgsfjcwHJ2NoHkl_KL3TY/edit#){:target="_blank"}
 
+사내 블로그(카카오 엔터프라이즈)에 기고한 [서비스 개발자를 위한 컨테이너 뽀개기](https://tech.kakaoenterprise.com/150) 문서도 함께 참고해 주세요. 발표 장표를 보충할 설명들을 자세하게 기술해 두었습니다.   
+
 ### references
 - [container internal (detail) : https://leezhenghui.github.io/microservices/2018/10/20/build-a-scalable-system-runtime-challenges.html](https://leezhenghui.github.io/microservices/2018/10/20/build-a-scalable-system-runtime-challenges.html){:target="_blank"} 
 - [container internal (detail) : https://itnext.io/breaking-down-containers-part-0-system-architecture-37afe0e51770](https://itnext.io/breaking-down-containers-part-0-system-architecture-37afe0e51770){:target="_blank"}
