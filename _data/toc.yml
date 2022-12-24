@@ -67,6 +67,10 @@
   links:
     #    - title: "[] "
     #      url: ""
+    - title: "Istio Ingress GW(1)"
+      url: "2022/Istio-ch4-1-ingress-gw"
+    - title: "Istio Ingress GW(2)"
+      url: "2022/Istio-ch4-2-ingress-gw"
     - title: "Envoy Proxy"
       url: "2022/Istio-ch3-envoy"
     - title: "Istio Sidecar"

@@ -9,11 +9,9 @@ badges:
   tag: 교육  
   rightpanel: false
 ---
-Istio의 Ingress Gateway 실습 두번째 파트입니다.(실습1에서 이어집니다)
+Istio의 Ingress Gateway 실습 두번째 파트입니다. (실습1에서 이어집니다)
 
 <!--more-->
-
-👉🏻 Istio-ch4-1 에서 이어집니다.
 
 ## Securing gateway traffic
 
