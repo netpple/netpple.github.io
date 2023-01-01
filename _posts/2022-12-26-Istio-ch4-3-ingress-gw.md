@@ -76,10 +76,10 @@ spec:
 Gateway 스펙을 적용합니다
 
 ```bash
-kubectl apply -f ch4/gateway-tcp.yaml -n istio-inaction
+kubectl apply -f ch4/gateway-tcp.yaml -n istioinaction
 
 ## 확인
-# kubectl get gw -n istio-inaction
+# kubectl get gw -n istioinaction
 
 NAME                AGE
 coolstore-gateway   12h
