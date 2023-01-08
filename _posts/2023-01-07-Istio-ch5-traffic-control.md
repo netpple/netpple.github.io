@@ -58,7 +58,7 @@ kubectl delete deployment,svc,gateway,\
 virtualservice,destinationrule --all -n istioinaction
 ```
 
-**catalog v1 배포**
+**catalog v1 배포**  
 
 ```bash
 kubectl apply -f services/catalog/kubernetes/catalog.yaml \
@@ -124,7 +124,7 @@ spec:
     number: 80
     name: http
     protocol: HTTP
-  hosts
+  hosts:
   - "catalog.istioinaction.io"
 ```
 
@@ -556,15 +556,18 @@ curl -H "Host: webapp.istioinaction.io" http://localhost/api/catalog
 [{"id":1,"color":"amber","department":"Eyewear","name":"Elinor Glasses","price":"282.00"},{"id":2,"color":"cyan","department":"Clothing","name":"Atlas ..
 ```
 
+ingressgateway 로그
 ```bash
 istio-ingressgateway.. istio-proxy [2023-01-05T09:48:21.757Z] "GET /api/catalog HTTP/1.1" 200 - via_upstream - "-" 0 357 12 11 "172.17.0.1" "curl/7.84.0" "a6cf39f6-a0ce-9808-b2b9-601a81688f5a" "webapp.istioinaction.io" "172.17.0.13:8080" outbound|80||webapp.istioinaction.svc.cluster.local 172.17.0.6:46790 172.17.0.6:8080 172.17.0.1:48439 - -
 ```
 
+webapp 로그
 ```bash
 webapp-.. istio-proxy [2023-01-05T09:48:21.762Z] "GET /items HTTP/1.1" 200 - via_upstream - "-" 0 502 5 4 "172.17.0.1" "beegoServer" "a6cf39f6-a0ce-9808-b2b9-601a81688f5a" "catalog.istioinaction:80" "172.17.0.11:3000" outbound|80|version-v1|catalog.istioinaction.svc.cluster.local 172.17.0.13:50098 10.107.27.61:80 172.17.0.1:0 - -
 ..
 ```
 
+catalog 로그
 ```bash
 catalog-.. istio-proxy [2023-01-05T09:48:21.762Z] "GET /items HTTP/1.1" 200 - via_upstream - "-" 0 502 2 2 "172.17.0.1" "beegoServer" "a6cf39f6-a0ce-9808-b2b9-601a81688f5a" "catalog.istioinaction:80" "172.17.0.11:3000" inbound|3000|| 127.0.0.6:34315 172.17.0.11:3000 172.17.0.1:0 outbound_.80_.version-v1_.catalog.istioinaction.svc.cluster.local default
 ```
@@ -600,16 +603,19 @@ curl http://localhost/api/catalog \
 [{"id":1,"color":"amber","department":"Eyewear","name":"Elinor Glasses","price":"282.00","imageUrl":"http://lorempixel.com/640/480"}, .. ]
 ```
 
+ingressgateway 로그
 ```bash
 istio-ingressgateway-.. istio-proxy [2023-01-05T09:48:21.757Z] "GET /api/catalog HTTP/1.1" 200 - via_upstream - "-" 0 357 12 11 "172.17.0.1" "curl/7.84.0" .. "webapp.istioinaction.io" "172.17.0.13:8080" outbound|80||webapp.istioinaction.svc.cluster.local 172.17.0.6:46790 172.17.0.6:8080 172.17.0.1:48439 - -
 ```
 
+webapp 로그
 ```bash
 ..
 webapp-.. istio-proxy [2023-01-05T11:06:39.212Z] "GET /items HTTP/1.1" 200 - via_upstream - "-" 0 698 38 37 "172.17.0.1" .. "catalog.istioinaction:80" "172.17.0.12:3000" outbound|80|version-v2|catalog.istioinaction.svc.cluster.local 172.17.0.13:50270 10.107.27.61:80 172.17.0.1:0 - -
 ..
 ```
 
+catalog 로그
 ```bash
 ..
 catalog-v2-.. istio-proxy [2023-01-05T11:06:39.218Z] "GET /items HTTP/1.1" 200 - via_upstream - "-" 0 698 18 17 "172.17.0.1" .. "catalog.istioinaction:80" "172.17.0.12:3000" inbound|3000|| 127.0.0.6:59251 172.17.0.12:3000 172.17.0.1:0 outbound_.80_.version-v2_.catalog.istioinaction.svc.cluster.local default
@@ -1234,22 +1240,22 @@ kubectl apply -f ch5/forum-serviceentry.yaml -n istioinaction
 ```yaml
 curl http://localhost/api/users -H "Host: webapp.istioinaction.io"
 
-..
+
 ```
 
-webapp → forum
-
+webapp 로그 (webapp → forum)
 ```bash
 webapp-.. webapp 2023/01/07 11:27:42.706 [M] [router.go:1014]  172.17.0.1 - - [07/Jan/2023 11:27:42] "GET /api/users HTTP/1.1 200 0" 0.120906  curl/7.84.0
 webapp-.. istio-proxy [2023-01-07T11:27:42.588Z] "GET /api/users HTTP/1.1" 200 - via_upstream - "-" 0 5645 116 116 "172.17.0.1" "beegoServer" "8a5b592f-3ea5-98d8-881d-09ace845b08d" "forum.istioinaction:80" "172.17.0.7:8080" outbound|80||forum.istioinaction.svc.cluster.local 172.17.0.13:42558 10.99.60.27:80 172.17.0.1:0 - default
 webapp-.. istio-proxy [2023-01-07T11:27:42.585Z] "GET /api/users HTTP/1.1" 200 - via_upstream - "-" 0 3679 122 121 "172.17.0.1" "curl/7.84.0" "8a5b592f-3ea5-98d8-881d-09ace845b08d" "webapp.istioinaction.io" "172.17.0.13:8080" inbound|8080|| 127.0.0.6:51601 172.17.0.13:8080 172.17.0.1:0 outbound_.80_._.webapp.istioinaction.svc.cluster.local default
+
 ```
 
-forum → 외부IP
-
+forum 로그 (forum → 외부IP)
 ```bash
 forum-.. istio-proxy [2023-01-07T11:27:42.589Z] "GET /users HTTP/1.1" 200 - via_upstream - "-" 0 1847 112 111 "172.17.0.1" "Go-http-client/1.1" "8a5b592f-3ea5-98d8-881d-09ace845b08d" "jsonplaceholder.typicode.com" "104.21.55.162:80" outbound|80||jsonplaceholder.typicode.com 172.17.0.7:58764 104.21.55.162:80 172.17.0.1:0 - default
 forum-.. istio-proxy [2023-01-07T11:27:42.588Z] "GET /api/users HTTP/1.1" 200 - via_upstream - "-" 0 5645 115 114 "172.17.0.1" "beegoServer" "8a5b592f-3ea5-98d8-881d-09ace845b08d" "forum.istioinaction:80" "172.17.0.7:8080" inbound|8080|| 127.0.0.6:56407 172.17.0.7:8080 172.17.0.1:0 outbound_.80_._.forum.istioinaction.svc.cluster.local default
+
 ```
 
 ## Summary
