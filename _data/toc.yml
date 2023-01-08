@@ -75,6 +75,8 @@
       url: "2022/Istio-ch4-2-ingress-gw"
     - title: "Istio Ingress GW(3)"
       url: "2022/Istio-ch4-3-ingress-gw"
+    - title: "Istio Ingress GW(4)"
+      url: "2023/Istio-ch4-4-tips"
     - title: "Envoy Proxy"
       url: "2022/Istio-ch3-envoy"
     - title: "Istio Sidecar"

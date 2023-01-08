@@ -1,5 +1,5 @@
 ---
-title: Istio Ingress Gateway - Operational Tips (4)  
+title: Istio Ingress Gateway (4)  
 version: v1.0  
 description: istio in action 4장 실습4  
 date: 2023-01-01 09:00:00 +09:00  
