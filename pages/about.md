@@ -11,6 +11,7 @@ permalink: /about/
 
 대용량 분산 시스템을 개발하고 안정적으로 운영하기
 
+- 검색
 - 클라우드
 - MLOps
 - 리눅스
@@ -41,7 +42,6 @@ permalink: /about/
 - 팀 내 클라우드 기반으로 프로덕션을 준비하고 운영할 수 있는 제반의 환경을 제공
   - 온 프레미스 기반 검색 시스템에서 Kubernetes 기반 Cloud Native 전환
   - Containerize, 배포 파이프라인, 테스트, 모니터링, 자동화 개발 프로세스 수립
-    
 - 클라우드 공통 커버리지를 지속적으로 확대하여 개발과 운영, 장애 대응 효율을 제고
   - Kubernetes 및 공통 ecosystem 구성 및 클러스터 운영 (수십개 클러스터 운영)
 
@@ -61,7 +61,8 @@ permalink: /about/
 - 올퍼스트 (2000 ~ 2002), 부동산포털사이트 개발 (PHP, MySQL, flash)
 
 ## Publications
-
+- 발표 영상
+  - if(kakao)dev2022 이게돼요? 도커없이 컨테이너 만들기 [https://if.kakao.com/2022/session/104](https://if.kakao.com/2022/session/104)
 - 사내 블로그 기고
   - [서비스 개발자를 위한 컨테이너 뽀개기 (a.k.a 컨테이너인터널)](https://tech.kakaoenterprise.com/150)
   - [[컨테이너 인터널#1] 컨테이너 톺아보기](https://tech.kakaoenterprise.com/154)
@@ -69,8 +70,6 @@ permalink: /about/
 - 블로그 운영
   - 개인 기술 블로그 운영 [https://netpple.github.io/](https://netpple.github.io/)
   - Kubernetes Deepdivers 블로그 운영 [https://blog.deepdivers.dev/](https://blog.deepdivers.dev/)
-- 발표 영상
-  - if(kakao)dev2022 이게돼요? 도커없이 컨테이너 만들기 [https://if.kakao.com/2022/session/104](https://if.kakao.com/2022/session/104)
 - 발표 자료
   - [도커 없이 컨테이너 만들기 시리즈](https://netpple.github.io/docs/make-container-without-docker/)
   - [쿠버네티스 딥다이브 시리즈](https://netpple.github.io/docs/deepdive-into-kubernetes/)
