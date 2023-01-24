@@ -9,13 +9,7 @@ badges:
   tag: 교육  
   rightpanel: true  
 ---
-
-**Topics  “Fine-grained” traffic control**
-
-- Traffic routing
-- Traffic shifting
-- Traffic mirroring
-- Outbound traffic controlling
+Istio의 traffic control 기법 routing, shifting, mirroring, Outbound traffic controlling 들에 대해 다룹니다.
 
 <!--more-->
 
