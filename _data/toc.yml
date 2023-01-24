@@ -67,6 +67,8 @@
   links:
     #    - title: "[] "
     #      url: ""
+    - title: "Istio Observability(1)"
+      url: "2023/Istio-ch7-observability"
     - title: "Istio Resilience"
       url: "2023/Istio-ch6-resilience"
     - title: "Istio Traffic Control"
