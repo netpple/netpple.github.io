@@ -250,7 +250,7 @@ spec:
 VirtualService 적용
 
 ```bash
-kubectl apply -f ch4/sni/passthrough-sni-vs-1.yaml
+kubectl apply -f ch4/sni/passthrough-sni-vs-1.yaml -n istioinaction
 ```
 
 호출테스트1
@@ -278,7 +278,7 @@ curl https://simple-sni-1.istioinaction.io:31400/ \
 앱2 배포 - [*simple-tls-service-2.yaml*](https://github.com/istioinaction/book-source-code/blob/master/ch4/sni/simple-tls-service-2.yaml)
 
 ```bash
-kubectl apply -f ch4/sni/simple-tls-service-2.yaml
+kubectl apply -f ch4/sni/simple-tls-service-2.yaml -n istioninaction
 ```
 
 Gateway 명세 전/후 비교
