@@ -139,7 +139,7 @@ kubectl get deploy istio-ingressgateway -n istio-system \
 
 listener  확인
 
-- 리스너 - ingress gw에 등록된 VirtualService 포트 목록
+- Envoy로 부터 파드(아래, istio-ingressgateway)의 리스너 설정을 확인한다
 
 ```bash
 istioctl proxy-config listener deploy/istio-ingressgateway -n istio-system
@@ -151,7 +151,7 @@ ADDRESS PORT  MATCH DESTINATION
 
 route 확인
 
-- 라우트 매칭룰 및 vs 확인
+- Envoy로 부터 파드(아래, istio-ingressgateway)의 라우트 설정을 확인한다
 
 ```bash
 istioctl proxy-config route deploy/istio-ingressgateway -n istio-system
