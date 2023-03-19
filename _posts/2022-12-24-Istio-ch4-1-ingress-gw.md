@@ -192,7 +192,7 @@ Gateway 적용
 kubectl -n istioinaction apply -f ch4/coolstore-gw.yaml
 ```
 
-listener 확인 - 포트(8080)가 리스터 항목에 추가됨
+listener 확인 - 포트(8080)가 리스너 항목에 추가됨
 
 ```bash
 istioctl proxy-config listener deploy/istio-ingressgateway -n istio-system
