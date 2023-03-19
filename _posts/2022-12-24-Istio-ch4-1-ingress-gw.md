@@ -140,6 +140,7 @@ kubectl get deploy istio-ingressgateway -n istio-system \
 listener  확인
 
 - Envoy로 부터 파드(아래, istio-ingressgateway)의 리스너 설정을 확인한다
+- 외부 → (리스너) → 내부  : 외부에서 내부로 들어오는 포트 정보 확인  
 
 ```bash
 istioctl proxy-config listener deploy/istio-ingressgateway -n istio-system
@@ -152,6 +153,7 @@ ADDRESS PORT  MATCH DESTINATION
 route 확인
 
 - Envoy로 부터 파드(아래, istio-ingressgateway)의 라우트 설정을 확인한다
+- 내부 → (라우트) → Virtual Servcie : 내부 Virtual Service로 라우팅 조건 확인  
 
 ```bash
 istioctl proxy-config route deploy/istio-ingressgateway -n istio-system
