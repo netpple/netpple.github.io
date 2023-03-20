@@ -100,7 +100,7 @@ my-user-gateway   1/1     1            1           19m
 kubectl get svc my-user-gateway -n istioinaction
 
 NAME                   TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)
-my-user-gateway        LoadBalancer   10.96.169.79     127.0.0.1     15021:31846/TCP,80:32385/TCP,443:30475/TCP
+my-user-gateway        LoadBalancer   10.96.169.79     127.0.0.1     31400:30813/TCP
 ```
 
 **실습. my-user-gateway를 경유하여 TCP 통신을 해봅시다 **  
