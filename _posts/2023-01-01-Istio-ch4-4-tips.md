@@ -70,7 +70,7 @@ Ingress gateway 명세 출력 - [참고](https://istio.io/latest/docs/setup/inst
 Ingress gateway  설치
 
 ```bash
-istioctl install -y -n istioinaction -f ch4/my-user-gateway.yaml
+istioctl install -y -n istioinaction -f ch4/my-user-gateway-edited.yaml
 
 ✔ Ingress gateways installed
 ✔ Installation complete
