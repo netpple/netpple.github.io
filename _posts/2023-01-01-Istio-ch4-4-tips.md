@@ -103,7 +103,8 @@ NAME                   TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)
 my-user-gateway        LoadBalancer   10.96.169.79     127.0.0.1     31400:30813/TCP
 ```
 
-**실습. my-user-gateway를 경유하여 TCP 통신을 해봅시다 **  
+**실습. my-user-gateway를 경유하여 TCP 통신을 해봅시다**    
+
 Gateway 명세
 - ch4/gateway-tcp.yaml 명세를 수정합니다 (ch4/gateway-tcp-edited.yaml)
 - istio: my-user-gateway 를 selector에 설정합니다 
