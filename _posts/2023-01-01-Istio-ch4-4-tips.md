@@ -108,6 +108,7 @@ my-user-gateway        LoadBalancer   10.96.169.79     127.0.0.1     31400:30813
 Gateway 명세
 - ch4/gateway-tcp.yaml 명세를 수정합니다 (ch4/gateway-tcp-edited.yaml)
 - istio: my-user-gateway 를 selector에 설정합니다 
+
 ```yaml 
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
@@ -124,6 +125,7 @@ spec:
     hosts:
     - "*"
 ```
+
 ```bash
 kubectl apply -f ch4/gateway-tcp-edited.yaml -n istioinaction
 ```
