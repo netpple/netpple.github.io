@@ -278,7 +278,7 @@ curl https://simple-sni-1.istioinaction.io:31400/ \
 앱2 배포 - [*simple-tls-service-2.yaml*](https://github.com/istioinaction/book-source-code/blob/master/ch4/sni/simple-tls-service-2.yaml)
 
 ```bash
-kubectl apply -f ch4/sni/simple-tls-service-2.yaml -n istioninaction
+kubectl apply -f ch4/sni/simple-tls-service-2.yaml -n istioinaction
 ```
 
 Gateway 명세 전/후 비교

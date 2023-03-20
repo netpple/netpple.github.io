@@ -356,18 +356,18 @@ kubectl apply -f services/webapp/kubernetes/webapp.yaml -n istioinaction
 기동 및 설정 확인
 
 ```bash
-# kubectl get po
+# kubectl get po -n istioinaction
 
 NAME                       READY   STATUS    RESTARTS   AGE
 catalog-5c7f8f8447-xvczs   2/2     Running   0          2m25s
 webapp-8dc87795-szkrf      2/2     Running   0          2m22s
 
-# kubectl get gateway
+# kubectl get gateway -n istioinaction
 
 NAME                AGE
 coolstore-gateway   5m33s
 
-# kubectl get virtualservice
+# kubectl get virtualservice -n istioinaction
 
 NAME                GATEWAYS                HOSTS                         AGE
 webapp-vs-from-gw   ["coolstore-gateway"]   ["webapp.istioinaction.io"]   5m21s
