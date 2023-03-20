@@ -59,7 +59,7 @@ spec:
               port: 31400
               targetPort: 31400
 ```
-- * 원본 명세를 일부 수정하였습니다. ch4/my-user-gateway-edited.yaml 로 저장해 주세요  
+* 원본 명세를 일부 수정하였습니다. ch4/my-user-gateway-edited.yaml 로 저장해 주세요  
 
 Ingress gateway 명세 출력 - [참고](https://istio.io/latest/docs/setup/install/istioctl/#generate-a-manifest-before-installation)
 
