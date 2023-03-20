@@ -25,6 +25,7 @@ Split gateways, Gateway injection, Ingress GW 로깅, Gateway configuration 등 
 IstioOperator 명세 - [*ch4/my-user-gateway.yaml*](https://github.com/istioinaction/book-source-code/blob/master/ch4/my-user-gateway.yaml)
 
 - istioctl 이 명세를 바탕으로 K8s 명세를 generate 함.
+- 아래 명세는 실습을 위해 31400 포트만 오픈하도록 명세를 수정함.
 - 참고) [istio operater controller](https://tetrate.io/blog/what-is-istio-operator/)를 설치하여 관리하는 방법도 있음
 - 참고) [IstioOperator options](https://istio.io/latest/docs/reference/config/istio.operator.v1alpha1/)
 
@@ -51,323 +52,19 @@ spec:
       enabled: true
       label:
         istio: my-user-gateway
+      k8s:
+        service:
+          ports:
+            - name: tcp  # my-user-gateway 에서 사용할 포트 설정
+              port: 31400
+              targetPort: 31400
 ```
+- * 원본 명세를 일부 수정하였습니다. ch4/my-user-gateway-edited.yaml 로 저장해 주세요  
 
 Ingress gateway 명세 출력 - [참고](https://istio.io/latest/docs/setup/install/istioctl/#generate-a-manifest-before-installation)
 
-```yaml
+```bash
 # istioctl manifest generate -n istioinaction -f ch4/my-user-gateway.yaml
-
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: my-user-gateway-service-account
-  namespace: istioinaction
-  labels:
-    app: istio-ingressgateway
-    istio: my-user-gateway
-    release: istio
-    istio.io/rev: default
-    install.operator.istio.io/owning-resource: unknown
-    operator.istio.io/component: "IngressGateways"
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: my-user-gateway
-  namespace: istioinaction
-  labels:
-    app: istio-ingressgateway
-    istio: my-user-gateway
-    release: istio
-    istio.io/rev: default
-    install.operator.istio.io/owning-resource: unknown
-    operator.istio.io/component: "IngressGateways"
-spec:
-  selector:
-    matchLabels:
-      app: istio-ingressgateway
-      istio: my-user-gateway
-  strategy:
-    rollingUpdate:
-      maxSurge: 100%
-      maxUnavailable: 25%
-  template:
-    metadata:
-      labels:
-        app: istio-ingressgateway
-        istio: my-user-gateway
-        service.istio.io/canonical-name: my-user-gateway
-        service.istio.io/canonical-revision: latest
-        istio.io/rev: default
-        install.operator.istio.io/owning-resource: unknown
-        operator.istio.io/component: "IngressGateways"
-        sidecar.istio.io/inject: "false"
-      annotations:
-        prometheus.io/port: "15020"
-        prometheus.io/scrape: "true"
-        prometheus.io/path: "/stats/prometheus"
-        sidecar.istio.io/inject: "false"
-    spec:
-      securityContext:
-        runAsUser: 1337
-        runAsGroup: 1337
-        runAsNonRoot: true
-        fsGroup: 1337
-      serviceAccountName: my-user-gateway-service-account
-      containers:
-        - name: istio-proxy
-          image: "docker.io/istio/proxyv2:1.16.1"
-          ports:
-            - containerPort: 15021
-              protocol: TCP
-            - containerPort: 8080
-              protocol: TCP
-            - containerPort: 8443
-              protocol: TCP
-            - containerPort: 15090
-              protocol: TCP
-              name: http-envoy-prom
-          args:
-          - proxy
-          - router
-          - --domain
-          - $(POD_NAMESPACE).svc.cluster.local
-          - --proxyLogLevel=warning
-          - --proxyComponentLogLevel=misc:error
-          - --log_output_level=default:info
-          securityContext:
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop:
-              - ALL
-            privileged: false
-            readOnlyRootFilesystem: true
-          readinessProbe:
-            failureThreshold: 30
-            httpGet:
-              path: /healthz/ready
-              port: 15021
-              scheme: HTTP
-            initialDelaySeconds: 1
-            periodSeconds: 2
-            successThreshold: 1
-            timeoutSeconds: 1
-          resources:
-            limits:
-              cpu: 2000m
-              memory: 1024Mi
-            requests:
-              cpu: 100m
-              memory: 128Mi
-          env:
-          - name: JWT_POLICY
-            value: third-party-jwt
-          - name: PILOT_CERT_PROVIDER
-            value: istiod
-          - name: CA_ADDR
-            value: istiod.istio-system.svc:15012
-          - name: NODE_NAME
-            valueFrom:
-              fieldRef:
-                apiVersion: v1
-                fieldPath: spec.nodeName
-          - name: POD_NAME
-            valueFrom:
-              fieldRef:
-                apiVersion: v1
-                fieldPath: metadata.name
-          - name: POD_NAMESPACE
-            valueFrom:
-              fieldRef:
-                apiVersion: v1
-                fieldPath: metadata.namespace
-          - name: INSTANCE_IP
-            valueFrom:
-              fieldRef:
-                apiVersion: v1
-                fieldPath: status.podIP
-          - name: HOST_IP
-            valueFrom:
-              fieldRef:
-                apiVersion: v1
-                fieldPath: status.hostIP
-          - name: SERVICE_ACCOUNT
-            valueFrom:
-              fieldRef:
-                fieldPath: spec.serviceAccountName
-          - name: ISTIO_META_WORKLOAD_NAME
-            value: my-user-gateway
-          - name: ISTIO_META_OWNER
-            value: kubernetes://apis/apps/v1/namespaces/istioinaction/deployments/my-user-gateway
-          - name: ISTIO_META_MESH_ID
-            value: "cluster.local"
-          - name: TRUST_DOMAIN
-            value: "cluster.local"
-          - name: ISTIO_META_UNPRIVILEGED_POD
-            value: "true"
-          - name: ISTIO_META_CLUSTER_ID
-            value: "Kubernetes"
-          volumeMounts:
-          - name: workload-socket
-            mountPath: /var/run/secrets/workload-spiffe-uds
-          - name: credential-socket
-            mountPath: /var/run/secrets/credential-uds
-          - name: workload-certs
-            mountPath: /var/run/secrets/workload-spiffe-credentials
-          - name: istio-envoy
-            mountPath: /etc/istio/proxy
-          - name: config-volume
-            mountPath: /etc/istio/config
-          - mountPath: /var/run/secrets/istio
-            name: istiod-ca-cert
-          - name: istio-token
-            mountPath: /var/run/secrets/tokens
-            readOnly: true
-          - mountPath: /var/lib/istio/data
-            name: istio-data
-          - name: podinfo
-            mountPath: /etc/istio/pod
-          - name: ingressgateway-certs
-            mountPath: "/etc/istio/ingressgateway-certs"
-            readOnly: true
-          - name: ingressgateway-ca-certs
-            mountPath: "/etc/istio/ingressgateway-ca-certs"
-            readOnly: true
-      volumes:
-      - emptyDir: {}
-        name: workload-socket
-      - emptyDir: {}
-        name: credential-socket
-      - emptyDir: {}
-        name: workload-certs
-      - name: istiod-ca-cert
-        configMap:
-          name: istio-ca-root-cert
-      - name: podinfo
-        downwardAPI:
-          items:
-            - path: "labels"
-              fieldRef:
-                fieldPath: metadata.labels
-            - path: "annotations"
-              fieldRef:
-                fieldPath: metadata.annotations
-      - name: istio-envoy
-        emptyDir: {}
-      - name: istio-data
-        emptyDir: {}
-      - name: istio-token
-        projected:
-          sources:
-          - serviceAccountToken:
-              path: istio-token
-              expirationSeconds: 43200
-              audience: istio-ca
-      - name: config-volume
-        configMap:
-          name: istio
-          optional: true
-      - name: ingressgateway-certs
-        secret:
-          secretName: "istio-ingressgateway-certs"
-          optional: true
-      - name: ingressgateway-ca-certs
-        secret:
-          secretName: "istio-ingressgateway-ca-certs"
-          optional: true
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          preferredDuringSchedulingIgnoredDuringExecution:
----
-apiVersion: policy/v1beta1
-kind: PodDisruptionBudget
-metadata:
-  name: my-user-gateway
-  namespace: istioinaction
-  labels:
-    app: istio-ingressgateway
-    istio: my-user-gateway
-    release: istio
-    istio.io/rev: default
-    install.operator.istio.io/owning-resource: unknown
-    operator.istio.io/component: "IngressGateways"
-spec:
-  minAvailable: 1
-  selector:
-    matchLabels:
-      app: istio-ingressgateway
-      istio: my-user-gateway
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  name: my-user-gateway-sds
-  namespace: istioinaction
-  labels:
-    release: istio
-    istio.io/rev: default
-    install.operator.istio.io/owning-resource: unknown
-    operator.istio.io/component: "IngressGateways"
-rules:
-- apiGroups: [""]
-  resources: ["secrets"]
-  verbs: ["get", "watch", "list"]
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: my-user-gateway-sds
-  namespace: istioinaction
-  labels:
-    release: istio
-    istio.io/rev: default
-    install.operator.istio.io/owning-resource: unknown
-    operator.istio.io/component: "IngressGateways"
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: Role
-  name: my-user-gateway-sds
-subjects:
-- kind: ServiceAccount
-  name: my-user-gateway-service-account
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: my-user-gateway
-  namespace: istioinaction
-  annotations:
-  labels:
-    app: istio-ingressgateway
-    istio: my-user-gateway
-    release: istio
-    istio.io/rev: default
-    install.operator.istio.io/owning-resource: unknown
-    operator.istio.io/component: "IngressGateways"
-spec:
-  type: LoadBalancer
-  selector:
-    app: istio-ingressgateway
-    istio: my-user-gateway
-  ports:
-    -
-      name: status-port
-      port: 15021
-      protocol: TCP
-      targetPort: 15021
-    -
-      name: http2
-      port: 80
-      protocol: TCP
-      targetPort: 8080
-    -
-      name: https
-      port: 443
-      protocol: TCP
-      targetPort: 8443
----
 ```
 
 Ingress gateway  설치
@@ -404,6 +101,70 @@ kubectl get svc my-user-gateway -n istioinaction
 
 NAME                   TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)
 my-user-gateway        LoadBalancer   10.96.169.79     127.0.0.1     15021:31846/TCP,80:32385/TCP,443:30475/TCP
+```
+
+**실습. my-user-gateway를 경유하여 TCP 통신을 해봅시다 **  
+Gateway 명세
+- ch4/gateway-tcp.yaml 명세를 수정합니다 (ch4/gateway-tcp-edited.yaml)
+- istio: my-user-gateway 를 selector에 설정합니다 
+```yaml 
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: echo-tcp-gateway
+spec:
+  selector:
+    istio: my-user-gateway  # 새로운 gateway를 바라보도록 수정합니다
+  servers:
+  - port:
+      number: 31400
+      name: tcp-echo
+      protocol: TCP
+    hosts:
+    - "*"
+```
+```bash
+kubectl apply -f ch4/gateway-tcp-edited.yaml -n istioinaction
+```
+
+VirtualService 명세
+```bash
+kubectl apply -f ch4/echo-vs.yaml -n istioinaction
+```
+
+앱 배포
+```bash
+kubectl apply -f ch4/echo.yaml -n istioinaction
+```
+
+맥(로컬) 연결 설정 - “minikube service 포트”를 기억해 두세요 (사용자 환경마다 다름)
+```bash
+minikube service my-user-gateway -n istioinaction
+
+|---------------|-----------------|-------------|---------------------------|
+|   NAMESPACE   |      NAME       | TARGET PORT |            URL            |
+|---------------|-----------------|-------------|---------------------------|
+| istioinaction | my-user-gateway | tcp/31400   | http://192.168.49.2:30813 |
+|---------------|-----------------|-------------|---------------------------|
+🏃  my-user-gateway 서비스의 터널을 시작하는 중
+|---------------|-----------------|-------------|------------------------|
+|   NAMESPACE   |      NAME       | TARGET PORT |          URL           |
+|---------------|-----------------|-------------|------------------------|
+| istioinaction | my-user-gateway |             | http://127.0.0.1:56002 |
+|---------------|-----------------|-------------|------------------------|
+```
+
+호출 테스트
+```bash 
+telnet localhost 56002
+
+Trying ::1...
+Connected to localhost.
+Escape character is '^]'.
+..
+Service default.
+hello Sam    # <-- type here
+hello Sam    # <-- echo here
 ```
 
 ### Gateway Injection
