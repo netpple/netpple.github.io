@@ -64,7 +64,7 @@ spec:
 Ingress gateway 명세 출력 - [참고](https://istio.io/latest/docs/setup/install/istioctl/#generate-a-manifest-before-installation)
 
 ```bash
-# istioctl manifest generate -n istioinaction -f ch4/my-user-gateway.yaml
+# istioctl manifest generate -n istioinaction -f ch4/my-user-gateway-edited.yaml
 ```
 
 Ingress gateway  설치
