@@ -745,7 +745,7 @@ CI/CD 도구를 이용하여 Traffic shifting을 **자동화**할 수 있습니�
 초기화
 
 ```bash
-kubectl delete catalog -n istioinaction ;
+kubectl delete deploy catalog -n istioinaction ;
 kubectl delete deploy catalog-v2 -n istioinaction ;
 kubectl delete service catalog -n istioinaction ;
 kubectl delete destinationrule catalog -n istioinaction ;
