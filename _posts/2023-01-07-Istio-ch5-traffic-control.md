@@ -887,7 +887,7 @@ Flagger 로 기존 catalog(deployment) 를 canary 배포할 수 있는 환경을
 
 ```bash
 while true; do curl http://localhost/api/catalog \
--H "Host: webapp.istioinaction.io"; sleep 3; done
+-H "Host: webapp.istioinaction.io"; sleep 1; done
 ```
 
 Flagger가 작성한 VirtualService를 확인해 보세요. 
