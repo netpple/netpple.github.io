@@ -884,7 +884,7 @@ while true; do curl http://localhost/api/catalog \
 -H "Host: webapp.istioinaction.io"; sleep 3; done
 ```
 
-Flagger가 수정한 VirtualService를 확인해 보세요. 
+Flagger가 작성한 VirtualService를 확인해 보세요. 
 
 ```yaml
 # kubectl get virtualservice catalog -o yaml -n istioinaction
