@@ -1,7 +1,7 @@
 ---
 title: Traffic control - Fine-grained traffic routing
 version: v1.0  
-description: istio in action 4장 실습3  
+description: istio in action 5장  
 date: 2023-01-07 21:00:00 +09:00  
 categories: network  
 badges:
@@ -282,11 +282,17 @@ spec:
       version: v2
 ```
 
+> *VirtualService 와 DestinationRule 의 (service) host ~  “short names” or “FQDN” ?*  
+> 둘 다 사용가능 (FQDN 권장)
+> 
+> Note for Kubernetes users: When short names are used (e.g. “reviews” instead of “reviews.default.svc.cluster.local”), Istio will interpret the short name based on the namespace of the rule, not the service. A rule in the “default” namespace containing a host “reviews” will be interpreted as “reviews.default.svc.cluster.local”, irrespective of the actual namespace associated with the reviews service. To avoid potential misconfigurations, it is recommended to always use fully qualified domain name
+[https://istio.io/latest/docs/reference/config/networking/virtual-service/](https://istio.io/latest/docs/reference/config/networking/virtual-service/)
+>
+
 ```bash
 kubectl apply -f ch5/catalog-dest-rule.yaml -n istioinaction
 
-kubectl get destinationrule -n istioinaction
-
+# kubectl get destinationrule -n istioinaction
 catalog   catalog.istioinaction.svc.cluster.local   33s
 ```
 

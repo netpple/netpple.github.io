@@ -160,6 +160,10 @@ hello Sam    # <-- echo here
     > 
     > *이 SNI를 사용하게 되면 하나의 웹 서버에서 여러 도메인의 웹사이트를 서비스하는 경우에도 인증서를 사용한 HTTPS를 활성화시킬 수 있다.*
     > 
+- HTTPS는 헤더정보를 비롯한 모든 메시지가 암호화 됨
+- 따라서, TLS 핸드쉐이크가 맺어지기 전까지 Host 헤더를 볼 방법이 없음
+- 클라이언트가 서버에게 어떤 도메인(Server Name)을 사용할지 알려줄 방법이 필요
+- 클라이언트가 “Client Hello” 패킷에 “TLS Extension 헤더에 SNI extension 정보를 실어서 보냄
 - gw에서 SNI헤더를 검사하여 backend로 라우트함
 - “pass through” - 커넥션은 gw가 아닌 “**실제 서비스에서 처리**”함
 - 이는 gw의 문을 더 넓게 (swath) 여는 것으로
