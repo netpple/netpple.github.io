@@ -742,10 +742,10 @@ CI/CD 도구를 이용하여 Traffic shifting을 **자동화**할 수 있습니�
 
 **Pre-requisite**
 
-초기화
+초기화 - *주의) catalog(deployment)는 삭제하지 않습니다*
 
 ```bash
-kubectl delete deploy catalog -n istioinaction ;
+kubectl delete virtualservice catalog -n istioinaction ;
 kubectl delete deploy catalog-v2 -n istioinaction ;
 kubectl delete service catalog -n istioinaction ;
 kubectl delete destinationrule catalog -n istioinaction ;
