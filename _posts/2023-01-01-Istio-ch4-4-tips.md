@@ -25,12 +25,12 @@ Split gateways, Gateway injection, Ingress GW 로깅, Gateway configuration 등 
 IstioOperator 명세 - [*ch4/my-user-gateway.yaml*](https://github.com/istioinaction/book-source-code/blob/master/ch4/my-user-gateway.yaml)
 
 - istioctl 이 명세를 바탕으로 K8s 명세를 generate 함.
-- 아래 명세는 실습을 위해 31400 포트만 오픈하도록 명세를 수정함.
+- 아래 명세는 실습을 위해 31400 포트만 오픈하도록 명세를 수정함. (-edited.yaml)
 - 참고) [istio operater controller](https://tetrate.io/blog/what-is-istio-operator/)를 설치하여 관리하는 방법도 있음
 - 참고) [IstioOperator options](https://istio.io/latest/docs/reference/config/istio.operator.v1alpha1/)
 
 ```yaml
-# vi ch4/my-user-gateway.yaml
+# vi ch4/my-user-gateway-edited.yaml
 
 apiVersion: install.istio.io/v1alpha1
 kind: IstioOperator
