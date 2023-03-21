@@ -767,7 +767,7 @@ helm install flagger flagger/flagger \
 
 **Flagger Canary 적용**
 
-Flagger’s Canary 명세
+Flagger’s Canary 명세 (for catalog)
 
 ```yaml
 # cat ch5/flagger/catalog-release.yaml
@@ -814,14 +814,12 @@ spec:
 kubectl apply -f ch5/flagger/catalog-release.yaml -n istioinaction
 ```
 
-Canary 명세를 배포 하면 flagger (operator) 가 처리합니다
-
-![스크린샷 2023-01-07 오후 12.49.34(2).png](/assets/img/Istio-ch5%20e5d352db30ea41189ae55571b086561b/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-07_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_12.49.34(2).png)
-
-> *Flagger watches for changes to the original deployment target (in this case, the catalog deployment), creates the canary deployment (catalog-canary) and service (catalog-canary), and adjusts the VirtualService weights.*
-> 
+catalog 에 대한 Canary 명세를 배포 하면 flagger (operator) 가 catalog를 위한 canary 배포환경을 구성합니다.
+flagger 로그를 확인해 보세요. Service, Deployment, VirtualService 등을 설치하는 것을 확인할 수 있습니다.
 
 ```
+# kubectl logs -f deploy/flagger -n istio-system
+
 flagger-94d44f76c-xw89q flagger {"level":"info","ts":"2023-01-06T13:32:57.276Z","caller":"controller/controller.go:307","msg":"Synced istioinaction/catalog-release"}
 flagger-94d44f76c-xw89q flagger {"level":"info","ts":"2023-01-06T13:32:57.960Z","caller":"router/kubernetes_default.go:175","msg":"Service catalog-canary.istioinaction created","canary":"catalog-release.istioinaction"}
 flagger-94d44f76c-xw89q flagger {"level":"info","ts":"2023-01-06T13:32:57.982Z","caller":"router/kubernetes_default.go:175","msg":"Service catalog-primary.istioinaction created","canary":"catalog-release.istioinaction"}
@@ -837,7 +835,47 @@ flagger-94d44f76c-xw89q flagger {"level":"info","ts":"2023-01-06T13:33:42.986Z",
 flagger-94d44f76c-xw89q flagger {"level":"info","ts":"2023-01-06T13:33:42.994Z","caller":"controller/events.go:33","msg":"Initialization done! catalog-release.istioinaction","canary":"catalog-release.istioinaction"}
 ```
 
-기존 catalog deployment 를 Flagger 를 이용해서 배포할 수 있도록 적용이 되었습니다 .
+
+flagger 가 구성한 환경을 확인해 보세요  
+
+```bash
+# kubectl get virtualservice
+NAME                    GATEWAYS                HOSTS                         AGE
+catalog                 ["mesh"]                ["catalog"]                   24m
+..
+
+
+# kubectl get service 
+NAME              TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE
+catalog           ClusterIP   10.108.251.64    <none>        80/TCP    25m
+catalog-canary    ClusterIP   10.108.159.216   <none>        80/TCP    25m
+catalog-primary   ClusterIP   10.105.154.125   <none>        80/TCP    25m
+
+
+# kubectl get destinationrule
+NAME              HOST              AGE
+catalog-canary    catalog-canary    24m
+catalog-primary   catalog-primary   24m
+
+
+# kubectl get deployment
+NAME              READY   UP-TO-DATE   AVAILABLE   AGE
+catalog           0/0     0            0           34m
+catalog-primary   1/1     1            1           34m
+..
+
+
+# kubectl get po
+NAME                               READY   STATUS    RESTARTS      AGE
+catalog-primary-76d46cb86b-84zv9   2/2     Running   0             33m
+```
+
+![스크린샷 2023-01-07 오후 12.49.34(2).png](/assets/img/Istio-ch5%20e5d352db30ea41189ae55571b086561b/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-07_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_12.49.34(2).png)
+
+> *Flagger watches for changes to the original deployment target (in this case, the catalog deployment), creates the canary deployment (catalog-canary) and service (catalog-canary), and adjusts the VirtualService weights.*
+>
+
+Flagger 로 기존 catalog(deployment) 를 canary 배포할 수 있는 환경을 구성하였습니다
 
 트래픽을 넣어 봅시다 
 
