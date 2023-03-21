@@ -202,7 +202,7 @@ istio-ingressgateway-.. istio-proxy [2023-01-05T07:07:57.886Z] "GET / HTTP/1.1" 
 catalog v2를 배포해 보자 (service는 v1과 동일).  v2에서는 imageUrl 필드가 추가되었다. 
 
 ```bash
-kapply -f services/catalog/kubernetes/catalog-deployment-v2.yaml \
+kubectl apply -f services/catalog/kubernetes/catalog-deployment-v2.yaml \
 -n istioinaction
 
 kubectl get deploy -n istioinaction
