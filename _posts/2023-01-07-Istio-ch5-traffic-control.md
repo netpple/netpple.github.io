@@ -877,7 +877,7 @@ catalog-primary-76d46cb86b-84zv9   2/2     Running   0             33m
 
 Flagger 로 기존 catalog(deployment) 를 canary 배포할 수 있는 환경을 구성하였습니다
 
-트래픽을 넣어 봅시다 
+트래픽을 유입시키겠습니다 *주) 3초 간격으로 호출을 계속 발생하도록 유지합니다  
 
 ```bash
 while true; do curl http://localhost/api/catalog \
