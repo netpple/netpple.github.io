@@ -1206,6 +1206,13 @@ forum-.. istio-proxy [2023-01-07T10:59:03.432Z] "GET /users HTTP/1.1" 200 - via_
 forum-.. istio-proxy [2023-01-07T10:59:03.430Z] "GET /api/users HTTP/1.1" 200 - via_upstream - "-" 0 5645 69 68 "172.17.0.1" "beegoServer" "e631fa32-fb6a-921a-8f58-e96f3dcac3d3" "forum.istioinaction:80" "172.17.0.7:8080" inbound|8080|| 127.0.0.6:58511 172.17.0.7:8080 172.17.0.1:0 outbound_.80_._.forum.istioinaction.svc.cluster.local default
 ```
 
+> 참고) jsonplaceholder.typicode.com  
+> 개발자들이 RESTful API를 테스트하고 학습할 수 있는 더미 데이터를 제공하는 무료 웹 서비스입니다.  
+> 이 사이트에서는 사용 가능한 엔드포인트와 함께 여러 가지 유형의 JSON 데이터를 제공합니다. 예를 들어 사용자, 게시물, 댓글 등의 데이터를 제공합니다.  
+> 이러한 더미 데이터를 사용하여 개발자들은 자신의 애플리케이션에서 RESTful API를 사용하는 방법을 익힐 수 있습니다. 또한 이 데이터를 사용하여 애플리케이션의 UI를 테스트하거나, 데이터 시각화 및 데이터 처리에 사용할 수도 있습니다.
+> "jsonplaceholder.typicode.com"은 무료이며, 가입이나 로그인 없이 사용할 수 있습니다. 따라서 개발자들은 즉시 이용하여 RESTful API를 학습하고 테스트할 수 있습니다.
+>
+
 ### Blocking external traffic
 
 ![스크린샷 2023-01-07 오후 6.56.18.png](/assets/img/Istio-ch5%20e5d352db30ea41189ae55571b086561b/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-07_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_6.56.18.png)
