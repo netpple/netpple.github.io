@@ -262,7 +262,16 @@ VirtualService 에서는 route destination 으로 catalog service 가 지정됨
 - 레이블 정보를 제공할 추가적인 명세 (DestinationRule) 작성이 필요하고
 - VirtualService 명세 수정이 필요함
 
-**DestinationRule 등록 (subsets 정의)**
+예) 레이블로 Pod를 식별해 보자 (아래 두 명령의 결과를 비교해 보세요)
+
+```bash
+kubectl get pod -l app=catalog -n istioinaction --show-labels
+
+kubectl get pod -l app=catalog,version=v2 -n istioinaction --show-labels
+```
+
+**DestinationRule 등록 (subsets 정의)**  
+Pod를 식별할 정보를 추가해 봅니다.
 
 ```yaml
 # cat ch5/catalog-dest-rule.yaml
@@ -883,7 +892,7 @@ catalog-primary-76d46cb86b-84zv9   2/2     Running   0             33m
 
 Flagger 로 기존 catalog(deployment) 를 canary 배포할 수 있는 환경을 구성하였습니다
 
-트래픽을 유입시키겠습니다 *주) 3초 간격으로 호출을 계속 발생하도록 유지합니다  
+트래픽을 유입시키겠습니다 *주) 1초 간격으로 호출을 계속 발생하도록 유지합니다  
 
 ```bash
 while true; do curl http://localhost/api/catalog \
