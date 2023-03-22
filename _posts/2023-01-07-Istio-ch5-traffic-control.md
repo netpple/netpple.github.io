@@ -1231,6 +1231,13 @@ This will install the Istio 1.16.1 demo profile with ["Istio core" "Istiod" "Ing
 Thank you for installing Istio 1.16.  Please take a few minutes to tell us about your install/upgrade experience!  https://forms.gle/99uiMML96AmsXY5d6
 ```
 
+> 참고) outboundTrafficPolicy 모드
+> 다음과 같은 세 가지 모드가 있습니다:
+>
+> 1. **`ALLOW_ANY`**  (default)
+> 2. **`REGISTRY_ONLY`**
+> 3. **`ALLOW_LIST`**
+
 istio configmap 에서 outboundTrafficPolicy 변경을 확인할 수 있습니다.
 
 ```bash
