@@ -557,6 +557,10 @@ spec:
         subset: version-v1
 ```
 
+>"mesh"? To apply the rules to both gateways and sidecars, specify "mesh" as one of the gateway names.  
+참고: https://istio.io/latest/docs/reference/config/networking/virtual-service/?_ga=2.107883266.1226744782.1679299300-734770911.1670141435
+>
+
 호출테스트 (OK) curl → ingressgateway → webapp → catalog v1
 
 ```bash
