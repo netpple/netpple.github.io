@@ -1006,7 +1006,7 @@ catalog-release   Succeeded     0        2023-01-07T05:43:16Z
 ..
 ```
 
-Flagger (operator) 로그를 통해 release 프로세스를 확인할 수 있습니다. 
+Flagger (operator) 로그를 통해서도 release 상세로그를 확인할 수 있습니다. 
 
 ```bash
 flagger-94d44f76c-xw89q flagger {"level":"info","ts":"2023-01-07T05:36:31.611Z","caller":"controller/events.go:33","msg":"New revision detected! Scaling up catalog.istioinaction","canary":"catalog-release.istioinaction"}
