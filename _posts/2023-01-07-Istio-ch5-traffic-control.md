@@ -1036,7 +1036,7 @@ webapp 로그 출력 확인 (OK) ~ `imageUrl` 포함 (v2 전환 완료)
 Canary 삭제
 
 ```bash
-kubectl delete canary catalog-release
+kubectl delete canary catalog-release -n istioinaction
 ```
 
 - Flagger 로그
@@ -1051,7 +1051,6 @@ catalog 삭제
 
 ```bash
 kubectl delete deploy catalog -n istioinaction
-kubectl delete virtualservice catalog -n istioinaction
 ```
 
 Flagger 삭제
