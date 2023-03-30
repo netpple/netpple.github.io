@@ -169,14 +169,14 @@ web 로그
 ```bash
 # stern simple-web-* 
 
-## web -(요청)-> simple-backend (**301**)
-simple-web-6ffdb7887f-fcpsk istio-proxy [2023-01-08T12:54:01.523Z] "GET // HTTP/1.1" **301** - via_upstream - "-" 0 36 4 3 "172.17.0.1" "curl/7.84.0" "3aed335d-c138-9f58-b176-465639fcb8e3" "simple-backend:80" "172.17.0.14:8080" outbound|80||simple-backend.istioinaction.svc.cluster.local 172.17.0.13:46010 10.104.237.6:80 172.17.0.1:0 - default
+## web -(요청)-> simple-backend (301)
+simple-web-.. istio-proxy [2023-01-08T12:54:01.523Z] "GET // HTTP/1.1" 301 - via_upstream - "-" 0 36 4 3 "172.17.0.1" "curl/7.84.0" "3aed335d-c138-9f58-b176-465639fcb8e3" "simple-backend:80" "172.17.0.14:8080" outbound|80||simple-backend.istioinaction.svc.cluster.local 172.17.0.13:46010 10.104.237.6:80 172.17.0.1:0 - default
 
 ## web -(요청)-> simple-backend (200)
-simple-web-6ffdb7887f-fcpsk istio-proxy [2023-01-08T12:54:01.532Z] "GET / HTTP/1.1" 200 - via_upstream - "-" 0 278 169 169 "172.17.0.1" "curl/7.84.0" "3aed335d-c138-9f58-b176-465639fcb8e3" "simple-backend:80" "172.17.0.7:8080" outbound|80||simple-backend.istioinaction.svc.cluster.local 172.17.0.13:40824 10.104.237.6:80 172.17.0.1:0 - default
+simple-web-.. istio-proxy [2023-01-08T12:54:01.532Z] "GET / HTTP/1.1" 200 - via_upstream - "-" 0 278 169 169 "172.17.0.1" "curl/7.84.0" "3aed335d-c138-9f58-b176-465639fcb8e3" "simple-backend:80" "172.17.0.7:8080" outbound|80||simple-backend.istioinaction.svc.cluster.local 172.17.0.13:40824 10.104.237.6:80 172.17.0.1:0 - default
 
 ## web -> curl (200)
-simple-web-6ffdb7887f-fcpsk istio-proxy [2023-01-08T12:54:01.511Z] "GET / HTTP/1.1" 200 - via_upstream - "-" 0 890 197 196 "172.17.0.1" "curl/7.84.0" "3aed335d-c138-9f58-b176-465639fcb8e3" "simple-web.istioinaction.io" "172.17.0.13:8080" inbound|8080|| 127.0.0.6:39049 172.17.0.13:8080 172.17.0.1:0 outbound_.80_._.simple-web.istioinaction.svc.cluster.local default
+simple-web-.. istio-proxy [2023-01-08T12:54:01.511Z] "GET / HTTP/1.1" 200 - via_upstream - "-" 0 890 197 196 "172.17.0.1" "curl/7.84.0" "3aed335d-c138-9f58-b176-465639fcb8e3" "simple-web.istioinaction.io" "172.17.0.13:8080" inbound|8080|| 127.0.0.6:39049 172.17.0.13:8080 172.17.0.1:0 outbound_.80_._.simple-web.istioinaction.svc.cluster.local default
 ```
 
 backend 로그 
@@ -185,10 +185,10 @@ backend 로그
 # stern simple-backend-* 
 
 ## simple-backend -(응답)-> web (200)
-simple-backend-2-b46cb6798-**pzwbr** istio-proxy [2023-01-08T12:54:01.532Z] "GET / HTTP/1.1" 200 - via_upstream - "-" 0 278 164 163 "172.17.0.1" "curl/7.84.0" "3aed335d-c138-9f58-b176-465639fcb8e3" "simple-backend:80" "172.17.0.7:8080" inbound|8080|| 127.0.0.6:36099 172.17.0.7:8080 172.17.0.1:0 outbound_.80_._.simple-backend.istioinaction.svc.cluster.local default
+simple-backend-2-.. istio-proxy [2023-01-08T12:54:01.532Z] "GET / HTTP/1.1" 200 - via_upstream - "-" 0 278 164 163 "172.17.0.1" "curl/7.84.0" "3aed335d-c138-9f58-b176-465639fcb8e3" "simple-backend:80" "172.17.0.7:8080" inbound|8080|| 127.0.0.6:36099 172.17.0.7:8080 172.17.0.1:0 outbound_.80_._.simple-backend.istioinaction.svc.cluster.local default
 
-## simple-backend -(응답)-> web (**301**)
-simple-backend-1-5d4565cdfd-**qpdms** istio-proxy [2023-01-08T12:54:01.523Z] "GET // HTTP/1.1" **301** - via_upstream - "-" 0 36 2 2 "172.17.0.1" "curl/7.84.0" "3aed335d-c138-9f58-b176-465639fcb8e3" "simple-backend:80" "172.17.0.14:8080" inbound|8080|| 127.0.0.6:39061 172.17.0.14:8080 172.17.0.1:0 outbound_.80_._.simple-backend.istioinaction.svc.cluster.local default
+## simple-backend -(응답)-> web (301)
+simple-backend-1-.. istio-proxy [2023-01-08T12:54:01.523Z] "GET // HTTP/1.1" 301 - via_upstream - "-" 0 36 2 2 "172.17.0.1" "curl/7.84.0" "3aed335d-c138-9f58-b176-465639fcb8e3" "simple-backend:80" "172.17.0.14:8080" inbound|8080|| 127.0.0.6:39061 172.17.0.14:8080 172.17.0.1:0 outbound_.80_._.simple-backend.istioinaction.svc.cluster.local default
 ```
 
 호출테스트 ~ 10회 호출 반복
@@ -214,9 +214,9 @@ curl -s -H "Host: simple-web.istioinaction.io" localhost \
 "Hello from simple-backend-1"
 ```
 
-> *DestinationRule 설정을 통해 ROUND_ROBIN load balancing을 적용해 보았습니다.
+> DestinationRule 설정을 통해 ROUND_ROBIN load balancing을 적용해 보았습니다.
 Istio service proxy의 load balancing 기본 설정값은 ROUND_ROBIN 입니다.
-*별도 DestinationRule을 명세하지 않아도 ROUND_ROBIN 으로 동작합니다.*
+별도 DestinationRule을 명세하지 않아도 ROUND_ROBIN 으로 동작합니다.
 > 
 
 Client-side load balancing 을 사용하면 서비스 resilience 에 도움이 될까요?
