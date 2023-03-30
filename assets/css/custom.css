@@ -4,6 +4,10 @@
 }
 
 /* for make-container-without-docker */
+.td-content img {
+    max-width: 80%;
+    height: auto !important;
+}
 img.align-left{
     float:left;
     padding: 0px 20px 0px 0px;
