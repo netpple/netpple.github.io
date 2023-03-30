@@ -372,7 +372,7 @@ fortio fortio All done 3599 calls (plus 10 warmup) 166.808 ms avg, 59.8 qps
 
 테스트 환경
 
-![스크린샷 2023-01-09 오후 2.31.31.png](/assets/img/Istio-ch6-resilience%20a5ed458e7554476e9a974d228eb4c6b7/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-09_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_2.31.31.png)
+<img alt="explain jitter" src="/assets/img/Istio-ch6-resilience%20a5ed458e7554476e9a974d228eb4c6b7/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-09_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_2.31.31.png" width="300"/>
 
 - 1,000 rps (requests per seconds) for 60 seconds through 10 connections
 - simple-backend-1 : increase **latency** up to **1 sec**.  *(GC 등의 상황을 가정)*
