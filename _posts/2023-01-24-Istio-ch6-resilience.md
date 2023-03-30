@@ -268,7 +268,8 @@ sys	0m0.008s
 
 CLI load generation 도구인 [Fortio](https://github.com/fortio/fortio) 로 서비스를 호출해보고 client-side load balancing 알고리즘 간의 차이점들을 관찰해 봅시다. 
 
-**Fortio 설치**
+**Fortio 설치**  
+istio 로드밸런싱 알고리즘의 성능비교를 위해 부하테스트툴인 Fortio를 설치합니다
 
 (방법1) [download release](https://github.com/fortio/fortio/releases)
 
@@ -378,7 +379,8 @@ fortio fortio All done 3599 calls (plus 10 warmup) 166.808 ms avg, 59.8 qps
 - simple-backend-1 : increase **latency** up to **1 sec**.  *(GC 등의 상황을 가정)*
 - load-balancing strategy (algorithm) 비교 : round robin, random, least connection
 
-**Delayed simple-backend-1** 배포  (**latency : 150ms → 1000ms**)
+**Delayed simple-backend-1** 배포  (**latency : 150ms → 1000ms**)  
+simple-backend-1로 요청이 들어오는 경우 의도적으로 1초 지연을 발생하도록 설정합니다 
 
 ```bash
 kapply -f ch6/simple-backend-delayed.yaml -n istioinaction
@@ -389,8 +391,30 @@ kapply -f ch6/simple-backend-delayed.yaml -n istioinaction
   value: 1000ms
 ..
 ```
+설정 전후 비교
+![스크린샷 2023-01-09 오후 3.55.17.png](/assets/img/Istio-ch6-resilience%20a5ed458e7554476e9a974d228eb4c6b7/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-09_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_3.55.17.png "simple-backend-1 설정 전후 비교")
 
-![스크린샷 2023-01-09 오후 3.55.17.png](/assets/img/Istio-ch6-resilience%20a5ed458e7554476e9a974d228eb4c6b7/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-09_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_3.55.17.png)
+설정 적용 여부를 확인합니다 
+```bash
+## 호출 반복 - delay(1초)가 발생하는 응답을 확인합니다 
+time curl -s -o /dev/null -H \
+"Host: simple-web.istioinaction.io" localhost
+
+..
+real	0m0.234s
+user	0m0.003s
+sys	0m0.005s
+
+real	0m0.224s
+user	0m0.004s
+sys	0m0.008s
+..
+
+## delay 발생한 응답 확인
+real	0m1.101s
+user	0m0.003s
+sys	0m0.006s
+```
 
 fortio 서버 기동
 
@@ -465,7 +489,6 @@ fortio 대시보드 : browser > [http://localhost:8080/fortio](http://localhost:
 ![fortio-dashboard.png](/assets/img/Istio-ch6-resilience%20a5ed458e7554476e9a974d228eb4c6b7/fortio-dashboard.png)
 
 결과 - ROUND_ROBIN과 비슷한 결과를 보입니다
-
 ```
 ..
 # target 50% 0.190853
