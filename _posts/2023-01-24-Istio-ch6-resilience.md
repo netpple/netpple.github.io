@@ -51,27 +51,17 @@ Istio 를 사용하면 애플리케이션에서 별도 구현없이도 장애극
 
 ## 6.2 Client-side load balancing
 
-is the practice of
+Client-side 로드밸런싱  
+- 클라이언트에게 endpoints 정보를 알려주고
+- 클라이언트가 LB 알고리즘을 선택하도록 한다
 
-- **informing** the client about the various **endpoints** available for a service 
-*클라이언트에게 endpoints 정보를 알려주고*
-- **letting** the client pick specific load-balancing **algorithms** for the best distribution of requests over the endpoints
-*클라이언트가 LB 알고리즘을 선택하도록 한다*
+⇒ 이렇게 하면 뭐가 좋은가  
+- 탈중앙화 - (병목, SPoF 우려가 있는) 중앙집중적인 load balancing 을 피할 수 있고
+- 홉 감소 - 불필요한 홉 없이 클라이언트가  직접 요청을 전달할 수 있다
 
-⇒ 이렇게 하면 뭐가 좋냐 
+⇒ 이렇게 함으로써 스케일링 하기도 좋고 topology 변경도 용이해진다  
 
-- reduces the need to rely on centralized load balancing, which could create bottlenecks and failure points,
-*탈중앙화 -* (*병목, SPoF 우려가 있는) 중앙집중적인 load balancing 을 피할 수 있고*
-- and allows the client to make direct, deliberate requests to specific endpoints without having to take unnecessary extra hops.
-*홉 감소* - *불필요한 홉 없이 클라이언트가  직접 요청을 전달할 수 있다*
-
-⇒ Thus our clients and services can scale better and deal with a changing topology.
-
-*이렇게 함으로써 .. 스케일링 하기 더 좋고 topology 변경도 용이해진다*
-
-Istio uses service and endpoint discovery to equip the client-side proxy of service-to-service communication with the correct and most up-to-date information
-
-*Istio는 서비스-대-서비스 통신에서 정확하고 최신의 정보를 바탕으로 client-side proxy를사용하기 위해  service와 endpoint 디스커버리를 이용한다* 
+Istio는 "서비스-to-서비스" 통신에서 보다 정확하고 최신 정보를 바탕으로 client-side proxy를 사용하기 위해 서비스와 endpoint 디스커버리를 이용한다 
 
 ![스크린샷 2023-01-08 오후 7.07.31.png](/assets/img/Istio-ch6-resilience%20a5ed458e7554476e9a974d228eb4c6b7/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-08_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_7.07.31.png)
 
@@ -236,17 +226,14 @@ simple-backend의 latency 를 조정해 보겠습니다.
 
 ### 6.2.2 Setting up our scenario
 
-Realistic setting, *The amount of time* can vary for several **reasons** .
-총소요시간에 영향을 주는 다양한 원인들이 있어요
-
+총소요시간에 영향을 주는 다양한 원인들이 있어요  
 - Request size
 - Process complexity
 - Database usage
 - Calling other services that take time
 
-**Reasons** **outside** the service may also contribute to *the response time* 
-응답시간에 영향을 주는 서비스 외부적인 요인들도 있어요
-
+ 
+응답시간에 영향을 주는 서비스 외부적인 요인들도 있어요  
 - Unexpected, stop-the-world garbage collections (GC)
 - Resource contention (CPU, N/W, …)
 - Network congestion
