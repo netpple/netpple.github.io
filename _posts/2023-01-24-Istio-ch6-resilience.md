@@ -162,14 +162,14 @@ http://localhost | jq ".upstream_calls[0].body"
 ..
 ```
 
-**호출로그 (istio-proxy) ~** backend 요청을 하면 요청을 처리할 endpoint 주소를 응답(301), 전달 받은 endpoint로 다시 요청
+**호출로그 (istio-proxy) ~** backend 요청을 하면 요청을 처리할 redirect 주소를 응답 (301), 전달 받은 redirect(endpoint)로 다시 요청
 
 web 로그 
 
 ```bash
-# stern simple-web-* 
-
-## web -(요청)-> simple-backend (301)
+# stern simple-web-*
+ 
+## web -(요청)-> simple-backend (301) redirect 응답수신 
 simple-web-.. istio-proxy [2023-01-08T12:54:01.523Z] "GET // HTTP/1.1" 301 - via_upstream - "-" 0 36 4 3 "172.17.0.1" "curl/7.84.0" "3aed335d-c138-9f58-b176-465639fcb8e3" "simple-backend:80" "172.17.0.14:8080" outbound|80||simple-backend.istioinaction.svc.cluster.local 172.17.0.13:46010 10.104.237.6:80 172.17.0.1:0 - default
 
 ## web -(요청)-> simple-backend (200)
@@ -184,11 +184,11 @@ backend 로그
 ```bash
 # stern simple-backend-* 
 
-## simple-backend -(응답)-> web (200)
-simple-backend-2-.. istio-proxy [2023-01-08T12:54:01.532Z] "GET / HTTP/1.1" 200 - via_upstream - "-" 0 278 164 163 "172.17.0.1" "curl/7.84.0" "3aed335d-c138-9f58-b176-465639fcb8e3" "simple-backend:80" "172.17.0.7:8080" inbound|8080|| 127.0.0.6:36099 172.17.0.7:8080 172.17.0.1:0 outbound_.80_._.simple-backend.istioinaction.svc.cluster.local default
-
 ## simple-backend -(응답)-> web (301)
 simple-backend-1-.. istio-proxy [2023-01-08T12:54:01.523Z] "GET // HTTP/1.1" 301 - via_upstream - "-" 0 36 2 2 "172.17.0.1" "curl/7.84.0" "3aed335d-c138-9f58-b176-465639fcb8e3" "simple-backend:80" "172.17.0.14:8080" inbound|8080|| 127.0.0.6:39061 172.17.0.14:8080 172.17.0.1:0 outbound_.80_._.simple-backend.istioinaction.svc.cluster.local default
+
+## simple-backend -(응답)-> web (200)
+simple-backend-2-.. istio-proxy [2023-01-08T12:54:01.532Z] "GET / HTTP/1.1" 200 - via_upstream - "-" 0 278 164 163 "172.17.0.1" "curl/7.84.0" "3aed335d-c138-9f58-b176-465639fcb8e3" "simple-backend:80" "172.17.0.7:8080" inbound|8080|| 127.0.0.6:36099 172.17.0.7:8080 172.17.0.1:0 outbound_.80_._.simple-backend.istioinaction.svc.cluster.local default
 ```
 
 호출테스트 ~ 10회 호출 반복
