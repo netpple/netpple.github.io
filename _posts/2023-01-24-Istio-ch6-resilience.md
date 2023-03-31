@@ -1,8 +1,8 @@
 ---
 title: Istio Resilience  
-version: v0.5  
+version: v0.6  
 description: istio in action 6장  
-date: 2023-01-24 09:00:00 +09:00  
+date: 2023-03-31 09:00:00 +09:00  
 categories: network  
 badges:
 - type: info  
@@ -372,8 +372,7 @@ fortio fortio All done 3599 calls (plus 10 warmup) 166.808 ms avg, 59.8 qps
 ### 6.2.3 Testing various client-side load-balancing strategies
 
 테스트 환경
-
-![explain test](/assets/img/Istio-ch6-resilience%20a5ed458e7554476e9a974d228eb4c6b7/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-09_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_2.31.31.png)
+<br />![explain test](/assets/img/Istio-ch6-resilience%20a5ed458e7554476e9a974d228eb4c6b7/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-09_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_2.31.31.png)
 
 - 1,000 rps (requests per seconds) for 60 seconds through 10 connections
 - simple-backend-1 : increase **latency** up to **1 sec**.  *(GC 등의 상황을 가정)*
@@ -392,9 +391,9 @@ kapply -f ch6/simple-backend-delayed.yaml -n istioinaction
 ..
 ```
 설정 전후 비교
-![스크린샷 2023-01-09 오후 3.55.17.png](/assets/img/Istio-ch6-resilience%20a5ed458e7554476e9a974d228eb4c6b7/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-09_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_3.55.17.png "simple-backend-1 설정 전후 비교")
+<br />![스크린샷 2023-01-09 오후 3.55.17.png](/assets/img/Istio-ch6-resilience%20a5ed458e7554476e9a974d228eb4c6b7/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-09_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_3.55.17.png "simple-backend-1 설정 전후 비교")
 
-설정 적용 여부를 확인합니다 
+설정 적용 여부를 확인합니다
 ```bash
 ## 호출 반복 - delay(1초)가 발생하는 응답을 확인합니다 
 time curl -s -o /dev/null -H \
@@ -442,11 +441,9 @@ fortio 대시보드 : browser > [http://localhost:8080/fortio](http://localhost:
     ![fortio-dashboard.png](/assets/img/Istio-ch6-resilience%20a5ed458e7554476e9a974d228eb4c6b7/fortio-dashboard.png)
     
     ![스크린샷 2023-01-09 오후 4.16.56.png](/assets/img/Istio-ch6-resilience%20a5ed458e7554476e9a974d228eb4c6b7/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-09_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_4.16.56.png)
-    
 
 결과 (ROUND_ROBIN)  
 ❊ 75분위수에서 응답이 1초 이상(1.02869) 걸립니다
-
 ```
 ..
 # target 50% 0.190989
@@ -564,19 +561,18 @@ fortio 대시보드 : browser > [http://localhost:8080/fortio](http://localhost:
 <br />엔드포인트로 요청을 보낼 때, queue depth, active requests 등을 모니터링하여 active requests가 가장 적은 엔드포인트를 선택합니다. 
 <br />이런 알고리즘 유형을 사용하면, 이상동작을 보이는 엔드포인트로는 요청을 보내지 않고, 보다 빠르게 응답하는 엔드포인트를 선택할 수 있습니다.
 
-(참고) Envoy least-request load balancing ~ “The power of two choices”
-
-- Envoy는 enpoint의 request depth 를 tracking 함 (not connections)
-- endpoints 중 **random 두 개**를 골라서
-- 둘 중에 “active requests” 가 더 적은 endpoint 를 선별한다.
-- full scan 대비 정확도는 떨어지지만 성능을 trade-off 한다.
+(참고) “**The power of two choices**” ~ Envoy's Least-request 로드밸런싱   
+- Envoy는 엔드포인트의 "request depth"를 추적합니다 (not connections)
+- 엔드포인트들 중에서 **랜덤하게 두 개**를 골라서
+- 둘 중에 “active requests”가 더 적은 endpoint를 선택합니다.
+- Full Scan 대비해서 정확도는 떨어지지만 더 나은 성능을 위한 trade-off 입니다.   
 
 ## 6.3 Locality-aware load balancing
 
-- 컨트롤 플레인의 역할은 서비스의 토폴로지를 이해하고 토폴로지 evolve 를 이해하는 것입니다.
-- overall topology를 이해함으로써 얻는 잇점은 서비스와 피어 서비스 로케이션 같은 휴리스틱에 기초한 라우팅과 로드밸런싱 결정을 자동으로 할 수 있습니다.
-- Istio는  route 가중치를 제공하고 workload의 위치에 따라 routing 결정을 할 수 있는 로드밸런싱 타입을 제공한다. (Locality-aware)
-- Istio는 서비스가 위치한 region 이나 AZ (available zone) 를 인식하고 보다 가까운 서비스에 priority를 줄 수 있다.
+- 컨트롤 플레인의 역할은 서비스의 토폴로지를 이해하고 토폴로지 진화(evolve)를 이해하는 것입니다.
+- 전체적인 토폴로지를 이해함으로써 얻는 잇점은 서비스와 피어-서비스 로케이션 같은 휴리스틱에 기초한 라우팅과 로드밸런싱 결정을 자동으로 할 수 있습니다.
+- Istio는  route 가중치를 제공하고 workload의 위치에 따라 routing 결정을 할 수 있는 로드밸런싱 타입을 제공합니다. (Locality-aware)
+- Istio는 서비스가 위치한 region 이나 AZ (available zone) 를 인식하고 보다 가까운 서비스에 priority를 줄 수 있습니다.
 - 예) simple-backend 가 여러 region (us-west, us-east, europe-west) 에 걸쳐 있다고 가정해보자
     - simple-web (us-west) 이 simple-backend를 호출할 때 simple-web과 동일한 us-west의 simple-backend로 호출하게 할 수 있다.
     - 만약 모든 endpoints (simple-backend) 를 동등하게 취급한다고 하면, zone/region cross 하는 요청이 발생할 수 있고 이 경우 high latency를 경험하게 된다.
