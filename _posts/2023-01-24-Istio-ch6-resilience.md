@@ -444,7 +444,8 @@ fortio 대시보드 : browser > [http://localhost:8080/fortio](http://localhost:
     ![스크린샷 2023-01-09 오후 4.16.56.png](/assets/img/Istio-ch6-resilience%20a5ed458e7554476e9a974d228eb4c6b7/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-09_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_4.16.56.png)
     
 
-결과 (round-robin load balancing stratege)
+결과 (ROUND_ROBIN)  
+❊ 75분위수에서 응답이 1초 이상(1.02869) 걸립니다
 
 ```
 ..
@@ -488,7 +489,8 @@ fortio 대시보드 : browser > [http://localhost:8080/fortio](http://localhost:
 
 ![fortio-dashboard.png](/assets/img/Istio-ch6-resilience%20a5ed458e7554476e9a974d228eb4c6b7/fortio-dashboard.png)
 
-결과 - ROUND_ROBIN과 비슷한 결과를 보입니다
+결과 (RANDOM) - ROUND_ROBIN과 비슷한 결과를 보입니다  
+❊ 75분위수에서 응답이 1초 이상(1.02411) 걸립니다
 ```
 ..
 # target 50% 0.190853
@@ -531,7 +533,8 @@ fortio 대시보드 : browser > [http://localhost:8080/fortio](http://localhost:
 
 ![fortio-dashboard.png](/assets/img/Istio-ch6-resilience%20a5ed458e7554476e9a974d228eb4c6b7/fortio-dashboard.png)
 
-결과 ~ RR, RANDOM 보다 성능이 더 좋습니다. * 75분위수도 200ms 이하의 성능을 보여줍니다
+결과 (LEAST_CONN) ~ ROUND_ROBIN, RANDOM 보다 성능이 더 좋습니다.  
+❊ *75분위수*도 200ms(0.195024) 이내의 응답성능을 보입니다
 
 ```
 ..
@@ -551,20 +554,15 @@ fortio 대시보드 : browser > [http://localhost:8080/fortio](http://localhost:
 
 ![스크린샷 2023-01-09 오후 10.19.51.png](/assets/img/Istio-ch6-resilience%20a5ed458e7554476e9a974d228eb4c6b7/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-09_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_10.19.51.png)
 
-- The different load balancers produce different results under realistic service latency behavior.
-- Their results differ in both the histogram and their percentiles.
-- Least connection performs better than both random and round robin.
-    
-    > *The challenge with these (random and round robin) strategies is that the endpoints in the load-balancer pool are not typically uniform, even if they are backed by the same service and resources. As we simulated in our tests, any of these endpoints can experience garbage collection or resource contention that introduces high latency, and round robin and random do not take any runtime behavior into account.
-    Random과 Round Robin은 endpoints 상태를 고려하지 않는다.*
-    > 
-    
-    > *Least connection 은 endpoints latencies 를 고려한다.*
-    > 
-    > 
-    > *The least-connection load balancer (in Envoy, it’s implemented as least request) does take into account the latencies of the specific endpoints. When it sends requests out to endpoints, it monitors the queue depths, tracking active requests, and picks the endpoints with the fewest active requests in flight. Using this type of algorithm, we can **avoid** sending requests to endpoints that **behave** **poorly** and **favor** those that are **responding** more **quickly**.*
-    > 
-    
+- 로드밸런싱 알고리즘에 따라 다른 결과를 보입니다
+- 히스토그램과 분위수 모두 결과에서 차이가 보입니다.
+- Least-connection (LEAST_CONN)이 RANDOM, ROUND_ROBIN 보다 더 나은 성능을 보여줍니다.
+- RANDOM, ROUND_ROBIN은 엔드포인트 상태를 고려하지 않습니다. 
+<br/> RANDOM, ROUND_ROBIN 전략의 문제점은 로드밸런서 풀의 엔드포인트가 동일한 서비스와 리소스에 기반하더라도 일반적으로 균일하지 않다는 점입니다.
+<br/> 테스트에서도 시뮬레이션 해보았지만, 엔드포인트들 중에는 가비지컬렉션이나 리소스 경합으로 인해 지연이 발생하는 상황이 있을 수 있는데, ROUND_ROBIN이나 RANDOM 알고리즘에서는 이러한 런타임 상황을 고려할 수 없습니다
+- Least-connection 로드밸런스는 엔드포인트의 Latency를 고려합니다.
+<br />엔드포인트로 요청을 보낼 때, queue depth, active requests 등을 모니터링하여 active requests가 가장 적은 엔드포인트를 선택합니다. 
+<br />이런 알고리즘 유형을 사용하면, 이상동작을 보이는 엔드포인트로는 요청을 보내지 않고, 보다 빠르게 응답하는 엔드포인트를 선택할 수 있습니다.
 
 (참고) Envoy least-request load balancing ~ “The power of two choices”
 
