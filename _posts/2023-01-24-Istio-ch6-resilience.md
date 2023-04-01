@@ -573,9 +573,9 @@ fortio 대시보드 : browser > [http://localhost:8080/fortio](http://localhost:
 - 전체적인 토폴로지를 이해함으로써 얻는 잇점은 서비스와 피어-서비스 로케이션 같은 휴리스틱에 기초한 라우팅과 로드밸런싱 결정을 자동으로 할 수 있습니다.
 - Istio는  route 가중치를 제공하고 workload의 위치에 따라 routing 결정을 할 수 있는 로드밸런싱 타입을 제공합니다. (Locality-aware)
 - Istio는 서비스가 위치한 region 이나 AZ (available zone) 를 인식하고 보다 가까운 서비스에 priority를 줄 수 있습니다.
-- 예) simple-backend 가 여러 region (us-west, us-east, europe-west) 에 걸쳐 있다고 가정해보자
-    - simple-web (us-west) 이 simple-backend를 호출할 때 simple-web과 동일한 us-west의 simple-backend로 호출하게 할 수 있다.
-    - 만약 모든 endpoints (simple-backend) 를 동등하게 취급한다고 하면, zone/region cross 하는 요청이 발생할 수 있고 이 경우 high latency를 경험하게 된다.
+- 예) simple-backend 가 여러 region (us-west, us-east, europe-west) 에 걸쳐 있다고 가정해 봅니다
+    - simple-web (us-west) 이 simple-backend를 호출할 때 simple-web과 동일한 us-west의 simple-backend로 호출하게 할 수 있습니다
+    - 만약 모든 endpoints (simple-backend) 를 동등하게 취급한다고 하면, zone/region 을 남나드는 요청이 발생할 수 있는데 이 경우 high latency를 경험하게 됩니다
         
         ![스크린샷 2023-01-10 오전 9.14.58.png](/assets/img/Istio-ch6-resilience%20a5ed458e7554476e9a974d228eb4c6b7/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-10_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%258C%25E1%2585%25A5%25E1%2586%25AB_9.14.58.png)
         
@@ -584,7 +584,7 @@ fortio 대시보드 : browser > [http://localhost:8080/fortio](http://localhost:
 
 **Locality Labeling**
 
-- Kubenetes 노드에 region, zone 정보를 레이블링 합니다.
+- Kubenetes 노드에 region, zone 정보를 레이블링 합니다.  
 예시)
     - failure-domain.beta.kubernetes.io/region or topology.kubernetes.io/region
     - failure-domain.bata.kubernetes.io/zone or topology.kubernetes.io/zone
@@ -654,19 +654,17 @@ kubectl get deployment.apps/simple-backend-2 \
 -n istioinaction \
 -o jsonpath='{.spec.template.metadata.labels.istio-locality}{"\n"}'
 
-us-west1.us-west1-a
+us-west1.us-west1-b
 ```
 
-> *Istio’s Locality aware loadbalancing is enabled by default
-`meshConfig.localityLbSetting.enabled: true`*
-> 
-> 
+> *Istio 는 "Locality aware" 로드밸런싱이 기본으로 활성화되어 있습니다.*    
+`meshConfig.localityLbSetting.enabled: true`
 > [https://karlstoney.com/2020/10/01/locality-aware-routing/](https://karlstoney.com/2020/10/01/locality-aware-routing/)
 > 
 
-[Istio - ****Locality Aware Routing****](https://www.notion.so/Istio-Locality-Aware-Routing-488214e0d0fe425eb4aef8aef05fbf0e)
+[**Locality Aware Routing**](https://www.notion.so/Istio-Locality-Aware-Routing-488214e0d0fe425eb4aef8aef05fbf0e)
 
-**호출테스트 1** - without outlierDetection (OK) ~ **But …**
+**호출테스트 1**
 
 ```bash
 for in in {1..10}; do \
@@ -686,17 +684,19 @@ curl localhost \
 "Hello from simple-backend-2"
 ```
 
-Locality-aware routing 이 default 인데 왜 simple-backend-1과 2 응답이 섞여 나올까요
+Locality-aware 라우팅이 기본 활성화 되어 있다면  
+simple-web(us-west1-a)과 동일한 Locality 인 simple-backend-1만 응답해야 할 것 같은데요.    
+왜 simple-backend-1과 2 응답이 섞여 나올까요?
 
-⇒ locality-aware load balancing이 동작하려면 “*health checking*”이 필요해요
+⇒ locality-aware 로드밸런싱이 동작하려면 “*health checking*”이 필요해요
 
 > *Istio does not know which endpoints in the load-balancing pool are unhealthy and what heuristics to use to spill over into the next locality.*
 > 
 
 **Outlier detection** 
 
-- watch the behavior of endpoints and whether they appear healthy
-- tracking errors that an endpoint may return and marking them as unhealthy
+- 엔드포인트가 정상(healthy)인지 동작을 감시합니다 
+- 엔드포인트 에러를 추적하고 비정상(unhealthy)인지 표시합니다
 
 ```yaml
 # cat ch6/simple-backend-dr-outlier.yaml
@@ -719,7 +719,7 @@ kubectl apply -f ch6/simple-backend-dr-outlier.yaml \
 -n istioinaction
 ```
 
-**호출테스트 2** - with outlierDetection (OK) ~ simple-web과 동일 zone (us-west1-a) 인 simple-backend-1만 응답
+**호출테스트 2** - with outlierDetection  
 
 ```bash
 for in in {1..10}; do \
@@ -738,12 +738,26 @@ curl localhost \
 "Hello from simple-backend-1"
 "Hello from simple-backend-1"
 ```
+호출 결과, Locality-aware 로드밸런싱 되어 simple-web과 동일 zone (us-west1-a) 인 simple-backend-1만 응답합니다. 
 
-오동작을 유발하는 simple-backend-1 을 배포하고 응답결과를 살펴봅시다.
+이번에는, 오동작을 유발하는 simple-backend-1 을 배포하고 응답결과를 살펴봅시다.
 
 ```bash
 kubectl apply -f ch6/simple-service-locality-failure.yaml \
 -n istioinaction
+```
+
+설정의 주요부분만 살펴봅니다. 다음과 같이 HTTP 500 에러를 일정비율로 발생하도록 설정합니다.  
+```yaml
+##..중략
+  env:
+    - name: "ERROR_TYPE"
+      value: "http_error"
+    - name: "ERROR_RATE"
+      value: "1"
+    - name: "ERROR_CODE"
+      value: "500"    
+##..중략
 ```
 
 *simple-backend-1-* Pod 가 Running 상태로 완전히 배포된 후에 호출을 해보세요*
@@ -843,30 +857,27 @@ curl -s -H "Host: simple-web.istioinaction.io" localhost \
 
 ## 6.4 Transparent timeouts and retries
 
-네트웍이슈 ~ Latency and Failures 처리
+네트워크의 지연(Latency)과 실패(Failures)에 대한 처리 
+- Load balancing과 Locality로 이러한 문제를 완화하는 것을 보았습니다.
+- 그런데 말입니다, 한없이 오래 걸리는 호출이나 간헐적인 실패들은 어떻게 다루어야 할까요?
 
-- load balancing과 locality로 이러한 문제를 완화하는 것을 보았다.
-- 한없이 오래걸리는 호출과 간헐적인 실패들을 어떻게 다루어야 할까?
-
-왜 Transparent 한가 ? 
-
+이러한 처리가 "Transparent" 하다는 의미  
 - application 입장에서는 존재 자체를 모름 (투명해)
-- application이 신경쓰지 않더라도 istio-proxy가 상황에 따라서 timeouts와 retries 를 처리함
+- application 에서 신경쓰지 않더라도 istio-proxy가 상황에 따라서 timeouts 와 retries 로 네트워크 이슈를 처리함
 
 ### 6.4.1 Timeouts
 
-> *Generally, it makes sense to have larger timeouts at the edge (where traffic comes in) of an architecture and shorter (or more restrictive) timeouts for the layers deeper in the call graph.*
-> 
+> *Generally, it makes sense to have larger timeouts at the edge (where traffic comes in) of an architecture and shorter (or more restrictive) timeouts for the layers deeper in the call graph.*  
+> 통상, 밖 → 안, backend에 위치할 수록 timeout 을 짧게 설정합니다
 
-통상, 밖 → 안, backend에 위치할 수록 timeout 이 짧아진다
-
+실습 환경을 구성합니다 
 ```bash
 kubectl apply -f ch6/simple-web.yaml -n istioinaction;
 kubectl apply -f ch6/simple-backend.yaml -n istioinaction;
 kubectl delete destinationrule simple-backend-dr -n istioinaction;
 ```
 
-호출테스트 (OK)
+호출테스트
 
 ```bash
 for in in {1..10}; do time curl localhost \
@@ -887,14 +898,14 @@ user	0m0.027s
 sys	0m0.008s
 ```
 
-**1초 후 응답하는  simple-backend-1를 설치한다.**
+** simple-backend-1를 1초 delay로 응답하도록 배포 합니다.**
 
 ```bash
 kubectl apply -f ch6/simple-backend-delayed.yaml \
 -n istioinaction
 ```
 
-호출테스트 (OK) ~ simple-backend-1로 로드밸런싱 될 경우 **1초 이상 소요**확인
+호출테스트 ~ simple-backend-1로 로드밸런싱 될 경우 **1초 이상 소요**확인
 
 ```bash
 
@@ -918,7 +929,7 @@ sys	0m0.013s
 ..
 ```
 
-**simple-backend 에 `timeout` 을 적용해보자 ~ VirtualService**
+**simple-backend 에 `timeout` 을 적용해 보겠습니다 ~ VirtualService**
 
 ```yaml
 # cat ch6/simple-backend-vs-timeout.yaml
@@ -942,7 +953,7 @@ kubectl apply -f ch6/simple-backend-vs-timeout.yaml \
 -n istioinaction
 ```
 
-호출테스트 (OK) ~ 0.5s 이상 걸리는 호출은 타임아웃 발생
+호출테스트 ~ 0.5s 이상 걸리는 호출은 타임아웃 발생 (500응답)
 
 ```bash
 for in in {1..10}; do time curl localhost \
@@ -966,32 +977,30 @@ sys	0m0.012s
 
 ### 6.4.2 Retries
 
-언제 retry 가 필요할까
+언제 retry 가 필요할까  
+- 간헐적인 네트웍 실패
+- 일반적인/예견된 실패
 
-- intermittent network failures  (네트웍 순단)
-- common/expected failures
-
-retry 시 고려할 것
-
+retry 시 고려할 것  
 - causing cascading failures
 
-설정 초기화
-
 ```bash
+## 설정 초기화
+
 kubectl apply -f ch6/simple-web.yaml -n istioinaction;
 kubectl apply -f ch6/simple-backend.yaml -n istioinaction;
 ```
 
-실습을 위해 retry 옵션 끄기
-
 ```bash
+## 실습을 위해 retry 옵션 끄기
+
 istioctl install --set profile=demo \
 --set meshConfig.defaultHttpRetryPolicy.attempts=0
 ```
 
-istiod 로그
-
 ```bash
+## istiod 로그 확인 - defaultHttpRetryPolicy 설정이 비어있음 
+# stern istiod- -n istio-system 
 ..
 istiod-fd94754fb-5jbr5 discovery     "defaultHttpRetryPolicy": {
 istiod-fd94754fb-5jbr5 discovery
@@ -1002,6 +1011,18 @@ istiod-fd94754fb-5jbr5 discovery     }
 **에러 발생 시 retry**
 
 75% 확률로 failures (503) 를 발생하는 simple-backend-1 배포
+```yaml
+## 주요 설정
+# .. 중략 ..
+  env:
+  - name: ERROR_TYPE
+    value: http_error
+  - name: ERROR_RATE
+    value: "0.75"
+  - name: ERROR_CODE
+    value: "503"
+# .. 중략 ..
+```
 
 ```bash
 kubectl apply -f ch6/simple-backend-periodic-failure-503.yaml \
@@ -1010,7 +1031,7 @@ kubectl apply -f ch6/simple-backend-periodic-failure-503.yaml \
 
 ![스크린샷 2023-01-10 오후 10.15.57.png](/assets/img/Istio-ch6-resilience%20a5ed458e7554476e9a974d228eb4c6b7/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-10_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_10.15.57.png)
 
-호출테스트 (OK) ~ simple-backend-1 호출 시 예상대로 failures (500) 발생
+호출테스트 ~ simple-backend-1 호출 시 예상대로 failures (500) 발생
 
 ```bash
 for in in {1..10}; do curl localhost \
@@ -1028,6 +1049,15 @@ for in in {1..10}; do curl localhost \
 ```
 
 * simple-backend-1 —(**503**)—> simple-web —(500)—> client (curl)
+<br /> simple-web 과 simple-backend-1 에서 503 확인
+
+``` bash
+## simple-backend-1 에서 503 에러 
+simple-backend-1-.. istio-proxy [2023-03-31T02:01:23.419Z] "GET / HTTP/1.1" 503 - via_upstream - "-" 0 171 1 1 "172.17.0.1" "curl/7.86.0" "bf93746b-c0e6-937f-a338-1757d2462d81" "simple-backend:80" "172.17.0.7:8080" inbound|8080|| 127.0.0.6:38549 172.17.0.7:8080 172.17.0.1:0 outbound_.80_._.simple-backend.istioinaction.svc.cluster.local default
+
+## simple-web 에서 503 응답 수신
+simple-web-.. istio-proxy [2023-03-31T02:01:23.418Z] "GET / HTTP/1.1" 503 - via_upstream - "-" 0 171 1 1 "172.17.0.1" "curl/7.86.0" "bf93746b-c0e6-937f-a338-1757d2462d81" "simple-backend:80" "172.17.0.7:8080" outbound|80||simple-backend.istioinaction.svc.cluster.local 172.17.0.4:60206 10.103.139.156:80 172.17.0.1:0 - -
+```
 
 VirtualService 에 `retries` 를 설정해 보자
 
@@ -1065,7 +1095,7 @@ for in in {1..10}; do curl localhost \
 ..
 ```
 
-* simple-backend-1 —(503)—> simple-web —(retry)—> simple-backend-1
+* simple-backend-1 —(503, retry)—> simple-backend-2 --> simple-web
 
 에러로그 ~ 아래와 같이 에러가 발생하지만 retry 를 통해 client는 정상응답을 받음
 
@@ -1186,18 +1216,18 @@ Service 5에는 2^5 = 32 요청이 발생
 Thundering herd 방지 대책
 
 - (방안1) edge / intermidate 단의 retry 제한 (1 or none), 되도록 retry는 call stack 가장 안쪽에서만 제한적으로 사용
-- (방안2) overall retry budget (rate-limit)  ** Istio API는 제공안함*
+- (방안2) overall retry budget (rate-limit) ~ **Istio API는 제공안함**
 - (방안3) 동일 locality 내 retries (default)  
 `retryRemoteLocalities` 옵션으로 다른 locality 로 retries 가능
 outlier detection 필요
 
 ### 6.4.3 Advanced retries
 
-- **automatic** retries ⇒ make services resilient to intermittent network failures
-- retry **parameter tunning** for use cases
-- retriable status code, backoff retry time ~ Istio **Extension** API (EnvoyFilter)
+- **자동** retry ⇒ 간헐적인 네트워크 실패로 부터 서비스를 탄력적으로 해줌
+- 상황별 retry **파라메터 튜닝**
+- Istio **확장(Extension)** API (EnvoyFilter) ~ retriable status code, backoff retry time 
 
-새로운 `408` 에러코드를 발생하도록 simple-backend-1을 배포
+`408` 에러코드를 발생하는 simple-backend-1을 배포
 
 ```bash
 kubectl apply -f ch6/simple-backend-periodic-failure-408.yaml \
@@ -1235,7 +1265,7 @@ simple-backend-1-7f5cf8998d-8q9md istio-proxy [2023-01-11T06:16:29.071Z] "GET / 
 envoy 의 retriable_status_codes
 > 
 
-EnvoyFilter 를 사용하여 `retriable_status_codes`, `retriable_status_codes.base_interval` 을 수정해 봅시다  Q
+EnvoyFilter 를 사용하여 `retriable_status_codes`, `retriable_status_codes.base_interval` 을 수정해 봅시다
 
 ```yaml
 # cat ch6/simple-backend-ef-retry-status-codes.yaml
@@ -1322,21 +1352,16 @@ simple-backend-1-7f5cf8998d-8q9md istio-proxy [2023-01-11T06:28:48.740Z] "GET / 
 
 simple-backend-1-7f5cf8998d-8q9md istio-proxy [2023-01-11T06:28:49.511Z] "GET / HTTP/1.1" 408 - via_upstream - "-" 0 172 1 1 "172.17.0.1" "curl/7.84.0" "8a772e89-3ac7-91bb-a5f0-6bb202b39058" "simple-backend:80" "172.17.0.11:8080" inbound|8080|| 127.0.0.6:55897 172.17.0.11:8080 172.17.0.1:0 outbound_.80_._.simple-backend.istioinaction.svc.cluster.local default
 ```
-
-<aside>
-💡 *EvnoyFilter 를 이용하면 Istio 에서 설정할 수 없는 Envoy 옵션들을 수정할 수 있습니다.*
-
-</aside>
-
-**REQUEST HEDGING**
-
+💡이처럼 EvnoyFilter 를 이용하면 Istio 에서 설정할 수 없는 Envoy 옵션들을 수정할 수 있습니다
+  
+**REQUEST HEDGING**  
 - Hedging == fencing , 가두리치다
 - 요청을 보낸 노드의 응답이 길어질 경우(timed-out), 똑같은 요청을 다른 노드로 보내는 기법입니다
 - 주목할 점은 retry와 달리 timed-out 요청을 취소하지 않고 후속 요청과 경쟁(race)시킵니다
 - 즉, 두 요청 중에 먼저 도착한 응답을 사용합니다
 - request hedging 은 tail latency를 개선하는 방법으로 언급되기도 하는데요
-- tail latency 에 포함되는 요청 비중이 높을 경우 request 부하가 커질 수 있으므로 trade-off를 잘따져보아야 합니다
-- 그리고, 요청이 병렬적으로 발생하기 때문에, “멱등성” 보장 등 제약사항도 고려해야만 합니다.
+- tail latency 에 포함되는 요청 비중이 높을 경우 request 부하가 커질 수 있으므로 trade-off를 잘 따져보아야 합니다
+- 그리고, 요청이 병렬적으로 발생하기 때문에, “멱등성” 보장 등 제약사항도 고려해야 합니다.
 
 Request Hedging 역시 `EnvoyFilter` 를 통해 설정합니다.
 
@@ -1366,22 +1391,19 @@ spec:
           hedge_on_per_try_timeout: true
 ```
 
-타임아웃과 retry 가 간단하지 않죠? 서비스에서 이 둘에 대한 정책을 세우는 것은 둘이 잘 엮여서 (chained) 동작할 수 있도록 고려해야 하므로 쉬운 일이 아닙니다.  잘못 설정할 경우 시스템 아키텍처 상 좋지 않은 결과를 초래하거나 증폭할 수 있고 시스템의 부하를 가중시키고 연쇄적인 실패를 야기할 수 있습니다. 
+타임아웃과 Retry, 간단하지 않죠? 서비스에서 이 둘에 대한 정책을 세우는 것은 둘이 잘 엮여서 (chained) 동작할 수 있도록 고려해야 하므로 쉬운 일이 아닙니다.  잘못 설정할 경우 시스템 아키텍처 상 좋지 않은 결과를 초래하거나 증폭할 수 있고 시스템의 부하를 가중시키고 연쇄적인 실패를 야기할 수 있습니다. 
 
 > *Resilient 아키텍처 구축의 마지막 퍼즐은 다함께 “**Skipping Retry**” 하는 것입니다.  retry 하는 대신에 “fail fast” 하는 것이죠. 부하를 가중하는 대신에 일정시간 동안 “**Limit Load**” 함으로써 upstream 시스템이 회복할 시간을 벌어주는 전략입니다. **Circuit Breaking** 을 소개합니다.*
 > 
 
-## 6*.*5 Circuit breaking with Istio
+## 6.5 Circuit breaking with Istio
 
-- 연쇄적인 장애전파를 막기위한 방법
-- unhealthy 시스템으로의 트래픽을 제한함으로써 부하가중을 막고 회복되도록 돕는다
-
-Istio’s 2 controls
-
-1. to **manage** how many **connections** and outstanding **requests** are allowed to a specific service.
-This control to guard against services that slow down and thus back up the client, as illustrated in figure 6.15.
-
-![스크린샷 2023-01-12 오후 5.45.48.png](/assets/img/Istio-ch6-resilience%20a5ed458e7554476e9a974d228eb4c6b7/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-12_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_5.45.48.png)
+- 연쇄적인 장애전파를 막기위한 방법으로 
+- Unhealthy 시스템으로의 트래픽을 제한함으로써 부하가중을 막아 회복을 돕습니다.
+- Istio 에 정확히 Circuit breaker 라는 이름의 설정은 없지만
+- 백엔드 서비스로의 부하를 제한하는 방법, Circuit breaker 로써 효율적으로 작동할 수 있는 두가지 방법을 제공합니다
+  - 방법1. 커넥션/요청수 제한 - 커넥션 및 요청이 limit 초과 시 fail fast 전략
+  - 방법2. 이상동작 엔드포인트 제거 - 로드밸런싱 풀의 엔드포인트를 감시하여 이상동작(misbehaving)이 감지되면 제거(eviction)
 
 ### 6.5.1 Guarding against slow services with connection-pool control
 
@@ -1554,10 +1576,11 @@ All done 56 calls (plus 2 warmup) 975.611 ms avg, 1.8 qps
     ```
     
 
-> **C*ircuit breaking 동작여부**를 어떻게 확인할 수 있을까요 ?*
+> 그런데 말입니다 ... 이것이 진짜 에러인지, Circuit breaking 된 것인지 아리송 합니다  
+**Circuit breaking 동작여부**를 어떻게 확인할 수 있을까요 ?
 > 
 
-simple-web > istio-proxy 의 statistics 를 활성화 합니다. 
+simple-web > istio-proxy 의 statistics 를 활성화 합니다.  
 (1) `sidecar.istio.io/statsInclusionPrefixes`  **어노테이션 설정**
 
 ```bash
@@ -1609,7 +1632,7 @@ kubectl exec -it deploy/simple-web -c istio-proxy \
 - upstream_cx_overflow ~ `maxConnections` 초과
 - upstream_rq_pending_overflow ~  `http1MaxPendingRequests` 초과
 
-> `*http2MaxRequests`  parallel requests 를 늘리면 어떻게 될까?*
+> `http2MaxRequests` (parallel requests) 를 늘리면 어떻게 될까?
 > 
 
 `http2MaxRequests` 조정: 1 → 2,  “**동시요청개수**”를 늘림
@@ -1698,10 +1721,11 @@ http://localhost/
 Error cases : count 0 avg 0 +/- 0 min 0 max 0 sum 0
 ..
 Code 200 : 33 (100.0 %)
+
 All done 33 calls (plus 2 warmup) 1888.619 ms avg, 1.0 qps
 ```
 
-확인 ~ simple-web > istio-proxy 의 stats 조회 ⇒ “**rq_pending 없음**”
+확인 ~ simple-web > istio-proxy 의 stats 조회 ⇒ “**upstream.rq_pending_overflow: 0 (없음)**”
 
 ```bash
 kubectl exec -it deploy/simple-web -c istio-proxy \
@@ -1826,8 +1850,8 @@ spec:
 n = eject 횟수
 - `maxEjectionPercent` : 전체 노드 중 ejection 허용 비율
 
-```yaml
-kubectl apply -f ch6/simple-backend-dr-outlier-5s.yaml\
+```bash
+kubectl apply -f ch6/simple-backend-dr-outlier-5s.yaml \
 -n istioinaction
 ```
 
@@ -1910,7 +1934,7 @@ spec:
       retryOn: 5xx
 ```
 
-```yaml
+```bash
 kubectl apply -f ch6/simple-backend-vs-retry-500.yaml \
 -n istioinaction
 ```
