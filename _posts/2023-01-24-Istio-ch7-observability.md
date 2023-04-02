@@ -61,7 +61,7 @@ badges:
 
 - monitoring is … “collecting” “aggregating” “matching”
 *metrics, logs, traces, …*
-- monitoring is subset of obsavability
+- monitoring is a subset of obsavability
 - **monitoring 은** metrics을 토대로 *(known, 알려진)* **undesirable states를 watch** 하고 알람을 전송함
 - **observability 는** 시스템이 훨씬 더 **unpredictable** 하고 나아가 시스템에서 가능한 실패 전부를 **알 수 없다고 가정함** (보다 현실적)
 - 따라서 monitoring 보다 **훨씬 더 많은 데이터를 필요로 함**
@@ -72,20 +72,19 @@ badges:
 
 **그래서 Istio는 observability 확보에 어떤 도움을 주나요?**
 
-- **data plane proxy ~** app. side’s **Service proxy** (Envoy)
-- sits in the **request path** between services,
-- **capture metrics** related to request handling and service interaction (tps, latency, failures …)
-- add new metrics
-- tracing requests
+- 앱 사이드의 서비스 프록시로써  
+- 서비스 간 **request 경로** 상에 위치하여 
+- request 핸들링이나 서비스 인터렉션과 관련된 메트릭들 (tps, latency, failures …)을 수집하고
+- 새로운 메트릭을 추가하기도 합니다. 
+- 그리고, request 를 추적 (tracing) 하는데도 사용하는데요.  
     - 요청의 흐름에 어떤 서비스, 컴포넌트가 관여돼 있는지
-    - 각 노드에서 요청을 처리하는데 얼마나 소요 되는지
+    - 각 노드에서 요청을 처리하는데 얼마나 소요 되는지 등을 확인하는데 도움이 됩니다. 
 - monitoring-tools 활용 : Prometheus, Grafana, Kiali , …
-
-이번 장에서는 앞의 2장에서 사용했던 *(데모용도의)* 모니터링 add-ons 를 제거하고 좀 더 실서비스에 가까운 셋업을 해보겠습니다.
 
 **초기화**
 
-add-on 을 제거합니다.
+add-on 을 제거합니다.  
+이번 장에서는 앞의 2장에서 사용했던 *(데모용도의)* 모니터링 add-ons 를 제거하고 좀 더 실서비스에 가깝게 셋업해 보겠습니다.
 
 ```bash
 
@@ -98,7 +97,7 @@ istioinaction 네임스페이스 초기화
 
 ```bash
 kubectl delete -n istioinaction \
-deploy,svc,gw,vs,dr --all
+deploy,svc,gw,vs,dr,envoyfilter --all
 ```
 
 * deploy - deployment, svc - service, gw - gateway, vs -virtualservice, dr - destinationrule
@@ -119,7 +118,7 @@ deploy,svc,gw,vs,dr --all
 
 지금 부터 실습을 통해서 Istio가  어떻게 application network 상의 metrics를 수집하여 explore, visualize 할 수 있는 영역으로 보내는지 살펴 봅니다.
 
-*실습 기준이 되는 디렉토리 (`book-source-code`)와 네임스페이스(`istioinaction`) 를 기억해 주세요*
+*실습은 실습 디렉토리 (`book-source-code`)와 실습 네임스페이스(`istioinaction`) 를 기준으로 합니다.*
 
 예제 앱 설치 및 네트워크 환경 설정
 
@@ -153,12 +152,12 @@ curl -H "Host: webapp.istioinaction.io" http://localhost/api/catalog
 [{"id":1,"color":"amber","department":"Eyewear","name":"Elinor Glasses","price":"282.00"},{"id":2,"color":"cyan","department":"Clothing","name":"Atlas Shirt","price":"127.00"},{"id":3,"color":"teal","department":"Clothing","name":"Small Metal Shoes","price":"232.00"},{"id":4,"color":"red","department":"Watches","name":"Red Dragon Watch","price":"232.00"}]
 ```
 
-가장 첫번째로 확인해야 할 것은 **sidecar proxy metrics** 입니다.
+첫번째로 **sidecar proxy (istio-proxy)** 의 메트릭을 확인해 봅시다.
 
 배포한 앱의 Pod를 조회해 보세요. webapp, catalog 모두 sidecar proxy를 가지고 있습니다 *(READY 항목, 컨테이너가 2개입니다)*
 
 ```bash
-## Pod 조회
+## Pod 조회 - READY 항목을 보면 컨테이너가 2개씩 있습니다
 kubectl get po -n istioinaction
 
 NAME         READY   STATUS   ..
@@ -169,28 +168,46 @@ webapp-..    2/2     Running  ..
 sidecar proxy 가 제공하는 메트릭을 확인해 보세요
 
 ```bash
-## sidecar proxy (istio-proxy) 확인
+## sidecar proxy (istio-proxy) 확인. '-c'옵션으로 컨테이너를 지정합니다
 kubectl exec -it deploy/webapp -c istio-proxy \
 -- curl localhost:15000/stats
 ```
 
-```
+```bash
 ## 출력 예시 ##
+## 엄청나게 많은 메트릭 항목들이 쏟아집니다. 
 ..
 wasmcustom.reporter=.=destination;.;source_workload=.=istio-ingressgateway;.;source_workload_namespace=.=istio-system;.;source_principal=.=spiffe://cluster.local/ns/istio-system/sa/istio-ingressgateway-service-account;.;source_app=.=istio-ingressgateway;.;source_version=.=unknown;.;source_canonical_service=.=istio-ingressgateway;.;source_canonical_revision=.=latest;.;source_cluster=.=Kubernetes;.;destination_workload=.=webapp;.;destination_workload_namespace=.=istioinaction;.;destination_principal=.=spiffe://cluster.local/ns/istioinaction/sa/webapp;.;destination_app=.=webapp;.;destination_version=.=unknown;.;destination_service=.=webapp.istioinaction.svc.cluster.local;.;destination_service_name=.=webapp;.;destination_service_namespace=.=istioinaction;.;destination_canonical_service=.=webapp;.;destination_canonical_revision=.=latest;.;destination_cluster=.=Kubernetes;.;request_protocol=.=http;.;response_flags=.=-;.;connection_security_policy=.=mutual_tls;.;response_code=.=200;.;grpc_response_status=.=;.;istio_requests_total: 5
 .. 
 ```
 
-(참고) pilot-agent 를 이용해 조회할 수 도 있습니다
+(참고) 컨테이너의 pilot-agent 를 이용해서도 동일하게 조회할 수 있습니다
 
 ```bash
 kubectl exec -it deploy/webapp -c istio-proxy \
--- pilot-agent request GET stats
+-- pilot-agent request GET /stats
 ```
 
 ```bash
 kubectl exec -it deploy/webapp -c istio-proxy \
--- pilot-agent request GET help
+-- pilot-agent request GET /help
+
+..
+  /stats: print server stats
+      usedonly: Only include stats that have been written by system since restart
+      filter: Regular expression (Google re2) for filtering stats
+      format: Format to use; One of (html, text, json)
+      type: Stat types to include.; One of (All, Counters, Histograms, Gauges, TextReadouts)
+      histogram_buckets: Histogram bucket display mode; One of (cumulative, disjoint, none)
+..
+
+## 필터 사용 예시1
+kubectl exec -it deploy/webapp -c istio-proxy \
+-- pilot-agent request GET /stats?filter=cluster.*.upstream_cx_total
+
+## 필터 사용 예시2
+kubectl exec -it deploy/webapp -c istio-proxy \
+-- pilot-agent request GET /stats?filter=catalog.istioinaction
 ```
 
 보시다시피 별도 설정없이도 풍부한 메트릭을 제공합니다. 
@@ -201,7 +218,7 @@ kubectl exec -it deploy/webapp -c istio-proxy \
 - istio_request_duration
 - istio_request_duration_milliseconds
 
-(참고) [Standard Istio Metrics](https://istio.io/latest/docs/reference/config/metrics/) 을 참고해주세요
+(참고) Istio가 제공하는 메트릭에 대한 내용은 [Standard Istio Metrics](https://istio.io/latest/docs/reference/config/metrics/) 을 참고해주세요
 
 - Metrics
     - for HTTP,HTTP2,GRPC traffic
@@ -220,18 +237,16 @@ kubectl exec -it deploy/webapp -c istio-proxy \
 
 **Configuring proxies to report more Envoy Statistics**
 
-트러블슈팅을 위해 더 많은 envoy 상태정보를 리포트하도록 설정해 봅니다
+트러블 슈팅을 위해 envoy 상태정보를 추가하도록 설정해 봅니다.  
+webapp → catalog 호출 시 다양한 설정 (load balancing,security,circuit-breaking 등) 을 할 수 있는데요  
+webapp → catalog 호출에 대한 상세정보를 제공하도록 설정해 보겠습니다
 
-webapp에서 upstream (catalog) 호출 시 여러 가지 설정(load balancing, security, circuit-breaking, ..)을 할 수 있는데요
-
-webapp → catalog 호출에 대한 상세정보를 제공하도록 설정합니다.
-
-방법1) default 설정 (IstioOperator 명세)
-
-방법2) per-workload 설정 (workload 명세)  “추천” 
-*(ch6 circuit-break 에서 다룬 방법입니다)*
+두 가지 방법이 있습니다   
+방법1) default 설정 (IstioOperator 명세)  
+방법2) 워크로드 단위로 설정 (해당 워크로드 명세) <= "추천"
 
 ```yaml
+## 두번째 워크로드 명세 설정으로 해봅니다 
 # cat ch7/webapp-deployment-stats-inclusion.yaml
 ...
 metadata:
@@ -261,17 +276,12 @@ kubectl exec -it deploy/webapp -c istio-proxy \
 -- curl localhost:15000/stats | grep catalog
 ```
 
-메트릭을 확인해 볼까요 (아까와 다르게 추가된 것이 있습니다)
-
-** 바로~ catalog.istioinaction 에 대한 metrics 입니다*
-
-아래 metrics는 upstream 에 대한 커넥션 혹은 요청 시 circuit breaking 작동했는지를 나타냅니다. 
-
+메트릭을 확인해 볼까요 (아까와 다르게 추가된 것이 있습니다)  
+바로~ catalog.istioinaction 에 대한 metrics 입니다  
+아래 metrics는 upstream 에 대한 커넥션 혹은 요청 시 circuit breaking 작동했는지를 나타냅니다.
 ![circuit_break 정보](/assets/img/Istio-ch7-observability%20e786c38007504d889cf4e5e92dcd6e32/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-21_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%258C%25E1%2585%25A5%25E1%2586%25AB_12.31.58.png)
 
-circuit_break 정보
-
-Envoy는 traffic을 식별할 때 `internal origin` 과 `external original` 을 구분합니다.
+Envoy는 traffic을 식별할 때 `internal origin` 과 `external origin` 을 구분합니다.
 
 - `internal origin` : mesh 내부 트래픽  *{cluster_name}.internal.**
     
@@ -303,81 +313,65 @@ Load balancer 에 대한 지표
 
 ![load balancing 정보](/assets/img/Istio-ch7-observability%20e786c38007504d889cf4e5e92dcd6e32/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-21_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%258C%25E1%2585%25A5%25E1%2586%25AB_12.35.47.png)
 
-load balancing 정보
-
-이번에는 cluster 별 정보를 조회해 봅니다.
-
 ```bash
+## 이번에는 cluster 별 정보를 조회해 봅니다.
 kubectl exec -it deploy/webapp -c istio-proxy \
 -- curl localhost:15000/clusters
 ```
 
-출력
-
-*catalog endpoint 에 대한 상세한 정보 제공
-
+출력 - catalog endpoint 에 대한 상세한 정보 제공  
 - IP, region, zone, sub_zone
 - cx, rq 정보
 
 ![catalog 서비스(클러스터) 정보](/assets/img/Istio-ch7-observability%20e786c38007504d889cf4e5e92dcd6e32/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-21_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%258C%25E1%2585%25A5%25E1%2586%25AB_12.55.31.png)
 
-catalog 서비스(클러스터) 정보
-
 ### 7.2.2 Metrics in the control plane
 
-istiod 가 풍부한 정보를 제공 ~ data-plane proxy별 설정 sync 횟수 , sync 소요시간, bad config 정보, 인증서 발급/교체 등
-
-컨트롤플레인 메트릭을 살펴볼까요
+istiod 가 제공하는 풍부한 정보 ~ 예) data-plane proxy별 설정 sync 횟수 , sync 소요시간, bad config 정보, 인증서 발급/교체 등
 
 ```bash
+## 컨트롤플레인 메트릭을 출력합니다
 kubectl exec -it -n istio-system deploy/istiod \
 -- curl localhost:15014/metrics
 ```
 
-**388 라인 출력*
-
-인증서관련 정보
-
+출력 확인
 ```bash
+## 1. 인증서 관련 정보
 citadel_server_csr_count 4
 citadel_server_root_cert_expiry_timestamp 1.988253473e+09
 citadel_server_success_cert_issuance_count 4
 ```
 
 - CSR, Certificate Signing Request 인증서 발급 요청
+- Citadel, Istio 보안 컴포넌트
 
 > *Citadel in Istio is a security component that provides strong service-to-service and end-user authentication with built-in identity and access management functionality. It allows for the configuration of mutual Transport Layer Security (TLS) and service-to-service authentication using JSON Web Tokens (JWT) and X.509 certificates. Citadel also provides support for authenticating end-users using OpenID Connect (OIDC) and OAuth 2.0. It can be used to secure communication within the mesh, as well as between the mesh and external services.*
-> 
-
-istio 버전정보
 
 ```bash
+## 2. istio 버전정보
 istio_build{component="pilot",tag="1.16.1"} 1
 ```
 
-config. sync time histogram ~ 설정이 모든 proxy로 적용되는데 걸리는 시간정보
-
 ```bash
-pilot_proxy_convergence_time_bucket{le="0.1"} 16 ❶
-pilot_proxy_convergence_time_bucket{le="0.5"} 16 ❷
-pilot_proxy_convergence_time_bucket{le="1"} 16
-pilot_proxy_convergence_time_bucket{le="3"} 16
-pilot_proxy_convergence_time_bucket{le="5"} 16
-pilot_proxy_convergence_time_bucket{le="10"} 16
-pilot_proxy_convergence_time_bucket{le="20"} 16
-pilot_proxy_convergence_time_bucket{le="30"} 16
-pilot_proxy_convergence_time_bucket{le="+Inf"} 16
-pilot_proxy_convergence_time_sum 0.010070247
-pilot_proxy_convergence_time_count 16
+## 3. 설정이 모든 data-plane proxy 에 적용되는데 걸리는 시간 (histogram)
+pilot_proxy_convergence_time_bucket{le="0.1"} 1101 # ❶ 
+pilot_proxy_convergence_time_bucket{le="0.5"} 1102 # ❷ 
+pilot_proxy_convergence_time_bucket{le="1"} 1102
+pilot_proxy_convergence_time_bucket{le="3"} 1102
+pilot_proxy_convergence_time_bucket{le="5"} 1102
+pilot_proxy_convergence_time_bucket{le="10"} 1102
+pilot_proxy_convergence_time_bucket{le="20"} 1102
+pilot_proxy_convergence_time_bucket{le="30"} 1102
+pilot_proxy_convergence_time_bucket{le="+Inf"} 1102
+pilot_proxy_convergence_time_sum 11.86299839999995
+pilot_proxy_convergence_time_count 1102
 ```
-
-❶ 16 updates were distributed to proxies in less than 0.1 milliseconds.
-
-❷ 0 (None) request took longer and fell in the range from 0.1 to 0.5
-
-how many Services,  how many VirtualServices, how many Proxies   `*gauge*`
+❶ 1101개 업데이트하는 데 0.1초 이내 (`le` = less then)  
+❷ 1101 -> 1102, 1개 업데이트 하는데 0.1~0.5초 소요  
 
 ```bash
+## 4. 컨트롤플레인에서 알고있는 서비스개수, 유저가 설정한 VirtualService 개수, xDS로 통신하는 proxy 개수 (gauge)
 pilot_services 10
 pilot_virt_services 1
 pilot_vservice_dup_domain 0
@@ -387,57 +381,50 @@ pilot_xds{version="1.16.1"} 4
 > *In Prometheus, a gauge and a counter are both types of metrics, but they have different use cases and behave differently when being queried.*
 > 
 > 
-> *A `gauge` is a metric that represents a value that can go up and down, like the current temperature or the number of active connections. It is used to track the current state of something. A gauge metric can be used to track the current value of a metric, and that value can be increased or decreased over time.*
+> *A **`gauge`** is a metric that represents a value that can go **up and down**, like the current temperature or the number of active connections. It is used to track the current state of something. A gauge metric can be used to track the current value of a metric, and that value can be increased or decreased over time.*
 > 
-> *A `counter`, on the other hand, is a metric that only increases over time, like the number of requests received or the number of errors. It is used to track the rate of change of a metric. A counter metric can be used to track the rate at which a metric is changing over time, and it can only be incremented.*
+> *A **`counter`**, on the other hand, is a metric that **only increases** over time, like the number of requests received or the number of errors. It is used to track the rate of change of a metric. A counter metric can be used to track the rate at which a metric is changing over time, and it can only be incremented.*
 > 
 > *When a query is performed on a gauge, it returns the current value of the metric. When a query is performed on a counter, it returns the rate of change of the metric over a certain period of time.*
 > 
-> *In summary, A gauge measures an instantaneous value, while counter measures the rate of change of a value over a period of time.*
+> *In summary, A `gauge` measures **an instantaneous value**, while `counter` measures **the rate of change of a value** over a period of time.*
 > 
 
-xDS - the number of updates  `*counter*`
-
 ```bash
+## 5. xDS별 업데이트 횟수 (counter)
 pilot_xds_pushes{type="cds"} 8
 pilot_xds_pushes{type="eds"} 20
 pilot_xds_pushes{type="lds"} 8
 pilot_xds_pushes{type="rds"} 6
 ```
-
+(참고)  
 - cds - cluster discovery
 - eds - endpoints discovery
 - lds - listener discovery
 - rds - router discovery
 - sds - secret discovery
 
-“*We cover more control-plane metrics when we explore performance tuning of the Istio control plane in chapter 11.”*
+11장에서 control-plane의 성능튜닝을 다룰 때 보다 자세히 control-plane의 메트릭들을 살펴보겠습니다.
 
-data-plain 과 control-plain 에서 observability 를 위한 metric을 살펴보았습니다
+지금까지 Observability 를 위한 메트릭들을 data-plain 과 control-plain 으로 나누어 살펴보았습니다.  
+이처럼 서비스메시에서 제공하는 메트릭을 조회하고 오퍼레이터 등에서 활용하기 위해서는 메트릭을 수집하고 저장 하여야 합니다.
 
-service-mesh 컴포넌트들이 제공하는 metrics을 조회하고 오퍼레이터 등을 통해 활용하기 위해서는 메트릭을 수집하고 time-series DB 등에 저장하여야 합니다. 
-
-이어서 살펴보시죠~
+이러한 방법들에 대하여 이어서 살펴보겠습니다
 
 ## 7.3 Scraping Istio metrics with prometheus
 
-Prometheus 로 Istio 메트릭을 수집해 봅니다. 
-
 ```bash
+## 앞서 살펴본 /stats 을 프로메테우스 형식으로 출력합니다
 kubectl exec -it deploy/webapp -c istio-proxy \
 -- curl localhost:15090/stats/prometheus
 ```
-
-** 출력 732 라인 (앞서 보았던 메트릭들을 prometheus 형식으로 출력합니다)*
-
+출력
 ```bash
-..
+## .. 중략 ..
 envoy_cluster_upstream_cx_overflow{cluster_name="outbound|80||catalog.."} 0
-..
 envoy_cluster_upstream_rq_pending_overflow{cluster_name="outbound|80||catalog.."} 0
-..
 envoy_cluster_upstream_rq_retry_overflow{cluster_name="outbound|80||catalog.."} 0
-..
+## .. 중략 ..
 ```
 
 지금부터 Prometheus 가 수집하도록 구성해 보겠습니다
@@ -558,16 +545,11 @@ istio-component-monitor    67s
 kubectl -n prometheus port-forward \
 statefulset/prometheus-prom-kube-prometheus-stack-prometheus 9090
 ```
-
+[http://localhost:9090/targets](http://localhost:9090/targets)
 ![http://localhost:9090/targets](/assets/img/Istio-ch7-observability%20e786c38007504d889cf4e5e92dcd6e32/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-21_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_12.45.20.png)
 
-http://localhost:9090/targets
-
-이번에는 data-plane 메트릭 수집을 위해 PodMonitor를 적용해 봅니다.
-
-istio-proxy 컨테이너가 있는 Pod로부터 메트릭을 수집하는 PodMonitor 명세입니다
-
-[prometheus-operator/api.md at main · prometheus-operator/prometheus-operator](https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#monitoring.coreos.com/v1.PodMetricsEndpoint)
+이번에는 data-plane 메트릭 수집을 위해 PodMonitor를 적용해 봅니다.  
+Pod Sidecar로 떠있는 istio-proxy 컨테이너의 메트릭을 수집하는 PodMonitor 명세입니다
 
 ```yaml
 # cat ch7/pod-monitor-dp.yaml
@@ -610,18 +592,23 @@ spec:
       action: replace
       targetLabel: pod_name
 ```
+(참고) [PodMetricsEndpoint 스펙](https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#monitoring.coreos.com/v1.PodMetricsEndpoint)
 
 ```bash
+## PodMonitor 설정 적용
 kubectl apply -f ch7/pod-monitor-dp.yaml -n prometheus
 ```
 
+Targets 에서 PodMonitor 적용 확인
 ![스크린샷 2023-01-21 오후 4.51.11.png](/assets/img/Istio-ch7-observability%20e786c38007504d889cf4e5e92dcd6e32/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-21_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_4.51.11.png)
 
 ```bash
+## metric 확인을 위해서 호출테스트를 수행합니다
 for i in {1..100}; do curl http://localhost/api/catalog \
 -H "Host: webapp.istioinaction.io"; sleep .5s; done
 ```
 
+Graph 에서 메트릭을 확인합니다 
 ![스크린샷 2023-01-21 오후 5.36.53.png](/assets/img/Istio-ch7-observability%20e786c38007504d889cf4e5e92dcd6e32/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-21_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_5.36.53.png)
 
 ## 7.4 Customizing Istio’s standard metrics
