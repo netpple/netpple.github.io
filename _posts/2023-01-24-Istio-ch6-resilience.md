@@ -103,23 +103,15 @@ kubectl apply -f ch6/simple-web.yaml -n istioinaction
 kubectl apply -f ch6/simple-web-gateway.yaml -n istioinaction
 ```
 
-확인1 - 설치확인
-
 ```bash
+## 확인1 - 설치확인
 kubectl get deploy,svc,po,gateway,virtualservice -n istioinaction
 ```
 
-Pod 개수를 기억해둔다 ~  web 1개,  backend-1 한개, backend-2 두개
-
-> *simple-backend-1-5d4565cdfd-qpdms 
-simple-backend-2-b46cb6798-pzwbr   
-simple-backend-2-b46cb6798-zwzld    
-simple-web-6ffdb7887f-fcpsk*
-> 
-
-확인2 - 호출확인 
+Pod 확인 ~  web 1개,  backend-1 한개, backend-2 두개
 
 ```bash
+## 확인2 - 호출확인 
 curl -H "Host: simple-web.istioinaction.io" localhost
 ```
 
