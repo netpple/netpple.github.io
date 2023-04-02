@@ -22,7 +22,8 @@ badges:
 따라서 장애 발생을 시스템이 자동으로 감지하여 처리할 수 있도록 대비가 필요한데요.   
 애플리케이션에서 이러한 장애상황을 미리 대비하여 구현을 해두는 것은 쉬운 일이 아닙니다. 
 
-Istio 를 사용하면 애플리케이션에서 별도 구현없이도 장애극복을 위한 timeouts, retries, circuit breaking 등의 “Sensible behaviors” 들을 활용하여 다양한 대비책을 마련 할 수 있습니다. 
+Istio 를 사용하면 애플리케이션에서 별도 구현을 하지 않고서도 timeouts, retries, circuit breaking 등 
+시스템 차원에서 이상상황을 감지하고 대응 (“Sensible behaviors”) 할 수 있는 다양한 장애 대비책을 마련 할 수 있습니다. 
 
 이번 장에서는 Istio의 Resilience fetures들을 살펴보고 나머지 시스템에 미치는 영향들에 대해서도 다뤄봅니다.
 
