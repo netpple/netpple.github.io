@@ -1081,11 +1081,29 @@ spec:
 ```
 
 ```bash
+## 설정 적용
 kubectl apply -f ch6/simple-backend-enable-retry.yaml \
 -n istioinaction
 ```
 
-호출테스트 (OK) ~ simple-backend-1에 에러(503)가 발생하더라도  retry 되어 모든 호출이 성공 (200)
+```bash
+## 설정 확인
+# istioctl pc route deploy/simple-web.istioinaction -o json
+
+..
+
+"route": {
+  "cluster": "outbound|80||simple-backend.istioinaction.svc.cluster.local",
+  "timeout": "0s",
+  "retryPolicy": {
+    "retryOn": "connect-failure,refused-stream,unavailable,cancelled,retriable-status-codes",
+    "numRetries": 2,
+
+..
+
+```
+
+호출테스트 ~ 모든 호출 성공 (all 200)
 
 ```bash
 for in in {1..10}; do curl localhost \
@@ -1096,33 +1114,32 @@ for in in {1..10}; do curl localhost \
 ..
 ```
 
-* simple-backend-1 —(503, retry)—> simple-backend-2 --> simple-web
-
-에러로그 ~ 아래와 같이 에러가 발생하지만 retry 를 통해 client는 정상응답을 받음
+* simple-backend-1 —(503, retry)—> simple-backend-2 --> simple-web  
+아래와 같이 로그 상에서 에러가 발생하지만 retry 를 통해 client는 정상응답을 받음
 
 ```bash
+## 503 에러 확인
 ..
 simple-backend-1-.. simple-backend 2023-01-10T13:23:54.581Z [INFO]  error_injector: Injecting error: request_count=12 error_percentage=0.75 error_type=http_error
 ..
 simple-backend-1-.. istio-proxy [2023-01-10T13:25:33.716Z] "GET / HTTP/1.1" 503 - via_upstream - "-" 0 171 1 1 "172.17.0.1" "curl/7.84.0" "a3e2e246-377b-9482-826b-125105f78228" "simple-backend:80" "172.17.0.9:8080" inbound|8080|| 127.0.0.6:53469 172.17.0.9:8080 172.17.0.1:0 outbound_.80_._.simple-backend.istioinaction.svc.cluster.local default
 ```
 
-Istio retry 활성 시  기본정책은  503 에러에 대해서는 retry를 허용함
-
-⇒ **다른 에러 발생 시 retry 가 동작**하는지 확인해 본다.
-
-**“500 에러”를 리턴하는 simple-backend-1 배포**
+Istio retry 활성 시  기본정책은  503 에러에 대해서는 retry를 허용함  
+⇒ **503 이외의 다른 에러 발생 시에도 retry 가 동작**하는지 확인해 보겠습니다 
 
 ```bash
+## “500 에러”를 리턴하는 simple-backend-1 배포
 kubectl apply -f ch6/simple-backend-periodic-failure-500.yaml \
 -n istioinaction
 
-# 확인
+# 확인 - 이번에는 에러코드가 500 입니다
 - name: ERROR_CODE
   value: "500"
 ```
 
-호출테스트 (OK) ~ 500 에러 발생. 500에러에 대해서는 retry 안함
+호출테스트 ~ 500 에러 발생  
+ERROR_CODE를 수정 (503->500) 하였더니 Retry가 동작하지 않습니다 
 
 ```bash
 for in in {1..10}; do curl localhost \
@@ -1164,7 +1181,7 @@ kubectl apply -f ch6/simple-backend-vs-retry-500.yaml \
 -n istioinaction
 ```
 
-호출테스트 (OK) ~ `retryOn: 5xx`
+호출테스트 ~ `retryOn: 5xx` (all 200)
 
 ```bash
 for in in {1..10}; do curl localhost \
@@ -1181,8 +1198,7 @@ for in in {1..10}; do curl localhost \
 
 **RETRIES IN TERMS OF TIMEOUTS**
 
-`perTryTimeout` 
-
+`perTryTimeout`  
 - 재시도라는게 마냥할 수 있는게 아님
 - 요청과 응답에 대한 전체(overall) timeout, 즉 주어진 시간 범위 안에서 고려돼야 함
 - retry 시도 횟수만큼 소요된 시간이 overall timeout 안에 들어와야 함
@@ -1190,8 +1206,9 @@ for in in {1..10}; do curl localhost \
     *perTryTimeout * attempts < overall timeout*
     
 
-`backoff`
-
+`backoff`  
+- retry 간격
+- 재시도 횟수가 늘어날 수록 retry 간격이 길어짐
 - delay between retries, retry를 준비/대기 하는 시간도 고려해야 함
     
     *perTryTimeout * attempts + backoffTime * (attempts-1) < overall timeout*
@@ -1205,17 +1222,15 @@ for in in {1..10}; do curl localhost \
 ![스크린샷 2023-01-11 오후 2.26.16.png](/assets/img/Istio-ch6-resilience%20a5ed458e7554476e9a974d228eb4c6b7/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-11_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_2.26.16.png)
 
 retry 기본 설정  문제 - “**Thundering herd**”
-
 - call depth 가 깊을 수록 위험
-- edge 부터 구간별로 retries가 누적될 수 있음
-- 이 경우 가장 안쪽 구간은 엄청난 retry requests 가 몰림
+- edge 부터 구간별로 retries가 누적됨
+- 이 경우 가장 안쪽 구간은 엄청난 retry requests 가 누적됨
 아래 예시에서는 retry 요청이 각 구간별로 2배씩 증가하여
 Service 5에는 2^5 = 32 요청이 발생
 
 ![스크린샷 2023-01-11 오후 2.26.03.png](/assets/img/Istio-ch6-resilience%20a5ed458e7554476e9a974d228eb4c6b7/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-11_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_2.26.03.png)
 
 Thundering herd 방지 대책
-
 - (방안1) edge / intermidate 단의 retry 제한 (1 or none), 되도록 retry는 call stack 가장 안쪽에서만 제한적으로 사용
 - (방안2) overall retry budget (rate-limit) ~ **Istio API는 제공안함**
 - (방안3) 동일 locality 내 retries (default)  
@@ -1255,18 +1270,15 @@ for in in {1..10}; do curl localhost \
 500
 ```
 
-408 에러가 로그(simple-backend-1) 상에서도 확인됨 
-
 ```bash
+## 408 에러가 로그(simple-backend-1) 상에서도 확인됨 
 simple-backend-1-7f5cf8998d-8q9md istio-proxy [2023-01-11T06:16:29.071Z] "GET / HTTP/1.1" 408 - via_upstream - "-" 0 172 1 1 "172.17.0.1" "curl/7.84.0" "7a03bdc2-d261-9ce4-8e68-7fca718b91df" "simple-backend:80" "172.17.0.11:8080" inbound|8080|| 127.0.0.6:60711 172.17.0.11:8080 172.17.0.1:0 outbound_.80_._.simple-backend.istioinaction.svc.cluster.local default
 ```
 
-> 408 에러도 retry 하도록 수정해 보자
-
-envoy 의 retriable_status_codes
-> 
-
-EnvoyFilter 를 사용하여 `retriable_status_codes`, `retriable_status_codes.base_interval` 을 수정해 봅시다
+408 에러도 retry 하도록 설정해 보겠습니다.  
+> 408 에러의 경우는 Istio API에서 지원하는 Envoy 설정 범위 밖입니다.  
+> 이런 경우를 위해서 Istio extension API를 통해서 Envoy 설정을 할 수 있는데요.  
+> EnvoyFilter 를 사용하여 Retry 에러코드(`retriable_status_codes`), backoff 간격(`retry_back_off.base_interval`)을 수정해 보겠습니다.
 
 ```yaml
 # cat ch6/simple-backend-ef-retry-status-codes.yaml
@@ -1300,11 +1312,12 @@ spec:
 ```
 
 ```bash
+## EnvoyFilter 적용
 kubectl apply -f ch6/simple-backend-ef-retry-status-codes.yaml \
 -n istioinaction
 ```
 
-VirtualService > `retryOn`  “retriable-status-codes” 를 추가합니다.
+VirtualService 에도 재시도 할 대상 코드 "retryOn" 항목에 `retriable-status-codes` 를 추가합니다.
 
 ```yaml
 # cat ch6/simple-backend-vs-retry-on.yaml
@@ -1353,7 +1366,7 @@ simple-backend-1-7f5cf8998d-8q9md istio-proxy [2023-01-11T06:28:48.740Z] "GET / 
 
 simple-backend-1-7f5cf8998d-8q9md istio-proxy [2023-01-11T06:28:49.511Z] "GET / HTTP/1.1" 408 - via_upstream - "-" 0 172 1 1 "172.17.0.1" "curl/7.84.0" "8a772e89-3ac7-91bb-a5f0-6bb202b39058" "simple-backend:80" "172.17.0.11:8080" inbound|8080|| 127.0.0.6:55897 172.17.0.11:8080 172.17.0.1:0 outbound_.80_._.simple-backend.istioinaction.svc.cluster.local default
 ```
-💡이처럼 EvnoyFilter 를 이용하면 Istio 에서 설정할 수 없는 Envoy 옵션들을 수정할 수 있습니다
+💡*이처럼 EvnoyFilter 를 이용하면 Istio 에서 설정할 수 없는 Envoy 옵션들도 수정할 수 있습니다*
   
 **REQUEST HEDGING**  
 - Hedging == fencing , 가두리치다
@@ -1365,8 +1378,8 @@ simple-backend-1-7f5cf8998d-8q9md istio-proxy [2023-01-11T06:28:49.511Z] "GET / 
 - 그리고, 요청이 병렬적으로 발생하기 때문에, “멱등성” 보장 등 제약사항도 고려해야 합니다.
 
 Request Hedging 역시 `EnvoyFilter` 를 통해 설정합니다.
-
 ```yaml
+## 설정 예시 (Hedging 은 따로 실습은 수행하지 않습니다) 
 # cat ch6/simple-backend-ef-retry-hedge.yaml
 ---
 apiVersion: networking.istio.io/v1alpha3
@@ -1392,10 +1405,14 @@ spec:
           hedge_on_per_try_timeout: true
 ```
 
-타임아웃과 Retry, 간단하지 않죠? 서비스에서 이 둘에 대한 정책을 세우는 것은 둘이 잘 엮여서 (chained) 동작할 수 있도록 고려해야 하므로 쉬운 일이 아닙니다.  잘못 설정할 경우 시스템 아키텍처 상 좋지 않은 결과를 초래하거나 증폭할 수 있고 시스템의 부하를 가중시키고 연쇄적인 실패를 야기할 수 있습니다. 
+타임아웃과 Retry, 간단하지 않죠?  
+서비스에서 이 둘에 대한 정책을 세우는 것은 둘이 잘 엮여서 (chained) 동작할 수 있도록 고려해야 하므로 쉬운 일이 아닙니다.  
+잘못 설정할 경우 시스템 아키텍처 상 좋지 않은 결과를 초래하거나 증폭할 수 있고 시스템의 부하를 가중시키고 연쇄적인 실패를 야기할 수 있습니다.   
 
-> *Resilient 아키텍처 구축의 마지막 퍼즐은 다함께 “**Skipping Retry**” 하는 것입니다.  retry 하는 대신에 “fail fast” 하는 것이죠. 부하를 가중하는 대신에 일정시간 동안 “**Limit Load**” 함으로써 upstream 시스템이 회복할 시간을 벌어주는 전략입니다. **Circuit Breaking** 을 소개합니다.*
-> 
+> *Resilient 아키텍처 구축의 마지막 퍼즐은 다함께 “**Skipping Retry**” 하는 것입니다.  
+> retry 하는 대신에 “fail fast” 하는 것이죠.  
+> 부하를 가중하는 대신에 일정시간 동안 “**Limit Load**” 함으로써 upstream 시스템이 회복할 시간을 벌어주는 전략입니다.  
+> **Circuit Breaking** 을 소개합니다.*
 
 ## 6.5 Circuit breaking with Istio
 
@@ -1403,23 +1420,20 @@ spec:
 - Unhealthy 시스템으로의 트래픽을 제한함으로써 부하가중을 막아 회복을 돕습니다.
 - Istio 에 정확히 Circuit breaker 라는 이름의 설정은 없지만
 - 백엔드 서비스로의 부하를 제한하는 방법, Circuit breaker 로써 효율적으로 작동할 수 있는 두가지 방법을 제공합니다
-  - 방법1. 커넥션/요청수 제한 - 커넥션 및 요청이 limit 초과 시 fail fast 전략
-  - 방법2. 이상동작 엔드포인트 제거 - 로드밸런싱 풀의 엔드포인트를 감시하여 이상동작(misbehaving)이 감지되면 제거(eviction)
+  - 방법1. 커넥션/요청수 제한 ~ 커넥션 및 요청이 limit 초과 시 fail fast 전략
+  - 방법2. 이상동작 엔드포인트 제거 ~ 로드밸런싱 풀의 엔드포인트를 감시하여 이상동작(misbehaving)이 감지되면 제거(eviction)
 
 ### 6.5.1 Guarding against slow services with connection-pool control
 
 **초기화**
-
-destinationrule 삭제
-
 ```bash
+## destinationrule 삭제
 kubectl delete destinationrule --all \
 -n istioinaction
 ```
 
-simple-backend-2 제거
-
 ```bash
+## simple-backend-2 제거
 kubectl scale deploy simple-backend-2 --replicas=0 \
 -n istioinaction
 ```
@@ -1496,14 +1510,10 @@ istio-proxy (Envoy) 는 이에 대한 metrics 를 제공함
 - `http1MaxPendingRequests` ~ the allowable number of requests that are pending (queueing) or connectionless
 - `http2MaxRequests` ~ max concurrent (parallel) requests in a cluster
 
-DestinationRule 적용 (connection-limiting) 
-
 ```bash
+## DestinationRule 적용 (connection-limiting) 
 kubectl apply -f ch6/simple-backend-dr-conn-limit.yaml \
 -n istioinaction
-
-*## 확인
-# kubectl get destinationrule simple-backend-dr -o yaml*
 ```
 
 호출테스트 ~ 앞의 테스트와 동일 조건 (1 conn, 1 qps) 
@@ -1633,33 +1643,22 @@ kubectl exec -it deploy/simple-web -c istio-proxy \
 - upstream_cx_overflow ~ `maxConnections` 초과
 - upstream_rq_pending_overflow ~  `http1MaxPendingRequests` 초과
 
-> `http2MaxRequests` (parallel requests) 를 늘리면 어떻게 될까?
-> 
+**`http2MaxRequests`** (parallel requests) 를 늘리면 어떻게 될까?  
 
-`http2MaxRequests` 조정: 1 → 2,  “**동시요청개수**”를 늘림
-
+`http2MaxRequests` 조정: 1 → 2,  “**동시요청 처리개수**”를 늘림
 ```bash
 kubectl patch destinationrule simple-backend-dr \
 -n istioinaction --type merge --patch \
 '{"spec": {"trafficPolicy": {"connectionPool": {"http": {"http2MaxRequests": 2}}}}}'
-
-## 확인
-kubectl get destinationrule simple-backend-dr \
--n istioinaction \
--o jsonpath='{.spec.trafficPolicy.connectionPool.http.http2MaxRequests}{"\n"}'
-
-2
 ```
 
 정확한 확인을 위해 istio-proxy stats **카운터 초기화**
-
 ```bash
 kubectl exec -it deploy/simple-web -c istio-proxy \
 -- curl -X POST localhost:15000/reset_counters
 ```
 
 호출테스트 ~ 이전 테스트 대비 에러 카운트가 확 줄음 (24 → 4)
-
 ```bash
 fortio load -H "Host: simple-web.istioinaction.io" \
 --allow-initial-errors -quiet -jitter -t 30s -c 2 -qps 2 \
@@ -1671,9 +1670,8 @@ Code 500 : 2 (5.7 %)
 All done 35 calls (plus 2 warmup) 1774.252 ms avg, 1.1 qps
 ```
 
-확인 ~ simple-web > istio-proxy 의 stats 조회
-
 ```bash
+## stats 확인 (simple-web)
 kubectl exec -it deploy/simple-web -c istio-proxy \
  -- curl localhost:15000/stats \
    | grep simple-backend | grep overflow
@@ -1684,24 +1682,17 @@ kubectl exec -it deploy/simple-web -c istio-proxy \
 .. .upstream_rq_pending_overflow: 3
 .. .upstream_rq_retry_overflow: 0
 ```
+이전대비 `upstream_cx_overflow` (maxConnection 오버플로)와 `upstream_rq_pending_overflow` (큐 오버플로우) 건 수가 줄었습니다  
 
-> `http1MaxPendingRequests` : 1 → 2, “queuing” 개수를 늘려보자
-> 
-
+이번에는 **`http1MaxPendingRequests`** : 1 → 2, “queuing” 개수를 늘립니다
 ```bash
 kubectl patch destinationrule simple-backend-dr \
 -n istioinaction --type merge --patch \
 '{"spec": {"trafficPolicy": {"connectionPool": {"http": {"http1MaxPendingRequests": 2}}}}}'
-
-## 확인
-kubectl get destinationrule simple-backend-dr \
--n istioinaction \
--o jsonpath='{.spec.trafficPolicy.connectionPool.http.http1MaxPendingRequests}{"\n"}'
-
-2
 ```
 
 ```bash
+## stats 초기화
 kubectl exec -it deploy/simple-web -c istio-proxy \
 -- curl -X POST localhost:15000/reset_counters
 ```
@@ -1729,6 +1720,7 @@ All done 33 calls (plus 2 warmup) 1888.619 ms avg, 1.0 qps
 확인 ~ simple-web > istio-proxy 의 stats 조회 ⇒ “**upstream.rq_pending_overflow: 0 (없음)**”
 
 ```bash
+## stats 확인
 kubectl exec -it deploy/simple-web -c istio-proxy \
  -- curl localhost:15000/stats \
    | grep simple-backend | grep overflow
