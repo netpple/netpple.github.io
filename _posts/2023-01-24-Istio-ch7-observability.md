@@ -1,15 +1,16 @@
 ---
 title: Istio Observability (1)  
-version: v0.5  
+version: v0.6  
 description: istio in action 7장  
-date: 2023-01-24 10:00:00 +09:00  
+date: 2023-04-04 10:00:00 +09:00  
 categories: network  
 badges:
 - type: info  
   tag: 교육  
   rightpanel: false
 ---
-클라우드와 MSA (Micro Service Architecture) 환경은 무수히 많은 서비스들이 복잡하게 얽혀 있는데요. 이런 복잡한 환경에서 Istio가 Observability에 어떻게 기여할 수 있는지 알아봅니다.
+Observability (관측가능성) 란 무엇이고, 모니터링과 어떻게 다를까요 ?  
+이번 챕터에서는 Observability의 개념을 알아보고 Istio 환경에서 Observability를 확보할 수 있는 방법들에 대해 알아 보겠습니다.
 
 <!--more-->
 
