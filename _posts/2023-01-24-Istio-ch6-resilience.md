@@ -1530,7 +1530,7 @@ All done 30 calls (plus 1 warmup) 1031.166 ms avg, 1.0 qps
 호출테스트 ~ 커넥션수와 qps를 2로 늘림 (2 conn, 2 qps) ⇒ 에러 발생 (25건)
 
 ```bash
-fortio load -H "Host: simple-web.istioinaction.io" \
+fortio load --allow-initial-errors -H "Host: simple-web.istioinaction.io" \
 -quiet -jitter -t 30s -c 2 -qps 2 http://localhost/
 
 ..
