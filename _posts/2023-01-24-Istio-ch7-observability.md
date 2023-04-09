@@ -10,7 +10,7 @@ badges:
   rightpanel: false
 ---
 Observability (관측가능성) 란 무엇이고, 모니터링과 어떻게 다를까요 ?  
-이번 챕터에서는 Observability의 개념을 알아보고 Istio 환경에서 Observability를 확보할 수 있는 방법들에 대해 알아 보겠습니다.
+이번 챕터에서는 Observability의 개념을 알아보고 Istio 환경에서 Observability를 확보하는 방법들에 대해 알아 보겠습니다.
 
 <!--more-->
 
@@ -447,21 +447,34 @@ helm install prom prometheus-community/kube-prometheus-stack \
 --version 13.13.1 -n prometheus -f ch7/prom-values.yaml
 ```
 
-(참고) [13.13.1](https://artifacthub.io/packages/helm/prometheus-community/kube-prometheus-stack/13.13.1)  *(k8s 1.25.1) 
-prom-kube-prometheus-stack-admission-patch-*  Job 실행에러 발생 ⇒ disable*
-
+(참고) [13.13.1](https://artifacthub.io/packages/helm/prometheus-community/kube-prometheus-stack/13.13.1)  *(k8s 1.25.1)
+(방법1) prom-kube-prometheus-stack-admission-patch-*  Job 실행에러 발생 ⇒ disable*
 ```yaml
 # vi ch7/prom-values.yaml
 ..
 admissionWebhooks:
   ..
-  enabled: false
+  patch:
+    enabled: false
 ```
 
 * admissionWebhook 은 promQL 등 crd 명세 제출시 validation 을 수행함
 
-(참고) 삭제
+(방법2) kube-webhook-certgen 교체 
+(참고) https://github.com/kubernetes/ingress-nginx/issues/7418 
+```yaml
+# vi ch7/prom-values.yaml
+..
+admissionWebhooks:
+  ..
+  patch:
+    enabled: true
+    image:
+      repository: rpkatz/kube-webhook-certgen
+      tag: v1.5.2
+```
 
+(참고) prometheus 삭제
 ```bash
 helm uninstall prom
 
@@ -821,26 +834,27 @@ istioctl install -f ch7/metrics/istio-operator-new-dimensions.yaml -y
         ```bash
         istioctl verify-install  -f ch7/metrics/istio-operator-new-dimensions.yaml
         
-        *✔ ClusterRole: istiod-istio-system.istio-system checked successfully
+        ✔ ClusterRole: istiod-istio-system.istio-system checked successfully
         ✔ ClusterRole: istio-reader-istio-system.istio-system checked successfully
         ✔ ClusterRoleBinding: istio-reader-istio-system.istio-system checked successfully
         ✔ ClusterRoleBinding: istiod-istio-system.istio-system checked successfully
         ✔ ServiceAccount: istio-reader-service-account.istio-system checked successfully
-        ...*
+        ...
         ```
         
-    - `~~uninstall`  *설치를 되돌립니다~~  ⇒  **envoyfilter를 비롯해서  control-plane 주요설정들을 모두 삭제**하므로  **절대로**하면 안됨. 말 그대로 istio 를 삭제함*
+    - 주의) `istioctl uninstall` ⇒ "istio 삭제". istio 컴포넌트, envoyfilter, control-plane 주요설정 등 "모두 삭제"함
         
-        > ***Uninstall Istio from a cluster***
+        > **Uninstall Istio from a cluster**
         > 
         > 
         > ![스크린샷 2023-01-23 오후 1.48.11.png](/assets/img/Istio-ch7-observability%20e786c38007504d889cf4e5e92dcd6e32/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-23_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_1.48.11.png)
         > 
         
         ```bash
-        ~~istioctl uninstall -f ch7/metrics/istio-operator-new-dimensions.yaml~~
+        ## 기대하기로는 yaml 명세의 설정만 삭제되기를 희망했지만, istio 전체가 삭제됨
+        # istioctl uninstall -f ch7/metrics/istio-operator-new-dimensions.yaml
         
-        *Removed ClusterRole::istiod-clusterrole-istio-system.
+        Removed ClusterRole::istiod-clusterrole-istio-system.
         Removed ClusterRole::istiod-gateway-controller-istio-system.
         Removed ClusterRoleBinding::istiod-clusterrole-istio-system.
         Removed ClusterRoleBinding::istiod-gateway-controller-istio-system.
@@ -874,13 +888,13 @@ kubectl get istiooperator installed-state \
  -n istio-system -o yaml
 
 ..
-*metrics:
+metrics:
 - dimensions:
     source_mesh_id: node.metadata['MESH_ID']
     upstream_proxy_version: upstream_peer.istio_version
   name: requests_total
   tags_to_remove:
-  - request_protocol*
+  - request_protocol
 ..
 
 ## envoyfilter "stats-filter-{stat-postfix}"도 업데이트 되었습니다
@@ -888,9 +902,9 @@ kubectl get envoyfilter stats-filter-1.16 \
  -n istio-system -o yaml
 
 ..
-*value: |
+value: |
   {"metrics":[{"dimensions":{"source_mesh_id":"node.metadata['MESH_ID']","upstream_proxy_version":"upstream_peer.istio_version"},"name":"requests_total","tags_to_remove":["request_protocol"]}]}
-..*
+..
 ```
 
 “*Let’s Istio’s proxy know about it (New dimension)”*
@@ -928,7 +942,7 @@ kubectl apply -n istioinaction -f\
 curl -H "Host: webapp.istioinaction.io" \
 http://localhost/api/catalog
 
-*[{"id":1,"color":"amber","department":"Eyewear","name":"Elinor Glasses","price":"282.00"},{"id":2,"color":"cyan","department":"Clothing","name":"Atlas Shirt","price":"127.00"},{"id":3,"color":"teal","department":"Clothing","name":"Small Metal Shoes","price":"232.00"},{"id":4,"color":"red","department":"Watches","name":"Red Dragon Watch","price":"232.00"}]*
+[{"id":1,"color":"amber","department":"Eyewear","name":"Elinor Glasses","price":"282.00"},{"id":2,"color":"cyan","department":"Clothing","name":"Atlas Shirt","price":"127.00"},{"id":3,"color":"teal","department":"Clothing","name":"Small Metal Shoes","price":"232.00"},{"id":4,"color":"red","department":"Watches","name":"Red Dragon Watch","price":"232.00"}]
 ```
 
 ```bash
