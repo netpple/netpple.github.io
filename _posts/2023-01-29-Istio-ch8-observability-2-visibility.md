@@ -299,7 +299,7 @@ istioctl install -y -f ch8/install-istio-tracing-zipkin.yaml
 ```yaml
 # kubectl get cm istio -n istio-system -o yaml
 
-...
+# ...
 apiVersion: v1
 data:
   mesh: |- 
@@ -313,7 +313,7 @@ data:
     rootNamespace: istio-system
     trustDomain: cluster.local
 meshNetworks: 'networks: {}'
-..
+# ...
 
 ```
 
@@ -467,7 +467,7 @@ metadata:
     app: webapp
   name: webapp
 spec:
-...
+# ...
   template:
     metadata:
       annotations:
@@ -476,7 +476,7 @@ spec:
             sampling: 10
             zipkin:
               address: zipkin.istio-system:9411
-...
+# ...
 ```
 
 ```bash
