@@ -177,9 +177,9 @@ kubectl exec -it deploy/webapp -c istio-proxy \
 ```bash
 ## 출력 예시 ##
 ## 엄청나게 많은 메트릭 항목들이 쏟아집니다. 
-..
+#...
 wasmcustom.reporter=.=destination;.;source_workload=.=istio-ingressgateway;.;source_workload_namespace=.=istio-system;.;source_principal=.=spiffe://cluster.local/ns/istio-system/sa/istio-ingressgateway-service-account;.;source_app=.=istio-ingressgateway;.;source_version=.=unknown;.;source_canonical_service=.=istio-ingressgateway;.;source_canonical_revision=.=latest;.;source_cluster=.=Kubernetes;.;destination_workload=.=webapp;.;destination_workload_namespace=.=istioinaction;.;destination_principal=.=spiffe://cluster.local/ns/istioinaction/sa/webapp;.;destination_app=.=webapp;.;destination_version=.=unknown;.;destination_service=.=webapp.istioinaction.svc.cluster.local;.;destination_service_name=.=webapp;.;destination_service_namespace=.=istioinaction;.;destination_canonical_service=.=webapp;.;destination_canonical_revision=.=latest;.;destination_cluster=.=Kubernetes;.;request_protocol=.=http;.;response_flags=.=-;.;connection_security_policy=.=mutual_tls;.;response_code=.=200;.;grpc_response_status=.=;.;istio_requests_total: 5
-.. 
+#... 
 ```
 
 (참고) 컨테이너의 pilot-agent 를 이용해서도 동일하게 조회할 수 있습니다
@@ -249,14 +249,17 @@ webapp → catalog 호출에 대한 상세정보를 제공하도록 설정해 �
 ```yaml
 ## 두번째 워크로드 명세 설정으로 해봅니다 
 # cat ch7/webapp-deployment-stats-inclusion.yaml
-...
-metadata:
-  annotations:
-    proxy.istio.io/config: |-
-      proxyStatsMatcher:
-        inclusionPrefixes:
-        - "cluster.outbound|80||catalog.istioinaction"
-...
+#...
+spec:
+  #...
+  template:
+    metadata:
+      annotations:
+        proxy.istio.io/config: |-
+          proxyStatsMatcher:
+            inclusionPrefixes:
+            - "cluster.outbound|80||catalog.istioinaction"
+#...
 ```
 
 ```bash
@@ -284,7 +287,7 @@ kubectl exec -it deploy/webapp -c istio-proxy \
 
 Envoy는 traffic을 식별할 때 `internal origin` 과 `external origin` 을 구분합니다.
 
-- `internal origin` : mesh 내부 트래픽  *{cluster_name}.internal.**
+- `internal origin` : mesh 내부 트래픽  *{cluster_name}.internal.*
     
     ![스크린샷 2023-01-21 오전 12.45.00.png](/assets/img/Istio-ch7-observability%20e786c38007504d889cf4e5e92dcd6e32/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-21_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%258C%25E1%2585%25A5%25E1%2586%25AB_12.45.00.png)
     
@@ -306,7 +309,7 @@ upstream_rq (request) 정보
 - ..upstream_rq_pending_overflow (ch6)  `http1MaxPendingRequests` 초과
 - ..upstream_rq_retry_overflow (ch6)
 
-TLS traffic : *{cluster_name}.ssl.**
+TLS traffic : *{cluster_name}.ssl.*
 
 ![스크린샷 2023-01-21 오전 12.47.47.png](/assets/img/Istio-ch7-observability%20e786c38007504d889cf4e5e92dcd6e32/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-21_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%258C%25E1%2585%25A5%25E1%2586%25AB_12.47.47.png)
 
@@ -421,11 +424,11 @@ kubectl exec -it deploy/webapp -c istio-proxy \
 ```
 출력
 ```bash
-## .. 중략 ..
+#...
 envoy_cluster_upstream_cx_overflow{cluster_name="outbound|80||catalog.."} 0
 envoy_cluster_upstream_rq_pending_overflow{cluster_name="outbound|80||catalog.."} 0
 envoy_cluster_upstream_rq_retry_overflow{cluster_name="outbound|80||catalog.."} 0
-## .. 중략 ..
+#...
 ```
 
 지금부터 Prometheus 가 수집하도록 구성해 보겠습니다
@@ -447,31 +450,33 @@ helm install prom prometheus-community/kube-prometheus-stack \
 --version 13.13.1 -n prometheus -f ch7/prom-values.yaml
 ```
 
-(참고) [13.13.1](https://artifacthub.io/packages/helm/prometheus-community/kube-prometheus-stack/13.13.1)  *(k8s 1.25.1)
-(방법1) prom-kube-prometheus-stack-admission-patch-*  Job 실행에러 발생 ⇒ disable*
+(참고) [13.13.1](https://artifacthub.io/packages/helm/prometheus-community/kube-prometheus-stack/13.13.1)  *(k8s 1.25.1)  
+(방법1) prom-kube-prometheus-stack-admission-patch-*  Job 실행에러 발생 ⇒ disable
 ```yaml
 # vi ch7/prom-values.yaml
-..
+#...
 admissionWebhooks:
-  ..
+  #...
   patch:
     enabled: false
+#...
 ```
 
 * admissionWebhook 은 promQL 등 crd 명세 제출시 validation 을 수행함
 
-(방법2) kube-webhook-certgen 교체 
+(방법2) kube-webhook-certgen 교체 (권장)
 (참고) https://github.com/kubernetes/ingress-nginx/issues/7418 
 ```yaml
 # vi ch7/prom-values.yaml
-..
+#...
 admissionWebhooks:
-  ..
+  #...
   patch:
     enabled: true
     image:
       repository: rpkatz/kube-webhook-certgen
       tag: v1.5.2
+#...
 ```
 
 (참고) prometheus 삭제
@@ -487,7 +492,11 @@ kubectl delete ns prometheus
 
 ### 7.3.2 Configuring the Prometheus Operator to scrape the Istio control plane and workloads
 
-Prometheus 에서 Istio 메트릭을 수집하려면 ServiceMonitor / PodMonitor (CRD) 명세 작성이 필요합니다.
+Prometheus 에서 Istio 메트릭을 수집하려면 ServiceMonitor / PodMonitor (CRD) 명세 작성이 필요합니다.  
+  
+아래 ServiceMonitor 명세는 control-plane 의 istio operator (istiod) 메트릭을 수집합니다.  
+- targetLabels 에서 `app` 레이블을 가진 서비스들 중에서 
+- `istio=pilot` 레이블을 포함하는 서비스를 대상으로 메트릭을 수집합니다  
 
 ```yaml
 # cat ch7/service-monitor-cp.yaml
@@ -521,20 +530,20 @@ If the value of this field is empty or if the label doesn’t exist for the give
     > 
 
 (참고) istiod의 Service Spec
-ServiceMonitor 에서 `jobLabel=istio` 이고, Service 에서 `istio=pilot` 이므로, 메트릭에는 `job=”pilot”` 이 추가됨
+ServiceMonitor 에서 `jobLabel=istio` 이고, Service 에서 `istio=pilot` 이므로, 메트릭에는 `job="pilot"` 이 추가됨
 
 ```bash
 # kubectl describe svc istiod -n istio-system
 
-..
+#...
 Labels:            app=istiod
-..
+#...
                    istio=pilot
-..
+#...
 Port:              http-monitoring  15014/TCP
 TargetPort:        15014/TCP
 Endpoints:         172.17.0.8:15014
-..
+#...
 ```
 
 ServiceMonitor 적용
@@ -550,7 +559,7 @@ kubectl get servicemonitor -n prometheus
 
 NAME                       AGE
 istio-component-monitor    67s
-..
+#...
 ```
 
 로컬에서 prometheus 대시보드에 접근 가능하도록 port-forward
@@ -622,65 +631,51 @@ for i in {1..100}; do curl http://localhost/api/catalog \
 -H "Host: webapp.istioinaction.io"; sleep .5s; done
 ```
 
-Graph 에서 메트릭을 확인합니다 
+Graph 메뉴에서 수집된 메트릭을 확인해보세요  
 ![스크린샷 2023-01-21 오후 5.36.53.png](/assets/img/Istio-ch7-observability%20e786c38007504d889cf4e5e92dcd6e32/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-21_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_5.36.53.png)
 
 ## 7.4 Customizing Istio’s standard metrics
 
-Istio Standard metrics
-
+[Istio Standard Metrics](https://istio.io/latest/docs/reference/config/metrics/)    
+Istio 표준 메트릭은 `COUNTER`와 `DISTRIBUTION`로 표현되고 Envoy의 메트릭 counter와 histogram과 연관됩니다.  
+- A `COUNTER` is a strictly increasing integer.
+- A `DISTRIBUTION` maps ranges of values to frequency.
+  
 ![스크린샷 2023-01-21 오후 5.40.28.png](/assets/img/Istio-ch7-observability%20e786c38007504d889cf4e5e92dcd6e32/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-21_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_5.40.28.png)
 
-> (출처) [Istio Standard Metrics](https://istio.io/latest/docs/reference/config/metrics/)
-*A `COUNTER` is a strictly increasing integer
-A `DISTRIBUTION` maps ranges of values to frequency*
-> 
+Envoy Plugin - 메트릭의 출력, 커스텀, 생성을 제어합니다
 
-**Envoy Plugin**
-
-- control how metrics are displayed, customized, and created
-
-Main Concept
-
+Main Concept  
 - **Metric** : counter, gauge, histogram/distribution (between service calls)
 - **Dimension** :
     
     ![스크린샷 2023-01-21 오후 5.53.26.png](/assets/img/Istio-ch7-observability%20e786c38007504d889cf4e5e92dcd6e32/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-21_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_5.53.26.png)
     
-    > We see two different entries for istio_requests_total if the dimensions differ.
-    > 
-    > 
+    > 아래 istio_requests_total 메트릭들은 서로 다른 dimensions 을 가지고 있습니다.  
     > ![스크린샷 2023-01-21 오후 5.55.07.png](/assets/img/Istio-ch7-observability%20e786c38007504d889cf4e5e92dcd6e32/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-21_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_5.55.07.png)
     > 
     
-    *Where do the values for a particular **dimension come from** ?*
-    
-    - *****************From attributes*****************
+    *이러한 **dimension value** 들은 어디서 올까요 ? from attributes*  
 - **[Attribute](https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/advanced/attributes#attributes)** :
-    
+
+    Envoy의 request attributes   
     ![Envoy’s request attributes](/assets/img/Istio-ch7-observability%20e786c38007504d889cf4e5e92dcd6e32/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-21_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_5.52.44.png)
-    
-    Envoy’s request attributes
-    
-    Envoy Attributes 종류
-    
+
+    Envoy Attributes 종류  
     - Request
     - Response
     - Connection
     - Upstream
     - Metadata/filter state
     - Wasm
-
-Istio Attributes  (from Istio’s **peer-metadata** filter built into Istio-proxy)
-
-![스크린샷 2023-01-21 오후 6.03.01.png](/assets/img/Istio-ch7-observability%20e786c38007504d889cf4e5e92dcd6e32/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-21_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_6.03.01.png)
-
-- prefix them with **upstream_peer** or **downstream_peer**
-- 예) downstream_peer.istio_version, upstream_peer.cluster_id
-
-*살펴본 바와 같이 **Attribute** 는 **Dimension** value 를 정의하는데 사용됩니다.*
-
-***Attribute** 를 사용해서 기존 metric의 **Dimension** 을 커스터마이징 해봅시다.*
+    
+    Istio의 Attributes (from Istio’s **peer-metadata** filter built into Istio-proxy)  
+    ![스크린샷 2023-01-21 오후 6.03.01.png](/assets/img/Istio-ch7-observability%20e786c38007504d889cf4e5e92dcd6e32/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-21_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_6.03.01.png)
+    - prefix them with **upstream_peer** or **downstream_peer**
+    - 예) downstream_peer.istio_version, upstream_peer.cluster_id
+    
+    *살펴본 바와 같이 **Attribute** 는 **Dimension** value 를 정의하는데 사용됩니다.*    
+    **Attribute** 를 사용해서 기존 metric의 **Dimension** 을 커스터마이징 해봅시다.
 
 ### 7.4.1 Configuring existing metrics
 
@@ -704,7 +699,7 @@ tcp-stats-filter-1.16   17d
 
 ```yaml
 # kubectl get envoyfilter stats-filter-1.16 -n istio-system
-...
+#...
   - applyTo: HTTP_FILTER
     match:
       context: SIDECAR_OUTBOUND
@@ -739,7 +734,7 @@ tcp-stats-filter-1.16   17d
                     inline_string: envoy.wasm.stats
                 runtime: envoy.wasm.runtime.null
                 vm_id: stats_outbound
-...
+#...
 ```
 
 ❶ istio.stats : Wasm (WebAssembly) plugin that implements the statistics functionality. This Wasm filter is actually compiled directly into the Envoy codebase and runs against a NULL VM, so it’s not run in a Wasm VM.
@@ -749,7 +744,7 @@ tcp-stats-filter-1.16   17d
 
 To run it in a Wasm VM, you must pass the --setvalues.telemetry.v2.prometheus.wasmEnabled=true flag to installation with istioctl or the respective IstioOperator configuration. 
 
-**ADDING DIMENSIONS TO EXISTING METRICS**
+**(실습) 기존 메트릭에 "DIMENSION"을 추가해 보아요**  
 
 *“Let’s add upstream_proxy_version and source_mesh_id dimensions”*
 
@@ -758,15 +753,15 @@ To run it in a Wasm VM, you must pass the --setvalues.telemetry.v2.prometheus.wa
 ```yaml
 # kubectl get istiooperator installed-state -n istio-system -o yaml
 ---
-...
+#...
     telemetry:
       enabled: true
       v2:
-...
+#...
         prometheus:
           enabled: true
           wasmEnabled: false
-...
+#...
 ```
 
 dimension 을 “추가❶”하거나 “삭제❷”할 수 있습니다
@@ -812,9 +807,9 @@ spec:
 metric: requests_total  **주) metrix prefix `istio_`  는 자동으로 붙기 때문에생략해야 됨*
 
 - dimensions:
-    - upstream_proxy_version
+    - **upstream_proxy_version**
         - a value from an attribute “upstream_peer.istio_version”
-    - source_mesh_id
+    - **source_mesh_id**
         - a value from an attribute “node.metadata[’MESH_ID’]
 
 ```bash
@@ -839,55 +834,15 @@ istioctl install -f ch7/metrics/istio-operator-new-dimensions.yaml -y
         ✔ ClusterRoleBinding: istio-reader-istio-system.istio-system checked successfully
         ✔ ClusterRoleBinding: istiod-istio-system.istio-system checked successfully
         ✔ ServiceAccount: istio-reader-service-account.istio-system checked successfully
-        ...
+        #...
         ```
-        
-    - 주의) `istioctl uninstall` ⇒ "istio 삭제". istio 컴포넌트, envoyfilter, control-plane 주요설정 등 "모두 삭제"함
-        
-        > **Uninstall Istio from a cluster**
-        > 
-        > 
-        > ![스크린샷 2023-01-23 오후 1.48.11.png](/assets/img/Istio-ch7-observability%20e786c38007504d889cf4e5e92dcd6e32/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-23_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_1.48.11.png)
-        > 
-        
-        ```bash
-        ## 기대하기로는 yaml 명세의 설정만 삭제되기를 희망했지만, istio 전체가 삭제됨
-        # istioctl uninstall -f ch7/metrics/istio-operator-new-dimensions.yaml
-        
-        Removed ClusterRole::istiod-clusterrole-istio-system.
-        Removed ClusterRole::istiod-gateway-controller-istio-system.
-        Removed ClusterRoleBinding::istiod-clusterrole-istio-system.
-        Removed ClusterRoleBinding::istiod-gateway-controller-istio-system.
-        Removed ConfigMap:istio-system:istio.
-        Removed Deployment:istio-system:istiod.
-        Removed ConfigMap:istio-system:istio-sidecar-injector.
-        Removed MutatingWebhookConfiguration::istio-sidecar-injector.
-        Removed PodDisruptionBudget:istio-system:istiod.
-        Removed ClusterRole::istio-reader-clusterrole-istio-system.
-        Removed ClusterRoleBinding::istio-reader-clusterrole-istio-system.
-        Removed Role:istio-system:istiod.
-        Removed RoleBinding:istio-system:istiod.
-        Removed Service:istio-system:istiod.
-        Removed ServiceAccount:istio-system:istiod.
-        Removed EnvoyFilter:istio-system:stats-filter-1.13.
-        Removed EnvoyFilter:istio-system:tcp-stats-filter-1.13.
-        Removed EnvoyFilter:istio-system:stats-filter-1.14.
-        Removed EnvoyFilter:istio-system:tcp-stats-filter-1.14.
-        Removed EnvoyFilter:istio-system:stats-filter-1.15.
-        Removed EnvoyFilter:istio-system:tcp-stats-filter-1.15.
-        Removed EnvoyFilter:istio-system:stats-filter-1.16.
-        Removed EnvoyFilter:istio-system:tcp-stats-filter-1.16.
-        Removed ValidatingWebhookConfiguration::istio-validator-istio-system.
-        ✔ Uninstall complete*
-        ```
-        
 
 ```bash
 ## istiooperator 명세가 업데이트 되고
 kubectl get istiooperator installed-state \
  -n istio-system -o yaml
 
-..
+#...
 metrics:
 - dimensions:
     source_mesh_id: node.metadata['MESH_ID']
@@ -895,25 +850,26 @@ metrics:
   name: requests_total
   tags_to_remove:
   - request_protocol
-..
+#...
 
 ## envoyfilter "stats-filter-{stat-postfix}"도 업데이트 되었습니다
 kubectl get envoyfilter stats-filter-1.16 \
  -n istio-system -o yaml
 
-..
+#...
 value: |
   {"metrics":[{"dimensions":{"source_mesh_id":"node.metadata['MESH_ID']","upstream_proxy_version":"upstream_peer.istio_version"},"name":"requests_total","tags_to_remove":["request_protocol"]}]}
-..
+#...
 ```
 
-“*Let’s Istio’s proxy know about it (New dimension)”*
-
-⇒ annotate “Pod spec”  `sidecar.istio.io/extraStatTags`
+“*Let’s Istio’s proxy know about it (New dimension)”*  
+⇒ annotate “Pod spec”  `sidecar.istio.io/extraStatTags`  
+istio 1.17+ 부터 custom dimension 에 대한 annotation (extraStatTags) 설정이 필요없어졌습니다. 
+참고) [https://istio.io/latest/news/releases/1.17.x/announcing-1.17/change-notes/](https://istio.io/latest/news/releases/1.17.x/announcing-1.17/change-notes/)
 
 ```yaml
 # cat ch7/metrics/webapp-deployment-extrastats.yaml
-...
+#...
 spec:
   replicas: 1
   selector:
@@ -928,7 +884,7 @@ spec:
           - "source_mesh_id"
       labels:
         app: webapp
-...
+#...
 ```
 
 ```bash
@@ -1095,32 +1051,32 @@ istioctl install -y -f ch7/metrics/istio-operator-new-metric.yaml
 
 ```bash
 ## 확인
-kubectl get istiooperator -n istio-system installed-state -o yaml
+kubectl get istiooperator -n istio-system installed-state -o yaml  | grep -A2 get_calls$
 
-..
-*definitions:
+#...
+definitions:
 - name: get_calls
   type: COUNTER
   value: '(request.method.startsWith('GET') ? 1 : 0)'
-..*
+#...
 
-kubectl get envoyfilter -n istio-system stats-filter-1.16 -o yaml
+kubectl get envoyfilter -n istio-system stats-filter-1.16 -o yaml | grep get_calls
 
-..
-*value: |
- {"definitions":[{"name":"get_calls","type":"COUNTER","value":"(request.method.startsWith('GET') ? 1 : 0)"}]}*
-..
+#...
+value: |
+ {"definitions":[{"name":"get_calls","type":"COUNTER","value":"(request.method.startsWith('GET') ? 1 : 0)"}]}
+#...
 
 ```
 
-Pod annotation (`proxy.istio.io/config`)에 메트릭 `istio_get_calls`  을 추가해 줍니다
-
-- *proxyStatsMatcher.inclusionPrefixes[] ~ metrics 추가*
-- **extraStatTags[] ~ dimensions 추가*
+Pod annotation (`proxy.istio.io/config`)에 메트릭 `istio_get_calls`  을 추가해 줍니다  
+1.17+ custom metric도 어노테이션 설정없이 자동으로 적용된다  
+- proxyStatsMatcher.inclusionPrefixes[] ~ metrics 추가
+- extraStatTags[] ~ dimensions 추가
 
 ```yaml
 # cat ch7/metrics/webapp-deployment-new-metric.yaml
-...
+#...
 spec:
   replicas: 1
   selector:
@@ -1136,7 +1092,7 @@ spec:
             - "istio_get_calls"
       labels:
         app: webapp
-...
+#...
 ```
 
 ```bash
@@ -1155,7 +1111,7 @@ curl -H "Host: webapp.istioinaction.io" localhost/api/catalog
 kubectl -n istioinaction exec -it deploy/webapp -c istio-proxy \
 -- curl localhost:15000/stats/prometheus | grep istio_get_calls
 
-*istio_get_calls{} 2*
+istio_get_calls{} 2
 ```
 
 - 추가한 metric “istio_get_calls{}” 이 출력됨
@@ -1171,7 +1127,7 @@ catalog 서비스의 /items 에 대한 요청을 카운트 하려면 어떻게 �
 
 EnvoyFilter의  attribute-gen 필터를 이용하여 새로운 attribute를 정의해 봅니다.
 
-1. attribute-gen : Attribute (`istio_operationId`) 생성
+1.attribute-gen : Attribute (`istio_operationId`) 생성
 
 ```yaml
 # cat ch7/metrics/attribute-gen.yaml
@@ -1234,12 +1190,14 @@ spec:
                     inline_string: envoy.wasm.attributegen
                 runtime: envoy.wasm.runtime.null
 ```
+- 아래 attribute-gen.yaml 을 적용하기 전에 `proxyVersion: ^1\.16.*` 을 설치된 istio 버전에 맞게 1.16 혹은 1.17 로 수정해 주세요
+
 
 ```bash
 kubectl apply -f ch7/metrics/attribute-gen.yaml -n istioinaction
 ```
 
-2. Create a new dimension (`upstream_operation`) : 1에서 생성한 attribute (`istio_operationId`)를 사용하는 dimension 생성. catalog API의 /items 호출하는 metric에 추가
+2.Create a new dimension (`upstream_operation`) : 1에서 생성한 attribute (`istio_operationId`)를 사용하는 dimension 생성. catalog API의 /items 호출하는 metric에 추가
 
 ```yaml
 # cat ch7/metrics/istio-operator-new-attribute.yaml
@@ -1268,34 +1226,20 @@ istioctl install -y -f ch7/metrics/istio-operator-new-attribute.yaml
 ```yaml
 
 ## 확인 outboundSidecar 에만 적용됨
-# kubectl get istiooperator -n istio-system installed-state -o yaml
+# kubectl get istiooperator -n istio-system installed-state -o yaml | grep -B2 -A1 istio_operationId$
 
-...
-    telemetry:
-      enabled: true
-      v2:
-        enabled: true
-        metadataExchange:
-          wasmEnabled: false
-        prometheus:
-          configOverride:
-...
-            outboundSidecar:
-              definitions:
-              - name: get_calls
-                type: COUNTER
-                value: '(request.method.startsWith(''GET'') ? 1 : 0)'
+#...
               metrics:
               - dimensions:
                   upstream_operation: istio_operationId
                 name: requests_total
-...
+#...
 ```
 
-3. Pod Annotation(`proxy.istio.io/config`) 에 dimension (`upstream_operation`) 추가 
-
+3.Pod Annotation(`proxy.istio.io/config`) 에 dimension (`upstream_operation`) 추가  
 - *extraStatTags[] ~ dimensions 추가*
-- **proxyStatsMatcher.inclusionPrefixes[] ~ metrics 추가*
+- *proxyStatsMatcher.inclusionPrefixes[] ~ metrics 추가*
+- istio 1.17+ 부터는 extraStatTags와 proxyStatsMatcher 등 어노테이션 설정 없이도 자동으로 추가된 dimension과 metric 이 반영됩니다 
 
 ```yaml
 # cat ch7/metrics/webapp-deployment-extrastats-new-attr.yaml
@@ -1375,7 +1319,8 @@ Istio makes **metrics collection** between services **easier** by observing thin
 
 Istio can simplify collecting [*golden-signal*](https://sre.google/sre-book/monitoring-distributed-systems/) networking metrics.
 
-이번 챕터에서는 Istio service proxy (Envoy) 와 control plane 의 **metric 수집 (scrape)**에 대해서 알아 ****보았고, **메트릭 확장 (extend)**, 프로메테우스와 같은 time series DB로 **메트릭을 모으는(aggregate) 방법**을 살펴 보았습니다 ~ ***Scraping, Extending, Aggregating Metrics***
+이번 챕터에서는 Istio의 data-plane(Envoy) 과 control-plane(istiod) 의 *메트릭 수집 (**scraping**)*에 대해서 알아 보았습니다.  
+그리고, custom dimensions, custom metrics 등 *메트릭을 확장 (**extending**)*하는 방법과 프로메테우스로 *메트릭을 모으는 방법(**aggregating**)*에 대해 살펴 보았습니다.
 
 다음 챕터에서는 “**Visualizing Metrics** ” (Grafana, Kiali) 에 대해 살펴보겠습니다. 
 
@@ -1386,7 +1331,7 @@ Istio can simplify collecting [*golden-signal*](https://sre.google/sre-book/moni
 - Istio collects the metrics used for monitoring when intercepting requests in the sidecar proxy. Because the proxy acts at layer7 (the application-networking layer), it has access to a great deal of information such as status codes, HTTP methods, and headers that can be used in metrics.
 *Istio 는 sidecar proxy (Envoy) 에서 요청을 처리할 때 모니터링을 위한 메트릭을 수집합니다.*
 - One of the key metrics is `istio_requests_total` , which counts requests and answers questions such as how many requests ended with status code 200.
-`*istio_requests_total` 은 요청 상태별 집계 등 다양한 요청 집계를 제공하는 핵심 메트릭 입니다.*
+`istio_requests_total` 은 요청 상태별 집계 등 다양한 요청 집계를 제공하는 핵심 메트릭 입니다.
 - The metrics exposed by the proxies set the foundation to build an observable system.
 *프록시에서 제공하는 메트릭들은 관측가능한 시스템을 만드는 기반을 제공합니다.*
 - By default, Istio configures the proxies to expose only a limited set of statistics. You can configure the proxies to report more mesh-wide using the `meshConfig.defaultConfig` or on a per-workload basis using the annotation `proxy.istio.io/config` .
@@ -1394,4 +1339,5 @@ Istio can simplify collecting [*golden-signal*](https://sre.google/sre-book/moni
 - The control plane also exposes metrics for its performance. The most important is the histogram `pilot_proxy_convergence_time`, which measures the time taken to distribute changes to the proxies.
 *control plane 은 Istio 성능 관련 메트릭을 제공합니다. 가장 중요한 메트릭은*`pilot_proxy_convergence_time` *히스토그램인데요 프록시들로 설정이 적용되는데 걸리는 시간을 측정합니다.*
 - We can **customize the metrics** available in Istio using the `IstioOperator` and use them in services by setting the `extraStats`  value in the annotation `proxy.istio.io/config`  that defines the proxy configuration. This level of control gives the operator (end user) flexibility over what telemetry gets scraped and how to present it in dashboards.
-*메트릭 커스터마이징은 IstioOperator “명세”를 통해서 하고 앱에서 (커스텀) 메트릭을 사용하려면* `proxy.istio.io/config` *어노테이션의 value로* `extraStats` *를 설정합니다.*
+*메트릭 커스터마이징은 IstioOperator “명세”를 통해서 하고 앱에서 (커스텀) 메트릭을 사용하려면* `proxy.istio.io/config` *어노테이션의 value로* `extraStats` *를 설정합니다.*  
+  (istio 1.17+ 부터는 어노테이션 설정은 필요하지 않습니다)
