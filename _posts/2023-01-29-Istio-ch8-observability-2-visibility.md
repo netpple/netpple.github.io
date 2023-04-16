@@ -1,8 +1,8 @@
 ---
 title: Istio Observability (2)  
-version: v1.0  
+version: v1.1  
 description: istio in action 8장  
-date: 2023-01-29 15:25:00 +09:00  
+date: 2023-04-16 21:25:00 +09:00  
 categories: network  
 badges:
 - type: info  
