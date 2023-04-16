@@ -917,9 +917,9 @@ Correlation 해주니깐 (연관된 지표들을 한 곳에 모아놔 주니깐)
 ## Summary
 
 - Grafana — Istio control/data plane 메트릭 대시보드 제공
-- Distributed tracing (Jaeger) — service requests 에 대한 Insight 제공 
-** how ? “annotate requests”   
-** 간트 차트와 비슷하다*
+- Distributed tracing (Jaeger) — service requests 에 대한 Insight 제공   
+  *how ? “annotate requests”*       
+  *간트 차트와 비슷하다*  
   ![스크린샷 2023-01-29 오후 2.05.43.png](/assets/img/Istio-ch8-observability-2-visibility%20b06a0bd1502d4e55a54a41be98fa423c/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-29_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_2.05.43.png)
   ![스크린샷 2023-01-29 오후 2.06.42.png](/assets/img/Istio-ch8-observability-2-visibility%20b06a0bd1502d4e55a54a41be98fa423c/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-29_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_2.06.42.png)
 
