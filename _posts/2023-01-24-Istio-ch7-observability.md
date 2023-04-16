@@ -1292,7 +1292,7 @@ spec:
 
 ```
 
-```yaml
+```bash
 kubectl -n istioinaction apply -f\
  ch7/metrics/webapp-deployment-extrastats-new-attr.yaml 
 ```
