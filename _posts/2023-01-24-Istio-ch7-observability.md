@@ -910,12 +910,10 @@ kubectl -n istioinaction exec -it deploy/webapp -c istio-proxy \
 -- curl localhost:15000/stats/prometheus | grep istio_requests_total
 ```
 
-![istio_requests_total (metric) 에 dimension (upstream_proxy_version, source_mesh_id) 추가됨](/assets/img/Istio-ch7-observability%20e786c38007504d889cf4e5e92dcd6e32/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-23_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_12.50.53.png)
-
+![istio_requests_total (metric) 에 dimension (upstream_proxy_version, source_mesh_id) 추가됨](/assets/img/Istio-ch7-observability%20e786c38007504d889cf4e5e92dcd6e32/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-23_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_12.50.53.png)  
 istio_requests_total (metric) 에 dimension (upstream_proxy_version, source_mesh_id) 추가됨
 
-![tags_to_remove : [request_protocol] 삭제됨](/assets/img/Istio-ch7-observability%20e786c38007504d889cf4e5e92dcd6e32/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-23_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_12.53.51.png)
-
+<img src="/assets/img/Istio-ch7-observability%20e786c38007504d889cf4e5e92dcd6e32/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-23_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_12.53.51.png" width=250 />
 tags_to_remove : [request_protocol] 삭제됨
 
 *지금까지 실습한 dimension 추가와 삭제는 **Telemetry** API를 이용해서도 가능합니다.*
