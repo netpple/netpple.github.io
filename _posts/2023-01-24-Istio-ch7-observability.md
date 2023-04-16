@@ -431,6 +431,11 @@ envoy_cluster_upstream_rq_retry_overflow{cluster_name="outbound|80||catalog.."} 
 #...
 ```
 
+>참고) /stats 와 /stats/prometheus 의 차이점  
+> /stats 는 istio-proxy 가 수집한 통계정보 출력. 디버깅/모니터링 용도. /reset_counters 로 초기화  
+> /stats/prometheus 는 istio-proxy 가 수집한 통계정보를 prometheus에 제공하기 위한 exporter endpoint. /reset_counters 로 초기화 할 수 없음   
+> 
+
 지금부터 Prometheus 가 수집하도록 구성해 보겠습니다
 
 ### 7.3.1 Setting up Prometheus and Grafana
@@ -750,18 +755,15 @@ To run it in a Wasm VM, you must pass the --setvalues.telemetry.v2.prometheus.wa
 
 기존 
 
-```yaml
-# kubectl get istiooperator installed-state -n istio-system -o yaml
----
-#...
+```bash
+# kubectl get istiooperator installed-state -n istio-system -o yaml | grep -E "prometheus:|telemetry:" -A2
     telemetry:
       enabled: true
       v2:
-#...
+--
         prometheus:
           enabled: true
           wasmEnabled: false
-#...
 ```
 
 dimension 을 “추가❶”하거나 “삭제❷”할 수 있습니다
@@ -801,11 +803,11 @@ spec:
                   upstream_proxy_version: upstream_peer.istio_version
                   source_mesh_id: node.metadata['MESH_ID']
                 tags_to_remove:
-                - request_protocal
+                - request_protocol
 ```
 
-metric: requests_total  **주) metrix prefix `istio_`  는 자동으로 붙기 때문에생략해야 됨*
-
+dimesion을 변경할 metric: requests_total    
+*주) metrix prefix `istio_`  는 자동으로 붙기 때문에생략해야 됨*
 - dimensions:
     - **upstream_proxy_version**
         - a value from an attribute “upstream_peer.istio_version”
@@ -840,17 +842,18 @@ istioctl install -f ch7/metrics/istio-operator-new-dimensions.yaml -y
 ```bash
 ## istiooperator 명세가 업데이트 되고
 kubectl get istiooperator installed-state \
- -n istio-system -o yaml
+ -n istio-system -o yaml | grep -E "prometheus:" -A9
 
-#...
-metrics:
-- dimensions:
-    source_mesh_id: node.metadata['MESH_ID']
-    upstream_proxy_version: upstream_peer.istio_version
-  name: requests_total
-  tags_to_remove:
-  - request_protocol
-#...
+        prometheus:
+          configOverride:
+            gateway:
+              metrics:
+              - dimensions:
+                  source_mesh_id: node.metadata['MESH_ID']
+                  upstream_proxy_version: upstream_peer.istio_version
+                name: requests_total
+                tags_to_remove:
+                - request_protocol
 
 ## envoyfilter "stats-filter-{stat-postfix}"도 업데이트 되었습니다
 kubectl get envoyfilter stats-filter-1.16 \
@@ -916,13 +919,12 @@ istio_requests_total (metric) 에 dimension (upstream_proxy_version, source_mesh
 tags_to_remove : [request_protocol] 삭제됨
 
 *지금까지 실습한 dimension 추가와 삭제는 **Telemetry** API를 이용해서도 가능합니다.*
+<br /><br />
 
-**Using the new Telemetry API** (Istio 1.12+)
+**Telemetry API 로 dimension을 추가해 봅시다** (Istio 1.12+)
 
-앞서 IstioOperator 를 이용한 new metric 설정은 “전역 설정 (globally config.)” 입니다.
-
-Telemetry API를 이용하면 namespace, workload 단위로 설정할 수 있어욧!
-
+앞서 IstioOperator 를 이용한 new metric 설정은 “전역 설정 (globally config.)” 입니다.  
+Telemetry API를 이용하면 namespace, workload 단위로 설정할 수 있어욧!  
 먼저 전역설정한 dimension (upstream_proxy_version, source_mesh_id)을 삭제합니다
 
 ```bash
@@ -1007,9 +1009,9 @@ Telemetry
 
 *지금까지 existing standard metric (istio_requests_total)의 dimension 을 커스텀 해보았습니다.*
 
-### 7.4.2 Creating new metrics
+### 7.4.2 신규 메트릭 생성하기
 
-*Let’s create our own metric !*
+*커스텀 메트릭을 만들어 봅시다*
 
 ```yaml
 # cat ch7/metrics/istio-operator-new-metric.yaml
@@ -1069,10 +1071,10 @@ value: |
 
 ```
 
-Pod annotation (`proxy.istio.io/config`)에 메트릭 `istio_get_calls`  을 추가해 줍니다  
-1.17+ custom metric도 어노테이션 설정없이 자동으로 적용된다  
+Pod annotation (`proxy.istio.io/config`)에 메트릭 `istio_get_calls`  을 추가해 줍니다   
 - proxyStatsMatcher.inclusionPrefixes[] ~ metrics 추가
 - extraStatTags[] ~ dimensions 추가
+- *Istio 1.16, 1.17에서 확인결과 custom metric 추가 시 어노테이션(`proxyStatsMatcher.inclusionPrefixes`) 설정없이도 메트릭이 추가됩니다*
 
 ```yaml
 # cat ch7/metrics/webapp-deployment-new-metric.yaml
@@ -1127,7 +1129,7 @@ catalog 서비스의 /items 에 대한 요청을 카운트 하려면 어떻게 �
 
 EnvoyFilter의  attribute-gen 필터를 이용하여 새로운 attribute를 정의해 봅니다.
 
-1.attribute-gen : Attribute (`istio_operationId`) 생성
+1.attribute-gen : 커스텀 Attribute(`istio_operationId`)를 생성하는 envoyfilter 명세를 확인해 보세요
 
 ```yaml
 # cat ch7/metrics/attribute-gen.yaml
@@ -1191,11 +1193,19 @@ spec:
                 runtime: envoy.wasm.runtime.null
 ```
 - 아래 attribute-gen.yaml 을 적용하기 전에 `proxyVersion: ^1\.16.*` 을 설치된 istio 버전에 맞게 1.16 혹은 1.17 로 수정해 주세요
+  ```bash
+  ## istio 버전 확인
+  istioctl version
+  
+  client version: 1.16.1
+  control plane version: 1.16.1
+  data plane version: 1.16.1 (4 proxies)
+  ```
+- 버전을 수정 후 envoyfilter 를 배포합니다. envoyfilter를 배포한 네임스페이스의 istio-proxy들에 적용 됩니다  
 
-
-```bash
-kubectl apply -f ch7/metrics/attribute-gen.yaml -n istioinaction
-```
+  ```bash
+  kubectl apply -f ch7/metrics/attribute-gen.yaml -n istioinaction
+  ```
 
 2.Create a new dimension (`upstream_operation`) : 1에서 생성한 attribute (`istio_operationId`)를 사용하는 dimension 생성. catalog API의 /items 호출하는 metric에 추가
 
@@ -1294,13 +1304,7 @@ curl -H "Host: webapp.istioinaction.io" \
 http://localhost/api/catalog
 ```
 
-catalog pod 로그
-
-```bash
-catalog-f475cb899-dlv9w istio-proxy [2023-01-24T05:25:36.714Z] "GET /items HTTP/1.1" 200 - via_upstream - "-" 0 502 21 21 "172.17.0.1" "beegoServer" "539a9d16-fd10-9d3a-b858-2876b1d125c6" "10.100.82.10:80" "172.17.0.9:3000" inbound|3000|| 127.0.0.6:38723 172.17.0.9:3000 172.17.0.1:0 outbound_.80_._.catalog.istioinaction.svc.cluster.local default
-```
-
-메트릭 확인 : new dimension (`upstream_operation`) 추가 확인!
+메트릭 확인 : dimension (`upstream_operation`) 추가 확인!
 
 ```bash
 kubectl -n istioinaction exec -it deploy/webapp -c istio-proxy \
