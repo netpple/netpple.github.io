@@ -33,7 +33,8 @@ Spans may be nested and ordered to model **causal relationships**.
 
 *참고로 … span 은 건축에서 교량을 **지지하는 단위 구간**을 의미하기도 한다*
 
-![스크린샷 2023-01-29 오후 12.59.11.png](/assets/img/Istio-ch8-observability-2-visibility%20b06a0bd1502d4e55a54a41be98fa423c/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-29_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_12.59.11.png)
+<img src="/assets/img/Istio-ch8-observability-2-visibility%20b06a0bd1502d4e55a54a41be98fa423c/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-29_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_12.59.11.png" width=301 />
+<br/><br/>
 
 **Trace**
 
@@ -49,8 +50,8 @@ Spans may be nested and ordered to model **causal relationships**.
 >     - edge를 통해 node (or vertex) 간에 연결될 수 있음
 >     - edge 에서 “순환” (cycle) 은 없음 (acyclic, **비순환**)
 >     - Topological Ordering (**순서**) 있음
->     
->     ![스크린샷 2023-01-29 오후 1.52.10.png](/assets/img/Istio-ch8-observability-2-visibility%20b06a0bd1502d4e55a54a41be98fa423c/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-29_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_1.52.10.png)
+>
+>     <img src="/assets/img/Istio-ch8-observability-2-visibility%20b06a0bd1502d4e55a54a41be98fa423c/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-29_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_1.52.10.png" width="180" />
 >     
 
 ### 다루는 내용
@@ -65,7 +66,7 @@ Spans may be nested and ordered to model **causal relationships**.
 - **실습 네임스페이스** : istioinaction
 - **실습 디렉토리** : book-source-code
 
-## 8.1 Using Grafana to visualize Istio Service and control-plane metrics
+## 8.1 Grafana - Istio 서비스와 control-plane Visualize
 
 ch7 에서 설치한 프로메테우스를 사용합니다. 
 
@@ -87,7 +88,7 @@ kubectl -n prometheus port-forward svc/prom-grafana 3000:80
 
 ![스크린샷 2023-01-25 오전 8.05.46.png](/assets/img/Istio-ch8-observability-2-visibility%20b06a0bd1502d4e55a54a41be98fa423c/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-25_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%258C%25E1%2585%25A5%25E1%2586%25AB_8.05.46.png)
 
-### 8.1.1 Setting up Istio’s Grafana dashboards
+### 8.1.1 Istio Grafana 대시보드 구성하기
 
 대시보드 : *{book-source-code}*/ch8/dashboards/*
 
@@ -134,9 +135,7 @@ prom-grafana-6d5b6696b5-b6xdq grafana-sc-dashboard [2023-01-24 23:22:40] File in
 prom-grafana-6d5b6696b5-b6xdq grafana-sc-dashboard [2023-01-24 23:22:40] File in configmap pilot-dashboard.json ADDED
 ```
 
-![스크린샷 2023-01-25 오전 8.26.05.png](/assets/img/Istio-ch8-observability-2-visibility%20b06a0bd1502d4e55a54a41be98fa423c/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-25_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%258C%25E1%2585%25A5%25E1%2586%25AB_8.26.05.png)
-
-클릭
+<img src="/assets/img/Istio-ch8-observability-2-visibility%20b06a0bd1502d4e55a54a41be98fa423c/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-25_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%258C%25E1%2585%25A5%25E1%2586%25AB_8.26.05.png" width=70 /> 클릭
 
 ![스크린샷 2023-01-25 오전 8.25.43.png](/assets/img/Istio-ch8-observability-2-visibility%20b06a0bd1502d4e55a54a41be98fa423c/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-25_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%258C%25E1%2585%25A5%25E1%2586%25AB_8.25.43.png)
 
@@ -169,9 +168,10 @@ Istio를 사용하면 서비스 메시에 Distributed Tracing을 쉽게 적용�
 > Services often take multiple hops to service a request.
 > 
 > 
-> ![스크린샷 2023-01-25 오전 11.16.31.png](/assets/img/Istio-ch8-observability-2-visibility%20b06a0bd1502d4e55a54a41be98fa423c/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-25_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%258C%25E1%2585%25A5%25E1%2586%25AB_11.16.31.png)
+> <img src="/assets/img/Istio-ch8-observability-2-visibility%20b06a0bd1502d4e55a54a41be98fa423c/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-25_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%258C%25E1%2585%25A5%25E1%2586%25AB_11.16.31.png" width=200 />
 > 
 
+<br />
 *(배경)*
 
 **In a monolith**, if things start to misbehave, we can jump in and start debugging with familiar tools at our disposal.  We have debuggers, runtime profilers, and memory analysis tools to find areas where parts of the code introduce latency or trigger faults that cause an application feature to misbehave. 
@@ -184,6 +184,7 @@ Istio를 사용하면 서비스 메시에 Distributed Tracing을 쉽게 적용�
 and **involves annotating requests with** `correlation IDs` that represent service-to-service calls **and** `trace IDs` that represent a specific request through a graph of service-to-service calls.
 Istio’s data plane can **add these kinds of metadata** to the requests as they pass through the data plane (and, **importantly, remove them** when they are **unrecognized** **or come from external** entities.)
 
+<br />
 *(OpenTelemetry - Opentracing 을 포함 )*
 
 *Telemetry : 원격측정
@@ -196,6 +197,7 @@ Distributed tracing, in part, relise on **developers** **instrumenting** their c
 **A tracing engine helps put together** the **full picture of a request flow**, which can be used to **identify misbehaving ares** of our architecture.
 (Tracing engine 의 역할 ~ put together, full picture ⇒ identify misbehaving areas)
 
+<br />
 *(Istio 를 쓰세요)*
 
 **With Istio**, we can **provide the bulk of the heavy lifting** developers would otherwide have to implement themselves and provide distributed tracing as part of the service mesh.
@@ -254,7 +256,7 @@ Istio 는 다양한 레벨 (global / namespace / workload) 에 Distributed Traci
 
 Istio supports distributed tracing backends including Zipkin, Datadog, Jaeger (Zipkin compatible), and others. 
 
-```bash
+```yaml
 apiVersion: install.istio.io/v1alpha1
 kind: IstioOperator
 metadata:
@@ -387,7 +389,7 @@ location: MESH_EXTERNAL
 resolution: DNS
 ```
 
-```yaml
+```bash
 kubectl apply -n istioinaction \
 -f ch8/tracing/thin-httpbin-virtualservice.yaml
 ```
@@ -707,7 +709,7 @@ kiali-operator
 
 Step2. Kiali Dashboard 설치 (Kiali Custom Resource, CR)
 
-```bash
+```yaml
 apiVersion: kiali.io/v1alpha1
 kind: Kiali
 metadata:
@@ -743,7 +745,7 @@ Kiali dashboard 접속을 위해 포트포워딩
 kubectl -n istio-system port-forward deploy/kiali 20001
 ```
 
-[*http://localhost:20001](http://localhost:20001)* 
+[http://localhost:20001](http://localhost:20001)
 
 ![Applications 로 조회 - prometheus 는 “2”](/assets/img/Istio-ch8-observability-2-visibility%20b06a0bd1502d4e55a54a41be98fa423c/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-26_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_12.54.07.png)
 
@@ -758,23 +760,22 @@ Workload 로 조회 - prometheus 는 “3”
 - default, ingress ~ apps는 N/A, workloads는 1
 - prometheus  apps는 2, workloads는 3
 - Q) 왜 prom-grafana 는 app 이 없다고 할까?
+
+  <img src="/assets/img/Istio-ch8-observability-2-visibility%20b06a0bd1502d4e55a54a41be98fa423c/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-26_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_10.33.14.png" width=240 />
     
-    ![스크린샷 2023-01-26 오후 10.33.14.png](/assets/img/Istio-ch8-observability-2-visibility%20b06a0bd1502d4e55a54a41be98fa423c/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-26_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_10.33.14.png)
-    
-    A) Application 에 포함이 돼려면 “**Label App**” 으로 지정이 돼야 함 (아래 참고 deployment (prom-grafana) 에서 pod label 에 `app: prom-grafana`  추가 
-    
+  A) Application 에 포함이 돼려면 “**Label App**” 으로 지정이 돼야 함 (아래 참고 deployment (prom-grafana) 에서 pod label 에 `app: prom-grafana`  추가  
     ```yaml
     apiVersion: apps/v1
     kind: Deployment
     metadata: 
       name: prom-grafana
-    ...
+    # ...
     spec:
       template:
         metadata:
           labels:
             app: prom-grafana    # <-- Pod label 추가 
-    ...
+    # ...
     ```
     
     ** 주) 기동 중인 pod label 만 변경해서는 반영되지 않음*
@@ -799,20 +800,18 @@ Workload 로 조회 - prometheus 는 “3”
     > - *The `app` label : **Each deployment should have** a distinct `app` label with a meaningful value. The `app` label is used to add contextual information in distributed tracing.*
     > - *The `version` label : This label indicates the version of the application corresponding to the particular deployment.*
 
-![스크린샷 2023-01-26 오후 1.26.18.png](/assets/img/Istio-ch8-observability-2-visibility%20b06a0bd1502d4e55a54a41be98fa423c/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-26_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_1.26.18.png)
+    ![스크린샷 2023-01-26 오후 1.26.18.png](/assets/img/Istio-ch8-observability-2-visibility%20b06a0bd1502d4e55a54a41be98fa423c/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-26_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_1.26.18.png)
 
-호출 테스트 
-
-```json
+<br />
+호출 테스트  
+```bash
 for in in {1..20}; do curl http://localhost/api/catalog -H \
 "Host: webapp.istioinaction.io"; sleep .5s; done
 ```
 
-호출 후 Call graph 를 확인해 보세요
-
-![스크린샷 2023-01-26 오후 1.28.11.png](/assets/img/Istio-ch8-observability-2-visibility%20b06a0bd1502d4e55a54a41be98fa423c/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-26_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_1.28.11.png)
-
+*호출 후 Call graph 를 확인해 보세요*
 ![스크린샷 2023-01-26 오후 1.27.09.png](/assets/img/Istio-ch8-observability-2-visibility%20b06a0bd1502d4e55a54a41be98fa423c/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-26_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_1.27.09.png)
+<img src="/assets/img/Istio-ch8-observability-2-visibility%20b06a0bd1502d4e55a54a41be98fa423c/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-26_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_1.28.11.png" width=110 />
 
 *From the graph …*
 
@@ -921,10 +920,8 @@ Correlation 해주니깐 (연관된 지표들을 한 곳에 모아놔 주니깐)
 - Distributed tracing (Jaeger) — service requests 에 대한 Insight 제공 
 ** how ? “annotate requests”   
 ** 간트 차트와 비슷하다*
-
-![스크린샷 2023-01-29 오후 2.05.43.png](/assets/img/Istio-ch8-observability-2-visibility%20b06a0bd1502d4e55a54a41be98fa423c/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-29_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_2.05.43.png)
-
-![스크린샷 2023-01-29 오후 2.06.42.png](/assets/img/Istio-ch8-observability-2-visibility%20b06a0bd1502d4e55a54a41be98fa423c/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-29_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_2.06.42.png)
+  ![스크린샷 2023-01-29 오후 2.05.43.png](/assets/img/Istio-ch8-observability-2-visibility%20b06a0bd1502d4e55a54a41be98fa423c/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-29_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_2.05.43.png)
+  ![스크린샷 2023-01-29 오후 2.06.42.png](/assets/img/Istio-ch8-observability-2-visibility%20b06a0bd1502d4e55a54a41be98fa423c/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-29_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_2.06.42.png)
 
 - Applications — “Trace header” 전파.  request 의 전체 view  확보
 - Trace — a collection of spans.  분산 환경에서 요청을 처리하는 단계별 홉과 레이턴시 디버깅 제공
