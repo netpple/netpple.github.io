@@ -411,59 +411,42 @@ fortio load -H "Host: webapp.istioinaction.io" -quiet -jitter -t 30s -c 1 -qps 1
 
 ## 8.2 Distributed tracing
 
-분산 환경은 monolith 환경과 다름. 따라서 분산 환경 디버깅을 위한 방법과 툴들이 필요함.
+*(배경)*
+- 모놀리딕 환경에서는 시스템이 이상동작을 보이더라도 사용가능한 익숙한 도구를 이용하여 디버깅을 합니다.  
+- 디버거, 런타임 프로파일러, 메모리 분석툴 등 코드의 어떤 부분에서 레이턴시가 발생하고 에러를 유발하고
+- 어플리케이션 기능을 오동작 하도록 만드는지 발견할 수 있는 도구들이 많습니다  
+- 어플리케이션이 분산 컴포넌트로 구성이 될 경우에도 마찬가지로 똑같이 디버깅 할 수 있도록 새로운 툴셋이 필요합니다
 
-Distributed Tracing (분산 Tracing)이 바로 그것임.
+*(분산 트레이싱 기원과 개요)*
+- 분산 트레이싱은 요청을 처리하는데 포함된 분산 컴포넌트들에 대한 인사이트를 줍니다  
+- 분산 트레이싱은 구글 논문 (Dapper, 2010)에서 쳐음 소개됐고 
+- 서비스-to-서비스 호출을 나타내는 correlation ID 와 
+- 서비스-to-서비스 호출 그래프를 통과하는 특정 요청을 식별하기 위한 trace Id를 어노테이션으로 추가합니다.
+  예) istio 의 경우 (Jaeger/Zipkin) ~ `x-request-id`  
+- Istio는 correlation ID, trace ID를 요청(request) 에 추가할 수 있습니다.
+- 그리고, trace ID가 인식이 되지 않거나 외부에서 온 것일 때에는 삭제할 수 있습니다.
 
-구글 Dapper (2010)에서 기원하였으며, requests에 correlation ID, trace ID를 포함하여 관련 서비스간의 호출을 식별하고 특정 요청 처리에 포함된 전체적인 호출 그래프 (call graph)를 확인할 수 있음.
+*(OpenTelemetry)*
+- OpenTelemetry는 Opentracing을 포함하는 커뮤니티 주도의 프레임웍으로 
+- 분산 트레이싱의 개념과 API를 포함하는 스펙입니다.  
+- 분산 트레이싱은 일정 부분 개발자에게 의존합니다. 
+  - 모니터링을 위한 코드(instrumenting code) 삽입 
+  - 요청에 어노테이션 (correlation id, trace Id 등) 추가
+- 트레이싱 엔진은 요청 플로우의 전체 그림을 하나로 완성하여 아키텍처 상에서 오동작할 수 있는 영역을 인식하기 쉽도록 돕습니다.
 
-Istio data-plane 에서는 request 마다 이러한 메타데이터 (correlation ID, trace ID 등)를 추가할 수 도 있고, 메타데이터가 포함돼 있지 않거나 (unrecognized) 인식불가한 메타데이터인 경우, 혹은 외부로 부터 들어온 requests 인 경우에는 삭제할 수도 있습니다.
+*(Istio 를 쓰세요)*
+- Istio는 개발자 여러분들이 추가로 직접 구현해야 할 많은 부분들을 대신해주고 서비스 메시에서의 분산 트레이싱을 제공합니다.
 
-Distributed Tracing 오픈소스 툴로 Open Telemetry가 있습니다. 
-Open Telemetry는 Distributed Tracing과 관련된 컨셉과 API 스펙을 캡쳐한 Open Tracing 을 포함하고 있습니다.
-Distributed Tracing  서비스 간의 요청 호출, 요청에 대한 어노테이션 처리 등 개발자가 해주어야 할 부분이 있는 반면에, Tracing 엔진은 이러한 요청들을 모으고 전체적인 흐름에서 오동작을 식별 해낼 수 있습니다.
 
-Istio를 사용하면 서비스 메시에 Distributed Tracing을 쉽게 적용할 수 있습니다.
-
-> Services often take multiple hops to service a request.
-> 
+> 서비스에서 하나의 요청을 처리하기 위해 여러 홉을 거치기도 합니다
 > 
 > <img src="/assets/img/Istio-ch8-observability-2-visibility%20b06a0bd1502d4e55a54a41be98fa423c/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-25_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%258C%25E1%2585%25A5%25E1%2586%25AB_11.16.31.png" width=200 />
 > 
 
-<br />
-
-*(배경)*
-
-모놀리딕 환경에서는 시스템이 이상동작을 보이더라도 사용가능한 익숙한 도구를 이용하여 디버깅을 시작합니다.  
-디버거, 런타임 프로파일러, 메모리 분석툴 등 코드의 어떤 부분에서 레이턴시가 발생하고 에러를 유발하고 
-어플리케이션 기능을 오동작 하도록 만드는지 발견할 수 있는 도구들이 많습니다  
-어플리케이션이 분산 컴포넌트로 구성이 될 경우에도 마찬가지로 똑같이 디버깅 할 수 있도록 새로운 툴셋이 필요합니다
-
-*(분산트레이싱 기원과 개요)*
-
-분산추적은 요청을 서빙하는데 포함된 분산 컴포넌트들에 대한 인사이트를 줍니다  
-분산추적은 구글 논문 (Dapper, 2010)에서 소개됐고 서비스-to-서비스 호출을 나타내는 correlation ID 와 
-서비스-to-서비스 호출 그래프를 통과하는 특정 요청을 나타내는  trace Id 를 요청(request) 에 어노테이션으로 추가합니다.
-예) istio 의 경우 (Jaeger/Zipkin) ~ `x-request-id`  
-Istio 의 data plane 은 이러한 메타데이터 (correlation ID, trace ID 등) 를 요청 (request) 에 추가할 수 있습니다. 
-그리고, (중요) 그것들이 인식이 되지 않거나 외부 엔티티에서 온 것일 때에는 삭제할 수 도 있어야 합니다.
-
-*(OpenTelemetry - Opentracing 을 포함 )*
-
-오픈 텔레메트리는 오픈 트레이싱을 포함하는 커뮤니티 주도의 프레임웍으로 분산추적과 관련된 개념과 API를 포함하는 스펙입니다.  
-분산추적에서 일정 부분은 개발자에게 의존합니다. 모니터링을 위한 코드(instrumenting code)를 삽입하거나,
-애플리이션에서 처리하는 요청이나 다른 시스템으로 보내는 요청에는 어노테이션을 추가하는 작업입니다  
-트레이싱 엔진은 요청 플로우의 전체 그림을 하나로 완성하여 아키텍처 상에서 오동작할 수 있는 영역을 인식 할 수 있도록 도울 수 있습니다.
-
-*(Istio 를 쓰세요)*
-
-Istio는 개발자 여러분들이 추가로 직접 구현해야 할 많은 부분들을 대신해주고 서비스 메시에서의 분산추적을 제공합니다.
 
 ### 8.2.1 분산트레이싱의 동작 방식
 
-Span 과 trace context ⇒ Trace
-
+*Span 과 Trace context ⇒ Trace*
 - 해당 서비스에서 Span 생성
 - 트레이싱엔진으로 Span 전송
 - 다른 서비스로 Trace context 전파
@@ -472,10 +455,9 @@ Span 과 trace context ⇒ Trace
 
 ![스크린샷 2023-01-25 오후 12.43.37.png](/assets/img/Istio-ch8-observability-2-visibility%20b06a0bd1502d4e55a54a41be98fa423c/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-25_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_12.43.37.png)
 
-“Istio can handle sending the Spans to the distributed tracing engine.”
+*Istio 는 분산 트레이싱 엔진으로의 "Span 전송"을 핸들링 합니다* 
 
-Zipkin tracing headers
-
+Zipkin 트레이싱 헤더
 - x-request-id
 - x-b3-traceid
 - x-b3-spanid
@@ -486,31 +468,29 @@ Zipkin tracing headers
 
 ![스크린샷 2023-01-25 오후 1.09.05.png](/assets/img/Istio-ch8-observability-2-visibility%20b06a0bd1502d4e55a54a41be98fa423c/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-25_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_1.09.05.png)
 
-### 8.2.2 Installing a distributed tracing system
+### 8.2.2 분산 트레이싱 시스템 설치
 
-Jaeger 설치가 다소 복잡해서 그냥 Istio 샘플 addon을 쓰겠음
+*Jaeger 설치가 다소 복잡해서 그냥 Istio 샘플 addon을 쓰겠습니다*
 
 ```bash
 cd istio-1.16.1
 
 kubectl apply -f samples/addons/jaeger.yaml
 ```
-
-확인
-
 ```bash
+## 설치 확인
 kubectl get po,svc -n istio-system -o name
 ```
 
-### 8.2.3 Configuring Istio to perform distributed tracing
+### 8.2.3 Istio 분산 트레이싱 설정
 
-Istio 는 다양한 레벨 (global / namespace / workload) 에 Distributed Tracing 적용 가능
+Istio 는 다양한 레벨 (global / namespace / workload) 에서 분산 트레이싱을 적용 할 수 있습니다  
+[참고) Istio Telemetry API](https://istio.io/latest/docs/tasks/observability/telemetry/) 
 
-참고: Istio’s [Telemetry API](https://istio.io/latest/docs/tasks/observability/telemetry/) 
+*방법1. IstioOperator 설정*
 
-방법1. **Configuring tracing at installation**
-
-Istio supports distributed tracing backends including Zipkin, Datadog, Jaeger (Zipkin compatible), and others. 
+Istio 는 다양한 분산 트레이싱 백엔드를 지원합니다  
+~ Zipkin, Datadog, Jaeger (Zipkin 호환) ,... 
 
 ```yaml
 apiVersion: install.istio.io/v1alpha1
@@ -527,7 +507,7 @@ spec:
         stackdriver: {}
 ```
 
-예시) Jaeger (Zipkin compatible) 사용 시 
+실습에서는 아래 설정을 사용하겠습니다 ~ Jaeger (Zipkin compatible) 설정
 
 ```yaml
 # cat ch8/install-istio-tracing-zipkin.yaml
@@ -550,7 +530,10 @@ spec:
 istioctl install -y -f ch8/install-istio-tracing-zipkin.yaml
 ```
 
-방법2. **Configuring tracing using meshconfig**
+아래 방법2, 방법3 으로도 분산 트레이싱 설정을 할 수 있습니다  
+
+
+*방법2. istio configmap 설정 ~ meshconfig*
 
 ```yaml
 # kubectl get cm istio -n istio-system -o yaml
@@ -573,7 +556,7 @@ meshNetworks: 'networks: {}'
 
 ```
 
-방법3. **Configuring tracing per workload**
+*방법3. 워크로드 어노테이션 설정*
 
 “어노테이션” `proxy.istio.io/config` 으로 설정
 
@@ -591,11 +574,12 @@ spec:
               address: zipkin.istio-system:9411
 ```
 
-**Examining the default tracing headers**
-
-지금까지 뭐했냐면요 … distributed tracing 엔진 (Jaeger) 과 Istio 를 설정하였습니다. 
-
-Istio가 OpenTracing 헤더와 correlation ID 를 자동으로 주입해 주는지 실습해 보겠습니다. **[http://httpbin.org](http://httpbin.org) 은 simple HTTP 테스트 서비스 입니다.* 
+**지금부터 트레이싱 헤더를 확인해 봅시다**
+- 앞에서 분산 트레이싱 엔진(Jaeger)을 설치하고 Istio 에 트레이싱 엔진을 설정하였습니다.  
+- Istio가 OpenTracing 헤더와 correlation ID 를 자동으로 주입해 주는지 실습해 보겠습니다. 
+- 아래 실습에서는 "httpbin.istioinaction.io" 요청 시 외부 서비스 "http://httpbin.org"를 호출합니다.
+- [http://httpbin.org](http://httpbin.org) 은 simple HTTP 테스트 서비스로 응답 시 헤더 정보를 출력해 줍니다. 
+- httpin.org 응답에 포함된 Zipkin 헤더 정보를 확인해 보겠습니다. 
 
 ```yaml
 # cat ch8/tracing/thin-httpbin-virtualservice.yaml
@@ -646,14 +630,15 @@ resolution: DNS
 ```
 
 ```bash
+## 적용
 kubectl apply -n istioinaction \
 -f ch8/tracing/thin-httpbin-virtualservice.yaml
 ```
 
-호출 테스트     client (curl) —> istio-ingress-gateway —> httpbin.org
+호출 테스트 client (curl) —> istio-ingress-gateway —> httpbin.org
 
 ```bash
-curl -H "Host: httpbin.istioinaction.io" http://localhost/headers
+# curl -H "Host: httpbin.istioinaction.io" http://localhost/headers
 
 {
   "headers": {
@@ -669,17 +654,30 @@ curl -H "Host: httpbin.istioinaction.io" http://localhost/headers
     "X-Envoy-Internal": "true",
     "X-Envoy-Peer-Metadata": "*<omitted>*",
     "X-Envoy-Peer-Metadata-Id": "router~172.17.0.11~istio-ingressgateway-6785fcd48-tplc2.istio-system~istio-system.svc.cluster.local"
+    ...
+  }
 ```
 
-*X-B3-* Zipkin 헤더가 자동으로 request 헤더에 추가되었습니다. 추가된 Zipkin 헤더는 “Span” 을 생성하는데 사용되고 Jaeger로 보내집니다.* 
+- *X-B3-* Zipkin 헤더가 자동으로 request 헤더에 추가되었습니다. 
+- Zipkin 헤더는 “Span” 을 생성하는데 사용되고 Jaeger로 보내집니다.
 
-### 8.2.4 Viewing distributed tracing data
+### 8.2.4 분산 트레이싱 대시보드 - JAEGER UI
+
+*JAEGER UI 접속*
 
 ```bash
 istioctl dashboard jaeger --browser=false
 ```
+[http://localhost:16686](http://localhost:16686)
 
-[http://localhost:16686](http://localhost:16686) 
+*요청 유입 및 모니터링*
+
+```bash
+for in in {1..10}; do \
+  curl -H "Host: webapp.istioinaction.io" localhost/api/catalog;
+done
+```
+
 
 ### 8.2.5 Trace sampling, force traces, and custom tags
 
