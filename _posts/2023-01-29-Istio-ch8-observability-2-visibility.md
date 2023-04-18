@@ -24,23 +24,23 @@ ch7 에서 다룬 observability 의 visualize 에 대해 알아봅니다. visual
 
 [**Span** ?](https://www.jaegertracing.io/docs/1.41/architecture/)
 
-> A span represents **a logical unit of work** that has an operation name, the start time of the operation, and the duration. 
-Spans may be nested and ordered to model **causal relationships**.
-> 
+> Span은 "이름", "시작시간", "기간"을 가지고 있는 작업의 논리적인 단위를 나타냅니다.   
+> Span은 인과적인 관계를 모델링하기 위해 "중첩"과 "정렬"을 사용합니다.  
 > 
 > ![스크린샷 2023-01-29 오후 1.00.46.png](/assets/img/Istio-ch8-observability-2-visibility%20b06a0bd1502d4e55a54a41be98fa423c/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-29_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_1.00.46.png)
 > 
 
-*참고로 … span 은 건축에서 교량을 **지지하는 단위 구간**을 의미하기도 한다*
+*참고로 … span 은 건축에서는 교량을 **지지하는 단위 구간**을 의미합니다*
 
 <img src="/assets/img/Istio-ch8-observability-2-visibility%20b06a0bd1502d4e55a54a41be98fa423c/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-29_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_12.59.11.png" width=301 />
 <br/><br/>
 
-**Trace**
-
-> A trace represents the data or execution path through the system. It can be thought of as a **directed acyclic graph** (DAG) of spans.
-
-[* DAG 방향성 비순환 그래프](https://en.wikipedia.org/wiki/Directed_acyclic_graph)
+**Trace**  
+트레이스는 Span의 인과적인 관계를 표현한 것입니다  
+> 트레이스는 시스템을 통과하는 데이터 혹은 실행의 "경로(path)"를 나타냅니다.  
+> 트레이스는 일종의 "Span Graph" (DAG,방향성 비순환 그래프) 입니다.  
+>
+[(참고) DAG 방향성 비순환 그래프](https://en.wikipedia.org/wiki/Directed_acyclic_graph)
 > 
 > - model **relationships** between different entities
 > - useful in **representing** systems that have **multiple** **dependencies** and constraints, such as in scheduling and data compression
@@ -126,28 +126,288 @@ kubectl label -n prometheus cm istio-dashboards grafana_dashboard=1
 # stern prom-grafana-*
 
 ..
-prom-grafana-6d5b6696b5-b6xdq grafana-sc-dashboard [2023-01-24 23:22:40] Working on configmap prometheus/istio-dashboards
-prom-grafana-6d5b6696b5-b6xdq grafana-sc-dashboard [2023-01-24 23:22:40] File in configmap istio-extension-dashboard.json ADDED
-prom-grafana-6d5b6696b5-b6xdq grafana-sc-dashboard [2023-01-24 23:22:40] File in configmap istio-mesh-dashboard.json ADDED
-prom-grafana-6d5b6696b5-b6xdq grafana-sc-dashboard [2023-01-24 23:22:40] File in configmap istio-performance-dashboard.json ADDED
-prom-grafana-6d5b6696b5-b6xdq grafana-sc-dashboard [2023-01-24 23:22:40] File in configmap istio-service-dashboard.json ADDED
-prom-grafana-6d5b6696b5-b6xdq grafana-sc-dashboard [2023-01-24 23:22:40] File in configmap istio-workload-dashboard.json ADDED
-prom-grafana-6d5b6696b5-b6xdq grafana-sc-dashboard [2023-01-24 23:22:40] File in configmap pilot-dashboard.json ADDED
+<omit> Working on configmap prometheus/istio-dashboards
+<omit> File in configmap istio-extension-dashboard.json ADDED
+<omit> File in configmap istio-mesh-dashboard.json ADDED
+<omit> File in configmap istio-performance-dashboard.json ADDED
+<omit> File in configmap istio-service-dashboard.json ADDED
+<omit> File in configmap istio-workload-dashboard.json ADDED
+<omit> File in configmap pilot-dashboard.json ADDED
 ```
 
 <img src="/assets/img/Istio-ch8-observability-2-visibility%20b06a0bd1502d4e55a54a41be98fa423c/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-25_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%258C%25E1%2585%25A5%25E1%2586%25AB_8.26.05.png" width=70 /> 클릭
 
 ![스크린샷 2023-01-25 오전 8.25.43.png](/assets/img/Istio-ch8-observability-2-visibility%20b06a0bd1502d4e55a54a41be98fa423c/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-25_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%258C%25E1%2585%25A5%25E1%2586%25AB_8.25.43.png)
 
-### 8.1.2 Viewing control-plane metrics
+### 8.1.2 컨트롤 플레인 메트릭
 
-`Istio Control Plane Dashboard`
+`Istio Control Plane Dashboard`  
 
-**Pilot Push Time** ~ visualizing `pilot_proxy_convergence_time`  (the time taken to distribute changes to the proxies)
+이전 챕터에서 ServiceMonitor 를 설정하여 Control plane 의 지표들을 프로메테우스로 수집하였는데요. 수집된 메트릭을 통해 구성된 Grafana 대시보드를 살펴 보시죠
 
-### 8.1.3 Viewing data-plane metrics
+**Deployed Versions**
+```
+# Pilot Versions
+sum(istio_build{component="pilot"}) by (tag)
+```
 
-`Istio Service Dashboard` 
+**Resource Usage**
+```
+# Memory
+process_virtual_memory_bytes{app="istiod"}
+process_resident_memory_bytes{app="istiod"}
+go_memstats_heap_sys_bytes{app="istiod"}
+go_memstats_heap_alloc_bytes{app="istiod"}
+go_memstats_alloc_bytes{app="istiod"}
+go_memstats_heap_inuse_bytes{app="istiod"}
+go_memstats_stack_inuse_bytes{app="istiod"}
+container_memory_working_set_bytes{container=~"discovery", pod=~"istiod-.*|istio-pilot-.*"}
+container_memory_working_set_bytes{container=~"istio-proxy", pod=~"istiod-.*|istio-pilot-.*"}
+
+# CPU
+sum(irate(container_cpu_usage_seconds_total{container="discovery", pod=~"istiod-.*|istio-pilot-.*"}[1m]))
+irate(process_cpu_seconds_total{app="istiod"}[1m])
+sum(irate(container_cpu_usage_seconds_total{container="istio-proxy", pod=~"istiod-.*|istio-pilot-.*"}[1m]))
+
+# Disk
+container_fs_usage_bytes{container="discovery", pod=~"istiod-.*|istio-pilot-.*"}
+container_fs_usage_bytes{container="istio-proxy", pod=~"istiod-.*|istio-pilot-.*"}
+
+# Goroutines
+go_goroutines{app="istiod"}
+```
+
+**Pilot Push Information**
+```
+# Pilot Pushes
+sum(irate(pilot_xds_pushes{type="cds"}[1m]))
+sum(irate(pilot_xds_pushes{type="eds"}[1m]))
+sum(irate(pilot_xds_pushes{type="lds"}[1m]))
+sum(irate(pilot_xds_pushes{type="rds"}[1m]))
+sum(irate(pilot_xds_pushes{type="sds"}[1m]))
+sum(irate(pilot_xds_pushes{type="nds"}[1m]))
+
+# Pilot Errors
+sum(pilot_xds_cds_reject{app="istiod"}) or (absent(pilot_xds_cds_reject{app="istiod"}) - 1)
+sum(pilot_xds_eds_reject{app="istiod"}) or (absent(pilot_xds_eds_reject{app="istiod"}) - 1)
+sum(pilot_xds_rds_reject{app="istiod"}) or (absent(pilot_xds_rds_reject{app="istiod"}) - 1)
+sum(pilot_xds_lds_reject{app="istiod"}) or (absent(pilot_xds_lds_reject{app="istiod"}) - 1)
+sum(rate(pilot_xds_write_timeout{app="istiod"}[1m]))
+sum(rate(pilot_total_xds_internal_errors{app="istiod"}[1m]))
+sum(rate(pilot_total_xds_rejects{app="istiod"}[1m]))
+sum(rate(pilot_xds_push_context_errors{app="istiod"}[1m]))
+sum(rate(pilot_xds_write_timeout{app="istiod"}[1m]))
+
+
+# Proxy Push Time - convergence latency 모니터링
+sum(irate(pilot_xds_pushes{type="cds"}[1m]))
+sum(irate(pilot_xds_pushes{type="eds"}[1m]))
+sum(irate(pilot_xds_pushes{type="lds"}[1m]))
+sum(irate(pilot_xds_pushes{type="rds"}[1m]))
+sum(irate(pilot_xds_pushes{type="sds"}[1m]))
+sum(irate(pilot_xds_pushes{type="nds"}[1m]))
+
+# Conflicts
+pilot_conflict_inbound_listener{app="istiod"}
+pilot_conflict_outbound_listener_http_over_current_tcp{app="istiod"}
+pilot_conflict_outbound_listener_tcp_over_current_tcp{app="istiod"}
+pilot_conflict_outbound_listener_tcp_over_current_http{app="istiod"}
+
+# ADS Monitoring
+pilot_virt_services{app="istiod"}
+pilot_services{app="istiod"}
+pilot_xds{app="istiod"}
+```
+*Pilot Push Time*
+- visualizing `pilot_proxy_convergence_time`  (the time taken to distribute changes to the proxies)
+
+*Pilot Convergence*
+- "mesh 구성요소 간의 일관성을 유지하는 프로세스"
+- 메시 구성요소 ~ Envoy 프록시, Mixer, Pilot, Citadel
+- 각 구성요소는 서로 다른 설정소스(Istio CRD, configmap, vault 인증서 등)에서 구성정보를 가져올 수 있음
+- Convergence는 이러한 구성요소에 변경사항이 발생할 때마다, 구성요소 간의 설정정보의 일관성을 유지하기 위한 프로세스임
+- Convergence는 Istio의 구성정보를 수신하여 변경된 사항들을 모든 구성요소에 전파하고, 변경된 구성요소 간에 일관성을 보장하기 위한 추가작업을 수행함.
+
+*Pilot Conflicts*
+- endpoint conflict  
+  예) 같은 서비스 or 포트에 동일한 엔드포인트가 다수존재 => (해결) 최신버전 Endpoint로 업데이트
+- port conflict   
+  예) 동일 서비스에 대해 다른 포트 사용 => (해결) 먼저 설정된 포트사용
+- route conflict   
+  예) 다수의 VirtualService, DestinationRule 설정이 충돌 => (해결) 더 구체적인 설정이 우선
+
+*ADS (Aggregated Discovery Service)*
+- 여러개의 Discovery Service들을 모아서(aggregate), Envoy 사이드카(istio-proxy)와 Pilot(istiod) 사이의 통신을 관리하는 Istio의 핵심 컴포넌트
+- Service Discovery(xDS) 통합 관리
+  - LDS (Listener DS) : Envoy의 리스너 정보를 관리합니다
+  - RDS (Rourte DS) : Envoy의 라우팅 규칙을 관리합니다
+  - CDS (Cluster DS) : Envoy의 클러스터 정보를 관리합니다
+  - EDS (Endpoint DS) : Envoy의 엔드포인트 정보를 관리합니다
+  - SDS (Secret DS) : Envoy의 보안 구성을 관리합니다
+  - NDS (Network) : Envoy의 서비스네임,IP주소 정보를 관리합니다
+
+**Envoy Information**
+``` 
+# Envoy Details
+sum(irate(envoy_cluster_upstream_cx_total{cluster_name="xds-grpc"}[1m]))
+sum(irate(envoy_cluster_upstream_cx_connect_fail{cluster_name="xds-grpc"}[1m]))
+sum(increase(envoy_server_hot_restart_epoch[1m]))
+
+# XDS Active Connections
+sum(envoy_cluster_upstream_cx_active{cluster_name="xds-grpc"})
+
+# XDS Requests Size
+max(rate(envoy_cluster_upstream_cx_rx_bytes_total{cluster_name="xds-grpc"}[1m]))
+quantile(0.5, rate(envoy_cluster_upstream_cx_rx_bytes_total{cluster_name="xds-grpc"}[1m]))
+max(rate(envoy_cluster_upstream_cx_tx_bytes_total{cluster_name="xds-grpc"}[1m]))
+quantile(.5, rate(envoy_cluster_upstream_cx_tx_bytes_total{cluster_name="xds-grpc"}[1m]))
+```
+
+**Webhooks**
+``` 
+# Configuration Validation
+sum(rate(galley_validation_passed[1m]))
+sum(rate(galley_validation_failed[1m]))
+
+# Sidecar Injection
+sum(rate(sidecar_injection_success_total[1m]))
+sum(rate(sidecar_injection_failure_total[1m]))
+```
+*Galley*  
+*Istio 구성요소 간 통신을 관리하고, 구성요소의 설정을 유지 및 관리하고, 정책/규칙의 검증 작업을 수행하는 역할을 담당하는 컴포넌트*
+- Istio Config 포맷 변환
+- Config 검증
+- 작업노드에 대한 필요한 설정 정보 배포
+- Envoy proxy 추가 시 마다 설정정보 업데이트
+- Sidecar auto-injection 수행
+- 1.18 에서 제거 예정 => istiod의 ComponentConfig 로 대체
+
+```bash
+## (실습) catalog 와 webapp을 각각 재배포 후 대시보드 관찰
+kubectl rollout restart deploy/webapp -n istioinaction
+kubectl rollout restart deploy/catalog -n istioinaction
+```
+
+### 8.1.3 데이터플레인 메트릭  
+
+`Istio Service Dashboard`  
+
+**General - “SERVICE: webapp.istioinaction.svc.cluster.local”**
+``` 
+# Client Request Volume (webapp)
+round(sum(irate(istio_requests_total{reporter="source",destination_service=~"webapp.istioinaction.svc.cluster.local"}[5m])), 0.001)
+
+# Client Success Rate (non-5xx responses)
+sum(irate(istio_requests_total{reporter="source",destination_service=~"webapp.istioinaction.svc.cluster.local",response_code!~"5.*"}[5m])) / sum(irate(istio_requests_total{reporter="source",destination_service=~"webapp.istioinaction.svc.cluster.local"}[5m]))
+
+# Client Request Duration
+(histogram_quantile(0.50, sum(irate(istio_request_duration_milliseconds_bucket{reporter="source",destination_service=~"webapp.istioinaction.svc.cluster.local"}[1m])) by (le)) / 1000) or histogram_quantile(0.50, sum(irate(istio_request_duration_seconds_bucket{reporter="source",destination_service=~"webapp.istioinaction.svc.cluster.local"}[1m])) by (le))
+(histogram_quantile(0.90, sum(irate(istio_request_duration_milliseconds_bucket{reporter="source",destination_service=~"webapp.istioinaction.svc.cluster.local"}[1m])) by (le)) / 1000) or histogram_quantile(0.90, sum(irate(istio_request_duration_seconds_bucket{reporter="source",destination_service=~"webapp.istioinaction.svc.cluster.local"}[1m])) by (le))
+(histogram_quantile(0.99, sum(irate(istio_request_duration_milliseconds_bucket{reporter="source",destination_service=~"webapp.istioinaction.svc.cluster.local"}[1m])) by (le)) / 1000) or histogram_quantile(0.99, sum(irate(istio_request_duration_seconds_bucket{reporter="source",destination_service=~"webapp.istioinaction.svc.cluster.local"}[1m])) by (le))
+
+
+# Server Request Volume (catalog)
+round(sum(irate(istio_requests_total{reporter="destination",destination_service=~"webapp.istioinaction.svc.cluster.local"}[5m])), 0.001)
+
+# Server Success Rate
+sum(irate(istio_requests_total{reporter="destination",destination_service=~"webapp.istioinaction.svc.cluster.local",response_code!~"5.*"}[5m])) / sum(irate(istio_requests_total{reporter="destination",destination_service=~"webapp.istioinaction.svc.cluster.local"}[5m]))
+
+# Server request Duration
+(histogram_quantile(0.50, sum(irate(istio_request_duration_milliseconds_bucket{reporter="destination",destination_service=~"webapp.istioinaction.svc.cluster.local"}[1m])) by (le)) / 1000) or histogram_quantile(0.50, sum(irate(istio_request_duration_seconds_bucket{reporter="destination",destination_service=~"webapp.istioinaction.svc.cluster.local"}[1m])) by (le))
+(histogram_quantile(0.90, sum(irate(istio_request_duration_milliseconds_bucket{reporter="destination",destination_service=~"webapp.istioinaction.svc.cluster.local"}[1m])) by (le)) / 1000) or histogram_quantile(0.90, sum(irate(istio_request_duration_seconds_bucket{reporter="destination",destination_service=~"webapp.istioinaction.svc.cluster.local"}[1m])) by (le))
+(histogram_quantile(0.99, sum(irate(istio_request_duration_milliseconds_bucket{reporter="destination",destination_service=~"webapp.istioinaction.svc.cluster.local"}[1m])) by (le)) / 1000) or histogram_quantile(0.99, sum(irate(istio_request_duration_seconds_bucket{reporter="destination",destination_service=~"webapp.istioinaction.svc.cluster.local"}[1m])) by (le))
+
+# TCP Received Bytes
+sum(irate(istio_tcp_received_bytes_total{reporter="destination", destination_service=~"webapp.istioinaction.svc.cluster.local"}[1m]))
+
+# TCP Sent Bytes
+sum(irate(istio_tcp_sent_bytes_total{reporter="destination", destination_service=~"webapp.istioinaction.svc.cluster.local"}[1m]))
+```
+
+**Client Workloads**
+``` 
+# Incoming Requests By Source And Response Code
+round(sum(irate(istio_requests_total{connection_security_policy="mutual_tls",destination_service=~"webapp.istioinaction.svc.cluster.local",reporter="source",source_workload=~"istio-ingressgateway",source_workload_namespace=~"istio-system"}[5m])) by (source_workload, source_workload_namespace, response_code), 0.001)
+
+# Incoming Success Rate (non-5xx responses) By Source
+sum(irate(istio_requests_total{reporter="source", connection_security_policy="mutual_tls", destination_service=~"catalog.istioinaction.svc.cluster.local",response_code!~"5.*", source_workload=~"webapp", source_workload_namespace=~"istioinaction"}[5m])) by (source_workload, source_workload_namespace) / sum(irate(istio_requests_total{reporter="source", connection_security_policy="mutual_tls", destination_service=~"catalog.istioinaction.svc.cluster.local", source_workload=~"webapp", source_workload_namespace=~"istioinaction"}[5m])) by (source_workload, source_workload_namespace)
+
+# Incoming Request Duration By Source
+..
+(histogram_quantile(0.99, sum(irate(istio_request_duration_milliseconds_bucket{reporter="source", connection_security_policy!="mutual_tls", destination_service=~"catalog.istioinaction.svc.cluster.local", source_workload=~"webapp", source_workload_namespace=~"istioinaction"}[1m])) by (source_workload, source_workload_namespace, le)) / 1000) or histogram_quantile(0.99, sum(irate(istio_request_duration_seconds_bucket{reporter="source", connection_security_policy!="mutual_tls", destination_service=~"catalog.istioinaction.svc.cluster.local", source_workload=~"webapp", source_workload_namespace=~"istioinaction"}[1m])) by (source_workload, source_workload_namespace, le))
+
+# Incoming Request Size By Source
+..
+histogram_quantile(0.99, sum(irate(istio_request_bytes_bucket{reporter="source", connection_security_policy!="mutual_tls", destination_service=~"catalog.istioinaction.svc.cluster.local", source_workload=~"webapp", source_workload_namespace=~"istioinaction"}[1m])) by (source_workload, source_workload_namespace, le))
+
+# Response Size By Source
+..
+histogram_quantile(0.99, sum(irate(istio_response_bytes_bucket{reporter="source", connection_security_policy!="mutual_tls", destination_service=~"catalog.istioinaction.svc.cluster.local", source_workload=~"webapp", source_workload_namespace=~"istioinaction"}[1m])) by (source_workload, source_workload_namespace, le))
+
+# Bytes Received from Incoming TCP Connection
+round(sum(irate(istio_tcp_received_bytes_total{reporter="source", connection_security_policy="mutual_tls", destination_service=~"catalog.istioinaction.svc.cluster.local", source_workload=~"webapp", source_workload_namespace=~"istioinaction"}[1m])) by (source_workload, source_workload_namespace), 0.001)
+
+# Bytes Sent to Incoming TCP Connection
+round(sum(irate(istio_tcp_sent_bytes_total{connection_security_policy="mutual_tls", reporter="destination", destination_service=~"catalog.istioinaction.svc.cluster.local", source_workload=~"webapp", source_workload_namespace=~"istioinaction"}[1m])) by (source_workload, source_workload_namespace), 0.001)
+```
+
+**Service Workloads**
+``` 
+# Incoming Requests By Destination Workload And Response Code
+round(sum(irate(istio_requests_total{connection_security_policy="mutual_tls",destination_service=~"catalog.istioinaction.svc.cluster.local",reporter="destination",destination_workload=~"catalog",destination_workload_namespace=~"istioinaction"}[5m])) by (destination_workload, destination_workload_namespace, response_code), 0.001)
+
+# Incoming Success Rate (non-5xx responses) By Destination Workload
+sum(irate(istio_requests_total{reporter="destination", connection_security_policy="mutual_tls", destination_service=~"catalog.istioinaction.svc.cluster.local",response_code!~"5.*", destination_workload=~"catalog", destination_workload_namespace=~"istioinaction"}[5m])) by (destination_workload, destination_workload_namespace) / sum(irate(istio_requests_total{reporter="destination", connection_security_policy="mutual_tls", destination_service=~"catalog.istioinaction.svc.cluster.local", destination_workload=~"catalog", destination_workload_namespace=~"istioinaction"}[5m])) by (destination_workload, destination_workload_namespace)
+
+# Incoming Request Duration By Service Workload
+..
+(histogram_quantile(0.99, sum(irate(istio_request_duration_milliseconds_bucket{reporter="destination", connection_security_policy!="mutual_tls", destination_service=~"catalog.istioinaction.svc.cluster.local", destination_workload=~"catalog", destination_workload_namespace=~"istioinaction"}[1m])) by (destination_workload, destination_workload_namespace, le)) / 1000) or histogram_quantile(0.99, sum(irate(istio_request_duration_seconds_bucket{reporter="destination", connection_security_policy!="mutual_tls", destination_service=~"catalog.istioinaction.svc.cluster.local", destination_workload=~"catalog", destination_workload_namespace=~"istioinaction"}[1m])) by (destination_workload, destination_workload_namespace, le))
+
+# Incoming Request Size By Service Workload
+..
+histogram_quantile(0.99, sum(irate(istio_request_bytes_bucket{reporter="destination", connection_security_policy!="mutual_tls", destination_service=~"catalog.istioinaction.svc.cluster.local", destination_workload=~"catalog", destination_workload_namespace=~"istioinaction"}[1m])) by (destination_workload, destination_workload_namespace, le))
+
+# Response Size By Service Workload
+..
+histogram_quantile(0.99, sum(irate(istio_response_bytes_bucket{reporter="destination", connection_security_policy!="mutual_tls", destination_service=~"catalog.istioinaction.svc.cluster.local", destination_workload=~"catalog", destination_workload_namespace=~"istioinaction"}[1m])) by (destination_workload, destination_workload_namespace, le))
+
+# Bytes Received from Incoming TCP Connection
+round(sum(irate(istio_tcp_received_bytes_total{reporter="destination", connection_security_policy="mutual_tls", destination_service=~"catalog.istioinaction.svc.cluster.local", destination_workload=~"catalog", destination_workload_namespace=~"istioinaction"}[1m])) by (destination_workload, destination_workload_namespace), 0.001)
+
+# Bytes Sent to Incoming TCP Connection
+round(sum(irate(istio_tcp_sent_bytes_total{connection_security_policy!="mutual_tls", reporter="destination", destination_service=~"catalog.istioinaction.svc.cluster.local", destination_workload=~"catalog", destination_workload_namespace=~"istioinaction"}[1m])) by (destination_workload, destination_workload_namespace), 0.001)
+```
+
+```bash
+## webapp 으로 트래픽 유입 후 데이터플레인 대시보드를 관찰해 보세요 
+fortio load -H "Host: webapp.istioinaction.io" -quiet -jitter -t 30s -c 1 -qps 1 http://localhost/api/catalog
+```
+
+**테스트**  
+
+*앞의 챕터들에서 다루었던 실습을 복습하면서 대시보드를 확인해 보세요*
+- tcp traffic
+  ```bash
+  ## tcp-echo 설치 
+  kubectl apply -f ch4/echo.yaml -n istioinaction
+  kubectl apply -f ch4/gateway-tcp.yaml -n istioinaction
+  kubectl apply -f ch4/echo-vs.yaml -n istioinaction 
+  ```
+  ```bash
+  ## 터미널2
+  telnet localhost 31400
+  
+  ## 아래와 같이 긴 문자열 입력
+  aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa ... 
+  ```
+- LB algorithm
+- Locality-aware
+- Latency
+- Retries
+- timeout
+- Circuit-break
+
+
 
 ## 8.2 Distributed tracing
 
@@ -172,47 +432,43 @@ Istio를 사용하면 서비스 메시에 Distributed Tracing을 쉽게 적용�
 > 
 
 <br />
+
 *(배경)*
 
-**In a monolith**, if things start to misbehave, we can jump in and start debugging with familiar tools at our disposal.  We have debuggers, runtime profilers, and memory analysis tools to find areas where parts of the code introduce latency or trigger faults that cause an application feature to misbehave. 
+모놀리딕 환경에서는 시스템이 이상동작을 보이더라도 사용가능한 익숙한 도구를 이용하여 디버깅을 시작합니다.  
+디버거, 런타임 프로파일러, 메모리 분석툴 등 코드의 어떤 부분에서 레이턴시가 발생하고 에러를 유발하고 
+어플리케이션 기능을 오동작 하도록 만드는지 발견할 수 있는 도구들이 많습니다  
+어플리케이션이 분산 컴포넌트로 구성이 될 경우에도 마찬가지로 똑같이 디버깅 할 수 있도록 새로운 툴셋이 필요합니다
 
-**With an application made up of distributed parts**, **we need a new set of tools** to accomplish the same things.
+*(분산트레이싱 기원과 개요)*
 
-*(Distributed tracing의 기원과 개요)*
+분산추적은 요청을 서빙하는데 포함된 분산 컴포넌트들에 대한 인사이트를 줍니다  
+분산추적은 구글 논문 (Dapper, 2010)에서 소개됐고 서비스-to-서비스 호출을 나타내는 correlation ID 와 
+서비스-to-서비스 호출 그래프를 통과하는 특정 요청을 나타내는  trace Id 를 요청(request) 에 어노테이션으로 추가합니다.
+예) istio 의 경우 (Jaeger/Zipkin) ~ `x-request-id`  
+Istio 의 data plane 은 이러한 메타데이터 (correlation ID, trace ID 등) 를 요청 (request) 에 추가할 수 있습니다. 
+그리고, (중요) 그것들이 인식이 되지 않거나 외부 엔티티에서 온 것일 때에는 삭제할 수 도 있어야 합니다.
 
-**Distributed tracing** give us insights into the components of a distributed system involved in serving a request. It was **introduced by the Google Dapper paper** (”Dapper, a Large-Scale Distributed Systems Tracing Infrastructure”, 2010, [https://research.google/pubs/pub36356](https://research.google/pubs/pub36356) )
-and **involves annotating requests with** `correlation IDs` that represent service-to-service calls **and** `trace IDs` that represent a specific request through a graph of service-to-service calls.
-Istio’s data plane can **add these kinds of metadata** to the requests as they pass through the data plane (and, **importantly, remove them** when they are **unrecognized** **or come from external** entities.)
-
-<br />
 *(OpenTelemetry - Opentracing 을 포함 )*
 
-*Telemetry : 원격측정
+오픈 텔레메트리는 오픈 트레이싱을 포함하는 커뮤니티 주도의 프레임웍으로 분산추적과 관련된 개념과 API를 포함하는 스펙입니다.  
+분산추적에서 일정 부분은 개발자에게 의존합니다. 모니터링을 위한 코드(instrumenting code)를 삽입하거나,
+애플리이션에서 처리하는 요청이나 다른 시스템으로 보내는 요청에는 어노테이션을 추가하는 작업입니다  
+트레이싱 엔진은 요청 플로우의 전체 그림을 하나로 완성하여 아키텍처 상에서 오동작할 수 있는 영역을 인식 할 수 있도록 도울 수 있습니다.
 
-**OpenTelemetry** is a community-driven framework that includes **OpenTracing**, which is a **specification that captures concepts and APIs related to distributed tracing**.
-
-Distributed tracing, in part, relise on **developers** **instrumenting** their code **and** **annotating** **requests** as they are processed by the application and make new requests to other system.
-(개발자가 해줘야 하는 부분이 있다 ~ 코드나 requests 에)
-
-**A tracing engine helps put together** the **full picture of a request flow**, which can be used to **identify misbehaving ares** of our architecture.
-(Tracing engine 의 역할 ~ put together, full picture ⇒ identify misbehaving areas)
-
-<br />
 *(Istio 를 쓰세요)*
 
-**With Istio**, we can **provide the bulk of the heavy lifting** developers would otherwide have to implement themselves and provide distributed tracing as part of the service mesh.
+Istio는 개발자 여러분들이 추가로 직접 구현해야 할 많은 부분들을 대신해주고 서비스 메시에서의 분산추적을 제공합니다.
 
-(Istio 를 사용하면 Distributed Tracing의 많은 부분을 대신해줍니다.
-
-### 8.2.1 How does distributed tracing work?
+### 8.2.1 분산트레이싱의 동작 방식
 
 Span 과 trace context ⇒ Trace
 
-- Create a Span
-- Send the span to the OpenTracing engine
-- Propagate the trace context to other services
-- Construct a Trace ~ “**causal** relationship” between services *(direction, timing, … )*
-- Span ID, Trace ID ⇒ for **correlation**, propagated between services
+- 해당 서비스에서 Span 생성
+- 트레이싱엔진으로 Span 전송
+- 다른 서비스로 Trace context 전파
+- Trace 기록 ~ 서비스 간의 인과성 추적
+- Span ID, Trace ID ~ 서비스 간 연계 및 추적 
 
 ![스크린샷 2023-01-25 오후 12.43.37.png](/assets/img/Istio-ch8-observability-2-visibility%20b06a0bd1502d4e55a54a41be98fa423c/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-25_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_12.43.37.png)
 
