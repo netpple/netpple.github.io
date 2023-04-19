@@ -33,7 +33,6 @@ ch7 에서 다룬 observability 의 visualize 에 대해 알아봅니다. visual
 *참고로 … span 은 건축에서는 교량을 **지지하는 단위 구간**을 의미합니다*
 
 <img src="/assets/img/Istio-ch8-observability-2-visibility/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-29_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_12.59.11.png" width=301 />
-<br/><br/>
 
 **Trace**  
 트레이스는 Span의 인과적인 관계를 표현한 것입니다  
@@ -670,9 +669,10 @@ kubectl apply -n istioinaction \
 ```bash
 istioctl dashboard jaeger --browser=false
 ```
-[http://localhost:16686](http://localhost:16686)
+대시보드: [http://localhost:16686](http://localhost:16686)
 
-<img src="" />
+👉🏻Service 콤보에서 "istio-ingresgateway 를 선택" 후 "Find Traces" 버튼을 클릭하세요
+<img src="/assets/img/Istio-ch8-observability-2-visibility/jaeger_dashboard.png" />
 
 *요청 유입 및 모니터링*
 
@@ -681,18 +681,23 @@ for in in {1..10}; do \
   curl -H "Host: webapp.istioinaction.io" localhost/api/catalog;
 done
 ```
+👉🏻요청이 유입되면 Trace가 대시보드에 출력이 됩니다 
+<img src="/assets/img/Istio-ch8-observability-2-visibility/jaeger_traces.png" />
+
+👉🏻Trace 목록 중 하나를 클릭하면 상세 Span 정보를 출력합니다 
+<img src="/assets/img/Istio-ch8-observability-2-visibility/jaeger_spans.png" />
 
 
 ### 8.2.5 Trace sampling, force traces, and custom tags
 
-tracing sampling 은 성능이슈가 있음
+**TRACE SAMPLING**  
+- Trace Sampling => Span 생성과 전송
+- “Sampling Rate” 높을 수록 ~ 성능 부담 커짐
+- istio configmap 에서 sampling rate 을 조절해 봅니다. (100 → 10) *globally 적용됨*
 
-**Tuning the trace sampling for the mesh**
+*트레이스 샘플링 튜닝*
 
-“Sampling Rate” 높을 수록 ~ 성능부담 커짐
-
-istio configmap 에서 sampling rate 을 조절해 봅니다. (100 → 10) *globally 적용됨*
-
+아래와 같이 meshConfig를 수정합니다
 ```bash
 # kubectl edit -n istio-system cm istio
 
@@ -707,66 +712,40 @@ mesh: |-
           address: zipkin.istio-system:9411
 ..
 ```
+덧) 샘플링 적용은 istio-ingressgateway 재배포가 필요합니다
+- istiod 로그 상에 istio cm(configmap) 변경 로그는 찍힘
 
-- Q) **Sampling 적용**은 istio-ingressgateway 를 restart 해야만 적용됨
-    - istiod 로그 상에 istio cm(configmap) 변경 로그는 찍힘
-    - workload 단위 (ex: webapp deploy) 명세 변경은 적용안됨
-    - istiod, webapp restart 로 적용안됨
+덧) 워크로드(ex:deploy/webapp) 단위 샘플링 적용 안됨
+- 책에서는 워크로드의 annotaion 으로 샘플링 설정이 가능하다고 하는데
+- meshConfig 설정의 sampling 비율로 동작하고 
+- workload에 설정한 sampling 비율대로 작동하지 않았습니다  
+<br />
 
-**Workload 단위**의 적용은 ~ 앞서 살펴보았듯이 해당 워크로드의 annotation
-
-```yaml
-# cat ch8/webapp-deployment-zipkin.yaml
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  labels:
-    app: webapp
-  name: webapp
-spec:
-# ...
-  template:
-    metadata:
-      annotations:
-        proxy.istio.io/config: |
-          tracing:
-            sampling: 10
-            zipkin:
-              address: zipkin.istio-system:9411
-# ...
-```
-
-```bash
-kubectl apply -f ch8/webapp-deployment-zipkin.yaml \
--n istioinaction
-```
-
-**FORCE-TRACING FROM THE CLIENT**
-
-평소 운영 시에는 sampling rate 을 최소로 유지하고 이슈발생 시 특정 workload 에 대해서 tracing을 강제할 수 있습니다. request 에 tracing을 강제하려면 `x-envoy-force-trace`  헤더를 설정합니다. 
+**FORCE-TRACING**
+- 평소 운영 시에는 sampling rate 을 최소로 유지하고 
+- 이슈가 있을 때만 특정 workload 에 대해서 tracing을 강제할 수 있습니다. 
+- 트레이스를 강제하려면 간단하게 `x-envoy-force-trace` 요청 헤더를 추가합니다 
+- Istio의 sampling rate과 무관하게 무조건 샘플링 됩니다  
 
 ```bash
 curl -H "x-envoy-force-trace: true" \
 -H "Host: webapp.istioinaction.io" http://localhost/api/catalog
 ```
 
-**CUSTOMIZING THE TAGS IN A TRACE**
+**CUSTOM TAG**
 
-Tags ~ 트레이싱에 추가 메타데이터를 부여
+트레이싱에 추가 메타데이터를 부여  
+- Tag 는 커스텀 키/값 쌍으로 Span 정보에 포함되어 트레이싱 엔진에 전달
 
-Tag는 커스텀 key-value 쌍으로 span 에 붙여져서 트레이싱 엔진에 전달됨.
-
-Custom Tags 설정 유형
-
-- Explicitly specifying a value
-- Pulling a value from environment variables
-- Pulling a value from request headers
+Custom Tag 의 "Value" 설정 유형  
+- "직접 입력" Value
+- "환경 변수" Value
+- "요청 헤더" Value
 
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
-...
+# ...
 spec: 
   template:
     metadata:
@@ -781,38 +760,51 @@ spec:
             zipkin:
               address: zipkin.istio-system:9411
 ```
+-  커스텀 태그의 키 : custom_tag
+-  커스텀 태그의 값 : "Test Tag"
 
 ```bash
+##  deploy/webapp 에 커스텀 태그 적용
 kubectl apply -n istioinaction \
 -f ch8/webapp-deployment-zipkin-tag.yaml
 ```
 
+```bash
+## 커스텀 태그 적용 확인을 위해 호출을 해볼까요
+curl -H "Host: webapp.istioinaction.io" localhost/api/catalog
+```
+
+👉🏻`webapp Span`의 Tags 정보에 "custom_tag" 가 추가되었습니다 
 ![스크린샷 2023-01-25 오후 7.12.23.png](/assets/img/Istio-ch8-observability-2-visibility/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-25_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_7.12.23.png)
 
-Custom Tags 용도 : reporting, filtering, exploring the tracing data
+Custom Tag 의 용도
+- 탐색 ~ 트레이스 데이터
+- 리포팅 
+- 필터링    
+<br /> 
 
-*공식: [https://istio.io/latest/docs/tasks/observability/distributed-tracing/](https://istio.io/latest/docs/tasks/observability/distributed-tracing/) 
+**트레이싱 엔진 설정 커스텀**  
 
-**CUSTOMIZING THE BACKEND DISTRIBUTED TRACING ENGINE**
-
-**How to configure** the backend settings for **connecting with the distributed tracing engine**.
-
-**Telemetry API**
-
-default tracing configuration 조회
-
+트레이싱 엔진 설정 방법을 알아보겠습니다  
 ```bash
+## deploy/webapp 트레이싱 설정 조회
 istioctl pc bootstrap -n istioinaction deploy/webapp \
 -o json | jq .bootstrap.tracing
 ```
 
-![스크린샷 2023-01-25 오후 7.18.57.png](/assets/img/Istio-ch8-observability-2-visibility/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-25_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_7.18.57.png)
+![webapp tracing configuration](/assets/img/Istio-ch8-observability-2-visibility/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-25_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_7.18.57.png)
 
-- *istioctl pc (proxy-config)*
-- tracing enging 은  ZipkinConfig
-- span 은 /api/v2/spans  로 전달
+webapp의 default trace 설정은 다음과 같습니다
+- tracing enging 은 Zipkin-based
+- Span 은 /api/v2/spans 로 전달
+- JSON 엔드포인트로 처리  
+<br />
 
-Custom Zipkin Configuration 수정 (configmap)
+
+*Zipkin 설정을 수정해 봅시다*
+
+- Zipkin 설정 부분만 스니펫으로 작성할 수 있습니다
+- 아래 configmap 은 collectorEndpoint 를 변경한 설정 스니펫 입니다
 
 ```yaml
 # cat ch8/istio-custom-bootstrap.yaml
@@ -840,11 +832,14 @@ data:
 ```
 
 ```bash
+## 네임스페이스(istioinaction)를 주목해 주세요
 kubectl apply -n istioinaction \
 -f ch8/istio-custom-bootstrap.yaml
 ```
 
-Custom Zipkin Configuration 적용 > webapp
+커스텀 Zipkin 설정은 istioninaction 네임스페이스 상에서 사용할 수 있습니다
+
+👉🏻webapp 에서 커스텀 Zipkin 설정을 사용하도록 해봅시다 
 
 ```yaml
 # cat ch8/webapp-deployment-custom-boot.yaml
@@ -896,65 +891,71 @@ spec:
         securityContext:
           privileged: false
 ```
+- `sidecar.istio.io/bootstrapOverride: "istio-custom-zipkin"`    
+  istio-custom-zipkin을 사용하도록 template annotation 에 추가합니다
 
 ```bash
+## 변경된 설정으로 webapp을 재배포 합니다
 kubectl apply -n istioinaction \
 -f ch8/webapp-deployment-custom-boot.yaml
 ```
 
-적용여부 확인
-
 ```bash
+## webapp 의 트레이싱 설정을 다시 확인해 보세요
 istioctl pc bootstrap -n istioinaction deploy/webapp \
 -o json | jq .bootstrap.tracing
 ```
 
-적용 후 호출테스트
-
 ```bash
+## 확인을 위해 webapp 을 호출해 봅시다
 curl -H "Host: webapp.istioinaction.io" http://localhost/api/catalog
 ```
 
+👉🏻JAEGER 대시보드 확인 - `webapp Span`이 출력되지 않습니다
 ![webapp span  안나옴 ( 존재하지 않는 collectorEndpoint 로 수정했기 때문 )](/assets/img/Istio-ch8-observability-2-visibility/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-25_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_7.40.46.png)
 
-webapp span  안나옴 ( 존재하지 않는 collectorEndpoint 로 수정했기 때문 )
+💡 놀라지 마세요  :-)    
+>  "존재하지 않는 (잘못된)" collectorEndpoint 로 수정했기 때문에 webapp Span이 출력되지 않는게 당연합니다
 
-webapp 초기화 후 확인해 보자
+<br />
+
+webapp 을 원래대로 초기화 후 다시 확인해 볼께요
 
 ```bash
+## istio-custom-zipkin 어노테이션이 없는 webapp으로 재배포
 kubectl apply -n istioinaction \
 -f services/webapp/kubernetes/webapp.yaml 
 ```
 
-적용 후 호출테스트
-
 ```bash
+## 호출 테스트
 curl -H "Host: webapp.istioinaction.io" http://localhost/api/catalog
 ```
 
+👉🏻`webapp Span`이 원래대로 확인됨
 ![webapp span 확인됨 ](/assets/img/Istio-ch8-observability-2-visibility/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-25_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_7.47.40.png)
 
-webapp span 확인됨 
 
 ## 8.3 Visualization with Kiali
 
 Grafana 와 달라요
-
 - give a visual overview of what services are communicating with others
 - present an interactive drawing or map of the services in the cluster
 
 Kiali visualizes the Istio metrics stored in Prometheus *(hard dependency)*
 
-### 8.3.1 Installing Kiali
+### 8.3.1 Kiali 설치
 
-Kiali Operator 설치 권장 : https://github.com/kiali/kiali-operator
-
+Kiali Operator 설치 권장 : https://github.com/kiali/kiali-operator  
 Kiali 공식 가이드 : [https://v1-41.kiali.io/docs/installation/installation-guide/](https://v1-41.kiali.io/docs/installation/installation-guide/) 
 
 Step1. Kiali Operator 설치
 
 ```bash
+## 네임스페이스 생성
 kubectl create ns kiali-operator
+
+## 설치
 helm install \
 --set cr.create=true \
 --set cr.namespace=istio-system \
@@ -993,25 +994,24 @@ spec:
       in_cluster_url: "http://tracing.istio-system:16685/jaeger"
       use_grpc: true  
 ```
-
 - Kiali CR example : [https://github.com/kiali/kiali-operator/blob/master/crd-docs/cr/kiali.io_v1alpha1_kiali.yaml](https://github.com/kiali/kiali-operator/blob/master/crd-docs/cr/kiali.io_v1alpha1_kiali.yaml)
-- Kiali CRD : [https://github.com/kiali/kiali-operator/blob/master/crd-docs/crd/kiali.io_kialis.yaml](https://github.com/kiali/kiali-operator/blob/master/crd-docs/crd/kiali.io_kialis.yaml)
+- Kiali CRD : [https://github.com/kiali/kiali-operator/blob/master/crd-docs/crd/kiali.io_kialis.yaml](https://github.com/kiali/kiali-operator/blob/master/crd-docs/crd/kiali.io_kialis.yaml)  
+<br />
 
-Kiali dashboard 접속을 위해 포트포워딩
+Kiali 대시보드 접속
 
 ```bash
+## 포트포워딩 
 kubectl -n istio-system port-forward deploy/kiali 20001
 ```
 
-[http://localhost:20001](http://localhost:20001)
+Kiali 대시보드 [http://localhost:20001](http://localhost:20001)
 
-![Applications 로 조회 - prometheus 는 “2”](/assets/img/Istio-ch8-observability-2-visibility/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-26_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_12.54.07.png)
+👉🏻Apps 조회 (default) - prometheus 패널 `2 Applications`
+<img src="/assets/img/Istio-ch8-observability-2-visibility/kiali_dashboard_apps.png" />
 
-Applications 로 조회 - prometheus 는 “2”
-
-![Workload 로 조회 - prometheus 는 “3”](/assets/img/Istio-ch8-observability-2-visibility/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-26_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_12.58.09.png)
-
-Workload 로 조회 - prometheus 는 “3”
+👉🏻Workload 조회 - prometheus 패널 `3 Workloads`
+<img src="/assets/img/Istio-ch8-observability-2-visibility/kiali_dashboard_workload.png" />
 
 **Application vs Workload**
 
@@ -1060,7 +1060,6 @@ Workload 로 조회 - prometheus 는 “3”
 
     ![스크린샷 2023-01-26 오후 1.26.18.png](/assets/img/Istio-ch8-observability-2-visibility/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-26_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_1.26.18.png)
 
-<br />
 호출 테스트  
 ```bash
 for in in {1..20}; do curl http://localhost/api/catalog -H \
