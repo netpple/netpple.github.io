@@ -801,9 +801,7 @@ webapp의 default trace 설정은 다음과 같습니다
 <br />
 
 
-*Zipkin 설정을 수정해 봅시다*
-
-- Zipkin 설정 부분만 스니펫으로 작성할 수 있습니다
+*Zipkin 커스텀 설정을 만들어 봅시다*
 - 아래 configmap 은 collectorEndpoint 를 변경한 설정 스니펫 입니다
 
 ```yaml
@@ -837,9 +835,9 @@ kubectl apply -n istioinaction \
 -f ch8/istio-custom-bootstrap.yaml
 ```
 
-커스텀 Zipkin 설정은 istioninaction 네임스페이스 상에서 사용할 수 있습니다
+커스텀 설정을 istioninaction 네임스페이스 상에서 사용할 수 있습니다
 
-👉🏻webapp 에서 커스텀 Zipkin 설정을 사용하도록 해봅시다 
+👉🏻webapp 에서 커스텀 설정을 사용하도록 해봅시다 
 
 ```yaml
 # cat ch8/webapp-deployment-custom-boot.yaml
@@ -939,17 +937,17 @@ curl -H "Host: webapp.istioinaction.io" http://localhost/api/catalog
 ## 8.3 Visualization with Kiali
 
 Grafana 와 달라요
-- give a visual overview of what services are communicating with others
-- present an interactive drawing or map of the services in the cluster
+- 어떤 서비스들 간에 통신이 이루어 지고 있는지 시각적인 오버뷰를 제공합니다
+- 클러스터 내 서비스들의 인터렉티브한 구성도를 제공합니다
 
-Kiali visualizes the Istio metrics stored in Prometheus *(hard dependency)*
+Kiali는 프로메테우스에 저장된 Istio 메트릭을 시각화 합니다
 
 ### 8.3.1 Kiali 설치
 
 Kiali Operator 설치 권장 : https://github.com/kiali/kiali-operator  
-Kiali 공식 가이드 : [https://v1-41.kiali.io/docs/installation/installation-guide/](https://v1-41.kiali.io/docs/installation/installation-guide/) 
-
-Step1. Kiali Operator 설치
+Kiali 공식 가이드 : [https://v1-41.kiali.io/docs/installation/installation-guide/](https://v1-41.kiali.io/docs/installation/installation-guide/)  
+<br />
+*Step1. Kiali Operator 설치*
 
 ```bash
 ## 네임스페이스 생성
@@ -966,7 +964,7 @@ kiali-operator \
 kiali-operator
 ```
 
-Step2. Kiali Dashboard 설치 (Kiali Custom Resource, CR)
+*Step2. Kiali Dashboard 설치*
 
 ```yaml
 apiVersion: kiali.io/v1alpha1
@@ -995,10 +993,11 @@ spec:
       use_grpc: true  
 ```
 - Kiali CR example : [https://github.com/kiali/kiali-operator/blob/master/crd-docs/cr/kiali.io_v1alpha1_kiali.yaml](https://github.com/kiali/kiali-operator/blob/master/crd-docs/cr/kiali.io_v1alpha1_kiali.yaml)
-- Kiali CRD : [https://github.com/kiali/kiali-operator/blob/master/crd-docs/crd/kiali.io_kialis.yaml](https://github.com/kiali/kiali-operator/blob/master/crd-docs/crd/kiali.io_kialis.yaml)  
+- Kiali CRD : [https://github.com/kiali/kiali-operator/blob/master/crd-docs/crd/kiali.io_kialis.yaml](https://github.com/kiali/kiali-operator/blob/master/crd-docs/crd/kiali.io_kialis.yaml)
+- prometheus 와 tracing (jaeger) 설정  
 <br />
 
-Kiali 대시보드 접속
+*Kiali 대시보드 살펴보기*
 
 ```bash
 ## 포트포워딩 
@@ -1013,31 +1012,29 @@ Kiali 대시보드 [http://localhost:20001](http://localhost:20001)
 👉🏻Workload 조회 - prometheus 패널 `3 Workloads`
 <img src="/assets/img/Istio-ch8-observability-2-visibility/kiali_dashboard_workload.png" />
 
-**Application vs Workload**
+*Application vs Workload 어떻게 다른가요?*
 
-- default, ingress ~ apps는 N/A, workloads는 1
-- prometheus  apps는 2, workloads는 3
-- Q) 왜 prom-grafana 는 app 이 없다고 할까?
+`Healths for` 콤보에서 Apps or Workloads 선택에 따라 출력이 다릅니다
+- 예) prometheus 패널에서 Apps는 2, Workloads는 3   
 
-  <img src="/assets/img/Istio-ch8-observability-2-visibility/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-26_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_10.33.14.png" width=240 />
+prometheus Apps의 경우, 그라파나(prom-grafana)가 포함되지 않습니다. 왜 그럴까요? 
+
+<img src="/assets/img/Istio-ch8-observability-2-visibility/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-26_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_10.33.14.png" width=240 />
     
-  A) Application 에 포함이 돼려면 “**Label App**” 으로 지정이 돼야 함 (아래 참고 deployment (prom-grafana) 에서 pod label 에 `app: prom-grafana`  추가  
-    ```yaml
-    apiVersion: apps/v1
-    kind: Deployment
-    metadata: 
-      name: prom-grafana
-    # ...
-    spec:
-      template:
-        metadata:
-          labels:
-            app: prom-grafana    # <-- Pod label 추가 
-    # ...
-    ```
-    
-    ** 주) 기동 중인 pod label 만 변경해서는 반영되지 않음*
-    
+정답) Apps 로 포함되려면 *`Label App`* 으로 지정 돼야 합니다 (재배포 필요)
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: prom-grafana
+# ...
+spec:
+  template:
+    metadata:
+      labels:
+        app: prom-grafana  # <-- Pod label 추가 
+# ...
+```
 
 *(참고) Kiali 공식 : [https://kiali.io/docs/architecture/terminology/concepts/](https://kiali.io/docs/architecture/terminology/concepts/)*
 
@@ -1060,41 +1057,43 @@ Kiali 대시보드 [http://localhost:20001](http://localhost:20001)
 
     ![스크린샷 2023-01-26 오후 1.26.18.png](/assets/img/Istio-ch8-observability-2-visibility/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-26_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_1.26.18.png)
 
-호출 테스트  
+*Call graph*
 ```bash
+## webapp 으로 요청을 발생시켜 봅시다
 for in in {1..20}; do curl http://localhost/api/catalog -H \
 "Host: webapp.istioinaction.io"; sleep .5s; done
+
+## fortio로 유입시켜도 좋습니다  
+# fortio load -H "Host: webapp.istioinaction.io" -quiet -jitter -t 60s -c 1 -qps 1 http://localhost/api/catalog 
 ```
 
-*호출 후 Call graph 를 확인해 보세요*
+👉🏻 대시보드에서 `Graph` 메뉴를 클릭해 보세요  
 ![스크린샷 2023-01-26 오후 1.27.09.png](/assets/img/Istio-ch8-observability-2-visibility/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-26_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_1.27.09.png)
 <img src="/assets/img/Istio-ch8-observability-2-visibility/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-26_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_1.28.11.png" width=110 />
 
-*From the graph …*
+Call graph 를 통해 확인할 수 있는 정보들    
+- 트래픽 플로우 
+- 요청수, 바이트수 ...
+- 버전별 트래픽 플로우 
+- 쓰루풋 (RPS), 버전별 트래픽 비중
+- 트래픽 기반으로 앱 상태 확인
+- HTTP/TCP 트래픽 상태 (응답코드, 응답속도, ...)
+- 네트웍 실패 감지    
+<br />
 
-- Traversal and flow of traffic
-- Number of bytes, requests, ..
-- Multiple traffic flows for multiple versions
-- RPS (Requests Per Second); % of total traffic for multiple versions
-- Application health based on network traffic
-- HTTP/TCP traffic
-- Networking failures, which can be quickly identified
-    
-    ![스크린샷 2023-01-26 오후 1.57.17.png](/assets/img/Istio-ch8-observability-2-visibility/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-26_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_1.57.17.png)
-    
+👉🏻 에러 발생 시에는 문제가 있는 부분을 표시해 줍니다 (네트웍 실패감지)
+![스크린샷 2023-01-26 오후 1.57.17.png](/assets/img/Istio-ch8-observability-2-visibility/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-26_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_1.57.17.png)
 
-**CORRELATION OF TRACES, METRICS, AND LOGS**
 
-Kiali is gradually evolving into the one dashboard that answers all service mesh observability questions.
+**트레이스, 메트릭, 로깅 연관성 (Correlation)**
 
-*Kiali는 모든 서비스 메시의 observability 질문에 응답하는 “하나의 대시보드”로 계속해서 진화중임.*
+Kiali는 Observability 관점에서 대응할 수 있는 “통합 대시보드”로 진화하고 있습니다  
+트레이스, 메트릭, 로깅을 연관지어 제공하는 기능 역시 그런 맥락입니다
 
-One of the Kiali features — **correlating traces, metrics, and logs** — is just a promise of the possibilities to come.
-
-To view the correlation between telemetry data, drill into one of the workloads by clicking the **Workloads menu item** at left in the overview dashboard in figure 8.13, and then **select a workload** from the list. The menu items in the Workload view reveal the following (see, for example, figure 8.16):
-
+👉🏻 Telemetry 데이터 간의 연관성을 보고싶다면 `Workloads` 메뉴에서 조회하고자 하는 워크로드를 선택합니다
 ![스크린샷 2023-01-29 오전 9.12.47.png](/assets/img/Istio-ch8-observability-2-visibility/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-29_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%258C%25E1%2585%25A5%25E1%2586%25AB_9.12.47.png)
 
+워크로드의 서브탭 별로 다음과 같은 정보를 제공합니다
 - Overview — 서비스 파드들, Istio 설정, Call graph
 - Traffic — Success rate of inbound and outbound traffic
 - Logs — Application logs, Envoy access logs, and spans correlated together
@@ -1102,11 +1101,14 @@ To view the correlation between telemetry data, drill into one of the workloads 
 - Traces — The traces reported by Jaeger
 - Envoy — Envoy 설정 (clusters, listeners, routes ..)
 
-Correlation 해주니깐 (연관된 지표들을 한 곳에 모아놔 주니깐) 디버깅이 매우 간단해 집니다. 여러 윈도우를 스위치 해가며 볼 필요도 없고 시점 기준으로 여러 그래프를 비교할 필요도 없습니다. 
+Correlation 제공으로 (연관된 지표들을 한 곳에 모아줌으로써) 디버깅이 매우 간단해 집니다.  
+여러 윈도우를 스위치 해가며 볼 필요도 없고 시점 기준으로 여러 그래프를 비교할 필요도 없습니다. 
 
-예를 들어 대시보드 상에서 request spike 가 나타나면 그것과 관련하여 새로운 버전 혹은 degraded 서비스로 부터 요청이 처리되었다는 “traces” 가 바로 있습니다. 
+> *예를 들어 대시보드 상에서 request spike 가 발생하면 관련하여 새로운 버전 혹은 degraded 서비스로 부터 요청이 처리되었다는 “traces”를 바로 확인할 수 있습니다.* 
 
-[Kiali 는 또한 Istio 리소스에 대한 validation 도 제공합니다.](https://kiali.io/docs/features/validations/)
+<br />
+
+[Kiali는 Istio 리소스에 대한 validation 도 제공합니다.](https://kiali.io/docs/features/validations/)
 
 - VirtualService pointing to non-existent Gateway
 - Routing to destination that do not exist
@@ -1176,9 +1178,9 @@ Correlation 해주니깐 (연관된 지표들을 한 곳에 모아놔 주니깐)
 - Grafana — Istio control/data plane 메트릭 대시보드 제공
 - Distributed tracing (Jaeger) — service requests 에 대한 Insight 제공   
   *how ? “annotate requests”*       
-  *간트 차트와 비슷하다*  
-  ![스크린샷 2023-01-29 오후 2.05.43.png](/assets/img/Istio-ch8-observability-2-visibility/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-29_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_2.05.43.png)
-  ![스크린샷 2023-01-29 오후 2.06.42.png](/assets/img/Istio-ch8-observability-2-visibility/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-29_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_2.06.42.png)
+  *간트 차트와 비슷하다 (위 - Gantt chart / 아래 - Traces)*  
+  <img src="/assets/img/Istio-ch8-observability-2-visibility/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-29_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_2.05.43.png" width=350 />  
+  <img src="/assets/img/Istio-ch8-observability-2-visibility/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-29_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_2.06.42.png" width=350 />
 
 - Applications — “Trace header” 전파.  request 의 전체 view  확보
 - Trace — a collection of spans.  분산 환경에서 요청을 처리하는 단계별 홉과 레이턴시 디버깅 제공
