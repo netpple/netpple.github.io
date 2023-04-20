@@ -1038,22 +1038,22 @@ spec:
 
 *(참고) Kiali 공식 : [https://kiali.io/docs/architecture/terminology/concepts/](https://kiali.io/docs/architecture/terminology/concepts/)*
 
-- Workload
-    
-    > A workload is a running binary that can be deployed as a set of identical running replicas. For example, in Kubernetes, **this would be the Pods** part of a deployment. A `service A` deployment with three replicas would be a workload.
-    > 
-- **Application**
-    
-    > Is a **logical grouping of Workloads** **defined by the application labels** that users apply to an object. In Istio it is defined by the **Label App**.
-    > 
-- **Label App**
-    
-    > This is the ‘`app`’ label on an object. see [**Istio** **Label Requirements**](https://istio.io/latest/docs/ops/deployment/requirements/).
-    
-    *Pods with `app` and `version` labels : We recommend adding an explicit `app` label and `version` label to the specification of the pods deployed using a Kubernetes Deployment. The `app` and `version` labels add contextual information to the metrics and telemetry that Istio collects.*
-    > 
-    > - *The `app` label : **Each deployment should have** a distinct `app` label with a meaningful value. The `app` label is used to add contextual information in distributed tracing.*
-    > - *The `version` label : This label indicates the version of the application corresponding to the particular deployment.*
+- Workload  
+  - 복제 리플리카들에 해당 하는 "실행 바이너리 Set" 입니다  
+  - 쿠버네티스를 예로 들자면 Deployment 에 포함된 파드들 입니다  
+  - 3개의 리플리카를 가진 `서비스 A` Deployment 가 워크로드 입니다  
+  - istioinaction 네임스페이스에는 워크로드가 catalog 와 webapp 두 개가 있습니다   
+
+- Application  
+  - 유저가 "label 로 표시한 워크로드"의 논리적 그룹입니다  
+  - 즉, 동일한 label로 표시된 워크로드들의 집합입니다  
+  - Istio 에서는 *`Label App`* 으로 정의합니다  
+
+- *`Label App`*  
+  - ‘`app`’ 레이블로 정의합니다 [*참고) Istio Label Requirements*](https://istio.io/latest/docs/ops/deployment/requirements/).
+  - 파드 레이블 추가 (권장): `app`, `version`  
+    - `app` (필수) : 분산 트레이싱에서 애플리케이션을 식별할 수 있도록 추가합니다  
+    - `version` (옵션) : 애플리케이션 버전을 식별할 수 있도록 추가합니다  
 
     ![스크린샷 2023-01-26 오후 1.26.18.png](/assets/img/Istio-ch8-observability-2-visibility/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-26_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_1.26.18.png)
 
@@ -1090,16 +1090,16 @@ Call graph 를 통해 확인할 수 있는 정보들
 Kiali는 Observability 관점에서 대응할 수 있는 “통합 대시보드”로 진화하고 있습니다  
 트레이스, 메트릭, 로깅을 연관지어 제공하는 기능 역시 그런 맥락입니다
 
-👉🏻 Telemetry 데이터 간의 연관성을 보고싶다면 `Workloads` 메뉴에서 조회하고자 하는 워크로드를 선택합니다
+👉🏻 Telemetry 데이터 간의 연관성을 보고싶다면 `Workloads` 메뉴에서 조회하고자 하는 워크로드를 선택합니다  
 ![스크린샷 2023-01-29 오전 9.12.47.png](/assets/img/Istio-ch8-observability-2-visibility/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-29_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%258C%25E1%2585%25A5%25E1%2586%25AB_9.12.47.png)
 
 워크로드의 서브탭 별로 다음과 같은 정보를 제공합니다
 - Overview — 서비스 파드들, Istio 설정, Call graph
-- Traffic — Success rate of inbound and outbound traffic
-- Logs — Application logs, Envoy access logs, and spans correlated together
-- Inbound Metrics and Outbound Metrics — Correlated with spans
-- Traces — The traces reported by Jaeger
-- Envoy — Envoy 설정 (clusters, listeners, routes ..)
+- Traffic — 인바운드/아웃바운드 트래픽 성공률
+- Logs — 앱로그, Envoy 액세스 로그, Span 정보를 함께 제공 
+- Inbound Metrics and Outbound Metrics — Span 과 연관시켜 제공
+- Traces — 트레이스 리포트 (by Jaeger)
+- Envoy — Envoy 설정 (Clusters, Listeners, Routes ..)
 
 Correlation 제공으로 (연관된 지표들을 한 곳에 모아줌으로써) 디버깅이 매우 간단해 집니다.  
 여러 윈도우를 스위치 해가며 볼 필요도 없고 시점 기준으로 여러 그래프를 비교할 필요도 없습니다. 
@@ -1108,12 +1108,12 @@ Correlation 제공으로 (연관된 지표들을 한 곳에 모아줌으로써) 
 
 <br />
 
-[Kiali는 Istio 리소스에 대한 validation 도 제공합니다.](https://kiali.io/docs/features/validations/)
+*[Kiali는 Istio 리소스에 대한 Validation 을 제공합니다.](https://kiali.io/docs/features/validations/)*
 
-- VirtualService pointing to non-existent Gateway
-- Routing to destination that do not exist
-- More than one VirtualService for the same host
-- Service subsets not found
+- 존재하지 않는 Gateway 를 가리키는 VirtualService
+- 존재하지 않는 목적지에 대한 라우팅 정보
+- 동일한 호스트에 대한 하나 이상의 VirtualService
+- Service subsets 을 찾을 수 없음
 - (참고) Kiali’s [AuthorizationPolicy](https://kiali.io/docs/features/validations/#authorizationpolicies)
     - [KIA0101 - Namespace not found for this rule](https://kiali.io/docs/features/validations/#kia0101---namespace-not-found-for-this-rule)
     - [KIA0102 - Only HTTP methods and fully-qualified gRPC names are allowed](https://kiali.io/docs/features/validations/#kia0102---only-http-methods-and-fully-qualified-grpc-names-are-allowed)
@@ -1165,36 +1165,33 @@ Correlation 제공으로 (연관된 지표들을 한 곳에 모아줌으로써) 
         - [KIA0004 - No matching workload found for the selector in this namespace](https://kiali.io/docs/features/validations/#kia0004---no-matching-workload-found-for-the-selector-in-this-namespace)
         - [KIA0005 - No matching namespace found or namespace is not accessible](https://kiali.io/docs/features/validations/#kia0005---no-matching-namespace-found-or-namespace-is-not-accessible)
 
-### 8.3.2 Conclusion
+### 8.3.2 결론
 
-- Grafana — Scarping Prometheus metrics and Visualizing metrics for Istio
-- Jeager — Distributed Tracing for understanding latencies in a multi-hop call graph
-    - annotate correlate requests with metatdata
-    - detect metadata and send spans to tracing engine
-- Kiali — Representing the traffic flow in a call graph and Digging into the configuration that enables this traffic flow.
+- Grafana — 프로메테우스 메트릭을 기반으로 시각화를 제공합니다
+- Jeager — Call Graph 의 레이턴시를 이해하는 분산 트레이싱을 제공합니다
+    - 관련 요청의 메타데이터에 어노테이션 합니다
+    - 메타데이터를 감지하여 Span 정보를 트레이싱 엔진에 전송합니다
+  - Kiali — 트래픽 흐름을 Call Graph 로 표현하고 상세한 구성 정보를 제공합니다
 
-## Summary
+## 요약 
 
 - Grafana — Istio control/data plane 메트릭 대시보드 제공
-- Distributed tracing (Jaeger) — service requests 에 대한 Insight 제공   
-  *how ? “annotate requests”*       
+- 분산 트레이싱 (Jaeger) — 서비스 요청에 대한 인사이트 제공 (요청 어노테이션)  
   *간트 차트와 비슷하다 (위 - Gantt chart / 아래 - Traces)*  
   <img src="/assets/img/Istio-ch8-observability-2-visibility/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-29_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_2.05.43.png" width=350 />  
   <img src="/assets/img/Istio-ch8-observability-2-visibility/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-29_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_2.06.42.png" width=350 />
 
-- Applications — “Trace header” 전파.  request 의 전체 view  확보
-- Trace — a collection of spans.  분산 환경에서 요청을 처리하는 단계별 홉과 레이턴시 디버깅 제공
-- Trace header 설정
+- 어플리케이션 — “트레이스 헤더” 전파. 요청 흐름의 전체 view 확보
+- 트레이스 — Span 집합. 분산 환경에서 요청을 처리하는 단계별 홉과 레이턴시 디버깅 제공
+- 트레이스 헤더 설정
     - global 설정 — `defaultConfig`  (from Istio installation)
-    - workload 단위 설정 — `proxy.istio.io/config`  (from annotation)
+    - 워크로드 단위 설정 — `proxy.istio.io/config`  (from annotation)
 - Kiali Operator 설정
-    - metrics — Prometheus 연동 설정
-    - traces — Jaeger 연동 설정
-- Kiali — supports ***Istio-specific*** dashboards
-    - networking graph
-        
+    - 메트릭 — Prometheus 연동 설정
+    - 트레이스 — Jaeger 연동 설정
+- Kiali — *Istio-Specific* 대시보드 지원
+    - Call Graph  
         ![스크린샷 2023-01-29 오후 2.24.08.png](/assets/img/Istio-ch8-observability-2-visibility/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-29_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_2.24.08.png)
         
-    - metric correlation
-        
+    - Metric Correlation  
         ![스크린샷 2023-01-29 오후 2.24.36.png](/assets/img/Istio-ch8-observability-2-visibility/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-29_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_2.24.36.png)
