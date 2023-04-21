@@ -95,7 +95,7 @@ istioctl install -y --set profile=demo \
 
 ## 9.1.1 서비스-to-서비스 인증  
 
-*SPIFFE - 모두를 위한 운영 환경의 보안 ID 프레임웍*
+*SPIFFE - 모두를 위한 안전한 운영 환경 ID 프레임웍*
 - Secure Production Identity Framework For Everyone
 - 보안을 위해 “서비스 간 인증 방법” 제공
 - 서비스 간에 “신뢰” 할 수 있도록 검증 가능한 `SVID (ID document)` 제공 (일종의 주민등록증)
