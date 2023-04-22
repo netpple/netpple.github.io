@@ -65,8 +65,8 @@ kubectl config set-context --current --namespace=istioinaction
 
 ## istioinaction
 kubectl delete virtualservice,deployment,service,secret,\
-destinationrule,gateway,authorizationpolicy,\
-peerauthentication -n istioinaction --all
+destinationrule,gateway,serviceentry,envoyfilter,configmap,\
+authorizationpolicy,peerauthentication -n istioinaction --all
 
 ## istio 레이블 제거
 kubectl label ns istioinaction istio-injection-
@@ -100,8 +100,8 @@ istioctl install -y --set profile=demo \
 - 보안을 위해 “서비스 간 인증 방법” 제공
 - 서비스 간에 “신뢰” 할 수 있도록 검증 가능한 `SVID (ID document)` 제공 (일종의 주민등록증)
 - `SVID`는 X.509 인증서의 일종으로 신뢰할 수 있는 3rd party 발급기관에서 발급하고 검증
-- Istio 는 SPIFFE 를 사용하여 인증서 발급을 자동화
-- Istio 는 SPIFFE 인증서를 사용하여 서비스 간에 상호인증 (mTLS) 을 수행함
+- Istio 는 SPIFFE 를 준수하여 인증서 발급 프로세스를 자동화
+- Istio 는 SPIFFE 인증서 (`SVID`)를 사용하여 서비스 간 상호인증 (mTLS)
 
 ## 9.1.2 End-user 인증  
 
