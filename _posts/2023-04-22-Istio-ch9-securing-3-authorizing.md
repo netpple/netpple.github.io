@@ -16,7 +16,14 @@ Istio 에서 제공하는 microservice 환경에서의 Secure 통신에 대해�
 
 # 9.3 Authorizing serivce-to-service traffic 
 
-Authorization 은 탈취된 ID가 에게 접근이 허용된 범위 내로 공격 범위를 줄입니다 
+`Authorization` (인가)는  `인증된 대상` (authenticated subject) 에게 리소스에 대한 접근 (accessing), 편집 (editing), 삭제 (deleting) 등과 같은 오퍼레이션 수행을 허가할 지 여부를 결정하는 절차입니다
+
+정책은 `인증된 대상` (who) 과 `authorization` (권한, what)을 함께 연결지어 누가(who) 무엇(what)을 할 수 있는지를 정의합니다
+
+Istio 는 메시 전체, 네임스페이스 단위, 워크로드 단위의 접근 정책을 정의할 수 있는 선언적 API인  AuthorizationPolicy 커스텀 리소스를 제공합니다
+
+아래 그림은 특정 ID가 탈취(침해, compromised)된 경우 어떻게 접근정책이 스코프 혹은 피해 반경을 제한하는지 보여줍니다
+![권한 - ID탈취 시 영향범위 제한](/assets/img/Istio-ch9-securing-3-authorizing/authz_reduce_compromised_id_scope.png)
 
 ## 실습 환경
 
