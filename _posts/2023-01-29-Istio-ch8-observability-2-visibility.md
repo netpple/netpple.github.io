@@ -718,8 +718,7 @@ mesh: |-
 덧) 워크로드(ex:deploy/webapp) 단위 샘플링 적용 안됨
 - 책에서는 워크로드의 annotaion 으로 샘플링 설정이 가능하다고 하는데
 - meshConfig 설정의 sampling 비율로 동작하고 
-- workload에 설정한 sampling 비율대로 작동하지 않았습니다  
-<br />
+- workload에 설정한 sampling 비율대로 작동하지 않았습니다
 
 **FORCE-TRACING**
 - 평소 운영 시에는 sampling rate 을 최소로 유지하고 

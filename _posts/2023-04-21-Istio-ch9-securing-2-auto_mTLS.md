@@ -41,11 +41,9 @@ Istio 에서 제공하는 microservice 환경에서의 Secure 통신에 대해�
 이러한 원칙이 중요한 이유는 인증서가 잘못된 곳에 유출이 되더라도 피해범위를 해당 인증서 ID에 접근이 허용된 최소한의 서비스들로 국한 되기 때문입니다 
     
 
-## 9.2.1 Setting up the environment
+## 9.2.1 실습 환경
 
-👉🏻 *“[실습 초기화](/2023/Istio-ch9-securing-1-overview/#실습-초기화)” 후 진행해 주세요*
-
-### 실습 환경
+👉🏻 *먼저, “[실습 초기화](/2023/Istio-ch9-securing-1-overview/#실습-초기화){:target="_black"}” 후 진행해 주세요*
 
 ```bash
 ## istio proxy가 sidecar로 injection 되도록 네임스페이스 레이블 설정
@@ -81,6 +79,9 @@ kubectl -n default exec deploy/sleep -c sleep -- \
 
 ## 9.2.2 PeerAuthentication
 
+피어-to-피어 (혹은 서비스-to-서비스) 인증  
+❊ `상호 인증` (Mutual Authentication)
+
 *Mutual 인증 모드*
 - `STRICT` - 강력하게 Mutual 인증 (mTLS) 요구
 - `PERMISSIVE` - 평문 (clear-text) 요청도 허용
@@ -90,12 +91,14 @@ kubectl -n default exec deploy/sleep -c sleep -- \
 - `Namespace-wide` : 특정 네임스페이스 워크로드 대상 
 - `Workload-specific` : Selector 매칭 워크로드 대상
 
-### MESH-WIDE - 비인증 트래픽 거부
+### MESH-WIDE 정책 실습
 
 *mesh-wide 정책 적용하기* 
 
 1. Istio 설치 네임스페이스 (`istio-system`) 에 생성
 2. name을 "default"로 지정 `name: "default"`
+
+mTLS `mode: STRICT` 로 설정하여 평문전송을 금지합니다  
 
 ```yaml
 # cat ch9/meshwide-strict-peer-authn.yaml 
@@ -133,17 +136,17 @@ STRICT 모드를 기본설정으로 사용하는 것은 좋습니다만, 경우�
 
 `PERMISSIVE` 모드를 사용하면 암호화된 요청과 평문 요청을 모두 수용할 수 있습니다.
 
-### NAMESPACE-WIDE - Non-mTLS 허용하기 
+### NAMESPACE-WIDE 정책 실습 
 
-*`Namespace-wide` 정책*
+*정책을 istioinaction 네임스페이스에 한정해서 적용해 봅니다*
 
 - mesh-wide policy 를 오버라이딩 하여
 - 특정 네임스페이스로 제한된 설정을 할 수 있습니다
 
 (실습) *namespace-wide* PeerAuthentication
 
-- istioinaction 네임스페이스에 대해서 정책을 적용합니다
-- “sleep” 앱과 같은 legacy 워크로드의 평문 전송을 허용합니다
+- PeerAuthentication 에서 `namespace: "istioinaction"`을 설정합니다
+- `mode: PERMISSIVE` 로 설정하여 평문 전송을 허용하는지 살펴봅니다
 
 ```bash
 kubectl apply -f - <<END
@@ -182,7 +185,7 @@ kubectl delete pa default -n istioinaction
 > 이어서 *sleep → webapp* 서비스 간 통신에 한정해서 미인증 트래픽을 허용해 보겠습니다. 이 경우에 catalog 에 대해서는 mesh-wide 설정 (*STRICT mutual authentication*) 이 유지됩니다.
 > 
 
-### WORKLOAD-SPECIFIC - 특정 워크로드 정책
+### WORKLOAD-SPECIFIC 정책 실습
 
 *정책을 webapp 에 한정해서 적용해 봅시다*
 - PeerAuthentication 에서 “selector” 를 설정합니다
@@ -371,11 +374,9 @@ openssl verify -CAfile /var/run/secrets/istio/root-cert.pem \
 /dev/fd/63: OK
 ```
 
-지금까지 peer-to-peer authentication 에 대하여 살펴보았습니다.
-- 발급된 ID는 검증가능하고 트래픽은 안전 합니다
-- 검증된 ID가 있으면 접근 제어를 할 수 있습니다
+지금까지 PeerAuthentication 정책을 사용한 피어 간 인증을 살펴보았는데요    
+이는 피어의 "ID"(identity) 를 기반으로 합니다 
+- 발급된 ID는 `검증 가능` 하고 트래픽은 안전합니다 👉🏻 인증
+- 검증된 ID가 있으면 `접근 제어` 를 할 수 있습니다 👉🏻 인가
 
-다시 말해 워크로드의 ID에 대해서 허용할 Operation 을 정의할 수 있습니다.  
-⇒ 이게 바로, Authorization 입니다  
-
-이어서 Authorization 에 대해서 살펴 봅니다
+이어서 인증된 ID 정보에 기반한 "인가", `Authorization` 에 대해서 살펴 봅니다

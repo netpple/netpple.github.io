@@ -9,6 +9,21 @@
     height: auto !important;
     padding: 5px 0px 20px 0px;
 }
+.td-content ul {
+    padding-bottom: 15px;
+    margin-bottom: 0px;
+}
+
+.td-content ul ul {
+    padding-bottom: 0px;
+}
+
+.td-content .highlight {
+    padding: 1rem;
+    margin-top: 0rem;
+    margin-bottom: 16px;
+}
+
 img.align-left{
     float:left;
     padding: 0px 20px 0px 0px;
