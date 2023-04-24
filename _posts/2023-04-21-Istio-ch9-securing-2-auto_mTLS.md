@@ -10,7 +10,9 @@ badges:
   rightpanel: true
 ---
 
-Istio 에서 제공하는 microservice 환경에서의 Secure 통신에 대해서 다룹니다. 인증을 통해 신원을 확인하고 확인된 신원에 대하여 권한을 확인합니다.
+서비스 혹은 피어 간에 서로를 알아 보는 방법, "상호 인증" `Mutual Authentication` 에 대해서 알아보고 이를 "자동화" 하는 방법에 대해서 살펴봅니다
+
+그리고 Istio 에서 제공하는 "서비스-to-서비스 인증" 방법에 대해서 설명하고 실습으로 확인해 봅니다 
 
 <!--more-->
 
@@ -77,9 +79,9 @@ kubectl -n default exec deploy/sleep -c sleep -- \
     - 기존 서비스를 mesh로 전환할 때 중단(outages)을 야기하지 않고 점진적으로  service mesh를 채택할 수 있도록 하기 위함
 - “clear-text” traffic 은 Istio의 **PeerAuthentication** 리소스(CR)로 차단할 수 있음
 
-## 9.2.2 PeerAuthentication
+## 9.2.2 서비스-to-서비스 인증 
 
-피어-to-피어 (혹은 서비스-to-서비스) 인증  
+`PeerAuthentication` 피어-to-피어 or 서비스-to-서비스 인증  
 ❊ `상호 인증` (Mutual Authentication)
 
 *Mutual 인증 모드*

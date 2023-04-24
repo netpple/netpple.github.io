@@ -10,11 +10,11 @@ badges:
   rightpanel: true
 ---
 
-Istio 에서 제공하는 microservice 환경에서의 Secure 통신에 대해서 다룹니다. 인증을 통해 신원을 확인하고 확인된 신원에 대하여 권한을 확인합니다.
+서비스 간 인가 `authorization` 에 대해서 알아봅시다
 
 <!--more-->
 
-# 9.3 Authorizing serivce-to-service traffic 
+# 9.3 서비스-to-서비스 인가  
 
 `Authorization` (인가)는  `인증된 대상` (authenticated subject) 에게 리소스에 대한 접근 (accessing), 편집 (editing), 삭제 (deleting) 등과 같은 오퍼레이션 수행을 허가할 지 여부를 결정하는 절차입니다
 
