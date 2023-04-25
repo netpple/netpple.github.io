@@ -470,7 +470,7 @@ Zipkin 트레이싱 헤더
 *Jaeger 설치가 다소 복잡해서 그냥 Istio 샘플 addon을 쓰겠습니다*
 
 ```bash
-cd istio-1.16.1
+cd istio-1.17.2
 
 kubectl apply -f samples/addons/jaeger.yaml
 ```

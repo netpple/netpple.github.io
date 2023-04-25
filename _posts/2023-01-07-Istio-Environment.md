@@ -1,9 +1,15 @@
 ---
 title: Istio 실습환경  
-version: v1.0 
+version: v1.1 
 description: istio in action 실습환경 안내  
-date: 2023-01-07 21:00:00 +09:00  
+date: 2023-04-25 19:45:00 +09:00  
 categories: network  
+comment: true  
+histories:
+- date: 2023-04-25 19:45:00 +09:00
+  description: istio 1.17.2 적용  
+- date: 2023-01-07 21:00:00 +09:00
+  description: 최초 등록
 badges:
 - type: info  
   tag: 교육  
@@ -13,6 +19,7 @@ badges:
 docker 는 설치돼 있다고 가정합니다. 
 
 <!--more-->
+최근 업데이트 : 23/04/25 - istio-1.17.2 적용
 
 ## minikube
 
@@ -85,7 +92,12 @@ minikube delete
 istio CLI 도구를 설치합니다. 
 
 ```bash
-brew install istioctl
+curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.17.2 sh -
+
+cd istio-1.17.2
+
+## .bash_profile 에 설정해 주세요
+export PATH=$PWD/bin:$PATH
 ```
 
 ### Istio
@@ -105,15 +117,7 @@ kubectl get all -n istio-system
 ### addon
 
 ```bash
-# istioctl version
-client version: 1.16.1
-control plane version: 1.16.1
-data plane version: 1.16.1 (2 proxies)
-
-## 
-curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.16.1 sh -
-
-cd istio-1.16.1
+cd istio-1.17.2
 
 kubectl apply -f ./samples/addons
 ```

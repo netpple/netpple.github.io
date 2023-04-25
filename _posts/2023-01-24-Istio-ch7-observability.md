@@ -89,7 +89,7 @@ add-on 을 제거합니다.
 
 ```bash
 
-cd istio-1.16.1
+cd istio-1.17.2
 
 kubectl delete -f samples/addons/
 ```
