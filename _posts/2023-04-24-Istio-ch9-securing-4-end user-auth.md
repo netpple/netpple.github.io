@@ -181,7 +181,7 @@ END
 End-user 요청에 따라 아래 3가지 경우가 발생할 수 있습니다
 - "유효한 토큰" ~ 요청이 허용되고 해당 요청의 `claim`은 `filter metadata` 형태로 정책에 제공됩니다 
 - "유효하지 않은 토큰" ~ 요청은 거부됩니다
-- 요청을 허용하지만 요청의 ID 가 없기 때문에 `filter data`로 저장할 정보, 즉 `claim`이 없습니다
+- "토큰 없음" ~ 요청은 허용하지만 ID를 식별할 수 없고 `filter metadata`로 저장할 정보, 즉 `claim`이 없습니다
 
 정리해 보면, 요청에 JWT 토큰이 있고 없고의 차이는 
 - 토큰 있음 : `RequestAuthentication` 필터로 요청이 검증되고 `claims` 을 커넥션의 `filter metadata` 에 저장합니다
