@@ -669,7 +669,7 @@ kubectl apply -n istioinaction \
 ```bash
 istioctl dashboard jaeger --browser=false
 ```
-대시보드: [http://localhost:16686](http://localhost:16686)
+대시보드: [http://localhost:16686](http://localhost:16686){:target="_blank"}
 
 👉🏻Service 콤보에서 "istio-ingresgateway 를 선택" 후 "Find Traces" 버튼을 클릭하세요
 <img src="/assets/img/Istio-ch8-observability-2-visibility/jaeger_dashboard.png" />
@@ -943,29 +943,31 @@ Kiali는 프로메테우스에 저장된 Istio 메트릭을 시각화 합니다
 
 ### 8.3.1 Kiali 설치
 
-Kiali Operator 설치 권장 : https://github.com/kiali/kiali-operator  
-Kiali 공식 가이드 : [https://v1-41.kiali.io/docs/installation/installation-guide/](https://v1-41.kiali.io/docs/installation/installation-guide/)  
-<br />
+*Pre-requisite*
+- 책하고 다르게 최신 Istio 1.16, 1.17 기준으로 작성하였습니다
+- 앞에서 설치한 kube-prometheus-stack 과 Jaeger 를 연동합니다 
+
 *Step1. Kiali Operator 설치*
 
 ```bash
-## 네임스페이스 생성
-kubectl create ns kiali-operator
+## helm repo
+helm repo add kiali https://kiali.org/helm-charts
+helm repo update 
 
-## 설치
+## kiali-operator install
 helm install \
---set cr.create=true \
---set cr.namespace=istio-system \
 --namespace kiali-operator \
---repo https://kiali.org/helm-charts \
---version 1.40.1 \
+--create-namespace \
+--version 1.63.2 \
 kiali-operator \
-kiali-operator
+kiali/kiali-operator
 ```
 
 *Step2. Kiali Dashboard 설치*
 
 ```yaml
+# cat ch8/kiali.yaml
+
 apiVersion: kiali.io/v1alpha1
 kind: Kiali
 metadata:
@@ -991,9 +993,15 @@ spec:
       in_cluster_url: "http://tracing.istio-system:16685/jaeger"
       use_grpc: true  
 ```
-- Kiali CR example : [https://github.com/kiali/kiali-operator/blob/master/crd-docs/cr/kiali.io_v1alpha1_kiali.yaml](https://github.com/kiali/kiali-operator/blob/master/crd-docs/cr/kiali.io_v1alpha1_kiali.yaml)
-- Kiali CRD : [https://github.com/kiali/kiali-operator/blob/master/crd-docs/crd/kiali.io_kialis.yaml](https://github.com/kiali/kiali-operator/blob/master/crd-docs/crd/kiali.io_kialis.yaml)
-- prometheus 와 tracing (jaeger) 설정  
+
+```bash
+## 대시보드 설치 
+kubectl apply -f ch8/kiali.yaml
+```
+
+(참고)
+- [Kiali 버전 호환표](https://kiali.io/docs/installation/installation-guide/prerequisites/#version-compatibility){:target="_blank"}  
+- [공식 설치 가이드](https://kiali.io/docs/installation/installation-guide/){:target="_blank"}  
 <br />
 
 *Kiali 대시보드 살펴보기*

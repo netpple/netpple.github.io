@@ -420,7 +420,7 @@ curl -H "Host: webapp.istioinaction.io" \
             methods: ["GET"]
     END
     ```
-    - ❶ Represents the end-user request principal
+    - ❶ 요청 주체 `requestPrincipals` 를 식별하기 위한 필터 조건 
 - 관리자용 AuthorizationPolicy 를 설정합니다.
     ```bash
     kubectl apply -f -<<END
