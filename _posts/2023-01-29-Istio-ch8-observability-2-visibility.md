@@ -1125,62 +1125,13 @@ Correlation 제공으로 (연관된 지표들을 한 곳에 모아줌으로써) 
 
 <br />
 
-*[Kiali는 Istio 리소스에 대한 Validation 을 제공합니다.](https://kiali.io/docs/features/validations/)*
+*Kiali는 Istio 리소스에 대한 Validation 을 제공합니다*
 
 - 존재하지 않는 Gateway 를 가리키는 VirtualService
 - 존재하지 않는 목적지에 대한 라우팅 정보
 - 동일한 호스트에 대한 하나 이상의 VirtualService
-- Service subsets 을 찾을 수 없음
-- (참고) Kiali’s [AuthorizationPolicy](https://kiali.io/docs/features/validations/#authorizationpolicies)
-    - [KIA0101 - Namespace not found for this rule](https://kiali.io/docs/features/validations/#kia0101---namespace-not-found-for-this-rule)
-    - [KIA0102 - Only HTTP methods and fully-qualified gRPC names are allowed](https://kiali.io/docs/features/validations/#kia0102---only-http-methods-and-fully-qualified-grpc-names-are-allowed)
-    - [KIA0104 - This host has no matching entry in the service registry](https://kiali.io/docs/features/validations/#kia0104---this-host-has-no-matching-entry-in-the-service-registry)
-    - [KIA0105 - This field requires mTLS to be enabled](https://kiali.io/docs/features/validations/#kia0105---this-field-requires-mtls-to-be-enabled)
-    - [KIA0106 - Service Account not found for this principal](https://kiali.io/docs/features/validations/#kia0106---service-account-not-found-for-this-principal)
-    - [Destination rules](https://kiali.io/docs/features/validations/#destinationrules)
-        - [KIA0201 - More than one DestinationRules for the same host subset combination](https://kiali.io/docs/features/validations/#kia0201---more-than-one-destinationrules-for-the-same-host-subset-combination)
-        - [KIA0202 - This host has no matching entry in the service registry (service, workload or service entries)](https://kiali.io/docs/features/validations/#kia0202---this-host-has-no-matching-entry-in-the-service-registry-service-workload-or-service-entries)
-        - [KIA0203 - This subset’s labels are not found in any matching host](https://kiali.io/docs/features/validations/#kia0203---this-subsets-labels-are-not-found-in-any-matching-host)
-        - [KIA0204 - mTLS settings of a non-local Destination Rule are overridden](https://kiali.io/docs/features/validations/#kia0204---mtls-settings-of-a-non-local-destination-rule-are-overridden)
-        - [KIA0205 - PeerAuthentication enabling mTLS at mesh level is missing](https://kiali.io/docs/features/validations/#kia0205---peerauthentication-enabling-mtls-at-mesh-level-is-missing)
-        - [KIA0206 - PeerAuthentication enabling namespace-wide mTLS is missing](https://kiali.io/docs/features/validations/#kia0206---peerauthentication-enabling-namespace-wide-mtls-is-missing)
-        - [KIA0207 - PeerAuthentication with TLS strict mode found, it should be permissive](https://kiali.io/docs/features/validations/#kia0207---peerauthentication-with-tls-strict-mode-found-it-should-be-permissive)
-        - [KIA0208 - PeerAuthentication enabling mTLS found, permissive mode needed](https://kiali.io/docs/features/validations/#kia0208---peerauthentication-enabling-mtls-found-permissive-mode-needed)
-        - [KIA0209 - DestinationRule Subset has not labels](https://kiali.io/docs/features/validations/#kia0209---destinationrule-subset-has-not-labels)
-    - [Gateways](https://kiali.io/docs/features/validations/#gateways)
-        - [KIA0301 - More than one Gateway for the same host port combination](https://kiali.io/docs/features/validations/#kia0301---more-than-one-gateway-for-the-same-host-port-combination)
-        - [KIA0302 - No matching workload found for gateway selector in this namespace](https://kiali.io/docs/features/validations/#kia0302---no-matching-workload-found-for-gateway-selector-in-this-namespace)
-    - [Mesh Policies](https://kiali.io/docs/features/validations/#meshpolicies)
-        - [KIA0401 - Mesh-wide Destination Rule enabling mTLS is missing](https://kiali.io/docs/features/validations/#kia0401---mesh-wide-destination-rule-enabling-mtls-is-missing)
-    - [PeerAuthentication](https://kiali.io/docs/features/validations/#peerauthentication)
-        - [KIA0501 - Destination Rule enabling namespace-wide mTLS is missing](https://kiali.io/docs/features/validations/#kia0501---destination-rule-enabling-namespace-wide-mtls-is-missing)
-        - [KIA0505 - Destination Rule disabling namespace-wide mTLS is missing](https://kiali.io/docs/features/validations/#kia0505---destination-rule-disabling-namespace-wide-mtls-is-missing)
-        - [KIA0506 - Destination Rule disabling mesh-wide mTLS is missing](https://kiali.io/docs/features/validations/#kia0506---destination-rule-disabling-mesh-wide-mtls-is-missing)
-    - [Ports](https://kiali.io/docs/features/validations/#ports)
-        - [KIA0601 - Port name must follow [-suffix] form](https://kiali.io/docs/features/validations/#kia0601---port-name-must-follow-protocol-suffix-form)
-        - [KIA0602 - Port appProtocol must follow form](https://kiali.io/docs/features/validations/#kia0602---port-appprotocol-must-follow-protocol-form)
-    - [Services](https://kiali.io/docs/features/validations/#services)
-        - [KIA0701 - Deployment exposing same port as Service not found](https://kiali.io/docs/features/validations/#kia0701---deployment-exposing-same-port-as-service-not-found)
-    - [Sidecars](https://kiali.io/docs/features/validations/#sidecars)
-        - [KIA1004 - This host has no matching entry in the service registry](https://kiali.io/docs/features/validations/#kia1004---this-host-has-no-matching-entry-in-the-service-registry)
-        - [KIA1006 - Global default sidecar should not have workloadSelector](https://kiali.io/docs/features/validations/#kia1006---global-default-sidecar-should-not-have-workloadselector)
-    - [VirtualServices](https://kiali.io/docs/features/validations/#virtualservices)
-        - [KIA1101 - DestinationWeight on route doesn’t have a valid service (host not found)](https://kiali.io/docs/features/validations/#kia1101---destinationweight-on-route-doesnt-have-a-valid-service-host-not-found)
-        - [KIA1102 - VirtualService is pointing to a non-existent gateway](https://kiali.io/docs/features/validations/#kia1102---virtualservice-is-pointing-to-a-non-existent-gateway)
-        - [KIA1104 - The weight is assumed to be 100 because there is only one route destination](https://kiali.io/docs/features/validations/#kia1104---the-weight-is-assumed-to-be-100-because-there-is-only-one-route-destination)
-        - [KIA1105 - This host subset combination is already referenced in another route destination](https://kiali.io/docs/features/validations/#kia1105---this-host-subset-combination-is-already-referenced-in-another-route-destination)
-        - [KIA1106 - More than one Virtual Service for same host](https://kiali.io/docs/features/validations/#kia1106---more-than-one-virtual-service-for-same-host)
-        - [KIA1107 - Subset not found](https://kiali.io/docs/features/validations/#kia1107---subset-not-found)
-        - [KIA1108 - Preferred nomenclature: /](https://kiali.io/docs/features/validations/#kia1108---preferred-nomenclature-gateway-namespacegateway-name)
-    - [WorkloadEntries](https://kiali.io/docs/features/validations/#workloadentries)
-        - [KIA1201 - Missing one or more addresses from matching WorkloadEntries](https://kiali.io/docs/features/validations/#kia1201---missing-one-or-more-addresses-from-matching-workloadentries)
-    - [Workloads](https://kiali.io/docs/features/validations/#workloads)
-        - [KIA1301 - This workload is not covered by any authorization policy](https://kiali.io/docs/features/validations/#kia1301---this-workload-is-not-covered-by-any-authorization-policy)
-    - [Generic](https://kiali.io/docs/features/validations/#generic)
-        - [KIA0002 - More than one selector-less object in the same namespace](https://kiali.io/docs/features/validations/#kia0002---more-than-one-selector-less-object-in-the-same-namespace)
-        - [KIA0003 - More than one object applied to the same workload](https://kiali.io/docs/features/validations/#kia0003---more-than-one-object-applied-to-the-same-workload)
-        - [KIA0004 - No matching workload found for the selector in this namespace](https://kiali.io/docs/features/validations/#kia0004---no-matching-workload-found-for-the-selector-in-this-namespace)
-        - [KIA0005 - No matching namespace found or namespace is not accessible](https://kiali.io/docs/features/validations/#kia0005---no-matching-namespace-found-or-namespace-is-not-accessible)
+- DestinationRule 에서 Service subsets 을 찾을 수 없음
+- [더 많은 정보를 원하시면 클릭](https://kiali.io/docs/features/validations/){:target="_blank"}
 
 ### 8.3.2 결론
 
