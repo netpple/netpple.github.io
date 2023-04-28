@@ -1013,7 +1013,6 @@ kubectl apply -f ch8/kiali.yaml
   ## 3 - 네임스페이스 삭제
   kubectl delete ns kiali-operator 
   ```
-<br />
 
 *Kiali 대시보드 살펴보기*
 
