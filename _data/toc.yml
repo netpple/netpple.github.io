@@ -67,6 +67,8 @@
   links:
     #    - title: "[] "
     #      url: ""
+    - title: "Istio Securing(5)"
+      url: "2023/Istio-ch9-securing-5-external_authz"
     - title: "Istio Securing(4)"
       url: "2023/Istio-ch9-securing-4-end-user-auth"
     - title: "Istio Securing(3)"
