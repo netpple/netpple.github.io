@@ -1001,7 +1001,18 @@ kubectl apply -f ch8/kiali.yaml
 
 (참고)
 - [Kiali 버전 호환표](https://kiali.io/docs/installation/installation-guide/prerequisites/#version-compatibility){:target="_blank"}  
-- [공식 설치 가이드](https://kiali.io/docs/installation/installation-guide/){:target="_blank"}  
+- [공식 설치 가이드](https://kiali.io/docs/installation/installation-guide/){:target="_blank"}
+- Kiali 삭제
+  ```bash
+  ## 1 - Kiali 대시보드 삭제 (커스텀 리소스 삭제 시 kiali-operator가 제거함) 
+  kubectl delete kiali kiali
+  
+  ## 2 - kiali-operator 삭제
+  helm uninstall kiali -n kiali-operator 
+  
+  ## 3 - 네임스페이스 삭제
+  kubectl delete ns kiali-operator 
+  ```
 <br />
 
 *Kiali 대시보드 살펴보기*
