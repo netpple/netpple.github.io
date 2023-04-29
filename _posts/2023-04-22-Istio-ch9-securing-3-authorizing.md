@@ -27,15 +27,12 @@ Istio 는 메시 전체, 네임스페이스 단위, 워크로드 단위의 접�
 
 ## 실습 환경
 
-첫째, “[실습 초기화](/2023/Istio-ch9-securing-1-overview/#실습-초기화){:target="_black"}” 후 진행해 주세요  
+첫째, 👉🏻 *먼저, “[실습 초기화](/2023/Istio-ch9-securing-1-overview/#실습-초기화){:target="_black"}” 후 진행해 주세요*
 둘째, 실습 환경 구성하기
 
 ```bash
 ## 실습 코드 경로에서 실행합니다
 # cd book-source-code
-
-## istio-proxy injection labeling
-kubectl label namespace istioinaction istio-injection=enabled
 
 ## install apps
 kubectl -n istioinaction apply -f \

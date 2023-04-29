@@ -68,20 +68,13 @@ kubectl delete virtualservice,deployment,service,secret,\
 destinationrule,gateway,serviceentry,envoyfilter,configmap,\
 authorizationpolicy,peerauthentication -n istioinaction --all
 
-## istio 레이블 제거
-kubectl label ns istioinaction istio-injection-
+## istio-system
+kubectl delete authorizationpolicy,peerauthentication,requestauthentication \
+-n istio-system --all
 
 ## default namespace
 kubectl delete deployment/sleep -n default
 kubectl delete service/sleep -n default
-
-## istio-system
-kubectl delete authorizationpolicy,peerauthentication \
--n istio-system --all
-
-## istio-proxy 컨테이너 privileged 퍼미션 제거
-istioctl install -y --set profile=demo \
-     --set values.global.proxy.privileged=false
 ```
 
 # 9.1 앱-네트워킹 보안의 필요성

@@ -26,23 +26,14 @@ Istio 의 서비스 프록시가 요청을 허용할지를 결정하기 위해 �
 
 ## 9.5.1 Hands-on with external authorization
 
-실습 환경 초기화
+### 실습 환경
+
+첫째, 👉🏻 *먼저, “[실습 초기화](/2023/Istio-ch9-securing-1-overview/#실습-초기화){:target="_black"}” 후 진행해 주세요*
+둘째, 실습 환경 구성하기
 
 ```bash
-kubectl delete ns istioinaction
-
-kubectl delete authorizationpolicy,peerauthentication,requestauthentication --all -n istio-system
-
-kubectl delete deploy/sleep -n default
-```
-
-실습 환경 설정
-
-```bash
-kubectl create ns istioinaction 
-
-## istio proxy가 sidecar로 injection 되도록 네임스페이스 레이블 설정
-kubectl label namespace istioinaction istio-injection=enabled
+## 실습 코드 경로에서 실행합니다
+# cd book-source-code
 
 ## catalog와 webapp 배포
 kubectl apply -f services/catalog/kubernetes/catalog.yaml -n istioinaction
