@@ -3,6 +3,7 @@ title: Istio Ingress Gateway (3)
 version: v1.0  
 description: istio in action 4장 실습3  
 date: 2022-12-26 20:00:00 +09:00  
+hidden: true  
 categories: network  
 badges:
 - type: info  

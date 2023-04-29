@@ -3,6 +3,7 @@ title: Istio Resilience
 version: v0.6  
 description: istio in action 6장  
 date: 2023-03-31 09:00:00 +09:00  
+hidden: true  
 categories: network  
 badges:
 - type: info  

@@ -3,6 +3,7 @@ title: Istio Securing (1)
 version: v1.2  
 description: istio in action 9장  
 date: 2023-04-21 14:00:00 +09:00  
+hidden: true  
 categories: network
 badges:
 - type: info  
