@@ -1,4 +1,5 @@
 ---
+redirect_to: /docs/istio-in-action/Istio-ch9-securing-5-external_authz
 title: Istio Securing (5)  
 version: v1.0  
 description: istio in action 9장  
@@ -10,6 +11,7 @@ badges:
   tag: 교육  
   rightpanel: true
 ---
+<meta http-equiv="refresh" content="0; url={{ page.redirect_to }}">
 
 지금까지 Istio 에서 제공하는 인증과 인가에 대해서 살펴보았습니다 Istio 는 Envoy 의 기본 RBAC 기능들을 사용하여 인가를 구축하고 있는데요. 이번 장에서는 인가 / 권한에 대해 커스텀 메커니즘을 적용하는 방법에 대해서 살펴 보겠습니다. 
 

@@ -1,4 +1,5 @@
 ---
+redirect_to: /docs/istio-in-action/Istio-ch9-securing-2-auto_mTLS
 title: Istio Securing (2)  
 version: v1.0  
 description: istio in action 9장  
@@ -10,6 +11,7 @@ badges:
   tag: 교육  
   rightpanel: true
 ---
+<meta http-equiv="refresh" content="0; url={{ page.redirect_to }}">
 
 서비스 혹은 피어 간에 서로를 알아 보는 방법, "상호 인증" `Mutual Authentication` 에 대해서 알아보고 이를 "자동화" 하는 방법에 대해서 살펴봅니다
 

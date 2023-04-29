@@ -1,4 +1,5 @@
 ---
+redirect_to: /docs/istio-in-action/Istio-ch4-1-ingress-gw
 title: Istio Ingress Gateway (1)  
 version: v1.0  
 description: istio in action 4장 실습1  
@@ -10,6 +11,9 @@ badges:
   tag: 교육  
   rightpanel: false
 ---
+
+<meta http-equiv="refresh" content="0; url={{ page.redirect_to }}">
+
 Istio의 Ingress Gateway를 실습합니다.  
 Istio에서 Ingress Gateway는 외부의 트래픽을 클러스터 내부로 들어오게 하는 문과 같은 역할을 합니다.   
 동시에 내부로 들어온 트래픽을 실제 서비스할 Pod로 안내하는 안내자 역할도 수행합니다.  

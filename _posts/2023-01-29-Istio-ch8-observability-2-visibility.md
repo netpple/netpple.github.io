@@ -1,4 +1,5 @@
 ---
+redirect_to: /docs/istio-in-action/Istio-ch8-observability-2-visibility
 title: Istio Observability (2)  
 version: v1.2  
 description: istio in action 8장  
@@ -10,6 +11,8 @@ badges:
   tag: 교육  
   rightpanel: true
 ---
+<meta http-equiv="refresh" content="0; url={{ page.redirect_to }}">
+
 ch7 에서 다룬 observability 의 visualize 에 대해 알아봅니다. visualize 를 위한 도구로 Grafana (Metrics), Jaeger/Zipkin (Distributed Tracing), Kiali (Call Graph) 등을 살펴봅니다.
 
 <!--more-->

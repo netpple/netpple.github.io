@@ -1,4 +1,5 @@
 ---
+redirect_to: /docs/istio-in-action/Istio-ch6-resilience
 title: Istio Resilience  
 version: v0.6  
 description: istio in action 6장  
@@ -10,6 +11,8 @@ badges:
   tag: 교육  
   rightpanel: false
 ---
+<meta http-equiv="refresh" content="0; url={{ page.redirect_to }}">
+
 분산 시스템 환경은 예측하기 어려운 많은 문제들이 발생할 수 있는데요.  
 문제가 생기더라도 시스템이 원래의 상태로 돌아오는 회복력을 "Resilience"라고 합니다.  
 이번 장에서는 분산 환경에서의 Istio의 Resilience 전략에 대해 다룹니다. 

@@ -1,4 +1,5 @@
 ---
+redirect_to: /docs/istio-in-action/Istio-Environment
 title: Istio 실습환경  
 version: v1.1 
 description: istio in action 실습환경 안내  
@@ -16,6 +17,8 @@ badges:
   tag: 교육  
   rightpanel: true
 ---
+<meta http-equiv="refresh" content="0; url={{ page.redirect_to }}">
+
 실습환경은 “깔았다/지웠다” 를 반복할 수 있도록 설명합니다.  
 docker 는 설치돼 있다고 가정합니다. 
 

@@ -1,4 +1,5 @@
 ---
+redirect_to: /docs/istio-in-action/Istio-ch9-securing-1-overview
 title: Istio Securing (1)  
 version: v1.2  
 description: istio in action 9장  
@@ -10,6 +11,8 @@ badges:
   tag: 교육  
   rightpanel: true
 ---
+<meta http-equiv="refresh" content="0; url={{ page.redirect_to }}">
+
 9장에서는 마이크로서비스 환경에서 Istio 가 제공하는 Secure 통신에 대해 다룹니다.  
 인증을 통해 신원을 확인하고 확인된 신원에 대하여 권한을 확인하는 방법을 살펴봅니다
 

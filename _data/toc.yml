@@ -4,10 +4,10 @@
     - title: "Istio IN ACTION"
       url: "docs/istio-in-action"
       children:
-        - title: 실습환경
-          url: "docs/istio-in-action/Istio-Environment"
         - title: 목차
           url: "docs/istio-in-action/#목차"
+        - title: 실습환경
+          url: "docs/istio-in-action/Istio-Environment"
         - title: Sidecar Proxy
           url: "docs/istio-in-action/Istio"
         - title: Envoy

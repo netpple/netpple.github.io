@@ -1,4 +1,5 @@
 ---
+redirect_to: /docs/istio-in-action/Istio-ch4-4-tips
 title: Istio Ingress Gateway (4)  
 version: v1.0  
 description: istio in action 4장 실습4  
@@ -10,6 +11,8 @@ badges:
   tag: 교육  
   rightpanel: false
 ---
+
+<meta http-equiv="refresh" content="0; url={{ page.redirect_to }}">
 
 Split gateways, Gateway injection, Ingress GW 로깅, Gateway configuration 등 운영팁들을 살펴봅니다.
 

@@ -1,4 +1,5 @@
 ---
+redirect_to: /docs/istio-in-action/Istio-ch4-2-ingress-gw
 title: Istio Ingress Gateway (2)  
 version: v1.0  
 description: istio in action 4장 실습2  
@@ -10,6 +11,9 @@ badges:
   tag: 교육  
   rightpanel: false
 ---
+
+<meta http-equiv="refresh" content="0; url={{ page.redirect_to }}">
+
 Istio의 Ingress Gateway 실습 두번째 파트입니다. (실습1에서 이어집니다)
 
 <!--more-->

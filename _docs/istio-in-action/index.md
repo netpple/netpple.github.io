@@ -1,5 +1,5 @@
 ---
-title: Istio in action
+title: Istio IN ACTION
 date: 2022-05-20 07:25:00 +09:00
 description: 목차 안내
 toc: 0
@@ -12,7 +12,7 @@ tags:
 - container
 ---
 
-# Istio IN ACTION
+# {{ page.title }}
 
 ## 시작하며 ..
 Istio IN ACTION (Christian Posta, Rinor Maloku - 2022 by Manning) 책을 공부하면서 정리한 내용입니다 

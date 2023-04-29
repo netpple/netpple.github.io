@@ -3,7 +3,8 @@ title: Istio Sidecar Proxy
 version: v1.0
 description: 실습으로 istio sidecar proxy 이해하기
 date: 2022-12-16 10:00:00 +09:00
-toc: 2
+layout: post  
+toc: 2  
 categories: network
 label: istio in action
 comments: true

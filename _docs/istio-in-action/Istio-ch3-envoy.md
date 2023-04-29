@@ -3,6 +3,7 @@ title: Envoy
 version: v1.0  
 description: istio in action 3장 실습  
 date: 2022-12-20 18:00:00 +09:00  
+layout: post  
 toc: 2  
 categories: network
 label: istio in action

@@ -1,4 +1,5 @@
 ---
+redirect_to: /docs/istio-in-action/Istio-ch3-envoy
 title: Envoy 실습  
 version: v1.0  
 description: istio in action 3장 실습  
@@ -10,6 +11,9 @@ badges:
   tag: 교육  
   rightpanel: false  
 ---
+
+<meta http-equiv="refresh" content="0; url={{ page.redirect_to }}">
+
 Istio의 핵심 컴포넌트, Envoy proxy를 실습을 통해 이해하는 시간을 가져봅니다.
 
 <!--more-->

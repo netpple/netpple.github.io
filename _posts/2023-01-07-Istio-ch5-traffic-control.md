@@ -1,4 +1,5 @@
 ---
+redirect_to: /docs/istio-in-action/Istio-ch5-traffic-control
 title: Traffic control - Fine-grained traffic routing
 version: v1.0  
 description: istio in action 5장  
@@ -10,6 +11,9 @@ badges:
   tag: 교육  
   rightpanel: true  
 ---
+
+<meta http-equiv="refresh" content="0; url={{ page.redirect_to }}">
+
 Istio의 traffic control 기법 routing, shifting, mirroring, Outbound traffic controlling 들에 대해 다룹니다.
 
 <!--more-->

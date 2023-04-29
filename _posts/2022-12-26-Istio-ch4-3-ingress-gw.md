@@ -1,4 +1,5 @@
 ---
+redirect_to: /docs/istio-in-action/Istio-ch4-3-ingress-gw
 title: Istio Ingress Gateway (3)  
 version: v1.0  
 description: istio in action 4장 실습3  
@@ -10,6 +11,8 @@ badges:
   tag: 교육  
   rightpanel: false
 ---
+
+<meta http-equiv="refresh" content="0; url={{ page.redirect_to }}">
 
 Istio는 TCP 트래픽도 다룰 수 있습니다 (지난 실습2에서 이어집니다)
 

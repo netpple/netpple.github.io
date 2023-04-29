@@ -1,4 +1,5 @@
 ---
+redirect_to: /docs/istio-in-action/Istio-ch9-securing-3-authorizing
 title: Istio Securing (3)  
 version: v1.0  
 description: istio in action 9장  
@@ -10,6 +11,7 @@ badges:
   tag: 교육  
   rightpanel: true
 ---
+<meta http-equiv="refresh" content="0; url={{ page.redirect_to }}">
 
 서비스 간 인가 `authorization` 에 대해서 알아봅시다
 

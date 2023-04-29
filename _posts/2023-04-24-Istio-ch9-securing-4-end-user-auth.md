@@ -1,4 +1,5 @@
 ---
+redirect_to: /docs/istio-in-action/Istio-ch9-securing-4-end-user-auth
 title: Istio Securing (4)  
 version: v1.0  
 description: istio in action 9장  
@@ -10,6 +11,7 @@ badges:
   tag: 교육  
   rightpanel: true
 ---
+<meta http-equiv="refresh" content="0; url={{ page.redirect_to }}">
 
 앞에서 서비스(피어) 간 인증/인가에 대해서 알아보았는데요. 이번에는 End-user 의 인증과 인가에 대해서 알아봅니다 .
 

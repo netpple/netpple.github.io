@@ -1,4 +1,5 @@
 ---
+redirect_to: /docs/istio-in-action/Istio-ch7-observability
 title: Istio Observability (1)  
 version: v0.6  
 description: istio in action 7장  
@@ -10,6 +11,8 @@ badges:
   tag: 교육  
   rightpanel: false
 ---
+<meta http-equiv="refresh" content="0; url={{ page.redirect_to }}">
+
 Observability (관측가능성) 란 무엇이고, 모니터링과 어떻게 다를까요 ?  
 이번 챕터에서는 Observability의 개념을 알아보고 Istio 환경에서 Observability를 확보하는 방법들에 대해 알아 보겠습니다.
 

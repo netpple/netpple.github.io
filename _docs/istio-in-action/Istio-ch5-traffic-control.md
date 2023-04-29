@@ -3,6 +3,7 @@ title: Traffic control - Fine-grained traffic routing
 version: v1.0  
 description: istio in action 5장  
 date: 2023-01-07 21:00:00 +09:00  
+layout: post  
 toc: 7  
 categories: network
 label: istio in action

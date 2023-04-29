@@ -3,6 +3,7 @@ title: Istio Securing (3)
 version: v1.0  
 description: istio in action 9장  
 date: 2023-04-22 09:50:00 +09:00  
+layout: post  
 toc: 13  
 categories: network
 label: istio in action
