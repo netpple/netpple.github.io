@@ -3,6 +3,9 @@ layout: page
 title: Welcome to Netpple
 permalink: /
 ---
+#### 공지
+*(4/29) Istio 실습 연재를 모아서 [Istio IN ACTION](/docs/istio-in-action/){:target="_blank"} 메뉴를 개설하였습니다*  
+
 ## 새로운 글 
 {% if site.posts.size > 0 %}
 {% assign posts = site.posts | where_exp:'post', 'post.hidden != true'%}
