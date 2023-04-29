@@ -28,7 +28,7 @@ Istio 의 서비스 프록시가 요청을 허용할지를 결정하기 위해 �
 
 ### 실습 환경
 
-첫째, 👉🏻 *먼저, “[실습 초기화](/2023/Istio-ch9-securing-1-overview/#실습-초기화){:target="_black"}” 후 진행해 주세요*
+첫째, 👉🏻 *먼저, “[실습 초기화](/2023/Istio-ch9-securing-1-overview/#실습-초기화){:target="_black"}” 후 진행해 주세요*  
 둘째, 실습 환경 구성하기
 
 ```bash
