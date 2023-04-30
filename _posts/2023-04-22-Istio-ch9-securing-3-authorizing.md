@@ -2,7 +2,7 @@
 redirect_to: /docs/istio-in-action/Istio-ch9-securing-3-authorizing
 title: Istio Securing (3)  
 date: 2023-04-22 09:50:00 +09:00
-hidden: true
+excluded_in_search: true
 ---
 <meta http-equiv="refresh" content="0; url={{ page.redirect_to }}">
 

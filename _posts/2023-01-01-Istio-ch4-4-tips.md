@@ -2,7 +2,7 @@
 redirect_to: /docs/istio-in-action/Istio-ch4-4-tips
 title: Istio Ingress Gateway (4)  
 date: 2023-01-01 09:00:00 +09:00  
-hidden: true
+excluded_in_search: true
 ---
 
 <meta http-equiv="refresh" content="0; url={{ page.redirect_to }}">

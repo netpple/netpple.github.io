@@ -8,7 +8,7 @@ permalink: /
 
 ## 새로운 글 
 {% if site.posts.size > 0 %}
-{% assign posts = site.posts | where_exp:'post', 'post.hidden != true'%}
+{% assign posts = site.posts | where_exp:'post', 'post.excluded_in_search != true' %}
 <div class="section-index">
     <hr class="panel-line">
     {% for post in posts limit:3 %}

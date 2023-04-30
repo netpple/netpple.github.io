@@ -2,7 +2,7 @@
 redirect_to: /docs/istio-in-action/Istio-ch4-1-ingress-gw
 title: Istio Ingress Gateway (1)  
 date: 2022-12-24 22:00:00 +09:00  
-hidden: true
+excluded_in_search: true
 ---
 
 <meta http-equiv="refresh" content="0; url={{ page.redirect_to }}">

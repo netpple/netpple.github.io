@@ -2,7 +2,7 @@
 redirect_to: /docs/istio-in-action/Istio-ch5-traffic-control
 title: Traffic control - Fine-grained traffic routing
 date: 2023-01-07 21:00:00 +09:00  
-hidden: true   
+excluded_in_search: true   
 ---
 
 <meta http-equiv="refresh" content="0; url={{ page.redirect_to }}">

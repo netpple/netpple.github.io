@@ -2,7 +2,7 @@
 redirect_to: /docs/istio-in-action/Istio-ch9-securing-5-external_authz
 title: Istio Securing (5)  
 date: 2023-04-28 19:00:00 +09:00
-hidden: true
+excluded_in_search: true
 ---
 <meta http-equiv="refresh" content="0; url={{ page.redirect_to }}">
 

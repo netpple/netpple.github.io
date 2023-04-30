@@ -2,7 +2,7 @@
 redirect_to: /docs/istio-in-action/Istio-ch6-resilience
 title: Istio Resilience  
 date: 2023-03-31 09:00:00 +09:00  
-hidden: true
+excluded_in_search: true
 ---
 <meta http-equiv="refresh" content="0; url={{ page.redirect_to }}">
 

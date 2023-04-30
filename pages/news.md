@@ -4,7 +4,7 @@ permalink: /news/
 ---
 
 # Posts
-{% assign posts = site.posts | where_exp:'post', 'post.hidden != true'%}
+{% assign posts = site.posts | where_exp:'post', 'post.excluded_in_search != true'%}
 {% for post in posts limit:10 %}
    <div class="post-preview">
    <a class="post-title" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a> <span class="post-date">{{ post.date | date: "%y.%m.%d" }}</span>
