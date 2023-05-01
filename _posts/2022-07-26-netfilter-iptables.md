@@ -8,7 +8,6 @@ categories: network
 badges:
 - type: info
   tag: 교육
-rightpanel: false
 ---
 <!--more-->
 <div class="responsive-wrap">

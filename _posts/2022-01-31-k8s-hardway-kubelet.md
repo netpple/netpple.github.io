@@ -7,7 +7,6 @@ categories: kubernetes
 badges:
 - type: info
   tag: 실습
-  rightpanel: false
 ---
 <!--more-->
 참고: [https://kamalmarhubi.com/blog/2015/08/27/what-even-is-a-kubelet/](https://kamalmarhubi.com/blog/2015/08/27/what-even-is-a-kubelet/) 

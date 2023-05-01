@@ -7,7 +7,6 @@ categories: kubernetes
 badges:
 - type: info
   tag: 코드 
-rightpanel: false
 ---
 <!--more-->
 참고: [https://developer.ibm.com/articles/setup-guide-for-kubernetes-developers/](https://developer.ibm.com/articles/setup-guide-for-kubernetes-developers/)

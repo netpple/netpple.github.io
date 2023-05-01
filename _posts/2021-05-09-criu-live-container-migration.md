@@ -4,10 +4,10 @@ version: v1.0
 description: Container Live Migration
 date: 2021-05-09 23:35 +09:00
 categories: container
+rightpanel: false
 badges:
 - type: info
   tag: 번역/요약
-rightpanel: false
 ---
 <!--more-->
 원문: [https://access.redhat.com/articles/2455211?extIdCarryOver=true&sc_cid=701f2000001OH6pAAG](https://access.redhat.com/articles/2455211?extIdCarryOver=true&sc_cid=701f2000001OH6pAAG)

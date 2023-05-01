@@ -4,10 +4,10 @@ version: v1.0
 description: pid namespace 관련하여 좋은 글이 있어 번역/정리 해보았습니다.
 date: 2021-05-04 21:55 +09:00
 categories: container
+rightpanel: false
 badges:
 - type: info
   tag: 번역
-rightpanel: false
 ---
 <!--more-->
 원문: [The Curious Case of Pid Namespaces](https://hackernoon.com/the-curious-case-of-pid-namespaces-1ce86b6bc900){:target="_blank"}

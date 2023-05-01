@@ -3,11 +3,11 @@ title: 기술 블로그 만들기
 version: v0.1
 description: 기술 블로그 제작과정을 정리합니다. 급조하다 보니 개념을 덜 짚고 우선 가져다 붙인 것도 많은데 차츰 보완하려고 합니다. 기술블로그 개설은 선택지가 많다보니 이유있는 선택은 하고 싶고 빨리는 만들고 싶고 선택 자체가 고충이었습니다. 여전히 끝나지 않는 선택의 연속입니다.
 date: 2021-05-04 19:00 +09:00
-categories: 노카테고리
+categories: 정보
+rightpanel: true
 badges:
 - type: info
   tag: 정보
-rightpanel: true
 ---
 
 # 기술 블로그 만들기

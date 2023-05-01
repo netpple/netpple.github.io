@@ -4,10 +4,10 @@ version: v1.0
 description: netfilter와 iptables를 이해하기에 좋은 자료입니다.
 date: 2021-05-11 21:25 +09:00
 categories: network
+rightpanel: true
 badges:
 - type: info
   tag: 번역
-rightpanel: true
 ---
 <!--more-->
 원문: [https://www.digitalocean.com/community/tutorials/a-deep-dive-into-iptables-and-netfilter-architecture](https://www.digitalocean.com/community/tutorials/a-deep-dive-into-iptables-and-netfilter-architecture){:target="_blank"}    
