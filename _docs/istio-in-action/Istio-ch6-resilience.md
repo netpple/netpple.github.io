@@ -22,7 +22,7 @@ histories:
 
 <!--more-->
 
-## 개요
+# 개요
 
 분산 시스템 환경은 복잡하고 예상하기 어려운 많은 문제들이 발생할 수 있습니다.  
 실패를 예측하기 힘들기 때문에 문제를 진단하고 대응하는 것 또한 쉽지 않습니다.  
@@ -38,7 +38,7 @@ Istio 를 사용하면 애플리케이션에서 별도 구현을 하지 않고�
 > IT에서의 resilience는 시스템이나 네트워크가 하드웨어 오류, 소프트웨어 오류, 사이버 공격 또는 자연재해와 같은 중단 요인에 직면했을 때 빠르게 회복하고 계속 기능하는 능력을 말합니다. 탄력 있는 IT 시스템은 장애가 발생해도 계속 작동할 수 있는 신뢰성 있는 설계로 되어 있습니다. 또한 문제를 빨리 감지하고 격리하며, 백업 시스템이나 프로세스로 자동 전환하여 중단을 최소화합니다. IT에서의 resilience는 비즈니스 연속성 유지, 데이터 보안 및 개인 정보 보호 보장, 다운타임 및 생산성 손실 최소화에 중요합니다.
 > 
 
-### 다루는 내용
+## 다루는 내용
 
 - Resilience 중요성
 - Client-side load balancing 잇점
@@ -46,26 +46,26 @@ Istio 를 사용하면 애플리케이션에서 별도 구현을 하지 않고�
 - Circuit breaking 과 connection pooling
 - App 구현으로 부터 Resilience 책임 분리
 
-### 실습환경
+## 실습환경
 
 - minikube (k8s) 및 istio 설치.  참고: [https://netpple.github.io/2023/Istio-Environment/](https://netpple.github.io/2023/Istio-Environment/)
 - 실습 네임스페이스: istioinaction
 - 실습 디렉토리 : book-source-code
 
-## 6.1 Building resilience into the application
+# 6.1 Building resilience into the application
 
-### 6.1.1 Building resilience into application libraries
+## 6.1.1 Building resilience into application libraries
 
 - app 구현 복잡
 - 락인 문제 ~ language, libraries, frameworks, …
 - 운영 문제 ~ multi-language, multi-libraries, …
     - 수정/배포 부담
 
-### 6.1.2 Using Istio to solve these problems
+## 6.1.2 Using Istio to solve these problems
 
-### 6.1.3 Decentralized implementation of resilience
+## 6.1.3 Decentralized implementation of resilience
 
-## 6.2 Client-side load balancing
+# 6.2 Client-side load balancing
 
 Client-side 로드밸런싱  
 - 클라이언트에게 endpoints 정보를 알려주고
@@ -90,7 +90,7 @@ Load balancing 알고리즘
     - Weighted least request
     
 
-### 6.2.1 Getting started with client-side load balancing
+## 6.2.1 Getting started with client-side load balancing
 
 **초기화**
 
@@ -232,7 +232,7 @@ Client-side load balancing 을 사용하면 서비스 resilience 에 도움이 �
 simple-backend의 latency 를 조정해 보겠습니다.
 본격적으로 optimization 을 위한 Istio의 load-balancing 전략을 사용해 보시죠 ! 
 
-### 6.2.2 Setting up our scenario
+## 6.2.2 Setting up our scenario
 
 총소요시간에 영향을 주는 다양한 원인들이 있어요  
 - Request size
@@ -377,7 +377,7 @@ fortio fortio Response Body/Total Sizes : count 3599 avg 1064.7747 +/- 0.5018 mi
 fortio fortio All done 3599 calls (plus 10 warmup) 166.808 ms avg, 59.8 qps
 ```
 
-### 6.2.3 Testing various client-side load-balancing strategies
+## 6.2.3 Testing various client-side load-balancing strategies
 
 테스트 환경
 <br />![explain test](/docs/assets/img/istio-in-action/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-09_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_2.31.31.png)
@@ -553,7 +553,7 @@ fortio 대시보드 : browser > [http://localhost:8080/fortio](http://localhost:
 
 ![스크린샷 2023-01-09 오후 9.58.57.png](/docs/assets/img/istio-in-action/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-09_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_9.58.57.png)
 
-### 6.2.4 Understanding the different load-balancing algorithm
+## 6.2.4 Understanding the different load-balancing algorithm
 
 (좌) round robin    (중) random    (우) least connection
 
@@ -575,7 +575,7 @@ fortio 대시보드 : browser > [http://localhost:8080/fortio](http://localhost:
 - 둘 중에 “active requests”가 더 적은 endpoint를 선택합니다.
 - Full Scan 대비해서 정확도는 떨어지지만 더 나은 성능을 위한 trade-off 입니다.   
 
-## 6.3 Locality-aware load balancing
+# 6.3 Locality-aware load balancing
 
 - 컨트롤 플레인의 역할은 서비스의 토폴로지를 이해하고 토폴로지 진화(evolve)를 이해하는 것입니다.
 - 전체적인 토폴로지를 이해함으로써 얻는 잇점은 서비스와 피어-서비스 로케이션 같은 휴리스틱에 기초한 라우팅과 로드밸런싱 결정을 자동으로 할 수 있습니다.
@@ -588,7 +588,7 @@ fortio 대시보드 : browser > [http://localhost:8080/fortio](http://localhost:
         ![스크린샷 2023-01-10 오전 9.14.58.png](/docs/assets/img/istio-in-action/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-10_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%258C%25E1%2585%25A5%25E1%2586%25AB_9.14.58.png)
         
 
-### 6.3.1 Hands-on with locality load balancing
+## 6.3.1 Hands-on with locality load balancing
 
 **Locality Labeling**
 
@@ -798,7 +798,7 @@ simple-backend-1 이 500 응답을 리턴하면 unhealthy 로 마킹되고, simp
 kubectl apply -f ch6/simple-service-locality.yaml -n istioinaction
 ```
 
-### 6.3.2 More control over locality load balancing with weighted distribution
+## 6.3.2 More control over locality load balancing with weighted distribution
 
 Locality weights ~ for peak or seasonal traffic
 
@@ -863,7 +863,7 @@ curl -s -H "Host: simple-web.istioinaction.io" localhost \
 
 *5장에서 다룬 다양한 traffic control, routing subsets 들은 location-aware 위에 적용될 수 있다. (location-aware가 우선함)*
 
-## 6.4 Transparent timeouts and retries
+# 6.4 Transparent timeouts and retries
 
 네트워크의 지연(Latency)과 실패(Failures)에 대한 처리 
 - Load balancing과 Locality로 이러한 문제를 완화하는 것을 보았습니다.
@@ -873,7 +873,7 @@ curl -s -H "Host: simple-web.istioinaction.io" localhost \
 - application 입장에서는 존재 자체를 모름 (투명해)
 - application 에서 신경쓰지 않더라도 istio-proxy가 상황에 따라서 timeouts 와 retries 로 네트워크 이슈를 처리함
 
-### 6.4.1 Timeouts
+## 6.4.1 Timeouts
 
 > *Generally, it makes sense to have larger timeouts at the edge (where traffic comes in) of an architecture and shorter (or more restrictive) timeouts for the layers deeper in the call graph.*  
 > 통상, 밖 → 안, backend에 위치할 수록 timeout 을 짧게 설정합니다
@@ -983,7 +983,7 @@ sys	0m0.012s
 ..
 ```
 
-### 6.4.2 Retries
+## 6.4.2 Retries
 
 언제 retry 가 필요할까  
 - 간헐적인 네트웍 실패
@@ -1244,7 +1244,7 @@ Thundering herd 방지 대책
 `retryRemoteLocalities` 옵션으로 다른 locality 로 retries 가능
 outlier detection 필요
 
-### 6.4.3 Advanced retries
+## 6.4.3 Advanced retries
 
 - **자동** retry ⇒ 간헐적인 네트워크 실패로 부터 서비스를 탄력적으로 해줌
 - 상황별 retry **파라메터 튜닝**
@@ -1421,7 +1421,7 @@ spec:
 > 부하를 가중하는 대신에 일정시간 동안 “**Limit Load**” 함으로써 upstream 시스템이 회복할 시간을 벌어주는 전략입니다.  
 > **Circuit Breaking** 을 소개합니다.*
 
-## 6.5 Circuit breaking with Istio
+# 6.5 Circuit breaking with Istio
 
 - 연쇄적인 장애전파를 막기위한 방법으로 
 - Unhealthy 시스템으로의 트래픽을 제한함으로써 부하가중을 막아 회복을 돕습니다.
@@ -1430,7 +1430,7 @@ spec:
   - 방법1. 커넥션/요청수 제한 ~ 커넥션 및 요청이 limit 초과 시 fail fast 전략
   - 방법2. 이상동작 엔드포인트 제거 ~ 로드밸런싱 풀의 엔드포인트를 감시하여 이상동작(misbehaving)이 감지되면 제거(eviction)
 
-### 6.5.1 Guarding against slow services with connection-pool control
+## 6.5.1 Guarding against slow services with connection-pool control
 
 **초기화**
 ```bash
@@ -1746,7 +1746,7 @@ kubectl exec -it deploy/simple-web -c istio-proxy \
 
 Istio 에서는 Circuit Breaking 에 의해 차단된 요청을 구분해 주기 위해 응답 헤더에 `“x-envoy-overloaded”: “true”` 를 포함시켜 줍니다. 
 
-### 6.5.2 Guarding against unhealthy services with outlier detection
+## 6.5.2 Guarding against unhealthy services with outlier detection
 
 **초기화**
 
