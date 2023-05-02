@@ -72,7 +72,7 @@ ch7 에서 다룬 observability 의 visualize 에 대해 알아봅니다. visual
 - **실습 네임스페이스** : istioinaction
 - **실습 디렉토리** : book-source-code
 
-## 8.1 Grafana - Istio 서비스와 control-plane Visualize
+# 8.1 Grafana - Istio 서비스와 control-plane Visualize
 
 ch7 에서 설치한 프로메테우스를 사용합니다. 
 
@@ -94,7 +94,7 @@ kubectl -n prometheus port-forward svc/prom-grafana 3000:80
 
 ![스크린샷 2023-01-25 오전 8.05.46.png](/docs/assets/img/istio-in-action/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-25_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%258C%25E1%2585%25A5%25E1%2586%25AB_8.05.46.png)
 
-### 8.1.1 Istio Grafana 대시보드 구성하기
+## 8.1.1 Istio Grafana 대시보드 구성하기
 
 대시보드 : *{book-source-code}*/ch8/dashboards/*
 
@@ -145,7 +145,7 @@ kubectl label -n prometheus cm istio-dashboards grafana_dashboard=1
 
 ![스크린샷 2023-01-25 오전 8.25.43.png](/docs/assets/img/istio-in-action/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-25_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%258C%25E1%2585%25A5%25E1%2586%25AB_8.25.43.png)
 
-### 8.1.2 컨트롤 플레인 메트릭
+## 8.1.2 컨트롤 플레인 메트릭
 
 `Istio Control Plane Dashboard`  
 
@@ -294,7 +294,7 @@ kubectl rollout restart deploy/webapp -n istioinaction
 kubectl rollout restart deploy/catalog -n istioinaction
 ```
 
-### 8.1.3 데이터플레인 메트릭  
+## 8.1.3 데이터플레인 메트릭  
 
 `Istio Service Dashboard`  
 
@@ -415,7 +415,7 @@ fortio load -H "Host: webapp.istioinaction.io" -quiet -jitter -t 30s -c 1 -qps 1
 
 
 
-## 8.2 Distributed tracing
+# 8.2 Distributed tracing
 
 *(배경)*
 - 모놀리딕 환경에서는 시스템이 이상동작을 보이더라도 사용가능한 익숙한 도구를 이용하여 디버깅을 합니다.  
@@ -448,7 +448,7 @@ fortio load -H "Host: webapp.istioinaction.io" -quiet -jitter -t 30s -c 1 -qps 1
 > <img src="/docs/assets/img/istio-in-action/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-25_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%258C%25E1%2585%25A5%25E1%2586%25AB_11.16.31.png" width=200 />
 > 
 
-### 8.2.1 분산트레이싱의 동작 방식
+## 8.2.1 분산트레이싱의 동작 방식
 
 *Span 과 Trace context ⇒ Trace*
 - 해당 서비스에서 Span 생성
@@ -472,7 +472,7 @@ Zipkin 트레이싱 헤더
 
 ![스크린샷 2023-01-25 오후 1.09.05.png](/docs/assets/img/istio-in-action/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-25_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_1.09.05.png)
 
-### 8.2.2 분산 트레이싱 시스템 설치
+## 8.2.2 분산 트레이싱 시스템 설치
 
 *Jaeger 설치가 다소 복잡해서 그냥 Istio 샘플 addon을 쓰겠습니다*
 
@@ -486,7 +486,7 @@ kubectl apply -f samples/addons/jaeger.yaml
 kubectl get po,svc -n istio-system -o name
 ```
 
-### 8.2.3 Istio 분산 트레이싱 설정
+## 8.2.3 Istio 분산 트레이싱 설정
 
 Istio 는 다양한 레벨 (global / namespace / workload) 에서 분산 트레이싱을 적용 할 수 있습니다  
 [참고) Istio Telemetry API](https://istio.io/latest/docs/tasks/observability/telemetry/) 
@@ -669,7 +669,7 @@ kubectl apply -n istioinaction \
 - *X-B3-* Zipkin 헤더가 자동으로 request 헤더에 추가되었습니다. 
 - Zipkin 헤더는 “Span” 을 생성하는데 사용되고 Jaeger로 보내집니다.
 
-### 8.2.4 분산 트레이싱 대시보드 - JAEGER UI
+## 8.2.4 분산 트레이싱 대시보드 - JAEGER UI
 
 *JAEGER UI 접속*
 
@@ -695,7 +695,7 @@ done
 <img src="/docs/assets/img/istio-in-action/jaeger_spans.png" />
 
 
-### 8.2.5 Trace sampling, force traces, and custom tags
+## 8.2.5 Trace sampling, force traces, and custom tags
 
 **TRACE SAMPLING**  
 - Trace Sampling => Span 생성과 전송
@@ -940,7 +940,7 @@ curl -H "Host: webapp.istioinaction.io" http://localhost/api/catalog
 ![webapp span 확인됨 ](/docs/assets/img/istio-in-action/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-25_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_7.47.40.png)
 
 
-## 8.3 Visualization with Kiali
+# 8.3 Visualization with Kiali
 
 Grafana 와 달라요
 - 어떤 서비스들 간에 통신이 이루어 지고 있는지 시각적인 오버뷰를 제공합니다
@@ -948,7 +948,7 @@ Grafana 와 달라요
 
 Kiali는 프로메테우스에 저장된 Istio 메트릭을 시각화 합니다
 
-### 8.3.1 Kiali 설치
+## 8.3.1 Kiali 설치
 
 *Pre-requisite*
 - 책하고 다르게 최신 Istio 1.16, 1.17 기준으로 작성하였습니다
@@ -1140,7 +1140,7 @@ Correlation 제공으로 (연관된 지표들을 한 곳에 모아줌으로써) 
 - DestinationRule 에서 Service subsets 을 찾을 수 없음
 - [더 많은 정보를 원하시면 클릭](https://kiali.io/docs/features/validations/){:target="_blank"}
 
-### 8.3.2 결론
+## 8.3.2 결론
 
 - Grafana — 프로메테우스 메트릭을 기반으로 시각화를 제공합니다
 - Jeager — Call Graph 의 레이턴시를 이해하는 분산 트레이싱을 제공합니다
