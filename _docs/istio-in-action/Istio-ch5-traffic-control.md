@@ -20,21 +20,21 @@ Istio의 traffic control 기법 routing, shifting, mirroring, Outbound traffic c
 
 <!--more-->
 
-## 개요
+# 개요
 
 - 실습 git: [https://github.com/istioinaction/book-source-code](https://github.com/istioinaction/book-source-code)
 - 출처 : Istio in Action 챕터5
 
-### 실습환경
+## 실습환경
 
 실습환경이 준비 안된 분들은 다음 가이드를 참고해주세요. 👉🏻 [실습환경갖추기](/2023/Istio-Environment/)
 
-## 5.1 Reducing the risk of deploying new code
+# 5.1 Reducing the risk of deploying new code
 
 > *most importantly, when we make changes to a service and introduce new versions, how do we safely expose our clients and customers to these changes with minimal disruption and impact?*
 > 
 
-### Decoupling deployment and release
+## Decoupling deployment and release
 
 - **Why** decoupling ? Reducing the risk of deployments
     - Releasing means bringing live traffic to new deployment in production
@@ -43,9 +43,9 @@ Istio의 traffic control 기법 routing, shifting, mirroring, Outbound traffic c
     - more **finely control** how and which users are exposed to the new changes
     - **reduce the risk** of bringing new code to production
 
-## 5.2 Routing requests with Istio
+# 5.2 Routing requests with Istio
 
-### Request level routing
+## Request level routing
 
 **dark-launch**
 
@@ -436,7 +436,7 @@ istio-ingressgateway-.. istio-proxy [2023-01-05T09:07:53.297Z] "GET /items HTTP/
 > ![스크린샷 2023-01-05 오후 8.27.07.png](/docs/assets/img/istio-in-action/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-05_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_8.27.07.png)
 > 
 
-### Routing deep within a call graph
+## Routing deep within a call graph
 
 webapp을 통해서 catalog 로 요청을 하도록 변경합니다.
 
@@ -641,14 +641,14 @@ catalog 로그
 catalog-v2-.. istio-proxy [2023-01-05T11:06:39.218Z] "GET /items HTTP/1.1" 200 - via_upstream - "-" 0 698 18 17 "172.17.0.1" .. "catalog.istioinaction:80" "172.17.0.12:3000" inbound|3000|| 127.0.0.6:59251 172.17.0.12:3000 172.17.0.1:0 outbound_.80_.version-v2_.catalog.istioinaction.svc.cluster.local default
 ```
 
-## 5.3 Traffic shifting
+# 5.3 Traffic shifting
 
 - “canary” or incrementally release
 - all live traffic to a set of versions based on weights
 - dark-launch (어둠의 론칭) ~ internal 사용자에게만 신규버전(v2)을 미리 노출해 문제점을 확인한다
 - routing weights ~ 전체 traffic의 90%는 v1, 10%만 v2로 인입시켜 보자  (문제생기면 rollback)
 
-### Manual Canary Release
+## Manual Canary Release
 
 ```bash
 kubectl get po
@@ -764,7 +764,7 @@ Traffic shifting 을 manually 조정해 보았는데요.
 
 CI/CD 도구를 이용하여 Traffic shifting을 **자동화**할 수 있습니다. 
 
-### Automating Canary Release /w Flagger
+## Automating Canary Release /w Flagger
 
 **Pre-requisite**
 
@@ -1066,7 +1066,7 @@ Flagger 삭제
 helm uninstall flagger -n istio-system
 ```
 
-## 5.4 Reducing risk even further: Traffic mirroring
+# 5.4 Reducing risk even further: Traffic mirroring
 
 초기 환경 셋업
 
@@ -1103,7 +1103,7 @@ catalog-6c89984555-rmmmm istio-proxy [2023-01-07T08:09:50.278Z] "GET /items HTTP
 
 catalog v2 로그 (유입없음)
 
-### Traffic Mirroring
+## Traffic Mirroring
 
 ![스크린샷 2023-01-07 오후 4.44.40.png](/docs/assets/img/istio-in-action/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-07_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_4.44.40.png)
 
@@ -1170,7 +1170,7 @@ catalog-v2-.. istio-proxy [2023-01-07T08:13:56.333Z] "GET /items HTTP/1.1" 200 -
 > *Mirroring traffic is one part of the story to lower the risk of doing releases. Just as with request routing and traffic shifting, our applications should be aware of this context and be able to run in both live and mirrored modes, run as multiple versions, or both. See our blog posts at [http://bit.ly/2NSE2gf](http://bit.ly/2NSE2gf) and [http://bit.ly/2oJ86jc](http://bit.ly/2oJ86jc) to learn more.*
 > 
 
-## 5.5 Routing to services outside your cluster by using Istio’s service discovery
+# 5.5 Routing to services outside your cluster by using Istio’s service discovery
 
 이번 챕터에서 실습에 사용할 forum app 을 배포합니다. 
 
@@ -1220,7 +1220,7 @@ forum-.. istio-proxy [2023-01-07T10:59:03.430Z] "GET /api/users HTTP/1.1" 200 - 
 > "jsonplaceholder.typicode.com"은 무료이며, 가입이나 로그인 없이 사용할 수 있습니다. 따라서 개발자들은 즉시 이용하여 RESTful API를 학습하고 테스트할 수 있습니다.
 >
 
-### Blocking external traffic
+## Blocking external traffic
 
 ![스크린샷 2023-01-07 오후 6.56.18.png](/docs/assets/img/istio-in-action/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-07_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_6.56.18.png)
 
@@ -1281,7 +1281,7 @@ outboundTrafficPolicy 정책을 REGISTRY_ONLY 로 바꾸었더니 외부호출�
 
 forum이 호출하는 외부IP (104.21.55.162:80)를 ServiceEntry 로 허용하도록 해보겠습니다. 
 
-### ServiceEntry
+## ServiceEntry
 
 ![스크린샷 2023-01-07 오후 8.31.28.png](/docs/assets/img/istio-in-action/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-07_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_8.31.28.png)
 
@@ -1329,7 +1329,7 @@ forum-.. istio-proxy [2023-01-07T11:27:42.588Z] "GET /api/users HTTP/1.1" 200 - 
 
 ```
 
-## Summary
+# Summary
 
 - **DestinationRule** : define Workloads’ **subsets**  ex) version ~ v1, v2
 - **VirtualService** : use Workloads’ subsets to route traffic

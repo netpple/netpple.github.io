@@ -3,6 +3,14 @@
     max-width: 100% !important;
 }
 
+/* svg logo */
+.td-navbar .navbar-brand svg {
+    display: inline-block;
+    margin: 0 5px;
+    width: 25px;
+    height: 25px;
+}
+
 /* for make-container-without-docker */
 .td-content img {
     max-width: 80%;
