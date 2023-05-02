@@ -20,14 +20,14 @@ ch7 에서 다룬 observability 의 visualize 에 대해 알아봅니다. visual
 
 <!--more-->
 
-## 개요
+# 개요
 
 - Prometheus 가 수집한 Istio의 data/control plane 메트릭 그래프에 대해 살펴 봅니다
 - Grafana 의 Istio 대시보드를 통해 data/control plane 을 모니터링 할 수 있습니다
 - Distributed Tracing 은 여러 홉을 거치는 서비스의 call graph로 부터 지연 (latencies) 을 파악하는데 매우 유용합니다
 - Distributed Tracing 은 서로 관련 있는 requests 에 메타데이터를 어노테이션 하고, Istio가 자동으로 해당 메타데이터를 detect 하여 “**span”** 에 실어 **tracing 엔진**에  보냅니다.
 
-### TERM
+## TERM
 
 [**Span** ?](https://www.jaegertracing.io/docs/1.41/architecture/)
 
@@ -60,13 +60,13 @@ ch7 에서 다룬 observability 의 visualize 에 대해 알아봅니다. visual
 >     <img src="/docs/assets/img/istio-in-action/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-29_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_1.52.10.png" width="180" />
 >     
 
-### 다루는 내용
+## 다루는 내용
 
 - Visualizing “metrics” using Grafana
 - Visualizing “Distributed Tracing” using Jaeger/Zipkin
 - Visualizing “network call graph” using Kiali
 
-### 실습환경
+## 실습환경
 
 - minikube (k8s) 및 istio 설치.  참고: [https://netpple.github.io/2023/Istio-Environment/](https://netpple.github.io/2023/Istio-Environment/)
 - **실습 네임스페이스** : istioinaction
