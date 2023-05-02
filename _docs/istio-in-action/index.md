@@ -2,7 +2,6 @@
 title: Istio IN ACTION
 date: 2022-05-20 07:25:00 +09:00
 description: 목차 안내
-toc: 0
 rightpanel: true
 image: https://netpple.github.io/docs/assets/img/istio-in-action-book.png
 tags:

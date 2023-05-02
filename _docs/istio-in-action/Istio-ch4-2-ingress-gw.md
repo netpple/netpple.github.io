@@ -20,9 +20,9 @@ Istio의 Ingress Gateway 실습 두번째 파트입니다. (실습1에서 이어
 
 <!--more-->
 
-## Securing gateway traffic
+# Securing gateway traffic
 
-### HTTPS 통신하기
+## HTTPS 통신하기
 
 Serect 생성 - 서버 인증서 저장
 
@@ -193,7 +193,7 @@ curl -v https://webapp.istioinaction.io/api/catalog \
 [{"id":1,"color":"amber","department":"Eyewear","name":"Elinor Glasses","price":"282.00"},{"id":2,"color":"cyan","department":"Clothing","name":"Atlas Shirt","price":"127.00"},{"id":3,"color":"teal","department":"Clothing","name":"Small Metal Shoes","price":"232.00"},{"id":4,"color":"red","department":"Watches","name":"Red Dragon Watch","price":"232.00"}]
 ```
 
-### HTTPS 강제하기
+## HTTPS 강제하기
 
 http 요청을 받더라도 https 로 강제 리다이렉트 설정 (우)
 
@@ -227,7 +227,7 @@ curl -v -H "Host: webapp.istioinaction.io" http://127.0.0.1/api/catalog
 * Connection #0 to host localhost left intact
 ```
 
-### Mutual TLS
+## Mutual TLS
 
 상호(mutual) 인증. 서버만 인증하는 것이 아니라 클라이언트도 인증을 받는다
 
@@ -376,7 +376,7 @@ curl -v https://webapp.istioinaction.io/api/catalog \
 [{"id":1,"color":"amber","department":"Eyewear","name":"Elinor Glasses","price":"282.00"},{"id":2,"color":"cyan","department":"Clothing","name":"Atlas Shirt","price":"127.00"},{"id":3,"color":"teal","department":"Clothing","name":"Small Metal Shoes","price":"232.00"},{"id":4,"color":"red","department":"Watches","name":"Red Dragon Watch","price":"232.00"}]
 ```
 
-### multi TLS
+## multi TLS
 
 여러 Virtual host의 TLS 인증를 처리해 보자. 
 

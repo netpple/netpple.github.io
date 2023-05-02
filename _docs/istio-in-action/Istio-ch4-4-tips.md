@@ -21,9 +21,9 @@ Split gateways, Gateway injection, Ingress GW 로깅, Gateway configuration 등 
 
 <!--more-->
 
-## Operational tips
+# Operational tips
 
-### Split gateway responsibilities
+## Split gateway responsibilities
 
 - 다같이 쓰는 것들은 아무래도 부담 스럽죠
 - 팀별로 전용 gateway를 구성해 봅시다
@@ -177,7 +177,7 @@ hello Sam    # <-- type here
 hello Sam    # <-- echo here
 ```
 
-### Gateway Injection
+## Gateway Injection
 
 - IstioOperator : istio 관련하여 사용자에게 너무 많은 권한이 노출됨
 - gw injection 은 “stubbed-out”, 일부 설정만 노출하고 나머지는 istio가 처리함 (annotations)
@@ -261,7 +261,7 @@ kubectl get deploy my-user-gateway-injected
 kubectl get svc my-user-gateway-injected
 ```
 
-### Ingress gateway access logs
+## Ingress gateway access logs
 
 - demo 설치 시 (--profile demo) 액세스 로깅은 표준출력 임
 - production 설치 시 (--profile default) 액세스 로깅은 disabled 임
@@ -298,7 +298,7 @@ spec:
     disabled: false
 ```
 
-### Reducing gateway configuration
+## Reducing gateway configuration
 
 - stubbed-out ⇒ 일부 명세만 작성하면 나머지는 Istio에서 해줌
 - configuration trimming ⇒ 필요한 설정만 남김 (Istio에서 최적화)

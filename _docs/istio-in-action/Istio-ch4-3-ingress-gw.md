@@ -21,14 +21,14 @@ Istio는 TCP 트래픽도 다룰 수 있습니다 (지난 실습2에서 이어�
 
 <!--more-->
 
-## TCP traffic
+# TCP traffic
 
 - Istio 는 plain TCP를 다룰 수 있음.
 - 즉, database (like mongoDB), mq (like kafka) 등을 expose 할 수 있음
 - 단, plain TCP 를 다룰 때는 어떤 protocol 인지 Istio가 알 수 없으므로
 - retries, request 레벨 circuit breaking, complex routing .. 등 context를 이해해야 하는 기능들은 사용할 수 없음
 
-### Expose TCP Ports
+## Expose TCP Ports
 
 - TCP 기반 서비스 ( [go-echo](https://github.com/cjimti/go-echo) )를 하나 띄우고
 - telnet 등의 TCP 클라이언트와 통신을 해봅시다
@@ -158,7 +158,7 @@ hello Sam    # <-- echo here
     *세션종료*  `Ctrl + ]`  *> 텔넷 종료*  `quit`
     
 
-### SNI passthrough
+## SNI passthrough
 
 - [SNI, Server Name Indication - TLS 확장 표준](https://namu.wiki/w/SNI) *(출처: 나무위키)*
     

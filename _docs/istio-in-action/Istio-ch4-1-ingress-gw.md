@@ -28,12 +28,12 @@ Istio에서 Ingress Gateway는 외부의 트래픽을 클러스터 내부로 들
 - vs : virtual service
 - VIP : virtual IP
 
-## 개요
+# 개요
 
 - 실습 git: [https://github.com/istioinaction/book-source-code](https://github.com/istioinaction/book-source-code)
 - 출처 : Istio in Action 챕터4
 
-### 실습환경
+## 실습환경
 
 (**방법1**) minikube tunnel 을 이용 (**권장**)
 
@@ -78,9 +78,9 @@ minikube service istio-ingressgateway  -n istio-system
 |--------------|----------------------|-------------|------------------------|
 ```
 
-## Istio Ingress Gateway
+# Istio Ingress Gateway
 
-### Ingress Gateway 둘러보기
+## Ingress Gateway 둘러보기
 
 - 클러스터의 관문 역할
 - outside → inside traffic의 인입 처리
@@ -172,7 +172,7 @@ NAME     DOMAINS     MATCH                  VIRTUAL SERVICE
          *           /stats/prometheus*
 ```
 
-### Gateway 명세를 추가해 보자
+## Gateway 명세를 추가해 보자
 
 Gateway 설정
 
@@ -244,7 +244,7 @@ istioctl proxy-config route deploy/istio-ingressgateway \
 ]
 ```
 
-### VirtualService 명세를 추가해 보자
+## VirtualService 명세를 추가해 보자
 
 VirtualService 명세를 통해서 Gateway 에서 라우팅할 서비스 Endpoint를 등록해 봅니다.
 
@@ -388,7 +388,7 @@ webapp-vs-from-gw   ["coolstore-gateway"]   ["webapp.istioinaction.io"]   5m21s
 curl -H "Host: webapp.istioinaction.io" http://127.0.0.1/api/catalog
 ```
 
-### Istio Ingress Gateway vs Kubernetes Ingress
+## Istio Ingress Gateway vs Kubernetes Ingress
 
 Kubernetes Ingress’ limitation
 
@@ -398,6 +398,6 @@ Kubernetes Ingress’ limitation
 
 Istio Ingress Gateway inspired Kubernetes Gateway API in many ways.
 
-### Istio Ingress Gateway vs API Gateway
+## Istio Ingress Gateway vs API Gateway
 
 Istio Ingress Gateway dose not identify clients.

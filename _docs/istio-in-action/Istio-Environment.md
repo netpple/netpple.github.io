@@ -4,7 +4,7 @@ version: v1.1
 description: istio in action 실습환경 안내  
 date: 2023-04-25 19:45:00 +09:00  
 layout: post  
-toc: 1 
+toc: 0 
 categories: network  
 comment: true
 label: istio in action

@@ -1085,7 +1085,7 @@ spec:
 ```bash
 ## webapp 으로 요청을 발생시켜 봅시다
 for in in {1..20}; do curl http://localhost/api/catalog -H \
-"Host: webapp.istioinaction.io"; sleep .5s; done
+"Host: webapp.istioinaction.io"; sleep .5; done
 
 ## fortio로 유입시켜도 좋습니다  
 # fortio load -H "Host: webapp.istioinaction.io" -quiet -jitter -t 60s -c 1 -qps 1 http://localhost/api/catalog 

@@ -20,14 +20,12 @@ Istio의 핵심 컴포넌트, Envoy proxy를 실습을 통해 이해하는 시�
 
 <!--more-->
 
-## 개요
+# 실습
 
 - 실습 git: [https://github.com/istioinaction/book-source-code](https://github.com/istioinaction/book-source-code)
 - 출처 : Istio in Action 챕터3
 
-## 실습
-
-### 실습1. Envoy proxy 실행
+## 실습1. Envoy proxy 실행
 
 envoy 및 앱(이하, httpbin), curl 다운로드
 
@@ -119,7 +117,7 @@ Envoy 중지
 docker rm -f proxy
 ```
 
-### 실습2. Envoy proxy 타임아웃 설정
+## 실습2. Envoy proxy 타임아웃 설정
 
 simple.yaml 에서 타임아웃만 1초로 변경해 봅니다.
 
@@ -185,7 +183,7 @@ docker run -it --rm --link proxy curlimages/curl \
 curl -X GET http://proxy:15001/headers
 ```
 
-### 실습3 Envoy Admin API
+## 실습3 Envoy Admin API
 
 admin API로 Envoy stat 확인
 

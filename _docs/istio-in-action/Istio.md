@@ -1,10 +1,10 @@
 ---
-title: Istio Sidecar Proxy
+title: Istio 맛보기
 version: v1.0
 description: 실습으로 istio sidecar proxy 이해하기
 date: 2022-12-16 10:00:00 +09:00
 layout: post  
-toc: 2  
+toc: 1  
 categories: network
 label: istio in action
 comments: true
@@ -19,14 +19,13 @@ histories:
 istio sidecar proxy를 구성하여 resiliency, traffic routing 등을 실습으로 확인해 봅시다 
 
 <!--more-->
-## 개요
+
+# Istio Sidecar Proxy
 
 - 실습 git: [https://github.com/istioinaction/book-source-code](https://github.com/istioinaction/book-source-code)
 - 출처 : Istio in Action 챕터2
 
-## Istio Sidecar Proxy 적용하기
-
-### Prerequisite
+## Prerequisite
 
 catalog YAML (웹API)
 
@@ -157,13 +156,13 @@ spec:
           privileged: false
 ```
 
-### 네임스페이스 생성
+## 네임스페이스 생성
 
 ```yaml
 kubectl create ns istioinaction
 ```
 
-### 사이드카 프록시 인젝션
+## 사이드카 프록시 인젝션
 
 - (방법1) istioctl kube-inject
     
@@ -182,14 +181,14 @@ kubectl create ns istioinaction
     ```
     
 
-### YAML 적용
+## YAML 적용
 
 ```bash
 kubectl apply -f services/catalog/kubernetes/catalog.yaml
 kubectl apply -f services/webapp/kubernetes/webapp.yaml
 ```
 
-### 호출 테스트
+## 호출 테스트
 
 ```bash
 ## catalog 확인
@@ -203,7 +202,7 @@ kubectl run -i -n default --rm --restart=Never dummy \
 sh -c 'curl -s http://webapp.istioinaction/api/catalog/items/1'
 ```
 
-### (기타) minikube proxy
+## (기타) minikube proxy
 
 * minikube 사용 시 로컬에서 K8s 서비스 접근을 위한 프록시를 띄워서 쉽게 활용할 수 있습니다.
 
@@ -244,7 +243,7 @@ sh -c 'curl -s http://webapp.istioinaction/api/catalog/items/1'
 |---------------|---------|-------------|------------------------|
 ```
 
-### 아래 실습 시 사용할 호출 스크립트
+## 아래 실습 시 사용할 호출 스크립트
 
 ```bash
 ## webapp 호출
@@ -253,7 +252,7 @@ while true; do curl http://localhost:50870/api/catalog; sleep .5; done
 
 * localhost:50870  각 자 로컬환경 마다 포트번호는 다릅니다.
 
-## Resiliency
+# Resiliency
 
 > 탄력성/회복력.  network 등 다양한 문제 상황에 대해 탄력적인 대응책을 제공
 예) retries, timeouts, circuit breakers, …
@@ -262,7 +261,7 @@ while true; do curl http://localhost:50870/api/catalog; sleep .5; done
 
 ❊ 아래 실습에서 catalog에 의도적으로 500에러를 재현하고 이를 retry로 극복
 
-### Prerequisite
+## Prerequisite
 
 p.47 - catalog 의 “500”에러 비율 제어  스크립트
 용법) [chaos.sh](http://chaos.sh) {에러코드} {빈도} - chaos.sh 500 50 (500에러를 50% 빈도로 재현)
@@ -291,7 +290,7 @@ if [ $1 == "500" ]; then
 fi
 ```
 
-### 500에러 비율 적용
+## 500에러 비율 적용
 
 ```bash
 ## 500에러(50% 빈도)
@@ -304,7 +303,7 @@ fi
 
 Kiali 대시보드 - red (Error) / blue (total req.)
 
-### (실습1) 에러 발생 시 reslience 하게 retry 하도록 해보자
+## (실습1) 에러 발생 시 reslience 하게 retry 하도록 해보자
 
 Resiliency 하게 해보자 ⇒ proxy(envoy)에 endpoint(catalog) 5xx 에러 시 retry 적용
 
@@ -338,11 +337,11 @@ retries 를 설정 한 후 결과 (대부분 **정상응답으로 리턴**됨)
 
 **catalog** proxy(envoy) -  5xx에러 발생 시 retry
 
-### 총평
+## 총평
 
 - 애플리케이션 수정없이 retry 로직을 적용하여 에러 상황을 resilience 하게 대응할 수 있음
 
-## Traffic Routing
+# Traffic Routing
 
 > 다양한 이유로 트래픽 라우팅이 필요한 경우가 있음.
 트래픽 라우팅을 위한 다양한 방법을 제공함.
@@ -350,7 +349,7 @@ retries 를 설정 한 후 결과 (대부분 **정상응답으로 리턴**됨)
 **(실습2)** catalog 요청 헤더에 따라서 v2 버전으로 라우팅하는 실습을 해본다
 > 
 
-### Prerequisite
+## Prerequisite
 
 ```yaml
 # vi services/catalog/kubernetes/catalog-deployment-v2.yaml
@@ -394,7 +393,7 @@ spec:
           privileged: false
 ```
 
-### 버전 (V2) 배포
+## 버전 (V2) 배포
 
 ```bash
 kubectl apply -f services/catalog/kubernetes/catalog-deployment-v2.yaml
@@ -403,7 +402,7 @@ kubectl apply -f services/catalog/kubernetes/catalog-deployment-v2.yaml
 - 트래픽이 v1, v2 로 나뉘어 들어옴
 - Service 레이블 (app=catalog)이 일치하므로 Endpoint 로 랜덤 프록시됨
 
-### (실습1) V1 만 받고 싶다
+## (실습1) V1 만 받고 싶다
 
 > 신규 버전(V2) 으로 트래픽을 차단하고 싶다
 > 
@@ -447,7 +446,7 @@ spec:
         subset: version-v1
 ```
 
-### (실습2) 특정 조건 매칭 시 V2로 받고 싶다
+## (실습2) 특정 조건 매칭 시 V2로 받고 싶다
 
 > 요청 헤더에 특정 값이 매칭되는 경우에 v2 로 트래픽을 보내도록 할 수 있습니다.
 > 
@@ -488,6 +487,6 @@ curl http://localhost:50870/api/catalog -H "x-dark-launch: v2"
 
 * localhost:50870  각 자 로컬환경 마다 포트번호는 다릅니다.
 
-### 총평
+## 총평
 
 - 트래픽의 route 를 다양하게 제어할 수 있음  ~  신규 배포 시 안심

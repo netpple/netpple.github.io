@@ -642,7 +642,7 @@ Targets 에서 PodMonitor 적용 확인
 ```bash
 ## metric 확인을 위해서 호출테스트를 수행합니다
 for i in {1..100}; do curl http://localhost/api/catalog \
--H "Host: webapp.istioinaction.io"; sleep .5s; done
+-H "Host: webapp.istioinaction.io"; sleep .5; done
 ```
 
 Graph 메뉴에서 수집된 메트릭을 확인해보세요  

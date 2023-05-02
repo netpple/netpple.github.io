@@ -8,7 +8,7 @@
           url: "docs/istio-in-action/#목차"
         - title: 실습환경
           url: "docs/istio-in-action/Istio-Environment"
-        - title: Sidecar Proxy
+        - title: Istio 맛보기
           url: "docs/istio-in-action/Istio"
         - title: Envoy
           url: "docs/istio-in-action/Istio-ch3-envoy"
