@@ -501,3 +501,7 @@ kubectl exec -n default deploy/sleep -c sleep -- \
 
 [{"id":1,"color":"amber","department":"Eyewear","name":"Elinor Glasses","price":"282.00"},{"id":2,"color":"cyan","department":"Clothing","name":"Atlas Shirt","price":"127.00"},{"id":3,"color":"teal","department":"Clothing","name":"Small Metal Shoes","price":"232.00"},{"id":4,"color":"red","department":"Watches","name":"Red Dragon Watch","price":"232.00"}]
 ```
+
+<br />
+
+👉🏻 *[다음편 보기](/docs/istio-in-action/Istio-ch9-securing-4-end-user-auth)*

@@ -390,3 +390,7 @@ openssl verify -CAfile /var/run/secrets/istio/root-cert.pem \
 - 검증된 ID가 있으면 `접근 제어` 를 할 수 있습니다 👉🏻 인가
 
 이어서 인증된 ID 정보에 기반한 "인가", `Authorization` 에 대해서 살펴 봅니다
+
+<br />
+
+👉🏻 *[다음편 보기](/docs/istio-in-action/Istio-ch9-securing-3-authorizing)*

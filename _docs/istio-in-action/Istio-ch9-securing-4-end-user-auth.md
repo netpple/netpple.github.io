@@ -489,3 +489,7 @@ curl -H "Host: webapp.istioinaction.io" \
     
     200
     ```
+
+<br />
+
+👉🏻 *[다음편 보기](/docs/istio-in-action/Istio-ch9-securing-5-external_authz)*
