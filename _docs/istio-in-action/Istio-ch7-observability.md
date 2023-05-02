@@ -21,7 +21,7 @@ Observability (관측가능성) 란 무엇이고, 모니터링과 어떻게 다�
 
 <!--more-->
 
-## 개요
+# 개요
 
 - 클라우드, MSA 는 near-exponential (지수함수)에 가까운 복잡도(Complexity) 증가를 보입니다.
 - Observability ~ Understanding “What’s really happening”
@@ -29,7 +29,7 @@ Observability (관측가능성) 란 무엇이고, 모니터링과 어떻게 다�
 - Istio는 Observability 를 위해 어플리케이션 네트워크 레벨의 metric 수집을 제공합니다.
 - Istio가 제공하는 network metrics를 통해서 시각적으로 network call graphs 를 이해할 수 있습니다.
 
-### 다루는 내용
+## 다루는 내용
 
 - Observability 필요성
 - Monitoring 이란
@@ -40,13 +40,13 @@ Observability (관측가능성) 란 무엇이고, 모니터링과 어떻게 다�
 - control-plane metrics
 - Customize metrics
 
-### 실습환경
+## 실습환경
 
 - minikube (k8s) 및 istio 설치.  참고: [https://netpple.github.io/2023/Istio-Environment/](https://netpple.github.io/2023/Istio-Environment/)
 - **실습 네임스페이스** : istioinaction
 - **실습 디렉토리** : book-source-code
 
-## 7.1 What is observability?
+# 7.1 What is observability?
 
 **Observability가 뭐에요?**
 
@@ -63,7 +63,7 @@ Observability (관측가능성) 란 무엇이고, 모니터링과 어떻게 다�
 - Observability는 application instrumentation, network instrumentation, signal collection infrastructure, databases  등 시스템의 다양한 레벨에서의 계측을 포함하고
 - 예상치 못한 문제가 발생했을 때 방대한 데이터들에서 필요한 데이터를 선별하여 문제에 대한 전체적인 퍼즐을 짜맞추게 됩니다
 
-### 7.1.1 observability vs. monitoring
+## 7.1.1 observability vs. monitoring
 
 **모니터링 하고 어떻게 다른가요?** 
 
@@ -76,7 +76,7 @@ Observability (관측가능성) 란 무엇이고, 모니터링과 어떻게 다�
 - 예) monitoring 관점(system load, resources, traffics …)에서는 문제가 없지만 고객(Jone Doe)이 시스템 응답(10초)이 느리다고 느끼는 문제
 - observability 관점에서는 (monitoring 보다) 더 많은 레이어들에서 데이터를 추출하고 고객 요청 (Jone Done)이 시스템으로 전달된 exact path 를 결정함
 
-### 7.1.2 How Istio helps with observability
+## 7.1.2 How Istio helps with observability
 
 **그래서 Istio는 observability 확보에 어떤 도움을 주나요?**
 
@@ -110,7 +110,7 @@ deploy,svc,gw,vs,dr,envoyfilter --all
 
 * deploy - deployment, svc - service, gw - gateway, vs -virtualservice, dr - destinationrule
 
-## 7.2 Exploring Istio metrics
+# 7.2 Exploring Istio metrics
 
 - data plane ~ handle requests
 - control plane ~ configure data plane
@@ -119,7 +119,7 @@ deploy,svc,gw,vs,dr,envoyfilter --all
 > *Let’s dig ! “What metrics are available for data/control plane”*
 > 
 
-### 7.2.1 Metrics in the data plane
+## 7.2.1 Metrics in the data plane
 
 > *Envoy can keep a large set of connection, request, and run-time metrics that we can use to form a picture of a service’s network and communication health.*
 > 
@@ -336,7 +336,8 @@ kubectl exec -it deploy/webapp -c istio-proxy \
 
 ![catalog 서비스(클러스터) 정보](/docs/assets/img/istio-in-action/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-21_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%258C%25E1%2585%25A5%25E1%2586%25AB_12.55.31.png)
 
-### 7.2.2 Metrics in the control plane
+
+## 7.2.2 Metrics in the control plane
 
 istiod 가 제공하는 풍부한 정보 ~ 예) data-plane proxy별 설정 sync 횟수 , sync 소요시간, bad config 정보, 인증서 발급/교체 등
 
@@ -422,7 +423,8 @@ pilot_xds_pushes{type="rds"} 6
 
 이러한 방법들에 대하여 이어서 살펴보겠습니다
 
-## 7.3 Scraping Istio metrics with prometheus
+
+# 7.3 Scraping Istio metrics with prometheus
 
 ```bash
 ## 앞서 살펴본 /stats 을 프로메테우스 형식으로 출력합니다
@@ -445,7 +447,7 @@ envoy_cluster_upstream_rq_retry_overflow{cluster_name="outbound|80||catalog.."} 
 
 지금부터 Prometheus 가 수집하도록 구성해 보겠습니다
 
-### 7.3.1 Setting up Prometheus and Grafana
+## 7.3.1 Setting up Prometheus and Grafana
 
 kube-prometheus-stack 설치
 
@@ -502,7 +504,7 @@ kubectl delete job --all -n prometheus
 kubectl delete ns prometheus
 ```
 
-### 7.3.2 Configuring the Prometheus Operator to scrape the Istio control plane and workloads
+## 7.3.2 Configuring the Prometheus Operator to scrape the Istio control plane and workloads
 
 Prometheus 에서 Istio 메트릭을 수집하려면 ServiceMonitor / PodMonitor (CRD) 명세 작성이 필요합니다.  
   
@@ -646,7 +648,7 @@ for i in {1..100}; do curl http://localhost/api/catalog \
 Graph 메뉴에서 수집된 메트릭을 확인해보세요  
 ![스크린샷 2023-01-21 오후 5.36.53.png](/docs/assets/img/istio-in-action/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-01-21_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_5.36.53.png)
 
-## 7.4 Customizing Istio’s standard metrics
+# 7.4 Customizing Istio’s standard metrics
 
 [Istio Standard Metrics](https://istio.io/latest/docs/reference/config/metrics/)    
 Istio 표준 메트릭은 `COUNTER`와 `DISTRIBUTION`로 표현되고 Envoy의 메트릭 counter와 histogram과 연관됩니다.  
@@ -689,7 +691,7 @@ Main Concept
     *살펴본 바와 같이 **Attribute** 는 **Dimension** value 를 정의하는데 사용됩니다.*    
     **Attribute** 를 사용해서 기존 metric의 **Dimension** 을 커스터마이징 해봅시다.
 
-### 7.4.1 Configuring existing metrics
+## 7.4.1 Configuring existing metrics
 
 Istio 의 기본 메트릭 설정은 **`EnvoyFilter`** 의 **stats** proxy plugin 에 설정됩니다.
 
@@ -1014,7 +1016,7 @@ Telemetry
 
 *지금까지 existing standard metric (istio_requests_total)의 dimension 을 커스텀 해보았습니다.*
 
-### 7.4.2 신규 메트릭 생성하기
+## 7.4.2 신규 메트릭 생성하기
 
 *커스텀 메트릭을 만들어 봅시다*
 
@@ -1128,7 +1130,7 @@ istio_get_calls{} 2
 catalog 서비스의 /items 에 대한 요청을 카운트 하려면 어떻게 해야 할까요?  
 이어서 Dimension과 attribute 를 생성해 보겠습니다.*
 
-### 7.4.3 Grouping calls with new attributes
+## 7.4.3 Grouping calls with new attributes
 
 기존 attributes 를 가지고 새로운 attributes 를 만들 수 있습니다. 
 
@@ -1333,7 +1335,7 @@ Istio can simplify collecting [*golden-signal*](https://sre.google/sre-book/moni
 
 다음 챕터에서는 “**Visualizing Metrics** ” (Grafana, Kiali) 에 대해 살펴보겠습니다. 
 
-## Summary
+# Summary
 
 - Monitoring is the process of collecting and aggregating metrics to **watch** **for known undesirable states** so that **corrective measures** can be taken.
 *모니터링은 “**알려진 이상상태**를 감지”하여 시정조치가 이루어질 수 있도록 메트릭을 수집하고 어그리게이션하는 프로세스입니다.*
@@ -1350,3 +1352,7 @@ Istio can simplify collecting [*golden-signal*](https://sre.google/sre-book/moni
 - We can **customize the metrics** available in Istio using the `IstioOperator` and use them in services by setting the `extraStats`  value in the annotation `proxy.istio.io/config`  that defines the proxy configuration. This level of control gives the operator (end user) flexibility over what telemetry gets scraped and how to present it in dashboards.
 *메트릭 커스터마이징은 IstioOperator “명세”를 통해서 하고 앱에서 (커스텀) 메트릭을 사용하려면* `proxy.istio.io/config` *어노테이션의 value로* `extraStats` *를 설정합니다.*  
   (istio 1.17+ 부터는 어노테이션 설정은 필요하지 않습니다)
+
+<br />
+
+👉🏻 *[다음편 보기](/docs/istio-in-action/Istio-ch8-observability-2-visibility)*
