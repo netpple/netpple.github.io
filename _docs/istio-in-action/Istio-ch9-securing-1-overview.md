@@ -58,7 +58,7 @@ histories:
 - JWKS, JSON Web Key Set - JWK (공개키) 모음. JWKS 에는 하나이상의 JWK 가 포함되며, 이중 JWT의 식별자와 일치하는 JWK 로 검증함
 
 ## 실습 환경
-- minikube (k8s) 및 istio 설치.  참고: [https://netpple.github.io/2023/Istio-Environment/](https://netpple.github.io/2023/Istio-Environment/)
+- minikube (k8s) 및 istio 설치.  참고: [https://netpple.github.io/docs/istio-in-action/Istio-Environment](https://netpple.github.io/docs/istio-in-action/Istio-Environment)
 - 실습 네임스페이스 : istioinaction
 - 실습 디렉토리 : book-source-code
 

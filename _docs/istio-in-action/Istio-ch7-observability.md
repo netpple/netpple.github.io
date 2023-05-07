@@ -42,7 +42,7 @@ Observability (관측가능성) 란 무엇이고, 모니터링과 어떻게 다�
 
 ## 실습환경
 
-- minikube (k8s) 및 istio 설치.  참고: [https://netpple.github.io/2023/Istio-Environment/](https://netpple.github.io/2023/Istio-Environment/)
+- minikube (k8s) 및 istio 설치.  참고: [https://netpple.github.io/docs/istio-in-action/Istio-Environment](https://netpple.github.io/docs/istio-in-action/Istio-Environment)
 - **실습 네임스페이스** : istioinaction
 - **실습 디렉토리** : book-source-code
 
