@@ -13,7 +13,7 @@ badges:
 - type: info  
   tag: 교육
 histories:
-- date: 2022-12-24 22:00:00 +09:00
+- date: 2023-04-21 14:00:00 +09:00
   description: 최초 등록
 ---
 9장에서는 마이크로서비스 환경에서 Istio 가 제공하는 Secure 통신에 대해 다룹니다.  

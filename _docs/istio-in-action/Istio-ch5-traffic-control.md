@@ -13,7 +13,7 @@ badges:
 - type: info  
   tag: 교육
 histories:
-- date: 2022-12-24 22:00:00 +09:00
+- date: 2023-01-07 21:00:00 +09:00
   description: 최초 등록 
 ---
 Istio의 traffic control 기법 routing, shifting, mirroring, Outbound traffic controlling 들에 대해 다룹니다.

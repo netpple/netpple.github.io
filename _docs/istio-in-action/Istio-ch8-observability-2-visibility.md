@@ -13,7 +13,7 @@ badges:
 - type: info  
   tag: 교육
 histories:
-- date: 2022-12-24 22:00:00 +09:00
+- date: 2023-04-20 19:15:00 +09:00
   description: 최초 등록
 ---
 ch7 에서 다룬 observability 의 visualize 에 대해 알아봅니다. visualize 를 위한 도구로 Grafana (Metrics), Jaeger/Zipkin (Distributed Tracing), Kiali (Call Graph) 등을 살펴봅니다.

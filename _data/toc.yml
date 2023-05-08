@@ -38,6 +38,8 @@
           url: "docs/istio-in-action/Istio-ch9-securing-4-end-user-auth"
         - title: Securing (5)
           url: "docs/istio-in-action/Istio-ch9-securing-5-external_authz"
+        - title: Troubleshooting
+          url: "docs/istio-in-action/Istio-ch10-troubleshooting"
     - title: "if(kakao)2022 온라인 핸즈온"
       url: "docs/make-container-without-docker/ifkakao2022-handson"
     - title: "데이터 중심 애플리케이션 설계"

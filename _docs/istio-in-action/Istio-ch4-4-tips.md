@@ -13,7 +13,7 @@ badges:
 - type: info  
   tag: 교육
 histories:
-- date: 2022-12-24 22:00:00 +09:00
+- date: 2023-01-01 09:00:00 +09:00
   description: 최초 등록
 ---
 
