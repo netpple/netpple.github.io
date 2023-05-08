@@ -79,11 +79,11 @@ Token claims
   "sub": "9b792b56-7dfa-4e4b-a83f-e20679115d79" #❺ subject of the token
 }
 ```
-앞서 설명드린대로 `claim`에는 `subject` 정보들이 포함돼 있습니다  
+앞서 설명드린대로 `claim`에는 `sub`(subject) 의 정보들이 포함돼 있습니다  
 `claim` 정보를 통해 서비스가 클라이언트를 식별하고 인가를 할 것인지 결정할 수 있게 됩니다 
 
 예를 들면, 위의 토큰에서 `sub` 는  "user" `group`에 속해 있습니다.
-서비스에서는 이 정보를 토대로 해서 `sub`의 접근 레벨을 결정할 수 있는데요.
+서비스에서는 이 정보를 토대로 해서 `sub` 의 접근 레벨을 결정할 수 있는데요.
 
 이러한 `claim` 정보를 신뢰하기 위해서는 토큰 검증이 필요합니다. 
 
@@ -404,54 +404,55 @@ curl -H "Host: webapp.istioinaction.io" \
     ```
 
 *AuthorizationPolicy 차등 적용*
-- 일반 사용자용 AuthorizationPolicy 를 설정합니다.
-    
-    ```bash
-    kubectl apply -f -<<END
-    apiVersion: security.istio.io/v1beta1
-    kind: AuthorizationPolicy
-    metadata:
-      name: allow-all-with-jwt-to-webapp
-      namespace: istio-system
-    spec:
-      selector:
-        matchLabels:
-          app: istio-ingressgateway
-      action: ALLOW
-      rules:
-      - from:
-        - source:
-            requestPrincipals: ["auth@istioinaction.io/*"] # ❶
-        to:
-        - operation:
-            hosts: ["webapp.istioinaction.io"]
-            methods: ["GET"]
-    END
-    ```
-    - ❶ 요청 주체 `requestPrincipals` 를 식별하기 위한 필터 조건 
-- 관리자용 AuthorizationPolicy 를 설정합니다.
-    ```bash
-    kubectl apply -f -<<END
-    apiVersion: "security.istio.io/v1beta1"
-    kind: "AuthorizationPolicy"
-    metadata:
-      name: "allow-mesh-all-ops-admin"
-      namespace: istio-system
-    spec:
-      selector:
-        matchLabels:
-          app: istio-ingressgateway
-      action: ALLOW
-      rules:
-        - from:
-          - source:
-              requestPrincipals: ["auth@istioinaction.io/*"]
-          when:
-          - key: request.auth.claims[group]
-            values: ["admin"]  # ❶
-    END
-    ```
-    - ❶ Allows only requests containing this claim
+
+일반 사용자용 AuthorizationPolicy 를 설정합니다. 
+```bash
+kubectl apply -f -<<END
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-all-with-jwt-to-webapp
+  namespace: istio-system
+spec:
+  selector:
+    matchLabels:
+      app: istio-ingressgateway
+  action: ALLOW
+  rules:
+    - from:
+      - source:
+          requestPrincipals: ["auth@istioinaction.io/*"] # ❶
+      to:
+      - operation:
+          hosts: ["webapp.istioinaction.io"]
+          methods: ["GET"]
+END
+```
+- ❶ 요청 주체 `requestPrincipals` 를 식별하기 위한 필터 조건
+
+관리자용 AuthorizationPolicy 를 설정합니다.
+```bash
+kubectl apply -f -<<END
+apiVersion: "security.istio.io/v1beta1"
+kind: "AuthorizationPolicy"
+metadata:
+  name: "allow-mesh-all-ops-admin"
+  namespace: istio-system
+spec:
+  selector:
+    matchLabels:
+      app: istio-ingressgateway
+  action: ALLOW
+  rules:
+    - from:
+      - source:
+          requestPrincipals: ["auth@istioinaction.io/*"]
+      when:
+      - key: request.auth.claims[group]
+        values: ["admin"]  # ❶
+END
+```
+- ❶ Allows only requests containing this claim
 
 *테스트*
 
