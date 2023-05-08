@@ -132,7 +132,8 @@ spec:
 
 ## 9.5.3 Using a custom AuthorizationPolicy resource
 
-```yaml
+```bash
+kubectl apply -f -<<END
 apiVersion: security.istio.io/v1beta1
 kind: AuthorizationPolicy
 metadata:
@@ -148,7 +149,8 @@ spec:
   rules:
   - to:
     - operation:
-        paths: ["/"]  # ❸ Path on which to apply authz
+        paths: ["/*"]  # ❸ Path on which to apply authz
+END
 ```
 
 ```bash
@@ -168,6 +170,15 @@ kubectl -n default exec -it deploy/sleep -- \
 ```
 
 ### FAQ
+> 헤더 없이 호출이 성공하는 경우
+> 
+
+Check)
+- MeshConfig 확인 
+  - "envoyExtAuthzHttp" 설정 확인
+- AuthorizationPolicy 확인
+  - "provider.name" 확인 ~ MeshConfig의 extensionProvider "envoyExtAuthzHttp" name과 일치여부
+  - rules[].operation.paths 확인 "paths: ["/*"]"
 
 > istiod-64848b6c78-c8tr2 discovery 2023-04-27T23:42:27.706471Z	error	authorization	Processed authorization policy: failed to process CUSTOM action: available providers are [] but found "sample-ext-authz-http”
 > 
