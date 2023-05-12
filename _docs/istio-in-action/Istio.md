@@ -15,6 +15,8 @@ badges:
 histories:
 - date: 2022-12-16 10:00:00 +09:00 
   description: 최초 등록
+- date: 2023-05-12 20:00:00 +09:00
+  description: 실습스크립트 오류 수정  
 ---
 istio sidecar proxy를 구성하여 resiliency, traffic routing 등을 실습으로 확인해 봅시다 
 
@@ -184,15 +186,15 @@ kubectl create ns istioinaction
 ## YAML 적용
 
 ```bash
-kubectl apply -f services/catalog/kubernetes/catalog.yaml
-kubectl apply -f services/webapp/kubernetes/webapp.yaml
+kubectl apply -f services/catalog/kubernetes/catalog.yaml -n istioinaction
+kubectl apply -f services/webapp/kubernetes/webapp.yaml -n istioinaction
 ```
 
 ## 호출 테스트
 
 ```bash
 ## catalog 확인
-kubectl run -i -n default --rm --restart=Never dummy \ 
+kubectl run -i -n default --rm --restart=Never dummy \
 --image=curlimages/curl --command -- \
 sh -c 'curl -s http://catalog.istioinaction/items/1'
 
@@ -207,33 +209,6 @@ sh -c 'curl -s http://webapp.istioinaction/api/catalog/items/1'
 * minikube 사용 시 로컬에서 K8s 서비스 접근을 위한 프록시를 띄워서 쉽게 활용할 수 있습니다.
 
 ```bash
-# minikube service -n istio-system --all
-|--------------|----------------------|-------------|------------------------|
-|  NAMESPACE   |         NAME         | TARGET PORT |          URL           |
-|--------------|----------------------|-------------|------------------------|
-| istio-system | grafana              |             | http://127.0.0.1:50717 |
-| istio-system | istio-egressgateway  |             | http://127.0.0.1:50719 |
-|              |                      |             | http://127.0.0.1:50720 |
-| istio-system | istio-ingressgateway |             | http://127.0.0.1:50722 |
-|              |                      |             | http://127.0.0.1:50723 |
-|              |                      |             | http://127.0.0.1:50724 |
-|              |                      |             | http://127.0.0.1:50725 |
-|              |                      |             | http://127.0.0.1:50726 |
-| istio-system | istiod               |             | http://127.0.0.1:50728 |
-|              |                      |             | http://127.0.0.1:50729 |
-|              |                      |             | http://127.0.0.1:50730 |
-|              |                      |             | http://127.0.0.1:50731 |
-| istio-system | jaeger-collector     |             | http://127.0.0.1:50733 |
-|              |                      |             | http://127.0.0.1:50734 |
-|              |                      |             | http://127.0.0.1:50735 |
-| istio-system | kiali                |             | http://127.0.0.1:50737 |
-|              |                      |             | http://127.0.0.1:50738 |
-| istio-system | prometheus           |             | http://127.0.0.1:50740 |
-| istio-system | tracing              |             | http://127.0.0.1:50742 |
-|              |                      |             | http://127.0.0.1:50743 |
-| istio-system | zipkin               |             | http://127.0.0.1:50745 |
-|--------------|----------------------|-------------|------------------------|
-
 # minikube service -n istioinaction --all
 |---------------|---------|-------------|------------------------|
 |   NAMESPACE   |  NAME   | TARGET PORT |          URL           |
@@ -251,6 +226,28 @@ while true; do curl http://localhost:50870/api/catalog; sleep .5; done
 ```
 
 * localhost:50870  각 자 로컬환경 마다 포트번호는 다릅니다.
+
+<br />  
+
+# 모니터링 도구
+
+## kiali
+
+```bash
+istioctl dashboard kiali
+```
+![kiali](/docs/assets/img/istio-in-action/ch2-kiali.png)
+
+## grafana
+
+```bash
+istioctl dashboard grafana
+```
+*HOME 클릭 > Istio*
+
+![grafana](/docs/assets/img/istio-in-action/ch2-grafana.png)
+
+<br />
 
 # Resiliency
 
@@ -325,6 +322,11 @@ spec:
       perTryTimeout: 2s
 ```
 
+VirtualService 설정을 적용해 보세요
+```bash
+kubectl apply -f ch2/catalog-virtualservice.yaml -n istioinaction
+```
+
 retries 를 설정 한 후 결과 (대부분 **정상응답으로 리턴**됨)
 
 ![스크린샷 2022-12-16 오전 11.22.47.png](/docs/assets/img/istio-in-action/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2022-12-16_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%258C%25E1%2585%25A5%25E1%2586%25AB_11.22.47.png)
@@ -337,9 +339,15 @@ retries 를 설정 한 후 결과 (대부분 **정상응답으로 리턴**됨)
 
 **catalog** proxy(envoy) -  5xx에러 발생 시 retry
 
+*(아래) retry 적용 후 Grafana 그래프에서 Success Rate은 증가하고 5xx 에러는 감소하는 것을 확인할 수 있습니다* 
+
+![retry_적용후_변화](/docs/assets/img/istio-in-action/ch2-after-retry-vs-applied.png)
+
 ## 총평
 
 - 애플리케이션 수정없이 retry 로직을 적용하여 에러 상황을 resilience 하게 대응할 수 있음
+
+<br />
 
 # Traffic Routing
 
@@ -396,11 +404,15 @@ spec:
 ## 버전 (V2) 배포
 
 ```bash
-kubectl apply -f services/catalog/kubernetes/catalog-deployment-v2.yaml
+kubectl apply -f services/catalog/kubernetes/catalog-deployment-v2.yaml -n istioinaction
 ```
 
 - 트래픽이 v1, v2 로 나뉘어 들어옴
 - Service 레이블 (app=catalog)이 일치하므로 Endpoint 로 랜덤 프록시됨
+
+*catalog-v2 배포 후 kiali graph*
+
+![ch2-catalog-v2-deployed-call-graph](/docs/assets/img/istio-in-action/ch2-catalog-v2-deployed-call-graph.png)
 
 ## (실습1) V1 만 받고 싶다
 
