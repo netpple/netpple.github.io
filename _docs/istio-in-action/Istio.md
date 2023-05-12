@@ -439,6 +439,9 @@ spec:
       version: v2
 ```
 
+*grafana workloads가 v1,v2 두개로 보임*  
+![ch2-destination-subset-applied.png](/docs/assets/img/istio-in-action/ch2-destination-subset-applied.png)
+
 **VirtualService** - 트래픽을 v1 (subset)으로만 유입
 
 ```yaml
@@ -457,6 +460,10 @@ spec:
         host: catalog
         subset: version-v1
 ```
+*설정 적용 후 catalog-v2 유입이 줄고 v1으로만 유입*  
+![ch2-v1-subset-traffic-only-progress.png](/docs/assets/img/istio-in-action/ch2-v1-subset-traffic-only-progress.png)  
+![ch2-v1-subset-traffic-only-completed.png](/docs/assets/img/istio-in-action/ch2-v1-subset-traffic-only-completed.png)  
+![ch2-v1-subset-traffic-only-completed.png](/docs/assets/img/istio-in-action/ch2-v1-subset-traffic-only-kiali.png)
 
 ## (실습2) 특정 조건 매칭 시 V2로 받고 싶다
 
