@@ -11,13 +11,15 @@ comments: true
 rightpanel: true
 badges:
 - type: info  
-  tag: 교육
-  histories:
+  tag: 교육  
+histories:
 - date: 2023-05-08 19:00:00 +09:00
   description: 최초 등록
+- date: 2023-05-14 21:00:00 +09:00
+  description: 내용 보완
 ---
 
-10장에서는 Istio data-plane troubleshooting 에 대해 다룹니다
+10장에서는 Istio 데이터플레인 트러블슈팅 에 대해 다룹니다
 
 <!--more-->
 
@@ -28,9 +30,9 @@ badges:
 
 ## 다루는 내용
 
-- Data-plane 의 문제를 진단하고 조치해나가는 과정을 실습해 봅니다
-    - Misconfiguration 진단 및 조치
-    - Application 진단 및 조치
+- 데이터플레인의 문제를 확인하고 조치하는 과정을 실습해 봅니다
+    - Envoy 설정 오류 진단 및 조치
+    - 애플리케이션 문제 진단 및 조치
 
 ## 용어
 
@@ -47,6 +49,7 @@ badges:
 *istioinaction 네임스페이스 초기화*
 
 ```bash
+## 복잡한 설정 일괄 제거를 위해 istioinaction 네임스페이스를 삭제 후 다시 생성합니다
 kubectl delete ns istioinaction &&
 kubectl create ns istioinaction &&
 kubectl label ns istioinaction istio-injection=enabled
@@ -55,12 +58,14 @@ kubectl label ns istioinaction istio-injection=enabled
 *istio-system 네임스페이스 초기화*
 
 ```bash
+## 9장 Securing 실습 설정 제거
 kubectl delete authorizationpolicy,peerauthentication,requestauthentication -n istio-system
 ```
 
 MeshConfig 에 external authz 설정을 확인해서 지워줍니다
 
 ```bash
+## 9장의 ext-authz 외부 인가 서버 설정을 제거합니다 
 # kubectl edit cm istio -n istio-system
 
 apiVersion: v1
@@ -86,8 +91,11 @@ kubectl delete deploy/sleep -n default
 kubectl delete svc/sleep -n default
 ```
 
-# 10.1 The most common mistake: A misconfigured data plane
+<br />
 
+# 10.1 흔히 하는 실수: 데이터플레인의 설정 오류 찾기
+
+설정 오류가 포함된 실습환경을 배포해 보겠습니다 
 ```bash
 ## catalog v1 배포
 kubectl apply -f services/catalog/kubernetes/catalog.yaml -n istioinaction
@@ -107,6 +115,7 @@ kubectl apply -f ch10/catalog-virtualservice-subsets-v1-v2.yaml -n istioinaction
 - [catalog-gateway.yaml](https://raw.githubusercontent.com/istioinaction/book-source-code/master/ch10/catalog-gateway.yaml)
 - [catalog-virtualservice-subsets-v1-v2.yaml](https://raw.githubusercontent.com/istioinaction/book-source-code/master/ch10/catalog-virtualservice-subsets-v1-v2.yaml)
 
+배포된 catalog 로 ingress gateway를 통해 요청을 보내봅니다 
 ```bash
 for i in {1..100}; do curl http://localhost/items \
 -H "Host: catalog.istioinaction.io" \
@@ -114,19 +123,23 @@ for i in {1..100}; do curl http://localhost/items \
 ```
 
 > *출력 결과는 ?*
-> 
 
-# 10.2 Identifying data-plane issues
+<br />
 
-*수사는 어떻게 할 것인가? (다양한 수사도구를 확인해 보아요)*
+# 10.2 데이터플레인 이슈 식별하기
 
-xDS SYNC 현황 등 proxy 상태 조회
+수사는 어떻게 할 것인가? (다양한 수사도구를 확인해 보아요)
 
+**proxy SYNC 상태 조회**  
+
+데이터플레인의 설정을 살펴보기 이전에 배포한 설정이 잘 SYNC 되었는지 확인해봅시다  
 ```bash
 istioctl proxy-status
 ```
+![ch10-istioctl-proxy-status.png](/docs/assets/img/istio-in-action/ch10-istioctl-proxy-status.png)
 
-Kiali 조회 - Istio Config 오류 시 warning 제공 
+
+**Kiali 조회 - Istio Config 오류 시 warning 제공**
 
 ```bash
 istioctl dashboard kiali
@@ -135,32 +148,55 @@ istioctl dashboard kiali
 # kubectl port-forward -n istio-system svc/kiali 20001
 ```
 
-![스크린샷 2023-03-23 오전 8.37.38.png](/docs/assets/img/istio-in-action/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-03-23_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%258C%25E1%2585%25A5%25E1%2586%25AB_8.37.38.png)
+*Kiali 대시보드 상에서 istioinaction 네임스페이스의 `IstioConfig` 경고가 확인됩니다*    
+![ch10-istio-config-warn-kiali.png](/docs/assets/img/istio-in-action/ch10-istio-config-warn-kiali.png){:width="150px"}
 
-![스크린샷 2023-03-23 오전 8.38.01.png](/docs/assets/img/istio-in-action/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-03-23_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%258C%25E1%2585%25A5%25E1%2586%25AB_8.38.01.png)
+*Istio Config 메뉴로 이동해서 Config 목록을 확인합니다 (경고가 뜬 catalog-v1-v2 클릭)*      
+![ch10-istio-config-list-kiali.png](/docs/assets/img/istio-in-action/ch10-istio-config-list-kiali.png)
 
-![스크린샷 2023-03-23 오전 8.38.32.png](/docs/assets/img/istio-in-action/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-03-23_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%258C%25E1%2585%25A5%25E1%2586%25AB_8.38.32.png)
+*Config 상세화면에서 하이라이팅된 문제부분을 확인합니다*  
+![ch10-istio-config-view-kiali-1.png](/docs/assets/img/istio-in-action/ch10-istio-config-view-kiali-1.png)
 
-![스크린샷 2023-03-23 오전 8.40.30.png](/docs/assets/img/istio-in-action/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-03-23_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%258C%25E1%2585%25A5%25E1%2586%25AB_8.40.30.png)
+*destination의 subset이 없다고 안내합니다*  
+![ch10-istio-config-view-kiali-2.png](/docs/assets/img/istio-in-action/ch10-istio-config-view-kiali-2.png){:width="250px"}
 
-![스크린샷 2023-03-23 오전 8.39.09.png](/docs/assets/img/istio-in-action/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-03-23_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%258C%25E1%2585%25A5%25E1%2586%25AB_8.39.09.png)
+![ch10-istio-config-view-kiali-3.png](/docs/assets/img/istio-in-action/ch10-istio-config-view-kiali-3.png){:width="200px"}
 
-namespace validation
+
+**istioctl analyze**  
+
+앞서 Kiali로 설정오류를 확인하였는데요. Kiali 외에도 설정오류를 확인할 수 있는 툴들이 있습니다.  
+istioctl 의 analyze 툴을 활용하면 설정 오류를 잡아내고 명세를 검증하는데 활용할 수 있습니다.  
 
 ```bash
-# istioctl analyze -n istioinaction
+## analyze 로 검사할 네임스페이스를 지정합니다  
+istioctl analyze -n istioinaction
+```
 
+```bash
+## 출력
 Error [IST0101] (VirtualService istioinaction/catalog-v1-v2) Referenced host+subset in destinationrule not found: "catalog.istioinaction.svc.cluster.local+version-v1"
 Error [IST0101] (VirtualService istioinaction/catalog-v1-v2) Referenced host+subset in destinationrule not found: "catalog.istioinaction.svc.cluster.local+version-v2"
 Error: Analyzers found issues when analyzing namespace: istioinaction.
 See https://istio.io/v1.16/docs/reference/config/analysis for more information about causes and resolutions
 ```
 
-pod validation
+**istioctl describe**  
+
+앞에서 네임스페이스 설정을 검사해보았다면, 이번에는 catalog Pod 설정을 검사해서 문제를 확인해 봅시다  
 
 ```bash
-# istioctl x describe pod catalog-5c7f8f8447-f54sh
+## catalog pod 확인
+kubctl get pod -n istioinaction
+```
 
+```bash
+## catalog pod 검사 ~ 앞서 확인한 pod name을 줍니다 
+istioctl x describe pod catalog-5c7f8f8447-f54sh
+```
+
+```bash
+## 출력
 Pod: catalog-5c7f8f8447-f54sh
    Pod Revision: default
    Pod Ports: 3000 (catalog), 15090 (istio-proxy)
@@ -178,12 +214,23 @@ VirtualService: catalog-v1-v2
       Warning: Route to subset version-v2 but NO DESTINATION RULE defining subsets!
 ```
 
-> *어떻게 하면 문제를 해결할 수 있을까요?*
-> 
+Kiali 이외에도 istioctl 에서 제공하는 analyze, describe 툴로도 문제를 확인할 수 있었는데요  
+이러한 CLI 도구를 활용하면 설정오류를 감지하고, 명세를 사전에 검증하는 등 자동화 할 수 있습니다  
 
-# 10.3 Discovering misconfigurations manually from the Envoy config
+지금까지 다양한 방법으로 데이터플레인의 설정오류를 확인해 보았는데요  
+데이터플레인 설정이란 결국 "Envoy Proxy" 설정을 의미합니다  
+(Istio는 모든게 Envoy 죠...)  
 
-## 10.3.1 Envoy administration interface
+이어서 Envoy 의 설정을 직접 살펴보는 방식으로 설정 문제를 확인해 보겠습니다 
+
+<br />
+
+# 10.3 Envoy config 에서 설정 오류 찾기
+
+## 10.3.1 Envoy 어드민 인터페이스 
+
+Envoy 어드민 인터페이스는 Envoy 컨피그 및 기타 로그레벨 변경 같은 다양한 프록시 측면의 수정 기능들을 노출합니다  
+아래와 같이 istioctl dashboard 명령으로 catalog Pod의 envoy 어드민 대시보드를 띄워보세요   
 
 *Envoy 대시보드*
 
@@ -193,15 +240,65 @@ istioctl dashboard envoy deploy/catalog -n istioinaction
 
 config_dump 클릭
 
-![스크린샷 2023-04-30 오전 11.25.03.png](/docs/assets/img/istio-in-action/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-04-30_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%258C%25E1%2585%25A5%25E1%2586%25AB_11.25.03.png)
+![ch10-envoy-config-dump.png](/docs/assets/img/istio-in-action/ch10-envoy-config-dump.png)
 
-## 10.3.2 Querying proxy configurations using istioctl
+보기도 힘들정도로 많은 양의 설정입니다
 
-### *THE INTERACTION OF ENVOY APIs TO ROUTE A REQUEST*
+```bash
+## config_dump API 로 라인수를 확인해보세요
+# curl -s localhost:15000/config_dump | wc -l
 
-![스크린샷 2023-04-30 오전 11.28.07.png](/docs/assets/img/istio-in-action/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-04-30_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%258C%25E1%2585%25A5%25E1%2586%25AB_11.28.07.png)
+14478
+```
 
-### [LDS] *QUERYING THE ENVOY LISTENER CONFIGURATION*
+[(참고) Envoy Administration Interface](https://www.envoyproxy.io/docs/envoy/latest/operations/admin)
+
+지금까지 Gateway, VirtualService, DestinationRule 등 Istio 의 다양한 명세들을 살펴보았는데요.  
+이러한 명세들 뿐만아니라 메시 내의 엔드포인트를 비롯한 다양한 리소스들의 변경사항들에 대해서   
+"Envoy 컨피그"를 동적으로 설정하는 방식으로 Istio는 서비스 메시의 네트워크를 제어합니다
+
+## 10.3.2 istioctl 을 이용한 Envoy 컨피그 쿼리하기
+
+`istioctl proxy-config` 명령으로 복잡한 Envoy 컨피그 설정들을 쉽게 검색하고 필터링 할 수 있습니다    
+`istioctl proxy-config` 는 Envoy 의 주요 컨피그(xDS) 항목별로 subcommand 를 제공합니다
+- listener : 리스너 설정 검색
+- route : 라우트 설정 검색
+- cluster : 클러스터 설정 검색
+- endpoint : 엔드포인트 설정 검색
+- secret : 시크릿 설정 검색  
+
+### 요청을 라우팅하기 위한 ENVOY API 간의 상호 작용
+
+Envoy proxy의 핵심기능은 "Discovery" 입니다 (예: 트래픽을 전달할 타겟을 식별)    
+> Envoy 에서 "Discovery" 를 위한 설정 대상에는 어떤 것들이 있을까요 ?  
+
+*[Envoy xDS configuration API](https://www.envoyproxy.io/docs/envoy/v1.26.1/intro/arch_overview/operations/dynamic_configuration)*  
+
+Envoy Proxy 의 Discovery 설정은 [xDS API](https://www.envoyproxy.io/docs/envoy/v1.26.1/configuration/overview/xds_api#xds-api-endpoints) 를 이용합니다   
+
+xDS API 종류는 다음과 같습니다  
+- LDS : Listener DS (Discovery) API  
+  외부 트래픽 유입을 위한 ingress gw의 진입 포트 설정 API 
+- RDS : Route DS API   
+  유입된 트래픽을 보낼 라우트 설정 API
+- CDS : Cluster DS API  
+  라우트 대상 엔드포인트 그룹인 클러스터 및 클러스터의 서브셋 설정 API 
+- EDS : Endpoint DS API  
+  최종 트래픽 전달 엔드포인트 설정 API
+- ADS : Aggregated xDS API  
+  xDS 설정 중앙 관리서버와의 통신 API. Envoy 개별적으로는 다른 Envoy와의 관련 설정 처리 및 순서 문제를 해결하기 어렵기 때문에 중앙서버를 두고 처리하는 방식도 제공함  
+- 기타
+  - SDS : Secret DS API
+  - ECDS : Extension Config DS API
+  - RTDS : RunTime DS API
+  - Delta gRPC xDS
+  - xDS TTL
+
+다음 그림은 트래픽이 애플리케이션까지 전달되는 라우트 과정을 보여줍니다
+
+![ch10-envoy-api-route.png](/docs/assets/img/istio-in-action/ch10-envoy-api-route.png)
+
+### [LDS] Envoy 리스너 컨피그 쿼리하기
 
 ```bash
 # istioctl pc listeners deploy/istio-ingressgateway -n istio-system
@@ -212,7 +309,7 @@ ADDRESS PORT  MATCH DESTINATION
 0.0.0.0 15090 ALL   Inline Route: /stats/prometheus*
 ```
 
-### [RDS] *QUERYING THE ENVOY ROUTE CONFIGURATION*
+### [RDS] ENVOY 라우트 컨피그 쿼리하기
 
 ```bash
 # istioctl pc routes deploy/istio-ingressgateway -n istio-system --name http.8080
@@ -242,96 +339,167 @@ http.8080     catalog.istioinaction.io        /*        catalog-v1-v2.istioinact
 ..
 ```
 
-### [CDS] QUERYING THE ENVOY CLUSTER CONFIGURATION
-
-```bash
-# istioctl pc clusters deploy/istio-ingressgateway.istio-system --fqdn catalog.istioinaction.svc.cluster.local --port 80 --subset version-v1
-
-SERVICE FQDN   PORT   SUBSET   DIRECTION   TYPE   DESTINATION RULE
-(결과 없음)
-```
-
-- 패킷을 보낼 ENVOY 클러스터에 대한 정보가 없음
-
-ENVOY 클러스터 정보 (destinationrule) 를 등록해 주자
-
-- DestinationRule YAML validation
-    
-    ```bash
-    # istioctl analyze ch10/catalog-destinationrule-v1-v2.yaml -n istioinaction
-    
-    ✔ No validation issues found when analyzing ch10/catalog-destinationrule-v1-v2.yaml.
-    ```
-    
-- DestinationRule 적용
-    
-    ```bash
-    kubectl apply -f ch10/catalog-destinationrule-v1-v2.yaml
-    ```
-    
-- 등록 확인
-    
-    ```bash
-    istioctl pc clusters deploy/istio-ingressgateway.istio-system --fqdn catalog.istioinaction.svc.cluster.local --port 80
-    ```
-    
-    ![스크린샷 2023-03-23 오후 12.20.04.png](/docs/assets/img/istio-in-action/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-03-23_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_12.20.04.png)
-    
-
-### [CDS] HOW CLUSTERS ARE CONFIGURED
-
-```bash
-# istioctl pc clusters deploy/istio-ingressgateway.istio-system --fqdn catalog.istioinaction.svc.cluster.local --port 80 --subset version-v1 -o json
-
-..
-"edsClusterConfig": {
-  "edsConfig": {
-    "ads": {},
-    "initialFetchTimeout": "0s",
-    "resourceApiVersion": "V3"
-  },
-  "serviceName": "outbound|80|version-v1|catalog.istioinaction.svc.cluster.local"
-},
-..
-```
-
-> *The output shows that `edsClusterConfig` is configured to use the Aggregated Discovery Service (**ADS**) to query the endpoints. The service name `outbound|80|version -v1|catalog.istioinaction.svc.cluster.local` is used as a filter for the endpoints to query from ADS.*
+위의 Route 출력 결과에서 클러스터 정보(`clusters`)를 확인할 수 있습니다  
+> {DIRECTION} \| {PORT} \| {SUBSET} \| {FQDN}  
+> 
+> (출력 예시)  
+> outbound\|80\|version-v1\|catalog.istioinaction.svc.cluster.local  
+> outbound\|80\|version-v2\|catalog.istioinaction.svc.cluster.local
+> * DIRECTION : outbound
+> * PORT : 80
+> * SUBSET : version-v1 (or version-v2)
+> * FQDN : catalog.istioinaction.svc.cluster.local
 > 
 
-### [EDS] QUERYING ENVOY CLUSTER ENDPOINTS
+### [CDS] ENVOY 클러스터 컨피그 쿼리하기
+
+앞에서 확인한 라우트 쿼리의 출력 정보를 이용해서 클러스터 정보를 쿼리해 보겠습니다.
 
 ```bash
-# istioctl pc endpoints deploy/istio-ingressgateway.istio-system --cluster "outbound|80|version-v1|catalog.istioinaction.svc.cluster.local"
+istioctl pc clusters deploy/istio-ingressgateway.istio-system \
+--fqdn catalog.istioinaction.svc.cluster.local \
+--port 80 \
+--subset version-v1
+```
+ 
+> 출력 : (결과 없음)
+> 
 
+아무 클러스터 정보도 출력되지 않는데요. --subset 정보만 제외하고 다시 쿼리해 봅니다
+```bash
+istioctl pc clusters deploy/istio-ingressgateway.istio-system \
+--fqdn catalog.istioinaction.svc.cluster.local \
+--port 80
+```
+
+이번에는 출력 결과가 나옵니다 (단, SUBSET과 DESTINATION RULE은 비어있네요)
+```
+SERVICE FQDN                                PORT     SUBSET     DIRECTION     TYPE     DESTINATION RULE  
+catalog.istioinaction.svc.cluster.local     80       -          outbound      EDS
+```
+
+앞에서는 등록되지 않은 subset 정보로 쿼리를 시도했기 때문에 출력 결과가 나오지 않았습니다    
+<br />
+
+***DESTINATION RULE 설정***
+
+원인을 알았으니, DestinationRule 을 설정해서 정상적으로 컨피그 되도록 조치해 봅시다
+
+```yaml
+## version-v1, version-v2 서브셋이 정의된 DestinationRule  
+# cat ch10/catalog-destinationrule-v1-v2.yaml
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: catalog
+  namespace: istioinaction
+spec:
+  host: catalog.istioinaction.svc.cluster.local
+  subsets:
+  - name: version-v1
+    labels:
+      version: v1
+  - name: version-v2
+    labels:
+      version: v2
+```
+
+DestinationRule YAML validation  
+   
+```bash
+## 적용할 명세에 이상이 없는지 미리 검증해 봅니다
+istioctl analyze ch10/catalog-destinationrule-v1-v2.yaml -n istioinaction
+
+#✔ No validation issues found when analyzing ch10/catalog-destinationrule-v1-v2.yaml.
+```
+    
+DestinationRule 적용
+    
+```bash
+kubectl apply -f ch10/catalog-destinationrule-v1-v2.yaml
+```
+    
+설정 적용 확인
+    
+```bash
+istioctl pc clusters deploy/istio-ingressgateway.istio-system \
+--fqdn catalog.istioinaction.svc.cluster.local \
+--port 80
+```
+
+`SUBSET` version-v1, version-v2 가 추가되었습니다    
+![ch10-istioctl-pc-clusters.png](/docs/assets/img/istio-in-action/ch10-istioctl-pc-clusters.png)
+
+
+### [CDS] 클러스터 컨피그 확인 
+
+`--subset` 플래그를 포함해서 클러스터 정보를 쿼리해 보겠습니다.
+```bash
+istioctl pc clusters deploy/istio-ingressgateway.istio-system \
+--fqdn catalog.istioinaction.svc.cluster.local \
+--port 80 \
+--subset version-v1 \
+-o json
+```
+
+아래 출력 예시는 설명할 정보만 남기고 나머지는 생략하였습니다  
+```json
+{
+  "name": "outbound|80|version-v1|catalog.istioinaction.svc.cluster.local",
+  "type": "EDS",
+  "edsClusterConfig": {
+    "edsConfig": {
+      "ads": {},
+      "resourceApiVersion": "V3"
+    },
+    "serviceName": "outbound|80|version-v1|catalog.istioinaction.svc.cluster.local"
+  }
+}
+```
+
+- `edsConfig` 에 ads, Aggregated Discovery Service 가 설정돼 있습니다
+- `ADS` 는 envoy proxy 설정을 중앙에 "관리서버"를 두고 제어할 때 사용하는 API 입니다
+- Istio 에서는 pilot 이 ads 관리서버 역할을 하는데요 현재는 istiod 로 통합되었습니다 
+- serviceName `outbound|80|version -v1|catalog.istioinaction.svc.cluster.local` 값으로 ADS 쿼리로 부터 엔드포인트를 필터링합니다   
+
+[(참고) ADS, Aggregated Discovery Service](https://www.envoyproxy.io/docs/envoy/v1.26.1/configuration/overview/xds_api#aggregated-discovery-service)
+
+### [EDS] ENVOY 엔드포인트 컨피그 쿼리하기
+
+serviceName 값으로 EDS 쿼리를 확인해 보세요 
+```bash
+istioctl pc endpoints deploy/istio-ingressgateway.istio-system \
+--cluster "outbound|80|version-v1|catalog.istioinaction.svc.cluster.local"
+```
+
+``` bash
+## 출력 예시 ~ ENDPOINT(ip:port) 는 각 자 환경마다 다름
 ENDPOINT            STATUS      OUTLIER CHECK     CLUSTER
 172.17.0.6:3000     HEALTHY     OK                outbound|80|version-v1|catalog.istioinaction.svc.cluster.local
 ```
 
-ENDPOINT(ip:port) 는 각 자 환경마다 다름
-
+해당 엔드포인트를 가진 파드를 확인해 보세요
 ```bash
-# kubectl get pod -n istioinaction --field-selector status.podIP=172.17.0.6
+kubectl get pod -n istioinaction \
+--field-selector status.podIP=172.17.0.6
+```
+```
+## 출력 예시 ~ Pod Name은 각 자 환경마다 다름
 NAME                       READY   STATUS    RESTARTS      AGE
 catalog-5c7f8f8447-f54sh   2/2     Running   2 (16m ago)   3h56m
 ```
 
-> *문제는 해결 되었나요 ? 호출이 잘되는지 확인해 보세요*
-> 
-
+호출이 잘 되는지도 확인해 보세요
 ```bash
 curl -H "Host: catalog.istioinaction.io" localhost/items
 ```
 
-> *Kiali 대시보드도 처음과 비교해 보세요*
-> 
+Kiali 대시보드도 처음과 비교해 보세요  
+![ch10-istio-config-warn-solved-kiali.png](/docs/assets/img/istio-in-action/ch10-istio-config-warn-solved-kiali.png){:width="150px"}  
+![ch10-istio-config-warn-solved-kiali-2.png](/docs/assets/img/istio-in-action/ch10-istio-config-warn-solved-kiali-2.png)
 
-![스크린샷 2023-04-30 오후 1.29.36.png](/docs/assets/img/istio-in-action/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-04-30_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_1.29.36.png)
-
-![스크린샷 2023-04-30 오후 1.29.55.png](/docs/assets/img/istio-in-action/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-04-30_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_1.29.55.png)
-
-> *istioctl analyze/describe 도 처음과 비교해 보세요*
-> 
-
+istioctl analyze/describe 도 처음과 비교해 보세요
 ```bash
 # istioctl analyze -n istioinaction
 
@@ -362,11 +530,11 @@ VirtualService: catalog-v1-v2
 
 다음은 data-plane의 “애플리케이션 이슈”를 진단하고 해결해 나가보도록 하겠습니다 
 
-## 10.3.3 Troubleshooting application issues
+## 10.3.3 애플리케이션 이슈 트러블슈팅
 
 “간헐적 타임아웃”을 발생시키는 애플리케이션 이슈를 다뤄봅시다 
 
-### SETTING UP AN INTERMITTENTLY SLOW WORKLOAD THAT TIMES OUT
+### Slow Pod 애플리케이션 
 
 catalog-v2 앱 중 하나를 “slow response” 하도록 설정합니다
 
@@ -455,7 +623,7 @@ data:
 ..
 ```
 
-### CHANGING THE ENVOY ACCESS LOG FORMAT
+### Envoy 액세스 로그 포맷 변경: JSON
 
 ENVOY 액세스 로그 포맷을 JSON으로 읽기 쉽게 바꿉니다 (MeshConfig 설정)
 
@@ -528,7 +696,7 @@ echo $SLOW_POD
 
 - slow reponse 설정했던 CATALOG_POD 와 비교해보세요
 
-### INCREASING THE LOGGING LEVEL FOR THE INGRESS GATEWAY
+### Ingress GW 로그레벨 변경 
 
 istio-ingressgateway 의 로그레벨을 변경합니다 
 
@@ -627,11 +795,11 @@ kubectl logs -n istio-system deploy/istio-ingressgateway > /tmp/ingress-logs.txt
 
 지금까지 istio-ingressgateway 로그 분석을 통해 에러 원인을 확인해 보았습니다 
 
-## 10.3.4 Inspect network traffic with ksniff
+## 10.3.4 Pod 네트워크 트래픽 검사: ksniff
 
 ksniff 를 이용한 Kubernetes Pod 패킷 덤프 및 확인 
 
-### INSTALLING KREW, KSNIFF, AND WIRESHARK
+### KREW, KSNIFF, WIRESHARK 설치 
 
 설치 (맥 M1)
 
@@ -660,7 +828,7 @@ kubectl sniff <pod> -p -o -
 
 [vagrant-parallels 기반 실습 환경](https://www.notion.so/vagrant-parallels-232b55ae5c1e42058145f10d33daa8f2)
 
-### INSPECTING NETWORK TRAFFIC ON THE LOCALHOST INTERFACE
+### POD 네트워크 트래픽 검사
 
 참고 SLOW_POD
 
@@ -673,11 +841,13 @@ for in in {1..9999}; do curl http://192.168.100.2:31028/items \
 SLOW_POD에 tcpdump를 겁니다 
 
 ```bash
-KUBECONFIG=~/.kube/config-sfarm1; kubectl sniff $SLOW_POD -n istioinaction -p -i lo
+KUBECONFIG=~/.kube/config-sfarm1; 
+kubectl sniff $SLOW_POD -n istioinaction -p -i lo
 ```
 
-- *kubeconfig가 여러개인 경우, 환경변수(KUBECONFIG)에 명시해야 함*
-- *-p, --privileged  : 대상 pod의 netns를 공유하는 ksniff pod (privileged) 를 띄움*
+- kubeconfig가 여러개인 경우, 환경변수(KUBECONFIG)에 명시해야 함
+- -p, --privileged  : 대상 pod의 netns를 공유하는 ksniff pod (privileged) 를 띄움
+- -i : 트래픽 감시할 인터페이스 지정. 여기서는 lo (loopback interface)
 - FAQ - *vagrant-parallels ⇒ ksniff 실행 시 KUBECONFIG 환경변수를 지정할 것*
     
     ```bash
