@@ -532,35 +532,105 @@ VirtualService: catalog-v1-v2
 
 ## 10.3.3 애플리케이션 이슈 트러블슈팅
 
-“간헐적 타임아웃”을 발생시키는 애플리케이션 이슈를 다뤄봅시다 
+이번에는 데이터플레인의 설정이슈가 아닌 "애플리케이션 이슈"를 다뤄보겠습니다   
+
+먼저, 실습을 위해서 아래와 같이 catalog 로 요청 트래픽을 발생시켜주세요 
+```bash
+for in in {1..9999}; do curl http://localhost/items \
+-H "Host: catalog.istioinaction.io" \
+-w "\nStatus Code %{http_code}\n"; sleep 1; done
+```
+
+`Status Code 200` (정상)으로 아래와 같이 응답이 출력됩니다  
+```json
+[
+  {
+    "id": 1,
+    "color": "amber",
+    "department": "Eyewear",
+    "name": "Elinor Glasses",
+    "price": "282.00"
+  },
+  {
+    "id": 2,
+    "color": "cyan",
+    "department": "Clothing",
+    "name": "Atlas Shirt",
+    "price": "127.00"
+  },
+  {
+    "id": 3,
+    "color": "teal",
+    "department": "Clothing",
+    "name": "Small Metal Shoes",
+    "price": "232.00"
+  },
+  {
+    "id": 4,
+    "color": "red",
+    "department": "Watches",
+    "name": "Red Dragon Watch",
+    "price": "232.00"
+  }
+]
+```
+
+추후 SLOW POD와 비교를 위해서 Grafana와 Kiali 화면도 확인해 두세요  
+
+![ch10-slow-pod-before-grafana.png](/docs/assets/img/istio-in-action/ch10-slow-pod-before-grafana.png)
+![ch10-slow-pod-before-grafana.png](/docs/assets/img/istio-in-action/ch10-slow-pod-before-kiali.png)
+
+(참고)
+```bash
+## grfana 대시보드 실행
+istioctl dashboard grafana
+
+## kiali 대시보드 실행
+istioctl dashboard kiali
+```
 
 ### Slow Pod 애플리케이션 
 
-catalog-v2 앱 중 하나를 “slow response” 하도록 설정합니다
+지금부터 본격적으로 Slow Pod를 만들어 볼까요
+
+*1 - catalog-v2 앱 중 하나를 응답을 느리게 주도록 설정합니다*
 
 ```bash
+## kubectl get pods 목록에서 첫번째 version=v2 파드 
 CATALOG_POD=$(kubectl get pods -l version=v2 -n istioinaction \-o jsonpath={.items..metadata.name} | cut -d ' ' -f1) ;
 
+## CATALOG_POD 에서 latency (지연) 발생하도록 처리 
 kubectl -n istioinaction exec -c catalog $CATALOG_POD \
 -- curl -s -X POST -H "Content-Type: application/json" \
 -d '{"active": true, "type": "latency", "volatile": true}' \
 localhost:3000/blowup ;
 
+## CATALOG_POD 확인 (기억해두세요)
 echo $CATALOG_POD
 ```
+Slow Pod 적용 후 Grafana와 Kiali 변화를 살펴보세요
 
-- CATALOG_POD 를 기억해 두세요
+![ch10-slow-pod-grafana.png](/docs/assets/img/istio-in-action/ch10-slow-pod-grafana.png)
 
-VirtualService 타임아웃을 0.5s 로 설정합니다 (slow response 발생 시 타임아웃 동작)
+![ch10-slow-pod-grafana.png](/docs/assets/img/istio-in-action/ch10-slow-pod-resp-kiali.png)
+
+![ch10-slow-pod-grafana.png](/docs/assets/img/istio-in-action/ch10-v1-resp-kiali.png)
+
+
+
+*2 - VirtualService 타임아웃을 0.5s 로 설정합니다*
 
 ```bash
+## 타임아웃(0.5s) 적용
 kubectl patch vs catalog-v1-v2 -n istioinaction --type json \
 -p '[{"op": "add", "path": "/spec/http/0/timeout", "value": "0.5s"}]'
+
+## 적용확인
+kubectl get vs catalog-v1-v2 -o jsonpath='{.spec.http[?(@.timeout=="0.5s")]}'
 ```
 
+아래와 같이 JSON 출력 하단에 timeout (0.5s)이 적용됐는지 확인하세요  
 ```json
-// kubectl get vs catalog-v1-v2 -o jsonpath='{.spec.http[?(@.timeout=="0.5s")]}'
-
 {
   "route": [
     {
@@ -586,21 +656,30 @@ kubectl patch vs catalog-v1-v2 -n istioinaction --type json \
   ],
   "timeout": "0.5s"
 }
-
 ```
 
+타임아웃 적용 후 Grafana와 Kiali 변화를 확인해 보세요  
+
+![ch10-slow-pod-ut-grafana.png](/docs/assets/img/istio-in-action/ch10-slow-pod-ut-grafana.png)
+
+![ch10-slow-pod-ut-kiali.png](/docs/assets/img/istio-in-action/ch10-slow-pod-ut-kiali.png)
+
+앞서 호출 루프를 걸어둔 터미널의 응답을 확인해 보세요  
 ```bash
-for in in {1..9999}; do curl http://localhost/items \
--H "Host: catalog.istioinaction.io" \
--w "\nStatus Code %{http_code}\n"; sleep 1; done
+#for in in {1..9999}; do curl http://localhost/items \
+#-H "Host: catalog.istioinaction.io" \
+#-w "\nStatus Code %{http_code}\n"; sleep 1; done
 
 ..
+## 간헐적으로 "504" 에러코드 발생 (slow response)
 Status code 504
+upstream request timeout
 ..
+Status code 200
 ```
+![ch10-slow-pod-ut-504.png](/docs/assets/img/istio-in-action/ch10-slow-pod-ut-504.png){:width="250px"}
 
-- 간헐적으로 504 응답코드 발생 (slow response)
-
+istio-ingressgateway 로그를 확인해 봅니다 
 ```bash
 # kubectl -n istio-system logs deploy/istio-ingressgateway | grep 504
 
@@ -609,17 +688,17 @@ Status code 504
 ..
 ```
 
-(알아보기 어렵다)
+(값만 나열돼 있어서 알아보기 어렵습니다)
 
-참고) 로그 출력 설정  - 액세스로그가 나오지 않을 경우 아래와 같이 MeshConfig 설정
+참고) 혹시, 로그가 보이지 않으면 아래와 같이 MeshConfig 설정을 확인해 보세요  
 
 ```bash
-kubectl edit cm istio -n istio-system
+#kubectl edit cm istio -n istio-system
 
 apiVersion: v1
 data:
   mesh: |-
-    accessLogFile: /dev/stdout
+    accessLogFile: /dev/stdout # <- "액세스 로그" 설정이 없으면 추가해주세요
 ..
 ```
 
@@ -633,26 +712,24 @@ ENVOY 액세스 로그 포맷을 JSON으로 읽기 쉽게 바꿉니다 (MeshConf
 apiVersion: v1
 data:
   mesh: |-
-    accessLogEncoding: JSON
-    accessLogFile: /dev/stdout
+    accessLogEncoding: JSON # <-- 추가해주세요
+    accessLogFile: /dev/stdout # <-- 없으면 얘도 추가
 ..
 ```
 
-참고) istioctl install 로 설정할 수 도 있으나 기존 MeshConfig 을 덮어쓰기 때문에 주의요함
+`504` 로그를 다시 확인해 보겠습니다 (설정이 반영되는 시간이 걸릴 수 있습니다)
 
 ```bash
-istioctl install --set meshConfig.accessLogFile="/dev/stdout" --set meshConfig.accessLogEncoding="JSON"
+## 가장 최근에 발생한 504 에러 로그 한개 출력 
+kubectl -n istio-system logs deploy/istio-ingressgateway \
+| grep 504 | tail -n 1
 ```
-
-`504` 로그 확인
-
-```bash
-kubectl -n istio-system logs deploy/istio-ingressgateway | grep 504 | tail -n 1 | jq
-
+출력 예시 (더 이해하기 편한가요?)
+```json 
 {
   "authority": "catalog.istioinaction.io",
   "request_id": "4a1fe131-7363-9a90-a18f-f5412f9ede67",
-  "response_flags": "UT",
+  "response_flags": "UT",  # <-- Envoy Response Flag
   "requested_server_name": null,
   "upstream_cluster": "outbound|80|version-v2|catalog.istioinaction.svc.cluster.local",
   "response_code": 504,
@@ -677,7 +754,14 @@ kubectl -n istio-system logs deploy/istio-ingressgateway | grep 504 | tail -n 1 
 }
 ```
 
-> [Envoy’s Response Flag](https://www.envoyproxy.io/docs/envoy/latest/configuration/observability/access_log/usage#command-operators)
+- 위 로그에서 `"response_flags": "UT"`는 요청이 UT (Upstream request Timeout) 로 중단됨을 알려줍니다
+- 여기서 Upstream 은 `"upstream_cluster": "outbound|80|version-v2|catalog.<생략>"` 클러스터 룰에 매칭되어 결정되는데  
+- `"upstream_host": "172.17.0.17:3000"` 가 Upstream 입니다 (각 자 환경마다 다릅니다!)
+- Slow Pod (CATALOG_POD)의 IP와 일치합니다 (확인해 보세요)
+- Upstream (Slow Pod)이 타임아웃 (0.5s=500ms) 이내에 응답을 주지 않았기 때문에 연결을 끊었다고 생각할 수 있습니다
+- `"duration": 500`이 타임아웃 설정값과 일치합니다
+
+> (참고) [Envoy’s Response Flag](https://www.envoyproxy.io/docs/envoy/latest/configuration/observability/access_log/usage#command-operators)
 > 
 > - UT - Upstream request timeout
 > - UH - No healthy upstream hosts
@@ -693,17 +777,19 @@ SLOW_POD=$(kubectl get pods -n istioinaction --field-selector status.podIP=$SLOW
 
 echo $SLOW_POD
 ```
-
 - slow reponse 설정했던 CATALOG_POD 와 비교해보세요
+
+이어서, Slow Pod가 UT의 원인이 맞는지 보다 명확하게 밝혀보겠습니다 
 
 ### Ingress GW 로그레벨 변경 
 
-istio-ingressgateway 의 로그레벨을 변경합니다 
+"504" 에러 코드만 가지고는 많은 정보를 얻을 수 없습니다   
+istio-ingressgateway의 로그레벨을 높여서 요청의 라우팅 과정을 상세히 살펴보겠습니다  
 
-로그 레벨 조회
-
+로그 레벨 조회 ~ 다양한 logger를 제공하고 있습니다 
 ```bash
-# istioctl pc log deploy/istio-ingressgateway -n istio-system
+# istioctl pc log deploy/istio-ingressgateway.istio-system
+
 ..
 connection: warning
 ..
@@ -715,16 +801,21 @@ router: warning
 ..
 ```
 
-로그 레벨 변경
-
+로그 레벨 변경 ~ 필요한 logger 만 debug 레벨로 높입니다
 ```bash
-istioctl pc log deploy/istio-ingressgateway.istio-system --level http:debug,router:debug,connection:debug,pool:debug
+istioctl pc log deploy/istio-ingressgateway.istio-system \
+--level http:debug,router:debug,connection:debug,pool:debug
 ```
+- http : http 로그
+- router : http 요청 라우팅 로그 
+- connection : TCP 커넥션 로그 
+- pool : upstream 커넥션풀 로그 
 
 로그 저장
 
 ```bash
-kubectl logs -n istio-system deploy/istio-ingressgateway > /tmp/ingress-logs.txt
+kubectl logs -n istio-system deploy/istio-ingressgateway \
+> /tmp/ingress-logs.txt
 ```
 
 로그 확인
@@ -793,11 +884,15 @@ kubectl logs -n istio-system deploy/istio-ingressgateway > /tmp/ingress-logs.txt
 
 - SLOW_POD 의 지연으로  UT (Upstream Timeout) 으로 client 에서 disconnect 하여 504 가 발생함
 
-지금까지 istio-ingressgateway 로그 분석을 통해 에러 원인을 확인해 보았습니다 
+지금까지 istio-ingressgateway 로그 분석을 통해 에러 원인을 확인해 보았습니다   
+> istio-igressgateway (downstream) 입장에서 살펴보았을 때 upstream(`catalog-v2`) 에서 타임아웃을 초과했기 때문에 
+> 연결을 istio-ingressgateway (Envoy)에서 끊었습니다 (UT)    
+
+이번에는 upstream (`catalog-v2`, Slow Pod) 입장에서 살펴보도록 하겠습니다   
 
 ## 10.3.4 Pod 네트워크 트래픽 검사: ksniff
 
-ksniff 를 이용한 Kubernetes Pod 패킷 덤프 및 확인 
+ksniff 와 wireshark 툴을 이용해서 Slow Pod 의 패킷 덤프를 확인해 봅시다 
 
 ### KREW, KSNIFF, WIRESHARK 설치 
 
@@ -820,13 +915,8 @@ ksniff → Mac → VM → minikube (container) → pod container
 kubectl sniff <pod> -p -o -
 ```
 
-*주1) M1 minikube 환경에서 ksniff 로 pod tcpdump 출력 안됨* 
-
+*주1) M1 minikube 환경에서 ksniff 로 pod tcpdump 출력 안됨*
 - *본 실습을 수행 하려면 minikube 환경이 아닌 쿠버네티스 클러스터 사용할 것*
-
-주2) M1 vagrant-parallels 환경에서도 출력안됨
-
-[vagrant-parallels 기반 실습 환경](https://www.notion.so/vagrant-parallels-232b55ae5c1e42058145f10d33daa8f2)
 
 ### POD 네트워크 트래픽 검사
 
