@@ -1039,3 +1039,45 @@ sort_desc(
 *“나는 대답해 줄라 카는데 갸가 확 끊어불써 ~”*
 
 서버오류로 발생한 5xx가 아닌 클라이언트의 UT, 즉 서버 입장에서 보면 DC에 의한 5xx 입니다
+
+# Summary
+## 전체 스크립트
+```bash
+## 실습 경로에서 수행
+# cd book-source-code
+
+## 실습 환경 초기화
+kubectl delete ns istioinaction &&
+kubectl create ns istioinaction &&
+kubectl label ns istioinaction istio-injection=enabled
+
+kubectl delete authorizationpolicy,peerauthentication,requestauthentication -n istio-system
+
+kubectl delete deploy/sleep -n default
+kubectl delete svc/sleep -n default
+
+## 실습 환경 셋업
+## catalog v1 배포
+kubectl apply -f services/catalog/kubernetes/catalog.yaml -n istioinaction
+## catalog v2 배포
+kubectl apply -f ch10/catalog-deployment-v2.yaml -n istioinaction
+## catalog-gateway 배포 - catalog.istioinaction.io:80
+kubectl apply -f ch10/catalog-gateway.yaml -n istioinaction
+## catalog-virtualservice 배포 - destinationrule 명세 필요
+kubectl apply -f ch10/catalog-virtualservice-subsets-v1-v2.yaml -n istioinaction
+
+## misconfiguration 조치 - DestinationRule 적용
+kubectl apply -f ch10/catalog-destinationrule-v1-v2.yaml
+
+## Slow Pod
+CATALOG_POD=$(kubectl get pods -l version=v2 -n istioinaction \-o jsonpath={.items..metadata.name} | cut -d ' ' -f1) ;
+
+kubectl -n istioinaction exec -c catalog $CATALOG_POD \
+-- curl -s -X POST -H "Content-Type: application/json" \
+-d '{"active": true, "type": "latency", "volatile": true}' \
+localhost:3000/blowup ;
+
+## 타임아웃 설정
+kubectl patch vs catalog-v1-v2 -n istioinaction --type json \
+-p '[{"op": "add", "path": "/spec/http/0/timeout", "value": "0.5s"}]'
+```
