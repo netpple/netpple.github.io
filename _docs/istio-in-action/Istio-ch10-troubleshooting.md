@@ -356,7 +356,7 @@ http.8080     catalog.istioinaction.io        /*        catalog-v1-v2.istioinact
 앞에서 확인한 라우트 쿼리의 출력 정보를 이용해서 클러스터 정보를 쿼리해 보겠습니다.
 
 ```bash
-istioctl pc clusters deploy/istio-ingressgateway.istio-system \
+istioctl pc clusters deploy/istio-ingressgateway -n istio-system \
 --fqdn catalog.istioinaction.svc.cluster.local \
 --port 80 \
 --subset version-v1
@@ -367,7 +367,7 @@ istioctl pc clusters deploy/istio-ingressgateway.istio-system \
 
 아무 클러스터 정보도 출력되지 않는데요. --subset 정보만 제외하고 다시 쿼리해 봅니다
 ```bash
-istioctl pc clusters deploy/istio-ingressgateway.istio-system \
+istioctl pc clusters deploy/istio-ingressgateway -n istio-system \
 --fqdn catalog.istioinaction.svc.cluster.local \
 --port 80
 ```
@@ -423,7 +423,7 @@ kubectl apply -f ch10/catalog-destinationrule-v1-v2.yaml
 설정 적용 확인
     
 ```bash
-istioctl pc clusters deploy/istio-ingressgateway.istio-system \
+istioctl pc clusters deploy/istio-ingressgateway -n istio-system \
 --fqdn catalog.istioinaction.svc.cluster.local \
 --port 80
 ```
@@ -436,7 +436,7 @@ istioctl pc clusters deploy/istio-ingressgateway.istio-system \
 
 `--subset` 플래그를 포함해서 클러스터 정보를 쿼리해 보겠습니다.
 ```bash
-istioctl pc clusters deploy/istio-ingressgateway.istio-system \
+istioctl pc clusters deploy/istio-ingressgateway -n istio-system \
 --fqdn catalog.istioinaction.svc.cluster.local \
 --port 80 \
 --subset version-v1 \
@@ -469,7 +469,7 @@ istioctl pc clusters deploy/istio-ingressgateway.istio-system \
 
 serviceName 값으로 EDS 쿼리를 확인해 보세요 
 ```bash
-istioctl pc endpoints deploy/istio-ingressgateway.istio-system \
+istioctl pc endpoints deploy/istio-ingressgateway -n istio-system \
 --cluster "outbound|80|version-v1|catalog.istioinaction.svc.cluster.local"
 ```
 
@@ -599,7 +599,10 @@ istioctl dashboard kiali
 
 ```bash
 ## kubectl get pods 목록에서 첫번째 version=v2 파드 
-CATALOG_POD=$(kubectl get pods -l version=v2 -n istioinaction \-o jsonpath={.items..metadata.name} | cut -d ' ' -f1) ;
+CATALOG_POD=$(kubectl get pods -l version=v2 \
+-n istioinaction \
+-o jsonpath={.items..metadata.name} \
+| cut -d ' ' -f1) ;
 
 ## CATALOG_POD 에서 latency (지연) 발생하도록 처리 
 kubectl -n istioinaction exec -c catalog $CATALOG_POD \
@@ -623,7 +626,8 @@ kubectl patch vs catalog-v1-v2 -n istioinaction --type json \
 -p '[{"op": "add", "path": "/spec/http/0/timeout", "value": "0.5s"}]'
 
 ## 적용확인
-kubectl get vs catalog-v1-v2 -o jsonpath='{.spec.http[?(@.timeout=="0.5s")]}'
+kubectl get vs catalog-v1-v2 \
+-o jsonpath='{.spec.http[?(@.timeout=="0.5s")]}'
 ```
 
 아래와 같이 JSON 출력 하단에 timeout (0.5s)이 적용됐는지 확인하세요  
@@ -769,8 +773,11 @@ kubectl -n istio-system logs deploy/istio-ingressgateway \
 SLOW_POD 확인
 
 ```bash
-SLOW_POD_IP=$(kubectl -n istio-system logs deploy/istio-ingressgateway | grep 504 | tail -n 1 | jq -r .upstream_host | cut -d ":" -f1) ;
-SLOW_POD=$(kubectl get pods -n istioinaction --field-selector status.podIP=$SLOW_POD_IP -o jsonpath={.items..metadata.name})
+SLOW_POD_IP=$(kubectl -n istio-system logs deploy/istio-ingressgateway \
+| grep 504 | tail -n 1 | jq -r .upstream_host | cut -d ":" -f1) ;
+SLOW_POD=$(kubectl get pods -n istioinaction \
+--field-selector status.podIP=$SLOW_POD_IP \
+-o jsonpath={.items..metadata.name})
 
 echo $SLOW_POD
 ```
@@ -785,7 +792,7 @@ istio-ingressgateway의 로그레벨을 높여서 요청의 라우팅 과정을 
 
 로그 레벨 조회 ~ 다양한 logger를 제공하고 있습니다 
 ```bash
-# istioctl pc log deploy/istio-ingressgateway.istio-system
+# istioctl pc log deploy/istio-ingressgateway -n istio-system
 
 ..
 connection: warning
@@ -800,7 +807,7 @@ router: warning
 
 로그 레벨 변경 ~ 필요한 logger 만 debug 레벨로 높입니다
 ```bash
-istioctl pc log deploy/istio-ingressgateway.istio-system \
+istioctl pc log deploy/istio-ingressgateway -n istio-system \
 --level http:debug,router:debug,connection:debug,pool:debug
 ```
 - http : http 로그
@@ -902,33 +909,22 @@ ksniff 와 wireshark 툴을 이용해서 Slow Pod 의 패킷 덤프를 확인해
     kubectl krew install sniff
     ```
     
-- wireshark 설치 - [https://www.wireshark.org/download.html](https://www.wireshark.org/download.html)
+- wireshark 설치 - [https://www.wireshark.org/download.html](https://www.wireshark.org/download.html)  
+  FAQ) 
+  - [Error: exec: "wireshark" : executable file not found](https://github.com/eldadru/ksniff/issues/88){:target="_blank"}  
+    조치: PATH 확인. wireshark 실행 경로 추가
 
-**설치확인**
-
-ksniff → Mac → VM → minikube (container) → pod container
-
-```bash
-kubectl sniff <pod> -p -o -
-```
-
-*주1) M1 minikube 환경에서 ksniff 로 pod tcpdump 출력 안됨*
-- *본 실습을 수행 하려면 minikube 환경이 아닌 쿠버네티스 클러스터 사용할 것*
+  
+*주) M1 minikube, paralles 등 arm 환경의 클러스터에서 ksniff 로 pod tcpdump 출력이 안됨을 확인하였습니다*
+- *본 실습은 x86 환경의 쿠버네티스 클러스터에서 수행해 주세요*
 
 ### POD 네트워크 트래픽 검사
 
-참고 SLOW_POD
-
-```bash
-for in in {1..9999}; do curl http://192.168.100.2:31028/items \
--H "Host: catalog.istioinaction.io" \
--w "\nStatus Code %{http_code}\n"; sleep 1; done
-```
+👉🏻[요청 유입은 계속 유지해 줍니다](/docs/istio-in-action/Istio-ch10-troubleshooting#1033-%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98-%EC%9D%B4%EC%8A%88-%ED%8A%B8%EB%9F%AC%EB%B8%94%EC%8A%88%ED%8C%85){:target="_blank"}
 
 SLOW_POD에 tcpdump를 겁니다 
 
 ```bash
-KUBECONFIG=~/.kube/config-sfarm1; 
 kubectl sniff $SLOW_POD -n istioinaction -p -i lo
 ```
 
@@ -940,15 +936,6 @@ kubectl sniff $SLOW_POD -n istioinaction -p -i lo
     ```bash
     Error: invalid configuration: [context was not found for specified context: vagrant-admin@vagrant, cluster has no server defined]
     ```
-    
-
-트래픽 발생
-
-```bash
-for in in {1..9999}; do curl http://search-farm-dev16.dakao.io:30281/items \
--H "Host: catalog.istioinaction.io" \
--w "\nStatus Code %{http_code}\n"; sleep 1; done
-```
 
 Wireshark 확인
 
