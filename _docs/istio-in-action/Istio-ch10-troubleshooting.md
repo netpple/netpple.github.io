@@ -608,15 +608,11 @@ localhost:3000/blowup ;
 ## CATALOG_POD 확인 (기억해두세요)
 echo $CATALOG_POD
 ```
-Slow Pod 적용 후 Grafana와 Kiali 변화를 살펴보세요
+Slow Pod 적용 후 catalog-v2 레이턴시 변화를 살펴보세요
 
 ![ch10-slow-pod-grafana.png](/docs/assets/img/istio-in-action/ch10-slow-pod-grafana.png)
-
-![ch10-slow-pod-grafana.png](/docs/assets/img/istio-in-action/ch10-slow-pod-resp-kiali.png)
-
-![ch10-slow-pod-grafana.png](/docs/assets/img/istio-in-action/ch10-v1-resp-kiali.png)
-
-
+![istio-in-action/ch10-slowpod-before-kiali-v1-resp.png](/docs/assets/img/istio-in-action/ch10-slowpod-before-kiali-v1-resp.png)
+![istio-in-action/ch10-slowpod-before-kiali-v2-resp.png](/docs/assets/img/istio-in-action/ch10-slowpod-before-kiali-v2-resp.png)
 
 *2 - VirtualService 타임아웃을 0.5s 로 설정합니다*
 
