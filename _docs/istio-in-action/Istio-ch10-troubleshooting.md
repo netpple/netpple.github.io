@@ -579,6 +579,8 @@ for in in {1..9999}; do curl http://localhost/items \
 
 ![ch10-slow-pod-before-grafana.png](/docs/assets/img/istio-in-action/ch10-slow-pod-before-grafana.png)
 ![ch10-slow-pod-before-grafana.png](/docs/assets/img/istio-in-action/ch10-slow-pod-before-kiali.png)
+![istio-in-action/ch10-slowpod-before-kiali-v1-resp.png](/docs/assets/img/istio-in-action/ch10-slowpod-before-kiali-v1-resp.png)
+![istio-in-action/ch10-slowpod-before-kiali-v2-resp.png](/docs/assets/img/istio-in-action/ch10-slowpod-before-kiali-v2-resp.png)
 
 (참고)
 ```bash
@@ -611,8 +613,7 @@ echo $CATALOG_POD
 Slow Pod 적용 후 catalog-v2 레이턴시 변화를 살펴보세요
 
 ![ch10-slow-pod-grafana.png](/docs/assets/img/istio-in-action/ch10-slow-pod-grafana.png)
-![istio-in-action/ch10-slowpod-before-kiali-v1-resp.png](/docs/assets/img/istio-in-action/ch10-slowpod-before-kiali-v1-resp.png)
-![istio-in-action/ch10-slowpod-before-kiali-v2-resp.png](/docs/assets/img/istio-in-action/ch10-slowpod-before-kiali-v2-resp.png)
+
 
 *2 - VirtualService 타임아웃을 0.5s 로 설정합니다*
 
