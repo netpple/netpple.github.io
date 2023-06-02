@@ -4,8 +4,8 @@ title: Welcome to Netpple
 permalink: /
 ---
 #### 공지
-*(5/8) NEW 👍🏻[Istio Troubleshooting](/docs/istio-in-action/Istio-ch10-troubleshooting){:target="_blank"}*  
-*(4/29) Istio 실습 연재를 모아서 [Istio IN ACTION](/docs/istio-in-action/){:target="_blank"} 메뉴를 개설하였습니다*  
+*(6/2) NEW 👍🏻 [Istio Performance](/docs/istio-in-action/Istio-ch11-performance){:target="_blank"}*  
+
 
 ## 새로운 글 
 {% if site.posts.size > 0 %}
