@@ -52,6 +52,9 @@ kubectl label ns istioinaction istio-injection=enabled
 
 ## istio-system 초기화 
 kubectl delete sidecar,authorizationpolicy,peerauthentication,requestauthentication -n istio-system --all
+
+## istiod 초기화
+istioctl install --set profile=demo
 ```
 
 # 11.1 The control plane’s primary goal
