@@ -46,8 +46,8 @@ histories:
 
 ```bash
 ## istioinaction 초기화  
-kubectl delete ns istioinaction
-kubectl create ns istioinaction
+kubectl delete ns istioinaction &&
+kubectl create ns istioinaction &&
 kubectl label ns istioinaction istio-injection=enabled
 
 ## istio-system 초기화 
