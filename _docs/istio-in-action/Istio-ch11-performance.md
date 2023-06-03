@@ -18,7 +18,7 @@ histories:
 ---
 
 
-11장에서는 Istio control-plane performance tuning 에 대해 다룹니다
+11장에서는 Istio 의 컨트롤 플레인의 성능 튜닝에 대해 다룹니다
 
 <!--more-->
 
@@ -29,10 +29,10 @@ histories:
 
 ## 다루는 내용
 
-- 컨트롤플레인의 퍼포먼스 요소 이해
-- 퍼포먼스 모니터링 방법 알기
-- 퍼포먼스를 확인하는 주요 지표
-- 퍼포먼스 최적화 방법 이해 👈🏻 *`Goal!`*
+- 컨트롤플레인의 성능 요소 이해
+- 성능 모니터링 방법 알기
+- 성능을 확인하는 주요 지표
+- 성능 최적화 방법 이해 👈🏻 *`Goal!`*
 
 ## 실습환경
 
@@ -56,53 +56,52 @@ kubectl delete sidecar,authorizationpolicy,peerauthentication,requestauthenticat
 ## istiod 초기화
 istioctl install --set profile=demo
 ```
+<br />
 
-# 11.1 The control plane’s primary goal
+# 11.1 컨트롤 플레인의 최우선 목표 
 
-Goal : “Synchronizing the data plane to the desired state”
+> *“데이터 플레인을 Desired State 로 동기화 (Sync) 하는 것”*  
+>
+>![ch11-istio-controlplane-sync.png](/docs/assets/img/istio-in-action/ch11-istio-controlplane-sync.png)
+>
 
-컨트롤플레인의 주요 목표는 “데이터플레인을 desired state 로 동기화 하는 것”입니다
 
-![ch11-istio-controlplane-sync.png](/docs/assets/img/istio-in-action/ch11-istio-controlplane-sync.png)
+**서비스 메시 환경의 설정과 제어**  
 
-*mesh 환경 설정 및 제어*
+1) mesh operator API
+- 컨트롤플레인은 서비스 메쉬의 “뇌”에 해당하는데요
+- 컨트롤플레인은 서비스 “mesh operator” 에 대한 API를 제공합니다
+- 이 API를 통해서 메쉬의 동작을 조작하고 서비스 프록시를 설정합니다
+- 지금까지 주로 이 API에 대한 얘기를 다뤄 왔는데요 이게 전부가 아닙니다
+- 서비스디스커버리, 서비스 상태, 오토스케일링 이벤트 등등 각종 런타임 환경에 대한 세부적인 많은 것들이 컨트롤프레인으로 추상화 되어 있습니다
+- Istio 컨트롤플레인은 “kubernetes events”를 watch 하여 런타임 변경상황에 대해서 지속적으로 반응하고 메시 설정에 반영합니다
 
-- mesh operator API
-    - 컨트롤플레인은 서비스 메쉬의 “뇌”에 해당하는데요
-    - 컨트롤플레인은 서비스 “mesh operator” 에 대한 API를 제공합니다
-    - 이 API를 통해서 메쉬의 동작을 조작하고 서비스 프록시를 설정합니다
-    - 지금까지 주로 이 API에 대한 얘기를 다뤄 왔는데요 이게 전부가 아닙니다
-    - 서비스디스커버리, 서비스 상태, 오토스케일링 이벤트 등등 각종 런타임 환경에 대한 세부적인 많은 것들이 컨트롤프레인으로 추상화 되어 있습니다
-    - Istio 컨트롤플레인은 “kubernetes events”를 watch 하여 런타임 변경상황에 대해서 지속적으로 반응하고 메시 설정에 반영합니다
-- kubernetes events
-    - reflect the “new desired state” (on going process)
-    - state reconciliation process happens in a timely fashion (타이밍 이슈)
-        - 일시적으로 컨트롤플레인에 장애가 발생하면 워크로드에 변화된 상태를 반영하지 못할 수 있다
-        - 예) phantom workloads (유령 워크로드) ⇒ 이미 제거된 엔드포인트로 트래픽 라우팅 발생
-            1. unhealthy (병약한) workload 에 대해 이벤트 발생
-            2. delayed update ⇒ stale configuration 초래 
-            3. outdated(stale) configuration ⇒ non-existent (phantom) workload 로 트래픽 라우팅 초래
-            ”이미 죽은 워크로드” 인데 살아 있는 줄 알고 트래픽을 보내는 상황을 빗대어 “phantom(유령) 워크로드” 로 표현
+2) kubernetes events
+- reflect the “new desired state” (on going process)
+- state reconciliation process happens in a timely fashion (타이밍 이슈)
+- 컨트롤 플레인에 (일시적으로) 장애가 발생하면 워크로드에 변화된 상태를 반영하지 못할 수 있다
+- 예) Phantom Workloads (유령 워크로드) ⇒ 이미 제거된 엔드포인트로 트래픽 라우팅 발생
+    1. unhealthy (병약한) workload 에 대해 이벤트 발생
+    2. delayed update ⇒ stale configuration 초래 
+    3. outdated(stale) configuration ⇒ non-existent (phantom) workload 로 트래픽 라우팅 초래
+    ”이미 죽은 워크로드” 인데 살아 있는 줄 알고 트래픽을 보내는 상황을 빗대어 “phantom(유령) 워크로드” 로 표현
                 
-                ![ch11-istio-phantom-workload-routes.png](/docs/assets/img/istio-in-action/ch11-istio-phantom-workload-routes.png)
+![ch11-istio-phantom-workload-routes.png](/docs/assets/img/istio-in-action/ch11-istio-phantom-workload-routes.png)
                 
-        - “Eventually consistent nature” ~ 이처럼 데이터플레인에서 “일시적인 불일치를 허용하는 특징”을 이해해야 합니다
-        - 언제든 stale/outdated configuration 이 발생할 수 있기 때문에 안좋은 상황을 초래하지 않으려면 이를 보완할 방법이 필요합니다
+- “Eventually consistent nature” ~ 이처럼 데이터 플레인에서 “일시적인 불일치를 허용하는 특징”을 이해해야 합니다
+- 언제든 stale/outdated configuration 이 발생할 수 있기 때문에 안좋은 상황을 초래하지 않으려면 **이를 보완할 방법이 필요**합니다
             
-            (방법1) retry 하여 다른 healthy 엔드포인트로 라우트 하는 방법이 있습니다 
-            
-            (방법2) outlier detection 을 통해 요청이 실패한 엔드포인트를 클러스터에서 제거하는 방법도 있습니다
+(방법1) retry 하여 다른 healthy 엔드포인트로 라우트 하는 방법이 있습니다   
+(방법2) outlier detection 을 통해 요청이 실패한 엔드포인트를 클러스터에서 제거하는 방법도 있습니다
             
 
-## 11.1.1 Understanding the steps of data-plane synchronization
-
-컨트롤 플레인의 주요 목표 : “Sync” . 데이터 플레인의 “desired state” 동기화 
+## 11.1.1 데이터 플레인의 동기화 과정 이해하기  
 
 *데이터 플레인 동기화 과정*
 
-- 컨트롤 플레인에서  쿠버네티스 “**이벤트**” **수신** “desired state”
-- “이벤트”를 “Envoy **컨피그**”로 **변환**
-- “Envoy 컨피그”를 데이터플레인의 서비스 프록시(**Envoy**)로 **푸시**
+1. 컨트롤 플레인에서  쿠버네티스 “**이벤트**” **수신** “desired state”
+2. “이벤트”를 “Envoy **컨피그**”로 **변환**
+3. “Envoy 컨피그”를 데이터플레인의 서비스 프록시(**Envoy**)로 **푸시**
 
 아래 그림에서 좀 더 상세하게 절차를 살펴봅시다
 
@@ -114,26 +113,33 @@ Goal : “Synchronizing the data plane to the desired state”
     * 좀 더 부연하자면 이벤트가 와리가리 할 수 있기 때문에 일정시간 이벤트를 모아서 중복이벤트들은  제거하고 한번에 처리할 수 있는 이벤트들은 merge 하는 등의 작업이 debounce 입니다
     * 예를 들어, 사용자가 토글 버튼을 클릭하는 이벤트를 처리한다고 합시다. 이 때, 일정시간 동안 사용자의 클릭 (이벤트)에 대한 처리를 대기하게 하면 대기시간 동안에 사용자가 토글버튼을 여러번 클릭 하더라도 해당 이벤트들을 모아서 최종적인 이벤트 판정은 한번만 내림으로써 시스템 처리 부담을 줄일 수 있습니다. 이러한 기법이 debounce 입니다
 3. Add to queue 
-4. Throttle - queue 에서 Convert 단계로의 이벤트 유입을 조절하여 최적의 퍼포먼스를 낼 수 있도록 합니다 
+4. Throttle - queue 에서 Convert 단계로의 이벤트 유입을 조절하여 최적의 성능을 낼 수 있도록 합니다 
 - Convert - 그림에서 단계가 생략돼 있지만, 이벤트를 envoy 설정으로 변환하는 주요한 과정입니다
 앞서 쓰로틀링을 하는 이유도 Convert 단계의 처리부하를 조절하기 위한 목적이죠
 1. Push - Convert가 완료된 envoy 설정을 데이터플레인의 각 워크로드로 push 합니다 
 
-## 11.1.2 Factors that determine performance
+## 11.1.2 성능을 결정하는 요소
 
 ![ch11-istio-performance-1.png](/docs/assets/img/istio-in-action/ch11-istio-performance-1.png)
 
 
-*퍼포먼스를 결정하는 요소*
+*성능을 결정하는 요소*
 
 - Rate of changes - 이벤트가 많은가요 ? (자주, 많이 뭔가 바뀌나요)
 - Allocated resources  - (처리량 대비) istiod 리소스는 충분한가요 ?
 - Config size - Envoy 컨피그 크기(size) 가 큰가요?
 - Workload count - 업데이트할 워크로드가 많나요 ?
 
-앞으로 퍼포먼스 최적화를 위해 이러한 요소들을 어떻게 다루는지 살펴볼텐데요. 그러기에 앞서 Grafana 대시보드를 통해서 병목 (bottleneck) 여부를 판단하는 방법을 알아보겠습니다 
+앞으로 성능 최적화를 위해 이러한 요소들을 어떻게 다루는지 살펴볼텐데요.   
+그러기에 앞서 Grafana 대시보드를 통해서 병목 (bottleneck) 여부를 판단하는 방법을 알아보겠습니다 
+```bash
+## grafana 대시보드를 띄워주세요
+istioctl dashboard grafana
+```
 
-# 11.2 Monitoring the control plane
+<br />
+
+# 11.2 컨트롤 플레인 모니터링 하기 
 
 istiod 는 컨트롤플레인의 상황을 진단할 수 있는 메트릭을 제공합니다.
 
@@ -141,17 +147,17 @@ Istio 공식문서에도 제공하는 메트릭들에 대해 안내하고 있습
 
 하지만, 메트릭이 워낙 다양하고 많기 때문에 어디에 중점을 두어야 할지에 대해서 “*four golden signal*” 관점에서 설명해 보도록 하겠습니다 
 
-## 11.2.1 The four golden signals of the control plane
+## 11.2.1 컨트롤 플레인의 4 Golden Signals 
 
-4 golden signals : latency, saturation, errors, traffic
+4 Golden Signals ~ latency, saturation, errors, traffic
 
 ```bash
 kubectl exec -it -n istio-system deploy/istiod -- curl localhost:15014/metrics
 ```
 
-### LATENCY: THE TIME NEEDED TO UPDATE THE DATA PLANE
+### LATENCY: 데이터 플레인의 업데이트 시간 지연
 
-> 레이턴시는 엔드유저 시각에서 서비스 퍼포먼스에 대한 외적인 뷰를 제공합니다
+> 레이턴시는 엔드유저 시각에서 서비스 성능에 대한 외적인 뷰를 제공합니다
 > 
 
 Latency
@@ -214,7 +220,7 @@ histogram_quantile(0.999, sum(rate(pilot_xds_push_time_bucket[1m])) by (le))
 레이턴시는 컨트롤플레인의 성능저하를 나타내는 가장 좋은 indicator 입니다. 
 그렇지만 성능저하의 근본적인 원인을 알 수 있는 추가적인 인사이트를 제공해 주지는 않습니다. 
 
-### SATURATION: HOW FULL IS THE CONTROL PLANE?
+### SATURATION: 컨트롤 플레인의 리소스 여유는 ? 
 
 > “saturation”은 사용중인 리소스의 사용률(utilization)을 보여줍니다.
 > 
@@ -236,7 +242,7 @@ CPU utilization 을 나타내는 메트릭은 다음과 같습니다
 > *When the control plane is saturated, it is running short on resources, and you should reconsider how much is allocated. If you’ve tried other approches to optimize the behavior of the control plane, increasing resources may be the best option.*
 > 
 
-### TRAFFIC: WHAT IS THE LOAD ON THE CONTROL PLANE?
+### TRAFFIC: 컨트롤 플레인의 부하는 ? 
 
 > 트래픽은 시스템의 부하상황을 측정합니다
 > 
@@ -253,7 +259,7 @@ CPU utilization 을 나타내는 메트릭은 다음과 같습니다
 
 - 데이터플레인으로 업데이트 Push
 
-퍼포먼스를 제한하는 요인을 찾기 위해서는 양쪽 트래픽을 모두 측정할 필요가 있는데요. 이에 기반하여 퍼포먼스 향상을 위해 방향별 접근이 필요합니다
+성능을 제한하는 요인을 찾기 위해서는 양쪽 트래픽을 모두 측정할 필요가 있는데요. 이에 기반하여 성능 향상을 위해 방향별 접근이 필요합니다
 
 *incoming 트래픽 메트릭*
 
@@ -288,7 +294,7 @@ incoming / outgoing 트래픽 구분은 포화의 원인과 가능한 대처방�
 
 해결방법은 컨트롤 플레인을 **스케일아웃** 하여 pilot 당 인스턴스(워크로드) 수를 줄여야 합니다 * pilot 은 워크로드를 관리하고 워크로드 별로 사이드카 리소스를 정의합니다  
 
-### ERRORS: WHAT IS THE FAILURE RATE IN THE CONTROL PLANE?
+### ERRORS: 컨트롤 플레인의 실패율은 얼마인가 ? 
 
 > 에러는 istiod의 실패율(failure rate)을 나타냅니다
 > 
@@ -303,11 +309,13 @@ incoming / outgoing 트래픽 구분은 포화의 원인과 가능한 대처방�
 - `pilot_xds_write_timeout` : 푸시 처리 중 에러/타임아웃 집계
 - `pilot_xds_push_context_errors` : Envoy 컨피그 생성 중 pilot 에러 건 수  (대부분 bug 에 기인)
 
-위의 메트릭들은 컨트롤플레인의 상태에 대한 인사이트를 제공하고 얼마나 퍼포먼스를 내고 있는지, 성능 병목을 밝혀낼 수 있도록 돕습니다.
+위의 메트릭들은 컨트롤플레인의 상태에 대한 인사이트를 제공하고 얼마나 성능을 내고 있는지, 성능 병목을 밝혀낼 수 있도록 돕습니다.
 
-# 11.3 Tuning performance
+<br />
 
-Control plane’s performance factors
+# 11.3 성능 튜닝
+
+컨트롤 플레인의 성능 요소
 
 - the rate of changes
 - the resources allocated to it
@@ -316,7 +324,7 @@ Control plane’s performance factors
 
 ![스크린샷 2023-03-25 오전 11.55.24.png](/docs/assets/img/istio-in-action/ch11-istio-performance-options.png)
 
-컨트롤플레인 퍼포먼스 조절하기
+컨트롤플레인 성능 조절하기
 
 - Ignoring events
 - Batching events
@@ -327,9 +335,7 @@ Control plane’s performance factors
     - Reduces the configuration size
     - Reduces the number of proxies
 
-## 11.3.1 Setting up the workspace
-
-### 실습환경 셋업
+## 11.3.1 실습 환경  
 
 catalog 를 배포합니다 - istio-ingressgateway 로 부터 catalog.istioinaction.io:80 호출을 허용합니다
 
@@ -367,11 +373,9 @@ istiod 가 관리하는 워크로드의 총개수는 13개 (ingress/egress gatew
 
 ⇒ 이로 인해  Envoy Configuration 을 생성하기 위한 처리량이 증가하였고, 워크로드에 푸시되는 configuration 사이즈가 (불필요하게) 커졌습니다 (bloats the config) .
 
-## 11.3.2 Measuring performance before optimization
+## 11.3.2 성능 측정: 최적화 이전 상태
 
-(실험설계)
-
-컨트롤플레인의 성능을 측정합니다
+(실험설계) 컨트롤플레인의 성능을 측정합니다
 
 - service 생성을 반복하여 부하를 발생시키고
 - config 업데이트를 프록시로 배포하기 위한
@@ -404,9 +408,9 @@ Push count: 514
 Latency in the last minute: 0.0990 seconds
 ```
 
-### REDUCING CONFIGURATION SIZE AND NUMBER OF PUSHES USING SIDECARS
+### 컨피그 사이즈 및 푸시 개수 줄이기 
 
-“Sidecar” 리소스 설정 ~  컨피그 사이즈와 `Push count` 줄이기 
+`Sidecar` 커스텀 리소스 설정 ~  컨피그 사이즈와 `Push count` 줄이기 
 
 *컨피그 사이즈 측정*
 
@@ -422,7 +426,7 @@ du -sh /tmp/config_dump
 
 “2.0M” (2메가) 정도 출력될 것입니다. 워크로드 당 컨피그 사이즈가 2메가 라고 하면 중간규모의 클러스터의 경우 워크로드 수가 대략 200개 수준에서 전체 Envoy 컨피그 크기는 400메가 입니다. 컨피그 사이즈가 커질수록 컨피그가 저장된 사이드카 프록시 마다 컴퓨팅 파워, 네트웍 대역폭, 메모리를 더 필요로 하게 됩니다 
 
-### THE SIDECAR RESOURCE
+### Sidecar 커스텀 리소스 
 
 *“Envoy Config.” 사이즈를 줄여보자* 
 
@@ -461,7 +465,7 @@ Sidecar 커스텀 리소스를 설정하면 개별 프록시별로 관련된 **�
 > *As a result, it avoids generating and distributing all the configurations on how to reach every other service, thus reducing CPU, memory, and network bandwidth consumption.*
 > 
 
-### DEFINING BETTER DEFAULTS WITH A MESH-WIDE SIDECAR CONFIGURATION
+### mesh-wide Sidecar 설정 
 
 “*디폴트 설정 (mesh-wide) 을 하자 ~ `Sidecar` 명세”*
 
@@ -501,7 +505,7 @@ kubectl -n istio-system apply -f ch11/sidecar-mesh-wide.yaml
 
 `516K	/tmp/config_dump`
 
-다시 퍼포먼스 측정을 해봅시다
+다시 성능 측정을 해봅시다
 
 ```bash
 ..
@@ -523,7 +527,7 @@ Latency in the last minute: 0.0990 seconds # <-- 0.10 seconds
 - mesh 의 운영 cost를 절감하는데 도움이 됩니다
 - 워크로드 별로 egress 트래픽을 명확하게 정의하는 것은 좋은 습관입니다
 
-## 11.3.3 Ignoring events: Reducing the scope of discovery using discovery selectors
+## 11.3.3 이벤트 무시하기: 필요한 이벤트만 watch 하자  
 
 “*디스커버리 scope 을 줄이자  ~ IstioOperator `meshConfig.discoverySelectors`“*
 
@@ -572,9 +576,9 @@ istioctl install -y -f ch11/istio-discovery-selector.yaml
 kubectl label ns new-namespace istio-exclude=true
 ```
 
-## 11.3.4 Event-batching and push-throttling properties
+## 11.3.4 이벤트 batch 와 푸시 쓰로틀링 설정 
 
-### INCREASING THE BATCHING PERIOD
+### batch 기간 늘리기
 
 Push count 를 줄이기 위한 전략임 ⇒ 배치 기간 (PILOT_DEBOUNCE_AFTER) 동안 이벤트 merge 를 통해 중복을 최소화함으로써 큐에 push 되는 이벤트 개수를 줄임
 
@@ -602,7 +606,7 @@ env:
 ...
 ```
 
-다시 퍼포먼스 측정을 해봅시다
+다시 성능 측정을 해봅시다
 
 ```bash
 ..
@@ -613,7 +617,7 @@ Push count: 63  # <-- 70
 Latency in the last minute : 0.0990 seconds
 ```
 
-### LATENCY METRICS DO NOT ACCOUNT FOR  THE DEBOUNCE PERIOD !
+### LATENCY 메트릭은 DEBOUNCE 기간을 포함하지 않아요 ! 
 
 레이턴시는 push 큐 부터의 시간을 측정 ⇒  debounce 시간이 포함안됨 (아래 그림 참고)
 
@@ -630,9 +634,7 @@ Latency in the last minute : 0.0990 seconds
 - 데이터 플레인에서 흔히 엔드포인트 업데이트가 늦게 반영되는 경우가 있는데요
 ⇒ `PILOG_ENABLE_EDS_DEBOUNCE` 설정을 `false` 로 하면 디바운싱으로 인해 엔드포인트 업데이트가 늦게 반영되지 않도록 디바운싱 단계를 skip 할 수 있음
 
-### ALLOCATING ADDITIONAL RESOURCES TO THE CONTROL PLANE
-
-istiod scaling
+### 컨트롤 플레인에 추가 리소스 할당하기 
 
 ```bash
 istioctl install --set profile=demo \
@@ -656,9 +658,11 @@ istioctl install --set profile=demo \
 - Scale-out : workloads 를 나눠서(splitting) 처리
 - Scale-up : Pilot 에 리소스(cpu/mem)를 더 할당하여 처리량을 늘린다
 
-# 11.4 Performance tuning guidelines
+<br />
 
-Istio is really performant. 
+# 11.4 성능 튜닝 가이드
+
+Istio 는 성능이 뛰어납니다  
 
 > [Single Istio Pilot 1.13.4](https://istio.io/v1.13/docs/ops/deployment/performance-and-scalability/) (**1** vcore / **1.5**GB memory)
 > 
@@ -698,7 +702,7 @@ production 권장 스펙 :  2x vCPUs / 2GB /w 3 replicas
 # Summary
 
 - 컨트롤 플레인의 Primary Goal 은 데이터 플레인 싱크를 최신 (disired state) 으로 유지하는 것임
-- Istiod 의 퍼포먼스에 영향을 주는 요소들은 다음과 같음
+- Istiod 의 성능에 영향을 주는 요소들은 다음과 같음
     - 변화율, the rate of changes
     - 리소스, the resources allocated to the istiod
     - 워크로드 수, the workload count istiod manages
