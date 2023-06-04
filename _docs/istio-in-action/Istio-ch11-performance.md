@@ -29,7 +29,7 @@ histories:
 
 ## 다루는 내용
 
-- 컨트롤플레인의 성능 요소 이해
+- 컨트롤 플레인의 성능 요소 이해
 - 성능 모니터링 방법 알기
 - 성능을 확인하는 주요 지표
 - 성능 최적화 방법 이해 👈🏻 *`Goal!`*
@@ -69,31 +69,43 @@ istioctl install --set profile=demo
 **서비스 메시 환경의 설정과 제어**  
 
 1) mesh operator API
-- 컨트롤플레인은 서비스 메쉬의 “뇌”에 해당하는데요
-- 컨트롤플레인은 서비스 “mesh operator” 에 대한 API를 제공합니다
-- 이 API를 통해서 메쉬의 동작을 조작하고 서비스 프록시를 설정합니다
-- 지금까지 주로 이 API에 대한 얘기를 다뤄 왔는데요 이게 전부가 아닙니다
-- 서비스디스커버리, 서비스 상태, 오토스케일링 이벤트 등등 각종 런타임 환경에 대한 세부적인 많은 것들이 컨트롤프레인으로 추상화 되어 있습니다
-- Istio 컨트롤플레인은 “kubernetes events”를 watch 하여 런타임 변경상황에 대해서 지속적으로 반응하고 메시 설정에 반영합니다
+- 컨트롤 플레인은 서비스 메시의 “뇌”에 해당하는데요
+- 컨트롤 플레인은 서비스 메시 제어를 위한 API를 제공합니다
+- 앞에서 Istio의 여러 커스텀 리소스를 살펴 보았는데요  
+- Gateway, VirtualService, DestinationRules ...
+- 이 API를 통해서 메시의 동작을 조작하고 서비스 프록시를 설정합니다
+- 지금까지는 주로 이 API에 대한 얘기를 다뤄 왔는데요 이게 전부가 아닙니다
+
+> 서비스디스커버리, 서비스 상태, 오토스케일링 이벤트 등등 각종 런타임 환경에 대한 세부적인 많은 것들이 컨트롤프레인으로 추상화 되어 있습니다  
+> Istio 컨트롤 플레인은 “kubernetes events”를 watch 하여 런타임 변경상황에 대해서 지속적으로 반응하고 메시 설정에 반영합니다
+>   
 
 2) kubernetes events
-- reflect the “new desired state” (on going process)
-- state reconciliation process happens in a timely fashion (타이밍 이슈)
-- 컨트롤 플레인에 (일시적으로) 장애가 발생하면 워크로드에 변화된 상태를 반영하지 못할 수 있다
-- 예) Phantom Workloads (유령 워크로드) ⇒ 이미 제거된 엔드포인트로 트래픽 라우팅 발생
-    1. unhealthy (병약한) workload 에 대해 이벤트 발생
-    2. delayed update ⇒ stale configuration 초래 
-    3. outdated(stale) configuration ⇒ non-existent (phantom) workload 로 트래픽 라우팅 초래
-    ”이미 죽은 워크로드” 인데 살아 있는 줄 알고 트래픽을 보내는 상황을 빗대어 “phantom(유령) 워크로드” 로 표현
+- `new desired state` 를 "지속적으로 반영"하는 프로세스 필요
+- state 를 반영하는 프로세스는 언제든 "타이밍 이슈"가 발생할 수 있음  
+- 컨트롤 플레인에 "일시적 장애"가 발생하면 워크로드에 변화된 상태를 반영하지 못할 수 있음
+- 예) Phantom Workloads (유령 워크로드) ⇒ 이미 제거된 엔드포인트로 트래픽 라우팅
+    1. unhealthy workload 에 대해 이벤트 발생
+    2. 업데이트 지연 ⇒ `stale configuration` 초래   
+       *stale(outdated, 오래된) configuration: 새로운 설정값이 아직 반영이 안된 오래된 설정  
+    3. `stale configuration` ⇒ 존재하지 않는 (phantom) 워크로드로 트래픽 라우팅 초래
+
+> 이미 죽은 워크로드” 인데 살아 있는 줄 알고 트래픽을 보내는 상황을 빗대어 “phantom(유령) 워크로드” 로 표현  
+> Istio 에서 unhealty workload 로 트래픽 라우팅을 결정하는 시점과   
+> 쿠버네티스에서 unhealthy workload 를 정리하는 이벤트 사이에 미묘한 타이밍 이슈가 발생할 수 있음
+> 
                 
 ![ch11-istio-phantom-workload-routes.png](/docs/assets/img/istio-in-action/ch11-istio-phantom-workload-routes.png)
                 
-- “Eventually consistent nature” ~ 이처럼 데이터 플레인에서 “일시적인 불일치를 허용하는 특징”을 이해해야 합니다
-- 언제든 stale/outdated configuration 이 발생할 수 있기 때문에 안좋은 상황을 초래하지 않으려면 **이를 보완할 방법이 필요**합니다
+“Eventually consistent nature” ~ 이처럼 데이터 플레인에서 “일시적인 불일치를 허용하는 특징”을 이해해야 합니다  
+
+즉, `stale configuration` 은 언제든 발생할 수 있습니다. [6장 Resilience](/docs/istio-in-action/Istio-ch6-resilience) 에서 이를 보완하는 방법을 살펴보았습니다 
             
-(방법1) retry 하여 다른 healthy 엔드포인트로 라우트 하는 방법이 있습니다   
-(방법2) outlier detection 을 통해 요청이 실패한 엔드포인트를 클러스터에서 제거하는 방법도 있습니다
+- (방법1) `retry` 하여 다른 healthy 엔드포인트로 라우트 하는 방법   
+- (방법2) `outlier detection` 을 통해 요청이 실패한 엔드포인트를 클러스터에서 제거하는 방법
             
+*이처럼 서비스 메시에서 "동기화 (Sync)"는 중요한데요. 컨트롤 플레인에서 어떻게 새로운 설정과 상태를 지속적으로 데이터 플레인에 동기화 하는지 이어서 살펴보겠습니다*
+   
 
 ## 11.1.1 데이터 플레인의 동기화 과정 이해하기  
 
@@ -101,7 +113,7 @@ istioctl install --set profile=demo
 
 1. 컨트롤 플레인에서  쿠버네티스 “**이벤트**” **수신** “desired state”
 2. “이벤트”를 “Envoy **컨피그**”로 **변환**
-3. “Envoy 컨피그”를 데이터플레인의 서비스 프록시(**Envoy**)로 **푸시**
+3. “Envoy 컨피그”를 데이터 플레인의 서비스 프록시(**Envoy**)로 **푸시**
 
 아래 그림에서 좀 더 상세하게 절차를 살펴봅시다
 
@@ -116,7 +128,7 @@ istioctl install --set profile=demo
 4. Throttle - queue 에서 Convert 단계로의 이벤트 유입을 조절하여 최적의 성능을 낼 수 있도록 합니다 
 - Convert - 그림에서 단계가 생략돼 있지만, 이벤트를 envoy 설정으로 변환하는 주요한 과정입니다
 앞서 쓰로틀링을 하는 이유도 Convert 단계의 처리부하를 조절하기 위한 목적이죠
-1. Push - Convert가 완료된 envoy 설정을 데이터플레인의 각 워크로드로 push 합니다 
+1. Push - Convert가 완료된 envoy 설정을 데이터 플레인의 각 워크로드로 push 합니다 
 
 ## 11.1.2 성능을 결정하는 요소
 
@@ -141,7 +153,7 @@ istioctl dashboard grafana
 
 # 11.2 컨트롤 플레인 모니터링 하기 
 
-istiod 는 컨트롤플레인의 상황을 진단할 수 있는 메트릭을 제공합니다.
+istiod 는 컨트롤 플레인의 상황을 진단할 수 있는 메트릭을 제공합니다.
 
 Istio 공식문서에도 제공하는 메트릭들에 대해 안내하고 있습니다 
 
@@ -207,7 +219,7 @@ histogram_quantile(0.999, sum(rate(pilot_xds_push_time_bucket[1m])) by (le))
 
 99분위수 10ms 이내
 
-*메쉬에 워크로드들이 추가될 수록 살펴본 메트릭들의 레이턴시는 점진적으로 증가합니다*
+*메시에 워크로드들이 추가될 수록 살펴본 메트릭들의 레이턴시는 점진적으로 증가합니다*
 
 약간의 증가에 대해서는 우려할 필요는 없겠지만, 수용가능한 레이턴시 수준에 대한 스레숄드를 정하고 이를 초과하는 경우에는 알람을 발생하도록 합니다  (아래는 권장 사항)
 
@@ -217,7 +229,7 @@ histogram_quantile(0.999, sum(rate(pilot_xds_push_time_bucket[1m])) by (le))
 처음 알람을 받았을 때 당황할 필요는 없습니다; 단지 서비스 레이턴시가 증가했고 성능 최적화가 필요하다는 신호입니다. 
 하지만, 확인하지 않고 방치한다면 추가적인 성능저하로 엔드유저가 영향을 받게 될 수 있습니다. 
 
-레이턴시는 컨트롤플레인의 성능저하를 나타내는 가장 좋은 indicator 입니다. 
+레이턴시는 컨트롤 플레인의 성능저하를 나타내는 가장 좋은 indicator 입니다. 
 그렇지만 성능저하의 근본적인 원인을 알 수 있는 추가적인 인사이트를 제공해 주지는 않습니다. 
 
 ### SATURATION: 컨트롤 플레인의 리소스 여유는 ? 
@@ -257,7 +269,7 @@ CPU utilization 을 나타내는 메트릭은 다음과 같습니다
 
 *outgoing 트래픽* 
 
-- 데이터플레인으로 업데이트 Push
+- 데이터 플레인으로 업데이트 Push
 
 성능을 제한하는 요인을 찾기 위해서는 양쪽 트래픽을 모두 측정할 필요가 있는데요. 이에 기반하여 성능 향상을 위해 방향별 접근이 필요합니다
 
@@ -301,7 +313,7 @@ incoming / outgoing 트래픽 구분은 포화의 원인과 가능한 대처방�
 
 에러는 서비스 포화 상태, 성능 저하 상황에서 항상 발생합니다. 
 
-컨트롤플레인에서 “가장 중요한 에러 메트릭”은 다음과 같습니다
+컨트롤 플레인에서 “가장 중요한 에러 메트릭”은 다음과 같습니다
 
 - `pilot_total_xds_rejects` : 컨피그 푸시 reject 건 수
     - `pilot_total_xds_rejects` 의 서브셋 집계
@@ -309,7 +321,7 @@ incoming / outgoing 트래픽 구분은 포화의 원인과 가능한 대처방�
 - `pilot_xds_write_timeout` : 푸시 처리 중 에러/타임아웃 집계
 - `pilot_xds_push_context_errors` : Envoy 컨피그 생성 중 pilot 에러 건 수  (대부분 bug 에 기인)
 
-위의 메트릭들은 컨트롤플레인의 상태에 대한 인사이트를 제공하고 얼마나 성능을 내고 있는지, 성능 병목을 밝혀낼 수 있도록 돕습니다.
+위의 메트릭들은 컨트롤 플레인의 상태에 대한 인사이트를 제공하고 얼마나 성능을 내고 있는지, 성능 병목을 밝혀낼 수 있도록 돕습니다.
 
 <br />
 
@@ -324,7 +336,7 @@ incoming / outgoing 트래픽 구분은 포화의 원인과 가능한 대처방�
 
 ![스크린샷 2023-03-25 오전 11.55.24.png](/docs/assets/img/istio-in-action/ch11-istio-performance-options.png)
 
-컨트롤플레인 성능 조절하기
+컨트롤 플레인 성능 조절하기
 
 - Ignoring events
 - Batching events
@@ -375,7 +387,7 @@ istiod 가 관리하는 워크로드의 총개수는 13개 (ingress/egress gatew
 
 ## 11.3.2 성능 측정: 최적화 이전 상태
 
-(실험설계) 컨트롤플레인의 성능을 측정합니다
+(실험설계) 컨트롤 플레인의 성능을 측정합니다
 
 - service 생성을 반복하여 부하를 발생시키고
 - config 업데이트를 프록시로 배포하기 위한
