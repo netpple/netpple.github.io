@@ -415,8 +415,6 @@ bin/performance-test.sh --reps 10 --delay 2.5 \
 ```bash
 ## 출력
 ..
-gateway.networking.istio.io/service-0373-0 created
-service/service-0373-0 created
 <생략>
 ==============
 Push count: 514
@@ -516,17 +514,27 @@ kubectl -n istio-system apply -f ch11/sidecar-mesh-wide.yaml
 
 *컨피그 사이즈 다시 확인*
 
+```bash
+CATALOG_POD=$(kubectl -n istioinaction get pod -l app=catalog -o jsonpath={.items..metadata.name} | cut -d ' ' -f 1)
+
+kubectl -n istioinaction exec -ti $CATALOG_POD -c catalog -- curl -s localhost:15000/config_dump > /tmp/config_dump
+
+du -sh /tmp/config_dump
+```
+
 컨피그 사이즈가 2.0M에서 516K로 줄었습니다 
 
 `516K	/tmp/config_dump`
 
 다시 성능 측정을 해봅시다
+```bash
+bin/performance-test.sh --reps 10 --delay 2.5 \
+  --prom-url prometheus.istio-system.svc.cluster.local:9090
+```
 
 ```bash
 ..
-*gateway.networking.istio.io/service-57d8-0 created
-service/service-57d8-0 created
-<생략>*
+<생략>
 ==============
 
 Push count: 70  # <-- 514
@@ -622,6 +630,10 @@ env:
 ```
 
 다시 성능 측정을 해봅시다
+```bash
+bin/performance-test.sh --reps 10 --delay 2.5 \
+  --prom-url prometheus.istio-system.svc.cluster.local:9090
+```
 
 ```bash
 ..
