@@ -159,6 +159,16 @@ Istio 공식문서에도 제공하는 메트릭들에 대해 안내하고 있습
 
 하지만, 메트릭이 워낙 다양하고 많기 때문에 어디에 중점을 두어야 할지에 대해서 “*four golden signals*” 관점에서 설명해 보도록 하겠습니다 
 
+**실습 준비**
+
+catalog 를 배포합니다 - istio-ingressgateway 로 부터 catalog.istioinaction.io:80 호출을 허용합니다
+
+```bash
+kubectl -n istioinaction apply -f services/catalog/kubernetes/catalog.yaml
+kubectl -n istioinaction apply -f ch11/catalog-virtualservice.yaml
+kubectl -n istioinaction apply -f ch11/catalog-gateway.yaml
+```
+
 ## 11.2.1 컨트롤 플레인의 4 Golden Signals 
 
 4 Golden Signals ~ latency, saturation, errors, traffic
@@ -181,6 +191,7 @@ Latency
 *컨트롤 플레인은 데이터 플레인에 업데이트를 배포하는데 걸리는 레이턴시를 측정합니다*
 
 ![스크린샷 2023-03-25 오전 11.52.55.png](/docs/assets/img/istio-in-action/ch11-istio-performance-push-time.png)
+
 
 `pilot_proxy_convergence_time`
 
@@ -348,14 +359,6 @@ incoming / outgoing 트래픽 구분은 포화의 원인과 가능한 대처방�
     - Reduces the number of proxies
 
 ## 11.3.1 실습 환경  
-
-catalog 를 배포합니다 - istio-ingressgateway 로 부터 catalog.istioinaction.io:80 호출을 허용합니다
-
-```bash
-kubectl -n istioinaction apply -f services/catalog/kubernetes/catalog.yaml
-kubectl -n istioinaction apply -f ch11/catalog-virtualservice.yaml
-kubectl -n istioinaction apply -f ch11/catalog-gateway.yaml
-```
 
 더미 워크로드 10개 추가해 봅니다
 
