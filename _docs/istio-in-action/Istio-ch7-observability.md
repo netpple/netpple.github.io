@@ -416,7 +416,7 @@ pilot_xds_pushes{type="rds"} 6
 - rds - router discovery
 - sds - secret discovery
 
-11장에서 control-plane의 성능튜닝을 다룰 때 보다 자세히 control-plane의 메트릭들을 살펴보겠습니다.
+[11장에서 control-plane의 성능튜닝을 다룰 때 보다 자세히 control-plane의 메트릭들을 살펴보겠습니다.](/docs/istio-in-action/Istio-ch11-performance#112-컨트롤-플레인-모니터링-하기){:target="_blank"}
 
 지금까지 Observability 를 위한 메트릭들을 data-plain 과 control-plain 으로 나누어 살펴보았습니다.  
 이처럼 서비스메시에서 제공하는 메트릭을 조회하고 오퍼레이터 등에서 활용하기 위해서는 메트릭을 수집하고 저장 하여야 합니다.

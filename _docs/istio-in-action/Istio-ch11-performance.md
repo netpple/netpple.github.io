@@ -153,11 +153,15 @@ istioctl dashboard grafana
 
 # 11.2 컨트롤 플레인 모니터링 하기 
 
-istiod 는 컨트롤 플레인의 상황을 진단할 수 있는 메트릭을 제공합니다.
+istiod 는 컨트롤 플레인의 상황을 진단할 수 있는 다양한 메트릭을 제공합니다. 
 
-Istio 공식문서에도 제공하는 메트릭들에 대해 안내하고 있습니다 
+앞서 [Observability 챕터](/docs/istio-in-action/Istio-ch7-observability#722-metrics-in-the-control-plane){:target="_blank"}에서도 컨트롤 플레인의 메트릭들을 살펴 보았는데요
 
-하지만, 메트릭이 워낙 다양하고 많기 때문에 어디에 중점을 두어야 할지에 대해서 “*four golden signals*” 관점에서 설명해 보도록 하겠습니다 
+메트릭이 워낙 다양하고 많기 때문에 **어디에 중점을 두고 보아야 할 지** 고민스러울 수 있습니다.   
+
+그래서 준비했습니다. 
+
+시스템 운영 및 모니터링에서 중요한 지표를 정리한 “*four golden signals*” 관점에서 컨트롤 플레인의 모니터링 지표들을  설명해 보도록 하겠습니다 
 
 **실습 준비**
 
