@@ -613,7 +613,9 @@ Push count 를 줄이기 위한 전략임 ⇒ 배치 기간 (PILOT_DEBOUNCE_AFTE
 
 환경변수 
 
-- `PILOT_DEBOUNCE_AFTER`  debounce 부터 queue 에 추가하는 시간  (기본값: 100ms)
+- `PILOT_DEBOUNCE_AFTER`  debounce 이벤트 대기 시간 (기본값: 100ms)  
+   예) 100ms (기본값) 이내에 새로운 이벤트가 없으면 queue에 추가하고, 있으면 merge 후 다시 100ms 동안 대기  
+   단, 최대 `PILOT_DEBOUNCE_MAX` 이내에서 허용  
 - `PILOT_DEBOUNCE_MAX`  debouncing 최대 허용 시간  (기본값: 10초)
 - `PILOT_ENABLE_EDS_DEBOUNCE` 엔드포인트 업데이트의 debounce 여부  (기본값: true)
 - `PILOT_PUSH_THROTTLE` istiod 가 처리하는 동시 푸시요청 수 (기본값: 100)
