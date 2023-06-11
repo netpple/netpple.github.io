@@ -3,7 +3,7 @@ title: '[책 리뷰] 나도코딩의 파이썬 입문 - chatGPT와 함께 공부
 version: v1.0  
 description: chatGPT와 구글코랩을 활용한 파이썬 공부 방법 소개  
 date: 2023-04-09 10:00:00 +09:00  
-categories: network
+categories: language
 rightpanel: true
 badges:
 - type: info  
