@@ -27,7 +27,13 @@ permalink: /about/
 
 ## Work Experience
 
-### 카카오 (2014 ~)
+### 쿼리파이 (2023 ~)
+
+CTO
+
+[https://www.querypie.com](https://www.querypie.com/)
+
+### 카카오 (2014 ~ 2023)
 
 다음(2014), 카카오(2015~2019), 카카오엔터프라이즈(2020 ~ )
 
