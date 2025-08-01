@@ -13,7 +13,7 @@ histories:
   description: 최초 게시
 ---
 <div class="responsive-wrap">
-  <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vQY_FCY1FD2zy1_JBQctWOdRWqB6CEs7cQVEUXX1nl_ZCz11Fs-aKOLbc6iPPQUYVzEzvwOSJO6bEQD/embed?start=false&loop=false&delayms=3000" frameborder="0" width="100%" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+<iframe src="https://docs.google.com/presentation/d/e/2PACX-1vTKZa3LspZVVRHkKewVrMpUUk6T8lHoRCF0MGl95GiyLGl7k62yy82VtfN7UOKzW5Lo7DKEcLzmGEkz/pubembed?start=false&loop=false&delayms=3000" frameborder="0" width="100%" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
 </div>
 
 [[슬라이드 보기]](https://docs.google.com/presentation/d/17R-DRbWtqtyEjTqTl2yr6C3caUO-EXDyCcrDsAL2gFU/edit#){:target="_blank"}
