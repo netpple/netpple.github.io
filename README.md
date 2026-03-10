@@ -123,6 +123,9 @@ make preview-overflow-full
 # 3-2-1) Or run nav consistency checks only (desktop/mobile)
 make preview-nav
 
+# 3-2-2) Or run accessibility smoke checks only (skip-link keyboard flow)
+make preview-a11y
+
 # 3-3) Or run internal link checks only (strict: redirects fail)
 make preview-linkcheck
 # optional relaxed mode:
@@ -159,6 +162,7 @@ Smoke checks cover:
 - Responsive viewport rendering smoke check (`desktop/tablet/mobile` screenshots across core + navigation routes incl. search results + docs detail routes)
 - Responsive layout overflow check (`desktop/tablet/mobile`, core routes + docs detail routes with horizontal overflow fail; optional `_site` full-route mode)
 - Runtime nav consistency check (`desktop/mobile`, GNB height/alignment/hover/active + route-specific active target mapping + toggle visibility/aria-label transitions, keyboard toggle Enter/Space, resize transition, toggle/Escape/outside-click close behavior, and page-wide `target="_blank"` rel safety)
+- Accessibility smoke check (`desktop`, skip-link first-focus visibility + Enter activation hash 이동 + `#main-content` 포커스 전달)
 - Home-only stylesheet loading (`home.css` on `/`, absent on non-home routes)
 - Post/Doc detail template markers
 - Navigation active mapping (`/archive/` -> `News`)

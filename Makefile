@@ -3,7 +3,7 @@ PREVIEW_PORT ?= 4012
 PREVIEW_URL ?= http://127.0.0.1:$(PREVIEW_PORT)
 PREVIEW_IMAGE ?= jekyll/jekyll:4.2.0
 
-.PHONY: preview-up preview-build preview-smoke preview-responsive preview-overflow preview-overflow-full preview-nav preview-linkcheck preview-structure preview-style-scope preview-inline-style preview-ids preview-meta preview-verify preview-down preview-recreate preview-info
+.PHONY: preview-up preview-build preview-smoke preview-responsive preview-overflow preview-overflow-full preview-nav preview-a11y preview-linkcheck preview-structure preview-style-scope preview-inline-style preview-ids preview-meta preview-verify preview-down preview-recreate preview-info
 
 preview-up:
 	@if docker ps --format '{{.Names}}' | grep -qx '$(PREVIEW_NAME)'; then \
@@ -34,6 +34,9 @@ preview-overflow-full:
 preview-nav:
 	scripts/nav_consistency_check.sh $(PREVIEW_URL)
 
+preview-a11y:
+	scripts/accessibility_smoke_check.sh $(PREVIEW_URL)
+
 preview-linkcheck:
 	scripts/internal_link_check.sh $(PREVIEW_URL)
 
@@ -52,7 +55,7 @@ preview-ids:
 preview-meta:
 	scripts/metadata_consistency_check.sh _site
 
-preview-verify: preview-build preview-smoke preview-responsive preview-overflow preview-nav preview-linkcheck preview-structure preview-style-scope preview-inline-style preview-ids preview-meta
+preview-verify: preview-build preview-smoke preview-responsive preview-overflow preview-nav preview-a11y preview-linkcheck preview-structure preview-style-scope preview-inline-style preview-ids preview-meta
 
 preview-down:
 	@docker rm -f $(PREVIEW_NAME) >/dev/null 2>&1 || true
@@ -68,6 +71,7 @@ preview-info:
 	@echo "Responsive overflow only: make preview-overflow"
 	@echo "Responsive overflow full-site: make preview-overflow-full"
 	@echo "Nav consistency only: make preview-nav"
+	@echo "Accessibility smoke only: make preview-a11y"
 	@echo "Link check only (strict): make preview-linkcheck"
 	@echo "Link check relaxed: ALLOW_REDIRECTS=true make preview-linkcheck"
 	@echo "Structure check only: make preview-structure"
