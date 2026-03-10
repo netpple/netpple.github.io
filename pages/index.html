@@ -1,0 +1,201 @@
+---
+layout: null
+permalink: /
+title: Hello, World
+---
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ page.title }} | {{ site.title }}</title>
+    <meta
+      name="description"
+      content="김삼영의 기술 블로그. Kubernetes, Istio, Container Internals를 기록하고 무료 정적 호스팅으로 장기 운영합니다."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Space+Grotesk:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{{ '/assets/css/home-v2.css' | relative_url }}" />
+  </head>
+  <body>
+    <div class="bg-glow bg-glow-a" aria-hidden="true"></div>
+    <div class="bg-glow bg-glow-b" aria-hidden="true"></div>
+
+    <div class="notice-bar">
+      <a href="{{ '/news/' | relative_url }}">새 단장 적용 중: 최신 기술 글과 학습 트랙을 더 빠르게 탐색해보세요.</a>
+    </div>
+
+    <header class="gnb">
+      <a class="brand" href="{{ '/' | relative_url }}">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span class="brand-text">netpple</span>
+      </a>
+      <button class="gnb-toggle" type="button" aria-expanded="false" aria-controls="global-nav">
+        Menu
+      </button>
+      <nav id="global-nav" class="gnb-links">
+        <a href="#featured">Home</a>
+        <a href="{{ '/news/' | relative_url }}">News</a>
+        <a href="{{ '/docs/' | relative_url }}">Docs</a>
+        <a href="{{ '/about/' | relative_url }}">About</a>
+        <a href="#tracks">Tracks</a>
+      </nav>
+    </header>
+
+    <main class="page">
+      <section class="hero" data-reveal>
+        <div class="hero-main">
+          <p class="kicker">NETPPLE ENGINEERING ARCHIVE</p>
+          <h1>
+            기술 기록을<br />
+            더 오래 남기는 방식
+          </h1>
+          <p class="hero-copy">
+            김삼영의 기술 블로그입니다. Kubernetes, Istio, Container Internals를 실무 기준으로 기록하고
+            GitHub Pages + Jekyll 구조를 유지해 계속 무료로 운영합니다.
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="{{ '/news/' | relative_url }}">최신 글 보기</a>
+            <a class="btn btn-ghost" href="{{ '/docs/istio-in-action/' | relative_url }}">학습 트랙 시작</a>
+          </div>
+        </div>
+        <aside class="hero-side">
+          <p class="hero-side-kicker">Overview</p>
+          <dl class="hero-meta">
+            <div>
+              <dt>운영 시작</dt>
+              <dd>2021</dd>
+            </div>
+            <div>
+              <dt>발행 글</dt>
+              <dd>{{ site.posts.size }}+</dd>
+            </div>
+            <div>
+              <dt>배포 방식</dt>
+              <dd>GitHub Pages</dd>
+            </div>
+          </dl>
+          <ul class="hero-points">
+            <li>실무형 Kubernetes / Istio 중심</li>
+            <li>읽기 쉬운 요약 + 깊이 있는 원문</li>
+            <li>광고/유료화 없이 오픈 아카이브 유지</li>
+          </ul>
+        </aside>
+      </section>
+
+      <section class="trust-strip" data-reveal>
+        <p>FOCUS AREAS</p>
+        <div class="trust-row">
+          <span>Kubernetes</span>
+          <span>Istio</span>
+          <span>Container Internals</span>
+          <span>Platform Engineering</span>
+          <span>Cloud Native</span>
+          <span>DevOps</span>
+        </div>
+      </section>
+
+      <section id="featured" class="section" data-reveal>
+        <div class="section-head">
+          <p class="section-kicker">Quick Start</p>
+          <h2>지금 바로 읽을 수 있는 추천 경로</h2>
+        </div>
+        <div class="card-grid">
+          <a class="card" href="{{ '/news/' | relative_url }}">
+            <p class="card-kicker">Latest</p>
+            <h3>최근 기술 글 모아보기</h3>
+            <p>최신 포스트를 날짜 순으로 빠르게 훑을 수 있습니다.</p>
+          </a>
+          <a class="card" href="{{ '/docs/make-container-without-docker/' | relative_url }}">
+            <p class="card-kicker">Core Concepts</p>
+            <h3>도커 없이 컨테이너 만들기</h3>
+            <p>리눅스 커널 기능으로 컨테이너 원리를 단계별로 정리한 시리즈입니다.</p>
+          </a>
+          <a class="card" href="{{ '/about/' | relative_url }}">
+            <p class="card-kicker">Profile</p>
+            <h3>작성자와 운영 방향</h3>
+            <p>블로그 운영 원칙, 실무 경험, 발표/활동 이력을 확인할 수 있습니다.</p>
+          </a>
+        </div>
+      </section>
+
+      {% assign latest_posts = site.posts | where_exp:'post', 'post.excluded_in_search != true' %}
+      {% if latest_posts.size > 0 %}
+      <section id="latest" class="section" data-reveal>
+        <div class="section-head">
+          <p class="section-kicker">New Posts</p>
+          <h2>최근 업데이트</h2>
+        </div>
+        <div class="post-list">
+          {% for post in latest_posts limit:4 %}
+          <article class="post-item">
+            <p class="post-date">{{ post.date | date: "%Y.%m.%d" }}</p>
+            <h3><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
+            <p>{{ post.description | default: post.content | strip_html | truncate: 150 }}</p>
+          </article>
+          {% endfor %}
+        </div>
+      </section>
+      {% endif %}
+
+      <section id="tracks" class="section" data-reveal>
+        <div class="section-head">
+          <p class="section-kicker">Learning Tracks</p>
+          <h2>깊게 학습할 수 있는 시리즈</h2>
+        </div>
+        <div class="track-grid">
+          <a class="track" href="{{ '/docs/istio-in-action/' | relative_url }}">
+            <h3>Istio IN ACTION</h3>
+            <p>서비스 메시 아키텍처와 운영 패턴을 실습 중심으로 학습합니다.</p>
+          </a>
+          <a class="track" href="{{ '/docs/make-container-without-docker/' | relative_url }}">
+            <h3>도커 없이 컨테이너 만들기</h3>
+            <p>컨테이너 런타임의 핵심 원리를 커널 레벨에서 이해할 수 있습니다.</p>
+          </a>
+          <a class="track" href="{{ '/docs/deepdive-into-kubernetes/' | relative_url }}">
+            <h3>쿠버네티스 딥다이브</h3>
+            <p>제어 플레인부터 노드 컴포넌트까지 구조를 깊이 있게 다룹니다.</p>
+          </a>
+        </div>
+      </section>
+
+      <section id="ops" class="section section-ops" data-reveal>
+        <div class="section-head">
+          <p class="section-kicker">Free Operation</p>
+          <h2>계속 무료로 운영합니다</h2>
+        </div>
+        <ul class="ops-list">
+          <li>정적 사이트(GitHub Pages) 기반으로 호스팅 비용 없이 운영</li>
+          <li>Jekyll 단일 저장소로 유지보수 복잡도를 낮춰 콘텐츠 생산에 집중</li>
+          <li>광고/유료 멤버십/로그인 없이 누구나 접근 가능한 공개 기술 아카이브 유지</li>
+        </ul>
+        <p class="ops-note">
+          운영 구조를 단순하게 유지해 더 오래, 안정적으로 지식을 공유하겠습니다.
+        </p>
+      </section>
+
+      <section class="section final-cta" data-reveal>
+        <h2>새 글은 계속 올라옵니다</h2>
+        <p>
+          실무에서 바로 쓰는 설계/운영 관점을 담아 업데이트합니다.
+        </p>
+        <a class="btn btn-primary" href="{{ '/news/' | relative_url }}">지금 읽으러 가기</a>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>© {{ "now" | date: "%Y" }} netpple</p>
+      <div class="footer-links">
+        <a href="{{ '/about/' | relative_url }}">About</a>
+        <a href="https://github.com/netpple" target="_blank" rel="noreferrer">GitHub</a>
+        <a href="https://twitter.com/netpple" target="_blank" rel="noreferrer">Twitter</a>
+      </div>
+    </footer>
+
+    <script defer src="{{ '/assets/js/home-v2.js' | relative_url }}"></script>
+  </body>
+</html>
