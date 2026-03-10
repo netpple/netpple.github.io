@@ -96,3 +96,25 @@ You can then open your browser to [http://localhost:4000](http://localhost:4000)
 to see the server running.
 
 > Node : changes `baseurl: ""` in _config.yml  when you are running in local and prod according to the requirement.
+
+## Local Preview Smoke Check
+
+For local validation of this project revision, run the preview server and smoke checks below:
+
+```bash
+# 1) Start preview server (Docker fallback)
+docker run -d --name sam7-manual-preview -p 4012:4000 -v "$PWD":/srv/jekyll jekyll/jekyll:4.2.0 \
+  jekyll serve --host 0.0.0.0 --port 4000 --watch
+
+# 2) Run reusable smoke checks
+scripts/preview_smoke_check.sh
+
+# 3) Stop preview server after validation
+docker rm -f sam7-manual-preview
+```
+
+Smoke checks cover:
+- Homepage content marker
+- Core routes HTTP 200 status
+- Post/Doc detail template markers
+- Navigation active mapping (`/archive/` -> `News`)
