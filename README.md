@@ -122,6 +122,9 @@ make preview-structure
 # 3-3) Or run HTML id uniqueness checks only
 make preview-ids
 
+# 3-4) Or run metadata consistency checks only
+make preview-meta
+
 # optional: print manual visual checkpoints
 make preview-info
 
@@ -138,3 +141,4 @@ Smoke checks cover:
 - Site-wide internal link check from generated `_site` (`href/src`, redirects disallowed by default)
 - Site-wide structure consistency check (`skip-link`, nav toggle/nav ARIA markers, header/main/footer, single h1, single active nav + `aria-current` per HTML page)
 - Site-wide HTML `id` uniqueness check (duplicate IDs fail)
+- Site-wide metadata consistency check (`title`, description, canonical, og:url/og:title, twitter:title)
