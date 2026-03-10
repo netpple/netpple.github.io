@@ -1019,6 +1019,10 @@ img {
     grid-column: span 6;
   }
 
+  .page-docs .track-card {
+    grid-column: span 6;
+  }
+
   .page-about .entry-card--news {
     grid-column: span 12;
   }

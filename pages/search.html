@@ -29,7 +29,7 @@ description: 문서/게시글 통합 검색
 						"id": "{{ post.url | slugify }}",
 						"title": "{{ post.title | xml_escape }}",
 						"categories": "{{ post.categories | join: ", " | xml_escape }}",
-						"url": " {{ post.url | xml_escape }}",
+						"url": "{{ post.url | xml_escape }}",
 						"content": {{ post.content | strip_html | replace_regex: "[\s/\n]+"," " | strip | jsonify }}
 					}
 					{% assign added = true %}
@@ -43,7 +43,7 @@ description: 문서/게시글 통합 검색
 						"id": "{{ post.url | slugify }}",
 						"title": "{{ post.title | xml_escape }}",
 						"categories": "{{ post.categories | join: ", " | xml_escape }}",
-						"url": " {{ post.url | xml_escape }}",
+						"url": "{{ post.url | xml_escape }}",
 						"content": {{ post.content | strip_html | replace_regex: "[\s/\n]+"," " | strip | jsonify }}
 					}
 					{% assign added = true %}
@@ -57,7 +57,7 @@ description: 문서/게시글 통합 검색
 						"id": "{{ post.url | slugify }}",
 						"title": "{{ post.title | xml_escape }}",
 						"categories": "{{ post.categories | join: ", " | xml_escape }}",
-						"url": " {{ post.url | xml_escape }}",
+						"url": "{{ post.url | xml_escape }}",
 						"content": {{ post.content | strip_html | replace_regex: "[\s/\n]+"," " | strip | jsonify }}
 					}
 					{% assign added = true %}
