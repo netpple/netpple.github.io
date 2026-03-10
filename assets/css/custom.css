@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap");
+
 /* for comment_utterances*/
 .utterances {
     max-width: 100% !important;
@@ -51,4 +53,408 @@ img.align-left{
     font-size: 12px;
     font-style: italic;
     color: #757b84;
+}
+
+/* homepage renewal */
+.home-main {
+    padding-bottom: 4.5rem !important;
+}
+
+.td-homepage-content {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.home-shell {
+    position: relative;
+    margin: 0 auto;
+    padding: 1.25rem 0 1rem;
+    font-family: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    color: #102a43;
+}
+
+.home-shell:before,
+.home-shell:after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.home-shell:before {
+    top: 1.2rem;
+    left: -4rem;
+    width: 18rem;
+    height: 18rem;
+    background: radial-gradient(circle, rgba(255, 168, 76, .22) 0%, rgba(255, 168, 76, 0) 72%);
+}
+
+.home-shell:after {
+    right: -3rem;
+    bottom: 4rem;
+    width: 15rem;
+    height: 15rem;
+    background: radial-gradient(circle, rgba(30, 136, 168, .22) 0%, rgba(30, 136, 168, 0) 72%);
+}
+
+.home-shell section {
+    animation: homeRise .55s ease both;
+}
+
+.home-shell section:nth-of-type(2) {
+    animation-delay: .08s;
+}
+
+.home-shell section:nth-of-type(3) {
+    animation-delay: .16s;
+}
+
+.home-shell section:nth-of-type(4) {
+    animation-delay: .24s;
+}
+
+.home-shell section:nth-of-type(5) {
+    animation-delay: .32s;
+}
+
+@keyframes homeRise {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.home-hero {
+    position: relative;
+    padding: 3.2rem 2.4rem 2.4rem;
+    border-radius: 1.4rem;
+    background: linear-gradient(135deg, #0a3d62 0%, #136f9c 48%, #ff9f43 100%);
+    color: #fff;
+    overflow: hidden;
+    box-shadow: 0 24px 40px rgba(10, 61, 98, .25);
+}
+
+.home-hero:before {
+    content: "";
+    position: absolute;
+    inset: auto -12% -46% auto;
+    width: 19rem;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .18);
+}
+
+.home-hero:after {
+    content: "";
+    position: absolute;
+    inset: -30% auto auto -10%;
+    width: 12.5rem;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .14);
+}
+
+.home-hero > * {
+    position: relative;
+    z-index: 1;
+}
+
+.home-kicker {
+    margin: 0;
+    font-family: "Space Grotesk", "Trebuchet MS", sans-serif;
+    letter-spacing: .14em;
+    font-size: .78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, .86);
+}
+
+.home-hero h1 {
+    margin: .55rem 0 .75rem;
+    font-family: "Space Grotesk", "Trebuchet MS", sans-serif;
+    font-size: clamp(2.4rem, 6vw, 4rem);
+    line-height: .98;
+    color: #fff;
+}
+
+.home-lead {
+    max-width: 42rem;
+    margin: 0;
+    font-size: 1.08rem;
+    line-height: 1.72;
+    color: rgba(255, 255, 255, .94);
+}
+
+.home-cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .7rem;
+    margin-top: 1.5rem;
+}
+
+.home-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .35rem;
+    min-height: 2.75rem;
+    padding: 0 .98rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, .55);
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform .2s ease, box-shadow .2s ease, background-color .2s ease;
+}
+
+.home-btn:hover {
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+
+.home-btn-primary {
+    background: #fff;
+    color: #0a3d62;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, .16);
+}
+
+.home-btn-primary:hover {
+    color: #062138;
+}
+
+.home-btn-ghost {
+    background: rgba(5, 25, 40, .26);
+    color: #fff;
+}
+
+.home-btn-ghost:hover {
+    color: #fff;
+    background: rgba(5, 25, 40, .38);
+}
+
+.home-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: .8rem;
+    margin: 1.45rem 0 0;
+}
+
+.home-stats div {
+    padding: .72rem .9rem;
+    border-radius: .8rem;
+    border: 1px solid rgba(255, 255, 255, .22);
+    background: rgba(8, 34, 54, .24);
+}
+
+.home-stats dt {
+    margin: 0;
+    font-size: .78rem;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, .76);
+}
+
+.home-stats dd {
+    margin: .18rem 0 0;
+    font-family: "Space Grotesk", "Trebuchet MS", sans-serif;
+    font-size: 1.18rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.home-section {
+    margin-top: 2.5rem;
+}
+
+.home-section-head {
+    margin-bottom: 1rem;
+}
+
+.home-section-label {
+    margin: 0 0 .35rem;
+    font-family: "Space Grotesk", "Trebuchet MS", sans-serif;
+    letter-spacing: .1em;
+    font-size: .72rem;
+    text-transform: uppercase;
+    color: #1b6b8f;
+}
+
+.home-section h2 {
+    margin: 0;
+    font-family: "Space Grotesk", "Trebuchet MS", sans-serif;
+    font-size: 1.86rem;
+    line-height: 1.2;
+    color: #0c2c46;
+}
+
+.home-card-grid,
+.home-track-grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.home-card,
+.home-track {
+    grid-column: span 4;
+    display: block;
+    height: 100%;
+    padding: 1.25rem 1.15rem;
+    border-radius: 1rem;
+    border: 1px solid #d6e5ee;
+    background: linear-gradient(180deg, #ffffff 0%, #f8fcff 100%);
+    color: #16324f;
+    text-decoration: none;
+    box-shadow: 0 11px 24px rgba(17, 57, 84, .08);
+    transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+
+.home-card:hover,
+.home-track:hover {
+    transform: translateY(-3px);
+    border-color: #7eb8d4;
+    box-shadow: 0 16px 32px rgba(17, 57, 84, .14);
+    text-decoration: none;
+}
+
+.home-card-kicker {
+    margin: 0 0 .5rem;
+    font-family: "Space Grotesk", "Trebuchet MS", sans-serif;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    font-size: .76rem;
+    color: #1b6b8f;
+}
+
+.home-card h3,
+.home-track h3,
+.home-list-item h3 {
+    margin: 0 0 .55rem;
+    font-size: 1.24rem;
+    color: #102a43;
+}
+
+.home-card p,
+.home-track p {
+    margin: 0;
+    line-height: 1.6;
+    color: #334e68;
+}
+
+.home-list {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.home-list-item {
+    grid-column: span 6;
+    padding: 1.1rem;
+    border-radius: .95rem;
+    border: 1px solid #dbe7ef;
+    background: #fcfeff;
+}
+
+.home-list-date {
+    margin: 0 0 .36rem;
+    font-family: "Space Grotesk", "Trebuchet MS", sans-serif;
+    font-size: .82rem;
+    color: #3f6585;
+}
+
+.home-list-item h3 a {
+    color: #0f3150;
+    text-decoration: none;
+}
+
+.home-list-item h3 a:hover {
+    color: #1b6b8f;
+    text-decoration: underline;
+}
+
+.home-list-item p:last-child {
+    margin: 0;
+    line-height: 1.62;
+    color: #486581;
+}
+
+.home-freeops {
+    padding: 1.5rem 1.35rem;
+    border-radius: 1.1rem;
+    border: 1px solid #bfd8e6;
+    background: linear-gradient(180deg, #f4fbff 0%, #edf8fe 100%);
+}
+
+.home-free-list {
+    margin: .95rem 0 .75rem;
+    padding: 0;
+    list-style: none;
+}
+
+.home-free-list li {
+    position: relative;
+    margin-bottom: .5rem;
+    padding-left: 1.45rem;
+    color: #153953;
+}
+
+.home-free-list li:before {
+    content: "";
+    position: absolute;
+    top: .62rem;
+    left: .45rem;
+    width: .38rem;
+    height: .38rem;
+    border-radius: 50%;
+    background: #1b6b8f;
+}
+
+.home-free-note {
+    margin: 0;
+    color: #2f4f69;
+}
+
+@media (max-width: 1199.98px) {
+    .home-card,
+    .home-track {
+        grid-column: span 6;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .home-shell {
+        padding-top: .7rem;
+    }
+
+    .home-hero {
+        padding: 2.4rem 1.25rem 1.5rem;
+        border-radius: 1rem;
+    }
+
+    .home-lead {
+        font-size: .98rem;
+        line-height: 1.65;
+    }
+
+    .home-stats {
+        grid-template-columns: 1fr;
+        gap: .55rem;
+    }
+
+    .home-section {
+        margin-top: 2rem;
+    }
+
+    .home-section h2 {
+        font-size: 1.5rem;
+    }
+
+    .home-card,
+    .home-list-item,
+    .home-track {
+        grid-column: span 12;
+    }
 }
