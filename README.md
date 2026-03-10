@@ -102,18 +102,17 @@ to see the server running.
 For local validation of this project revision, run the preview server and smoke checks below:
 
 ```bash
-# 1) Start preview server (Docker fallback)
-docker run -d --name sam7-manual-preview -p 4012:4000 -v "$PWD":/srv/jekyll jekyll/jekyll:4.2.0 \
-  jekyll serve --host 0.0.0.0 --port 4000 --watch
+# 1) Start/reuse preview server
+make preview-up
 
-# 2) Run reusable smoke checks
-scripts/preview_smoke_check.sh
+# 2) Build + smoke checks
+make preview-verify
 
-# optional shortcut
+# 3) Or run smoke checks only
 make preview-smoke
 
-# 3) Stop preview server after validation
-docker rm -f sam7-manual-preview
+# 4) Stop preview server after validation
+make preview-down
 ```
 
 Smoke checks cover:
