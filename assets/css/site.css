@@ -321,6 +321,10 @@ img {
   max-width: 760px;
 }
 
+.page-section {
+  margin-bottom: var(--space-7);
+}
+
 .entry-grid {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));

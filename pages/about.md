@@ -4,7 +4,7 @@ permalink: /about/
 description: 김삼영의 기술 배경, 관심사, 경력, 발표/출판 이력
 ---
 
-<section class="home-section">
+<section class="page-section">
   <div class="entry-card">
     <div class="entry-card__meta">
       <span class="badge">Profile</span>
@@ -22,7 +22,7 @@ description: 김삼영의 기술 배경, 관심사, 경력, 발표/출판 이력
   </div>
 </section>
 
-<section class="home-section">
+<section class="page-section">
   <div class="section-heading">
     <p class="section-heading__kicker">Interests</p>
     <h2 class="section-heading__title">관심 영역</h2>
@@ -38,7 +38,7 @@ description: 김삼영의 기술 배경, 관심사, 경력, 발표/출판 이력
   </div>
 </section>
 
-<section class="home-section">
+<section class="page-section">
   <div class="section-heading">
     <p class="section-heading__kicker">Skills</p>
     <h2 class="section-heading__title">기술 스택</h2>
@@ -59,7 +59,7 @@ description: 김삼영의 기술 배경, 관심사, 경력, 발표/출판 이력
   </div>
 </section>
 
-<section class="home-section">
+<section class="page-section">
   <div class="section-heading">
     <p class="section-heading__kicker">Experience</p>
     <h2 class="section-heading__title">주요 경력</h2>
@@ -108,7 +108,7 @@ description: 김삼영의 기술 배경, 관심사, 경력, 발표/출판 이력
   </div>
 </section>
 
-<section class="home-section">
+<section class="page-section">
   <div class="section-heading">
     <p class="section-heading__kicker">Publications</p>
     <h2 class="section-heading__title">발표 및 아티클</h2>
@@ -148,7 +148,7 @@ description: 김삼영의 기술 배경, 관심사, 경력, 발표/출판 이력
   </div>
 </section>
 
-<section class="home-section">
+<section class="page-section">
   <div class="section-heading">
     <p class="section-heading__kicker">Education</p>
     <h2 class="section-heading__title">학력</h2>

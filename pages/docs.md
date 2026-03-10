@@ -11,7 +11,7 @@ description: 시리즈 중심으로 구성한 기술 문서 허브
 {% assign kube_docs = site.docs | where: "label", "쿠버네티스 딥다이브" %}
 {% assign ddd_docs = site.docs | where: "label", "데이터중심 애플리케이션" %}
 
-<section class="home-section">
+<section class="page-section">
   <div class="section-heading">
     <p class="section-heading__kicker">Document Tracks</p>
     <h2 class="section-heading__title">핵심 학습 경로</h2>
@@ -57,7 +57,7 @@ description: 시리즈 중심으로 구성한 기술 문서 허브
   </div>
 </section>
 
-<section>
+<section class="page-section">
   <div class="section-heading">
     <p class="section-heading__kicker">All Documentation</p>
     <h2 class="section-heading__title">전체 문서 목록</h2>
