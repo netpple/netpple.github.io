@@ -163,7 +163,7 @@ Smoke checks cover:
 - Navigation active mapping (`/archive/` -> `News`)
 - Key internal navigation route reachability (Home/News/Docs 대표 링크)
 - Site-wide internal link check from generated `_site` (`href/src`, redirects disallowed by default)
-- Site-wide structure consistency check (`skip-link`, nav toggle/nav ARIA markers, header/main/footer, single h1, single active nav + `aria-current`, home.css scope per HTML page)
+- Site-wide structure consistency check (`skip-link`, nav toggle/nav ARIA markers, header/main/footer, single h1, single active nav + `aria-current`, header/footer external blank-target rel safety, home.css scope per HTML page)
 - Source-level style scope check (home-only `home-*` class usage restricted to `pages/index.md`)
 - Source-level core template/page inline-style check (except GTM noscript iframe)
 - Site-wide HTML `id` uniqueness check (duplicate IDs fail)
