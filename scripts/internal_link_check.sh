@@ -3,6 +3,7 @@ set -euo pipefail
 
 BASE_URL="${1:-http://127.0.0.1:4012}"
 SITE_DIR="${2:-_site}"
+ALLOW_REDIRECTS="${ALLOW_REDIRECTS:-false}"
 
 if [[ ! -d "${SITE_DIR}" ]]; then
   echo "[fail] site directory not found: ${SITE_DIR}"
@@ -32,11 +33,15 @@ for path in "${paths[@]}"; do
     200)
       ;;
     301|302|307|308)
-      final_code="$(curl -s -L -o /dev/null -w '%{http_code}' "${BASE_URL}${path}")"
-      if [[ "${final_code}" == "200" ]]; then
-        redirects=$((redirects + 1))
+      redirects=$((redirects + 1))
+      if [[ "${ALLOW_REDIRECTS}" == "true" ]]; then
+        final_code="$(curl -s -L -o /dev/null -w '%{http_code}' "${BASE_URL}${path}")"
+        if [[ "${final_code}" != "200" ]]; then
+          echo "[fail] ${path} redirect final status ${final_code}"
+          failed=$((failed + 1))
+        fi
       else
-        echo "[fail] ${path} redirect final status ${final_code}"
+        echo "[fail] ${path} returned redirect ${code} (set ALLOW_REDIRECTS=true to allow)"
         failed=$((failed + 1))
       fi
       ;;
@@ -48,8 +53,8 @@ for path in "${paths[@]}"; do
 done
 
 if [[ "${failed}" -gt 0 ]]; then
-  echo "[fail] internal link check failed (${failed}/${total})"
+  echo "[fail] internal link check failed (${failed}/${total}, redirects: ${redirects})"
   exit 1
 fi
 
-echo "[pass] internal link check: ${total} paths (redirects: ${redirects})"
+echo "[pass] internal link check: ${total} paths (redirects: ${redirects}, allow_redirects: ${ALLOW_REDIRECTS})"

@@ -111,6 +111,11 @@ make preview-verify
 # 3) Or run smoke checks only
 make preview-smoke
 
+# 3-1) Or run internal link checks only (strict: redirects fail)
+make preview-linkcheck
+# optional relaxed mode:
+ALLOW_REDIRECTS=true make preview-linkcheck
+
 # optional: print manual visual checkpoints
 make preview-info
 
@@ -123,3 +128,5 @@ Smoke checks cover:
 - Core routes HTTP 200 status
 - Post/Doc detail template markers
 - Navigation active mapping (`/archive/` -> `News`)
+- Key internal navigation route reachability (Home/News/Docs 대표 링크)
+- Site-wide internal link check from generated `_site` (`href/src`, redirects disallowed by default)
