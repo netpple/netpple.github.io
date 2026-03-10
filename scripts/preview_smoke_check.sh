@@ -18,9 +18,9 @@ sample_doc="/docs/istio-in-action"
 key_nav_paths=(
   "/2023/c-for-beginner-hongongc/"
   "/2023/k8s-1.26-install/"
-  "/docs/istio-in-action"
-  "/docs/make-container-without-docker"
-  "/docs/deepdive-into-kubernetes"
+  "/docs/istio-in-action/"
+  "/docs/make-container-without-docker/"
+  "/docs/deepdive-into-kubernetes/"
   "/docs/data-intensive-application-design/"
   "/docs/querypie-handson/multiple-kubernetes-with-querypie-kac"
   "/docs/istio-in-action/Istio-ch11-performance"
@@ -94,7 +94,11 @@ assert_article_content_heading_hierarchy() {
 
 assert_route_reachable() {
   local route="$1"
-  curl -fsSL "${BASE_URL}${route}" >/dev/null || fail "${route} is not reachable via internal navigation"
+  local code
+  code="$(curl -s -o /dev/null -w '%{http_code}' "${BASE_URL}${route}")"
+  if [[ "${code}" != "200" ]]; then
+    fail "${route} returned ${code} in internal navigation check"
+  fi
   echo "[ok] ${route} reachable"
 }
 
