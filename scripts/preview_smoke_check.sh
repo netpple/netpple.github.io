@@ -15,6 +15,16 @@ routes=(
 
 sample_post="/2023/c-for-beginner-hongongc/"
 sample_doc="/docs/istio-in-action"
+key_nav_paths=(
+  "/2023/c-for-beginner-hongongc/"
+  "/2023/k8s-1.26-install/"
+  "/docs/istio-in-action"
+  "/docs/make-container-without-docker"
+  "/docs/deepdive-into-kubernetes"
+  "/docs/data-intensive-application-design/"
+  "/docs/querypie-handson/multiple-kubernetes-with-querypie-kac"
+  "/docs/istio-in-action/Istio-ch11-performance"
+)
 
 fail() {
   echo "[fail] $1"
@@ -82,6 +92,12 @@ assert_article_content_heading_hierarchy() {
   echo "[ok] ${route} article content heading hierarchy"
 }
 
+assert_route_reachable() {
+  local route="$1"
+  curl -fsSL "${BASE_URL}${route}" >/dev/null || fail "${route} is not reachable via internal navigation"
+  echo "[ok] ${route} reachable"
+}
+
 echo "[smoke] base url: ${BASE_URL}"
 
 echo "[smoke] checking homepage content marker"
@@ -109,6 +125,11 @@ assert_route_layout "${sample_post}"
 assert_route_layout "${sample_doc}"
 assert_article_content_heading_hierarchy "${sample_post}"
 assert_article_content_heading_hierarchy "${sample_doc}"
+
+echo "[smoke] checking key internal navigation links"
+for route in "${key_nav_paths[@]}"; do
+  assert_route_reachable "${route}"
+done
 
 echo "[smoke] checking active nav mapping"
 assert_active_nav "/" "/"
