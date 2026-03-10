@@ -8,6 +8,27 @@ html {
   scroll-behavior: smooth;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .gnb__link:hover,
+  .gnb__link:focus-visible,
+  .button:hover,
+  .button:focus-visible {
+    transform: none;
+  }
+}
+
 body {
   margin: 0;
   font-family: var(--font-sans);
