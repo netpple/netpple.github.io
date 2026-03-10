@@ -119,10 +119,13 @@ ALLOW_REDIRECTS=true make preview-linkcheck
 # 3-2) Or run structure consistency checks only
 make preview-structure
 
-# 3-3) Or run HTML id uniqueness checks only
+# 3-3) Or run style scope checks only
+make preview-style-scope
+
+# 3-4) Or run HTML id uniqueness checks only
 make preview-ids
 
-# 3-4) Or run metadata consistency checks only
+# 3-5) Or run metadata consistency checks only
 make preview-meta
 
 # optional: print manual visual checkpoints
@@ -141,5 +144,6 @@ Smoke checks cover:
 - Key internal navigation route reachability (Home/News/Docs 대표 링크)
 - Site-wide internal link check from generated `_site` (`href/src`, redirects disallowed by default)
 - Site-wide structure consistency check (`skip-link`, nav toggle/nav ARIA markers, header/main/footer, single h1, single active nav + `aria-current`, home.css scope per HTML page)
+- Source-level style scope check (home-only `home-*` class usage restricted to `pages/index.md`)
 - Site-wide HTML `id` uniqueness check (duplicate IDs fail)
 - Site-wide metadata consistency check (`title`, description, canonical, og:url/og:title, twitter:title)

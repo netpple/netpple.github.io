@@ -3,7 +3,7 @@ PREVIEW_PORT ?= 4012
 PREVIEW_URL ?= http://127.0.0.1:$(PREVIEW_PORT)
 PREVIEW_IMAGE ?= jekyll/jekyll:4.2.0
 
-.PHONY: preview-up preview-build preview-smoke preview-linkcheck preview-structure preview-ids preview-meta preview-verify preview-down preview-recreate preview-info
+.PHONY: preview-up preview-build preview-smoke preview-linkcheck preview-structure preview-style-scope preview-ids preview-meta preview-verify preview-down preview-recreate preview-info
 
 preview-up:
 	@if docker ps --format '{{.Names}}' | grep -qx '$(PREVIEW_NAME)'; then \
@@ -28,13 +28,16 @@ preview-linkcheck:
 preview-structure:
 	scripts/layout_consistency_check.sh _site
 
+preview-style-scope:
+	bash scripts/style_scope_check.sh
+
 preview-ids:
 	scripts/html_id_uniqueness_check.sh _site
 
 preview-meta:
 	scripts/metadata_consistency_check.sh _site
 
-preview-verify: preview-build preview-smoke preview-linkcheck preview-structure preview-ids preview-meta
+preview-verify: preview-build preview-smoke preview-linkcheck preview-structure preview-style-scope preview-ids preview-meta
 
 preview-down:
 	@docker rm -f $(PREVIEW_NAME) >/dev/null 2>&1 || true
@@ -49,6 +52,7 @@ preview-info:
 	@echo "Link check only (strict): make preview-linkcheck"
 	@echo "Link check relaxed: ALLOW_REDIRECTS=true make preview-linkcheck"
 	@echo "Structure check only: make preview-structure"
+	@echo "Style scope check only: make preview-style-scope"
 	@echo "ID uniqueness only: make preview-ids"
 	@echo "Metadata check only: make preview-meta"
 	@echo "Stop preview: make preview-down"
