@@ -55,7 +55,7 @@
                     <p>{{ child.description }}</p>
                  </div>{% endfor %}
               </div>{% endif %}
-<!--              {% include feedback.html %}-->
+              {% comment %}{% include feedback.html %}{% endcomment %}
                {% if page.comments %}
                     {% include comment_utterances.html %}
                {% endif %}
