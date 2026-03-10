@@ -28,6 +28,20 @@ a:hover {
   color: var(--color-primary-strong);
 }
 
+a:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
 img {
   max-width: 100%;
   height: auto;
@@ -155,6 +169,12 @@ img {
   transform: translateY(-1px);
 }
 
+.gnb__link:focus-visible {
+  color: var(--color-primary-strong);
+  background: #ebf2ff;
+  transform: translateY(-1px);
+}
+
 .gnb__link.is-active {
   color: var(--color-primary);
   background: #e4efff;
@@ -181,6 +201,10 @@ img {
 }
 
 .button:hover {
+  transform: translateY(-1px);
+}
+
+.button:focus-visible {
   transform: translateY(-1px);
 }
 
