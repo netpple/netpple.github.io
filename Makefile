@@ -3,7 +3,7 @@ PREVIEW_PORT ?= 4012
 PREVIEW_URL ?= http://127.0.0.1:$(PREVIEW_PORT)
 PREVIEW_IMAGE ?= jekyll/jekyll:4.2.0
 
-.PHONY: preview-up preview-build preview-smoke preview-linkcheck preview-structure preview-style-scope preview-ids preview-meta preview-verify preview-down preview-recreate preview-info
+.PHONY: preview-up preview-build preview-smoke preview-responsive preview-linkcheck preview-structure preview-style-scope preview-ids preview-meta preview-verify preview-down preview-recreate preview-info
 
 preview-up:
 	@if docker ps --format '{{.Names}}' | grep -qx '$(PREVIEW_NAME)'; then \
@@ -22,6 +22,9 @@ preview-build:
 preview-smoke:
 	scripts/preview_smoke_check.sh $(PREVIEW_URL)
 
+preview-responsive:
+	scripts/responsive_smoke_check.sh $(PREVIEW_URL)
+
 preview-linkcheck:
 	scripts/internal_link_check.sh $(PREVIEW_URL)
 
@@ -37,7 +40,7 @@ preview-ids:
 preview-meta:
 	scripts/metadata_consistency_check.sh _site
 
-preview-verify: preview-build preview-smoke preview-linkcheck preview-structure preview-style-scope preview-ids preview-meta
+preview-verify: preview-build preview-smoke preview-responsive preview-linkcheck preview-structure preview-style-scope preview-ids preview-meta
 
 preview-down:
 	@docker rm -f $(PREVIEW_NAME) >/dev/null 2>&1 || true
@@ -49,6 +52,7 @@ preview-info:
 	@echo "Preview URL: $(PREVIEW_URL)"
 	@echo "Quick start: make preview-up"
 	@echo "Build + smoke: make preview-verify"
+	@echo "Responsive smoke only: make preview-responsive"
 	@echo "Link check only (strict): make preview-linkcheck"
 	@echo "Link check relaxed: ALLOW_REDIRECTS=true make preview-linkcheck"
 	@echo "Structure check only: make preview-structure"
