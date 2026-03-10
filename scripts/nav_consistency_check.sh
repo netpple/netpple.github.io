@@ -161,6 +161,13 @@ async function checkMobile(page, route) {
   }
   await waitMobileClosed(page);
 
+  // Open/close by keyboard (Enter/Space) for toggle accessibility.
+  await toggle.focus();
+  await page.keyboard.press('Enter');
+  await waitMobileOpen(page);
+  await page.keyboard.press('Space');
+  await waitMobileClosed(page);
+
   // Open with toggle and validate open-state metrics.
   await toggle.click();
   await waitMobileOpen(page);
