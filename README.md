@@ -155,6 +155,7 @@ Smoke checks cover:
 - Core routes HTTP 200 status
 - Search route variants (`/search/?q=kubernetes`, `/search/?q=%28`, empty query)
 - Key page redesign markers (Home/News/Docs/About/Search)
+- Tags page empty tag navigation guard (no `href="#"` in `.tag-nav__link`)
 - Responsive viewport rendering smoke check (`desktop/tablet/mobile` screenshots across core + navigation routes incl. search results + docs detail routes)
 - Responsive layout overflow check (`desktop/tablet/mobile`, core routes + docs detail routes with horizontal overflow fail; optional `_site` full-route mode)
 - Runtime nav consistency check (`desktop/mobile`, GNB height/alignment/hover/active + route-specific active target mapping + toggle visibility/aria-label transitions, keyboard toggle Enter/Space, resize transition, and toggle/Escape/outside-click close behavior)

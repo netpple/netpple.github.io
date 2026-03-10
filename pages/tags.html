@@ -23,25 +23,27 @@ description: 태그 기반 콘텐츠 인덱스
 
 <div class="tag-nav">
   {% for tag in tags_list %}
-    {% if tag %}
-      <a class="tag-nav__link" href="#{{ tag | slugify }}">{{ tag }}</a>
+    {% assign normalized_tag = tag | strip %}
+    {% if normalized_tag != "" %}
+      <a class="tag-nav__link" href="#{{ normalized_tag | slugify }}">{{ normalized_tag }}</a>
     {% endif %}
   {% endfor %}
 </div>
 
 {% for tag in tags_list %}
-  {% if tag %}
+  {% assign normalized_tag = tag | strip %}
+  {% if normalized_tag != "" %}
     <section class="tag-section">
-      <h3 id="{{ tag | slugify }}" class="tag-section__title">{{ tag }}</h3>
+      <h3 id="{{ normalized_tag | slugify }}" class="tag-section__title">{{ normalized_tag }}</h3>
       <div class="post-list">
-        {% for post in site.tags[tag] %}
+        {% for post in site.tags[normalized_tag] %}
           <div class="tag-entry">
             <a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
             <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%Y.%m.%d" }}</time>
           </div>
         {% endfor %}
         {% for doc in site.docs %}
-          {% if doc.tags contains tag %}
+          {% if doc.tags contains normalized_tag %}
             <div class="tag-entry">
               <a href="{{ doc.url | prepend: site.baseurl }}">{{ doc.title }}</a>
               {% if doc.date %}<time datetime="{{ doc.date | date_to_xmlschema }}">{{ doc.date | date: "%Y.%m.%d" }}</time>{% endif %}
