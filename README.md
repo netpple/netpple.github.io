@@ -157,7 +157,7 @@ Smoke checks cover:
 - Key page redesign markers (Home/News/Docs/About/Search)
 - Responsive viewport rendering smoke check (`desktop/tablet/mobile` screenshots across core + navigation routes incl. search results route)
 - Responsive layout overflow check (`desktop/tablet/mobile`, core routes with horizontal overflow fail; optional `_site` full-route mode)
-- Runtime nav consistency check (`desktop/mobile`, GNB height/alignment/hover/active + toggle/Escape/outside-click close behavior)
+- Runtime nav consistency check (`desktop/mobile`, GNB height/alignment/hover/active + toggle visibility/aria-label transitions and toggle/Escape/outside-click close behavior)
 - Home-only stylesheet loading (`home.css` on `/`, absent on non-home routes)
 - Post/Doc detail template markers
 - Navigation active mapping (`/archive/` -> `News`)

@@ -27,6 +27,7 @@ async function waitMobileOpen(page) {
     if (!nav || !toggle) return false;
     if (!nav.classList.contains('is-open')) return false;
     if (toggle.getAttribute('aria-expanded') !== 'true') return false;
+    if (toggle.getAttribute('aria-label') !== 'Close navigation menu') return false;
     if (nav.getAttribute('aria-hidden') !== 'false') return false;
     const style = getComputedStyle(nav);
     return style.visibility === 'visible' && Number.parseFloat(style.opacity || '0') > 0.95;
@@ -40,6 +41,7 @@ async function waitMobileClosed(page) {
     if (!nav || !toggle) return false;
     if (nav.classList.contains('is-open')) return false;
     if (toggle.getAttribute('aria-expanded') !== 'false') return false;
+    if (toggle.getAttribute('aria-label') !== 'Open navigation menu') return false;
     if (nav.getAttribute('aria-hidden') !== 'true') return false;
     const style = getComputedStyle(nav);
     return style.visibility === 'hidden' && Number.parseFloat(style.opacity || '0') < 0.05;
@@ -55,12 +57,16 @@ async function checkDesktop(page, route) {
 
     const nav = document.querySelector('nav.gnb');
     const headerInner = document.querySelector('.site-header__inner');
+    const toggle = document.querySelector('[data-nav-toggle]');
     if (!nav) return { ok: false, reason: 'missing nav.gnb' };
     if (!headerInner) return { ok: false, reason: 'missing .site-header__inner' };
+    if (!toggle) return { ok: false, reason: 'missing nav toggle' };
 
     const navStyle = getComputedStyle(nav);
+    const toggleStyle = getComputedStyle(toggle);
     if (navStyle.display !== 'flex') return { ok: false, reason: `desktop nav display=${navStyle.display}` };
     if (navStyle.alignItems !== 'center') return { ok: false, reason: `desktop nav align-items=${navStyle.alignItems}` };
+    if (toggleStyle.display !== 'none') return { ok: false, reason: `desktop toggle display=${toggleStyle.display}` };
 
     const headerHeight = px(getComputedStyle(headerInner).height);
     if (headerHeight < 74 || headerHeight > 78) {
@@ -176,9 +182,12 @@ async function checkMobile(page, route) {
     if (!nav.classList.contains('is-open')) return { ok: false, reason: 'nav is-open class missing' };
 
     const navStyle = getComputedStyle(nav);
+    const toggleStyle = getComputedStyle(toggle);
     if (navStyle.visibility !== 'visible') return { ok: false, reason: `mobile nav visibility=${navStyle.visibility}` };
     if (px(navStyle.opacity) < 0.95) return { ok: false, reason: `mobile nav opacity=${navStyle.opacity}` };
     if (nav.getAttribute('aria-hidden') !== 'false') return { ok: false, reason: `mobile nav aria-hidden=${nav.getAttribute('aria-hidden')}` };
+    if (toggle.getAttribute('aria-label') !== 'Close navigation menu') return { ok: false, reason: `mobile toggle aria-label=${toggle.getAttribute('aria-label')}` };
+    if (toggleStyle.display === 'none') return { ok: false, reason: 'mobile toggle hidden' };
 
     const headerHeight = px(getComputedStyle(headerInner).height);
     if (headerHeight < 68 || headerHeight > 72) {
@@ -274,6 +283,7 @@ async function checkMobile(page, route) {
     if (!nav || !toggle) return { ok: false, reason: 'missing nav/toggle after link navigation' };
     if (nav.classList.contains('is-open')) return { ok: false, reason: 'menu remained open after nav link click' };
     if (toggle.getAttribute('aria-expanded') !== 'false') return { ok: false, reason: `aria-expanded=${toggle.getAttribute('aria-expanded')}` };
+    if (toggle.getAttribute('aria-label') !== 'Open navigation menu') return { ok: false, reason: `aria-label=${toggle.getAttribute('aria-label')}` };
     if (nav.getAttribute('aria-hidden') !== 'true') return { ok: false, reason: `aria-hidden=${nav.getAttribute('aria-hidden')}` };
 
     const links = Array.from(nav.querySelectorAll('.gnb__link'));
