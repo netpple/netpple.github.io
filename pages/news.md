@@ -22,7 +22,7 @@ description: netpple 기술 블로그 최신 게시글 목록
         {% if post.badges %}{% for badge in post.badges %}<span class="badge badge-{{ badge.type }}">{{ badge.tag }}</span>{% endfor %}{% endif %}
       </div>
       <h3 class="entry-card__title"><a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a></h3>
-      <p class="entry-card__excerpt">{{ post.content | split: "<!--more-->" | first | strip_html | strip_newlines | truncate: 220 }}</p>
+      <p class="entry-card__excerpt">{{ post.content | split: "<!--more-->" | first | strip_html | strip_newlines | truncate: 170 }}</p>
       <a class="entry-card__cta" href="{{ post.url | prepend: site.baseurl }}">Read article →</a>
     </article>
   {% endfor %}

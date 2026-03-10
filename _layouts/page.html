@@ -23,7 +23,7 @@ layout: default
         {% if page.badges %}{% for badge in page.badges %}<span class="badge badge-{{ badge.type }}">{{ badge.tag }}</span>{% endfor %}{% endif %}
       </div>
       {% if page.tags %}
-        <div class="chip-row" style="margin-top: 0.9rem;">
+        <div class="chip-row chip-row--offset">
           {% for tag in page.tags %}<span class="chip">{{ tag }}</span>{% endfor %}
         </div>
       {% endif %}

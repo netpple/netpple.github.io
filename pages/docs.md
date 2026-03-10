@@ -73,9 +73,9 @@ description: 시리즈 중심으로 구성한 기술 문서 허브
         <h3 class="entry-card__title"><a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a></h3>
         <p class="entry-card__excerpt">
           {% if post.description %}
-            {{ post.description | strip_html | strip_newlines | truncate: 220 }}
+            {{ post.description | strip_html | strip_newlines | truncate: 170 }}
           {% else %}
-            {{ post.content | split: "<!--more-->" | first | strip_html | strip_newlines | truncate: 220 }}
+            {{ post.content | split: "<!--more-->" | first | strip_html | strip_newlines | truncate: 170 }}
           {% endif %}
         </p>
         <a class="entry-card__cta" href="{{ post.url | prepend: site.baseurl }}">문서 보기 →</a>

@@ -14,7 +14,7 @@ layout: default
       {% if page.categories %}<span class="badge badge-secondary">{{ page.categories | join: ", " }}</span>{% endif %}
     </div>
     {% if page.tags %}
-      <div class="chip-row" style="margin-top: 0.9rem;">
+      <div class="chip-row chip-row--offset">
         {% for tag in page.tags %}<span class="chip">{{ tag }}</span>{% endfor %}
       </div>
     {% endif %}
