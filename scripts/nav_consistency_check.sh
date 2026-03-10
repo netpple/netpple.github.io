@@ -61,6 +61,8 @@ async function checkDesktop(page, route) {
     if (!nav) return { ok: false, reason: 'missing nav.gnb' };
     if (!headerInner) return { ok: false, reason: 'missing .site-header__inner' };
     if (!toggle) return { ok: false, reason: 'missing nav toggle' };
+    if (toggle.getAttribute('aria-controls') !== 'site-navigation') return { ok: false, reason: `desktop toggle aria-controls=${toggle.getAttribute('aria-controls')}` };
+    if (nav.getAttribute('id') !== 'site-navigation') return { ok: false, reason: `desktop nav id=${nav.getAttribute('id')}` };
 
     const navStyle = getComputedStyle(nav);
     const toggleStyle = getComputedStyle(toggle);
@@ -157,6 +159,7 @@ async function checkMobile(page, route) {
   if (!toggle) {
     throw new Error(`${route} mobile missing nav toggle`);
   }
+  await waitMobileClosed(page);
 
   // Open with toggle and validate open-state metrics.
   await toggle.click();
@@ -175,6 +178,8 @@ async function checkMobile(page, route) {
     if (!nav) return { ok: false, reason: 'missing nav.gnb' };
     if (!headerInner) return { ok: false, reason: 'missing .site-header__inner' };
     if (!toggle) return { ok: false, reason: 'missing nav toggle' };
+    if (toggle.getAttribute('aria-controls') !== 'site-navigation') return { ok: false, reason: `mobile toggle aria-controls=${toggle.getAttribute('aria-controls')}` };
+    if (nav.getAttribute('id') !== 'site-navigation') return { ok: false, reason: `mobile nav id=${nav.getAttribute('id')}` };
 
     const toggleExpanded = toggle.getAttribute('aria-expanded');
     if (toggleExpanded !== 'true') return { ok: false, reason: `toggle aria-expanded=${toggleExpanded}` };
@@ -277,7 +282,12 @@ async function checkMobile(page, route) {
   ]);
   await page.waitForLoadState('domcontentloaded');
 
-  const postNavigate = await page.evaluate(() => {
+  const postNavigate = await page.evaluate((expectedPath) => {
+    const normalizePath = (value) => {
+      const pathname = value.endsWith('/') ? value : `${value}/`;
+      return pathname;
+    };
+
     const nav = document.querySelector('nav.gnb');
     const toggle = document.querySelector('[data-nav-toggle]');
     if (!nav || !toggle) return { ok: false, reason: 'missing nav/toggle after link navigation' };
@@ -292,8 +302,15 @@ async function checkMobile(page, route) {
     if (activeCount !== 1 || ariaCurrentCount !== 1) {
       return { ok: false, reason: `post-nav active=${activeCount} aria-current=${ariaCurrentCount}` };
     }
+    const activeLink = links.find((link) => link.classList.contains('is-active'));
+    if (!activeLink) return { ok: false, reason: 'post-nav active link missing' };
+    const activeHref = new URL(activeLink.getAttribute('href'), window.location.origin).pathname;
+    const normalizedActive = normalizePath(activeHref);
+    if (normalizedActive !== expectedPath) {
+      return { ok: false, reason: `post-nav active href=${normalizedActive} expected=${expectedPath}` };
+    }
     return { ok: true };
-  });
+  }, targetPath);
   if (!postNavigate.ok) {
     throw new Error(`${route} mobile ${postNavigate.reason}`);
   }
