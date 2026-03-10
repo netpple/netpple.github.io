@@ -21,6 +21,7 @@ search_query_routes=(
 
 sample_post="/2023/c-for-beginner-hongongc/"
 sample_doc="/docs/istio-in-action"
+sample_doc_hands_on="/docs/querypie-handson/multiple-kubernetes-with-querypie-kac"
 key_nav_paths=(
   "/2023/c-for-beginner-hongongc/"
   "/2023/k8s-1.26-install/"
@@ -206,10 +207,13 @@ rm -f "${home_html_file}" "${news_html_file}"
 echo "[smoke] checking detail template markers"
 curl -fsSL "${BASE_URL}${sample_post}" | grep -Eiq "article-shell|data-article-toc|data-article-content"
 curl -fsSL "${BASE_URL}${sample_doc}" | grep -Eiq "article-shell|data-article-toc|Documentation Hub"
+curl -fsSL "${BASE_URL}${sample_doc_hands_on}" | grep -Eiq "article-shell|data-article-toc|data-article-content"
 assert_route_layout "${sample_post}"
 assert_route_layout "${sample_doc}"
+assert_route_layout "${sample_doc_hands_on}"
 assert_article_content_heading_hierarchy "${sample_post}"
 assert_article_content_heading_hierarchy "${sample_doc}"
+assert_article_content_heading_hierarchy "${sample_doc_hands_on}"
 
 echo "[smoke] checking key internal navigation links"
 for route in "${key_nav_paths[@]}"; do
@@ -226,5 +230,6 @@ assert_active_nav "/tags/" "/news/"
 assert_active_nav "/search/" "/news/"
 assert_active_nav "${sample_post}" "/news/"
 assert_active_nav "${sample_doc}" "/docs/"
+assert_active_nav "${sample_doc_hands_on}" "/docs/"
 
 echo "[pass] preview smoke checks completed"
