@@ -152,6 +152,18 @@ for route in "${routes[@]}"; do
   assert_route_layout "${route}"
 done
 
+echo "[smoke] checking home-only stylesheet loading"
+home_html_file="$(mktemp)"
+news_html_file="$(mktemp)"
+curl -fsSL "${BASE_URL}/" > "${home_html_file}"
+curl -fsSL "${BASE_URL}/news/" > "${news_html_file}"
+grep -q 'assets/css/home.css' "${home_html_file}" || fail "/ is missing home.css"
+if grep -q 'assets/css/home.css' "${news_html_file}"; then
+  rm -f "${home_html_file}" "${news_html_file}"
+  fail "/news/ unexpectedly includes home.css"
+fi
+rm -f "${home_html_file}" "${news_html_file}"
+
 echo "[smoke] checking detail template markers"
 curl -fsSL "${BASE_URL}${sample_post}" | grep -Eiq "article-shell|data-article-toc|data-article-content"
 curl -fsSL "${BASE_URL}${sample_doc}" | grep -Eiq "article-shell|data-article-toc|Documentation Hub"

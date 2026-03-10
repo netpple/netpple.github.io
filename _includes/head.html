@@ -34,7 +34,9 @@
 <link rel="stylesheet" href="{{ site.baseurl }}/assets/css/tokens.css">
 <link rel="stylesheet" href="{{ site.baseurl }}/assets/css/palette.css">
 <link rel="stylesheet" href="{{ site.baseurl }}/assets/css/site.css">
+{% if page.url == "/" %}
 <link rel="stylesheet" href="{{ site.baseurl }}/assets/css/home.css">
+{% endif %}
 
 <!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':

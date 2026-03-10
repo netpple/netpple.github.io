@@ -45,11 +45,16 @@ while IFS= read -r html_file; do
   nav_id_count="$(printf '%s' "${nav_block}" | grep -c 'id="site-navigation"' || true)"
   nav_primary_label_count="$(printf '%s' "${nav_block}" | grep -c 'aria-label="Primary"' || true)"
   nav_aria_hidden_count="$(printf '%s' "${nav_block}" | grep -c 'aria-hidden="false"' || true)"
+  home_css_count="$(grep -c '/assets/css/home.css' "${clean_file}" || true)"
+  expected_home_css_count="0"
+  if [[ "${html_file}" == "${SITE_DIR}/index.html" ]]; then
+    expected_home_css_count="1"
+  fi
   rm -f "${clean_file}"
 
-  if [[ "${skip_count}" != "1" || "${header_count}" != "1" || "${nav_toggle_count}" != "1" || "${nav_toggle_controls_count}" != "1" || "${nav_toggle_label_count}" != "1" || "${main_count}" != "1" || "${footer_count}" != "1" || "${h1_count}" != "1" || "${active_nav_count}" != "1" || "${aria_current_count}" != "1" || "${nav_id_count}" != "1" || "${nav_primary_label_count}" != "1" || "${nav_aria_hidden_count}" != "1" ]]; then
+  if [[ "${skip_count}" != "1" || "${header_count}" != "1" || "${nav_toggle_count}" != "1" || "${nav_toggle_controls_count}" != "1" || "${nav_toggle_label_count}" != "1" || "${main_count}" != "1" || "${footer_count}" != "1" || "${h1_count}" != "1" || "${active_nav_count}" != "1" || "${aria_current_count}" != "1" || "${nav_id_count}" != "1" || "${nav_primary_label_count}" != "1" || "${nav_aria_hidden_count}" != "1" || "${home_css_count}" != "${expected_home_css_count}" ]]; then
     echo "[fail] ${html_file}"
-    echo "       skip=${skip_count} header=${header_count} nav_toggle=${nav_toggle_count} nav_controls=${nav_toggle_controls_count} nav_toggle_label=${nav_toggle_label_count} main=${main_count} footer=${footer_count} h1=${h1_count} active_nav=${active_nav_count} aria_current=${aria_current_count} nav_id=${nav_id_count} nav_primary_label=${nav_primary_label_count} nav_aria_hidden=${nav_aria_hidden_count}"
+    echo "       skip=${skip_count} header=${header_count} nav_toggle=${nav_toggle_count} nav_controls=${nav_toggle_controls_count} nav_toggle_label=${nav_toggle_label_count} main=${main_count} footer=${footer_count} h1=${h1_count} active_nav=${active_nav_count} aria_current=${aria_current_count} nav_id=${nav_id_count} nav_primary_label=${nav_primary_label_count} nav_aria_hidden=${nav_aria_hidden_count} home_css=${home_css_count}/${expected_home_css_count}"
     failed=$((failed + 1))
   fi
 done < <(find "${SITE_DIR}" -name '*.html' -type f | sort)
