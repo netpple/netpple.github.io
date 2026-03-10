@@ -100,6 +100,22 @@ layout: null
     });
   }
 
+  function normalizeArticleHeadings(container) {
+    container.querySelectorAll("h1").forEach(function (heading) {
+      var replacement = document.createElement("h2");
+
+      Array.prototype.slice.call(heading.attributes).forEach(function (attr) {
+        replacement.setAttribute(attr.name, attr.value);
+      });
+
+      while (heading.firstChild) {
+        replacement.appendChild(heading.firstChild);
+      }
+
+      heading.parentNode.replaceChild(replacement, heading);
+    });
+  }
+
   function activateCurrentTocItem(linksById, activeId) {
     linksById.forEach(function (link) {
       link.classList.toggle("is-current", link.getAttribute("href") === "#" + activeId);
@@ -143,6 +159,9 @@ layout: null
     if (!container || !toc || !tocList) {
       return;
     }
+
+    // Keep one top-level page heading and normalize content heading hierarchy.
+    normalizeArticleHeadings(container);
 
     var usedIds = collectUsedIds(container);
     appendHeadingAnchors(container, usedIds);
