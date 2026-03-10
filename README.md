@@ -158,7 +158,7 @@ Smoke checks cover:
 - Tags page empty tag navigation guard (no `href="#"` in `.tag-nav__link`)
 - Responsive viewport rendering smoke check (`desktop/tablet/mobile` screenshots across core + navigation routes incl. search results + docs detail routes)
 - Responsive layout overflow check (`desktop/tablet/mobile`, core routes + docs detail routes with horizontal overflow fail; optional `_site` full-route mode)
-- Runtime nav consistency check (`desktop/mobile`, GNB height/alignment/hover/active + route-specific active target mapping + toggle visibility/aria-label transitions, keyboard toggle Enter/Space, resize transition, and toggle/Escape/outside-click close behavior)
+- Runtime nav consistency check (`desktop/mobile`, GNB height/alignment/hover/active + route-specific active target mapping + toggle visibility/aria-label transitions, keyboard toggle Enter/Space, resize transition, toggle/Escape/outside-click close behavior, and page-wide `target="_blank"` rel safety)
 - Home-only stylesheet loading (`home.css` on `/`, absent on non-home routes)
 - Post/Doc detail template markers
 - Navigation active mapping (`/archive/` -> `News`)

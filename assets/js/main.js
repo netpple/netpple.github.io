@@ -214,7 +214,24 @@ layout: null
     });
   }
 
+  function hardenBlankTargetLinks() {
+    document.querySelectorAll('a[target="_blank"]').forEach(function (link) {
+      var relValue = (link.getAttribute("rel") || "").trim();
+      var relTokens = relValue ? relValue.split(/\s+/) : [];
+
+      if (relTokens.indexOf("noreferrer") === -1) {
+        relTokens.push("noreferrer");
+      }
+      if (relTokens.indexOf("noopener") === -1) {
+        relTokens.push("noopener");
+      }
+
+      link.setAttribute("rel", relTokens.join(" ").trim());
+    });
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
+    hardenBlankTargetLinks();
     initNavigation();
     buildToc();
     initSearchShortcut();

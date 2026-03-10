@@ -27,6 +27,7 @@ const routes = [
   { path: '/tags/', expectedActive: '/news/' },
   { path: '/search/', expectedActive: '/news/' },
   { path: '/2023/c-for-beginner-hongongc/', expectedActive: '/news/' },
+  { path: '/2021/how-uid-gid-work-in-container/', expectedActive: '/news/' },
   { path: '/docs/istio-in-action/', expectedActive: '/docs/' },
   { path: '/docs/istio-in-action/Istio-ch11-performance', expectedActive: '/docs/' },
   { path: '/docs/querypie-handson/multiple-kubernetes-with-querypie-kac', expectedActive: '/docs/' },
@@ -130,16 +131,32 @@ async function checkDesktop(page, route, expectedActive) {
       return { ok: false, reason: `desktop active href=${normalizedActive} expected=${expected}` };
     }
 
+    const blankTargetLinks = Array.from(document.querySelectorAll('a[target="_blank"]'));
+    const invalidBlankTargetLinks = blankTargetLinks
+      .filter((link) => {
+        const relTokens = (link.getAttribute('rel') || '').toLowerCase().split(/\s+/).filter(Boolean);
+        return !relTokens.includes('noreferrer') || !relTokens.includes('noopener');
+      })
+      .slice(0, 5)
+      .map((link) => link.getAttribute('href') || '(missing href)');
+
     return {
       ok: true,
       linkCount: links.length,
       linkHeight: minHeight,
       headerHeight,
+      blankTargetCount: blankTargetLinks.length,
+      invalidBlankTargetLinks,
     };
   }, expectedActive);
 
   if (!desktop.ok) {
     throw new Error(`${route} desktop ${desktop.reason}`);
+  }
+  if (desktop.invalidBlankTargetLinks.length) {
+    throw new Error(
+      `${route} desktop target=_blank links missing rel safety: ${desktop.invalidBlankTargetLinks.join(', ')}`
+    );
   }
 
   const hoverTarget = await page.$('nav.gnb .gnb__link:not(.is-active)');
@@ -395,7 +412,7 @@ async function checkMobile(page, route, expectedActive) {
       await desktopPage.waitForTimeout(120);
       const desktop = await checkDesktop(desktopPage, route, expectedActive);
       checks += 1;
-      console.log(`[ok] ${route} desktop nav consistency (active=${expectedActive}, links=${desktop.linkCount}, link-h=${desktop.linkHeight.toFixed(1)}, header-h=${desktop.headerHeight.toFixed(1)})`);
+      console.log(`[ok] ${route} desktop nav consistency (active=${expectedActive}, links=${desktop.linkCount}, link-h=${desktop.linkHeight.toFixed(1)}, header-h=${desktop.headerHeight.toFixed(1)}, blank-target=${desktop.blankTargetCount})`);
       await desktopContext.close();
 
       const mobileContext = await browser.newContext({ viewport: { width: 390, height: 844 } });
