@@ -109,6 +109,9 @@ docker run -d --name sam7-manual-preview -p 4012:4000 -v "$PWD":/srv/jekyll jeky
 # 2) Run reusable smoke checks
 scripts/preview_smoke_check.sh
 
+# optional shortcut
+make preview-smoke
+
 # 3) Stop preview server after validation
 docker rm -f sam7-manual-preview
 ```
