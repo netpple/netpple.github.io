@@ -1,45 +1,36 @@
-<header>
-        <nav class="js-navbar-scroll navbar navbar-expand navbar-dark flex-column flex-md-row td-navbar">
-        <a class="navbar-brand" href="{{ site.baseurl }}/">
-            <span class="navbar-logo"></span>{% include logo.svg %}<span class="text-uppercase font-weight-bold">{{ site.title }}</span>
-	</a>
-	<div class="td-navbar-nav-scroll ml-md-auto" id="main_navbar">
-		<ul class="navbar-nav mt-2 mt-lg-0">
-            {% for link in site.data.navigation %}<li class="nav-item mr-4 mb-2 mb-lg-0">
-              <a class="nav-link" href="{% if link.url %}{{ site.baseurl }}/{{ link.url }}{% else %}{{ link.external_url }}{% endif %}" ><span>{{ link.title }}</span></a>
-			</li>{% endfor %}
-		</ul>
-	</div>
-<!--	<div class="navbar-nav d-none d-lg-block">-->
-<!-- <input type="search" class="form-control td-search-input" placeholder="&#xf002 Search this site…" aria-label="Search this site…" autocomplete="off">-->
-<!--        </div>-->
+<header class="site-header">
+  <div class="site-container site-header__inner">
+    <a class="brand" href="{{ site.baseurl }}/" aria-label="{{ site.title }}">
+      <span class="brand__mark">NP</span>
+      <span class="brand__text">{{ site.title }}</span>
+    </a>
 
-<!--	<div class="navbar-nav d-none d-lg-block">-->
-<!--          <a class="gh-source" data-gh-source="github" href="{{ site.repo }}" title="Go to repository" data-md-state="done" target="_blank">-->
-<!--          <div class="gh-source__repository">-->
-<!--            <i class="fab fa fa-github fa-2x" style='padding-right:20px; float:left; margin-top:5px'></i>-->
-<!--            {{ site.github_user }}/{{ site.github_repo }}-->
-<!--          <ul class="gh-source__facts"><li class="gh-source__fact" id='stars'></li><li id="forks" class="gh-source__fact"></li></ul></div></a>-->
-<!--        </div>-->
-      </div>
+    <button class="gnb__toggle" type="button" aria-expanded="false" aria-controls="site-navigation" data-nav-toggle>
+      Menu
+    </button>
 
-
-</nav>
+    <nav class="gnb" id="site-navigation" data-nav>
+      <ul class="gnb__list">
+        {% for link in site.data.navigation %}
+          {% assign href = link.external_url %}
+          {% if link.url %}{% assign href = site.baseurl | append: link.url %}{% endif %}
+          {% assign is_active = false %}
+          {% if link.url == "/" and page.url == "/" %}
+            {% assign is_active = true %}
+          {% elsif link.url == "/news/" and (page.url == "/news/" or page.url == "/archive/" or page.collection == "posts") %}
+            {% assign is_active = true %}
+          {% elsif link.url == "/docs/" and (page.url == "/docs/" or page.collection == "docs") %}
+            {% assign is_active = true %}
+          {% elsif link.url == "/about/" and page.url == "/about/" %}
+            {% assign is_active = true %}
+          {% endif %}
+          <li class="gnb__item">
+            <a class="gnb__link {% if is_active %}is-active{% endif %}" href="{{ href }}" {% if link.external_url %}target="_blank" rel="noreferrer noopener"{% endif %}>
+              {{ link.title }}
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    </nav>
+  </div>
 </header>
-
-<script>
-$(document).ready(function() {
-  var url = "https://api.github.com/search/repositories?q={{ site.github_user }}/{{ site.github_repo }}";
-  fetch(url, { 
-      headers: {"Accept":"application/vnd.github.preview"}
-  }).then(function(e) {
-    return e.json()
-  }).then(function(r) {
-     console.log(r.items[0])
-     stars = r.items[0]['stargazers_count']
-     forks = r.items[0]['forks_count']
-     $('#stars').text(stars + " Stars")
-     $('#forks').text(forks + " Forks")
-  });
-});
-</script>

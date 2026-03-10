@@ -4,14 +4,20 @@ sitemap: false
 permalink: /search/
 not_editable: true
 excluded_in_search: true
+description: 문서/게시글 통합 검색
 ---
 
-<input class="form-control td-search-input" type="search" name="q" id="search-input" placeholder="&#xf002 Search this site…"  style="margin-top:5px" autofocus>
-<i style="color:white; margin-right:8px; margin-left:5px" class="fa fa-search"></i>
+<div class="section-heading">
+  <p class="section-heading__kicker">Search</p>
+  <h2 class="section-heading__title">사이트 통합 검색</h2>
+  <p class="section-heading__description">문서, 뉴스, 정적 페이지를 한 번에 검색합니다.</p>
+</div>
 
-<p><span id="search-process">Loading</span> results <span id="search-query-container" style="display: none;">for "<strong id="search-query"></strong>"</span></p>
-
-<ul id="search-results"></ul>
+<section class="search-panel">
+  <input class="search-input td-search-input js-search-input" type="search" name="q" id="search-input" placeholder="검색어를 입력하세요" autofocus>
+  <p class="search-status"><span id="search-process">Loading</span> results <span id="search-query-container" class="search-query-container">for "<strong id="search-query"></strong>"</span></p>
+  <ul id="search-results" class="search-results"></ul>
+</section>
 
 <script>
 	window.data = {

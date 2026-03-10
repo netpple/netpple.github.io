@@ -1,63 +1,33 @@
 <!DOCTYPE html>
-<html lang="en" class="no-js">
-  <!-- Copyright 2019-2021 Vanessa Sochat-->
+<html lang="ko" class="no-js">
   {% include head.html %}
   {% include google-analytics.html %}
-  <body class="td-section">
-  <!-- Google Tag Manager (noscript) -->
-  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5BTZG6C"
-                    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-  <!-- End Google Tag Manager (noscript) -->
-    {% include header.html %}
-    <div class="container-fluid td-outer">
-      <div class="td-main">
-        <div class="row flex-xl-nowrap">
-          <div class="col-12 col-md-3 col-xl-2 td-sidebar d-print-none">
-          {% include sidebar.html %}
-          </div>
-            {% if page.rightpanel %}<div class="d-none d-xl-block col-xl-2 td-toc d-print-none">
-              <div class="td-page-meta ml-2 pb-1 pt-2 mb-0">
-                  {% include editable.html %}
-              </div>
-              <nav id="TableOfContents"><ul>
-              <li><ul id="TOC">
-<!--                 Links will be appended here-->
-              </ul></li>
-              </ul></nav>
-          </div>{% endif %}
-          <main class="col-12 col-md-9 col-xl-8 pl-md-5" role="main">
-            <nav aria-label="breadcrumb" class="d-none d-md-block d-print-none">
-	      <ol class="breadcrumb spb-1">
-              {% assign crumbs = page.url | append: "/"  | replace: '//', '/' | split: '/' %}
-              {% for crumb in crumbs offset: 1 %}{% if crumb != "index" %}{% if forloop.last %}
-                <li class="breadcrumb-item active" aria-current="page">
-	          <a href="{{ site.url }}{{ site.baseurl }}{{ page.url }}">{{ page.title }}</a>
-                </li>{% else %}
-                {% if page.url != "/docs/" %}<li class="breadcrumb-item">
-                  <a href="{{ site.url }}{{ site.baseurl }}{% assign crumb_limit = forloop.index | plus: 1 %}{% for crumb in crumbs limit: crumb_limit %}{{ crumb | append: '/' }}{% endfor %}">{% if crumb == "docs" %}Documentation{% else %}{{ crumb | replace:'-',' ' | remove:'.html' | capitalize }}{% endif %}</a>
-                </li>{% endif %}{% endif %}
-                {% endif %}{% endfor %}
-	      </ol>
-           </nav>
-           <div class="td-content">
-	      {{ content }}	
-              {% if section.links %}<div class="section-index">
-               <hr class="panel-line">{% for child in section.links %}
-                 <div class="entry">
-                    <h5>
-                        <a href="{% if child.url %}{{ site.baseurl }}{{ child.url }}{% else %}{{ child.external_url }}{% endif %}">{{ child.title }}</a>
-                    </h5>
-                    <p>{{ child.description }}</p>
-                 </div>{% endfor %}
-              </div>{% endif %}
-<!--              {% include feedback.html %}-->
-               {% if page.comments %}
-                    {% include comment_utterances.html %}
-               {% endif %}
-           </div>
-          </main>
+  {% assign page_class = "page-generic" %}
+  {% if page.url == "/" %}
+    {% assign page_class = "page-home" %}
+  {% elsif page.url == "/news/" %}
+    {% assign page_class = "page-news" %}
+  {% elsif page.url == "/docs/" %}
+    {% assign page_class = "page-docs" %}
+  {% elsif page.url == "/about/" %}
+    {% assign page_class = "page-about" %}
+  {% elsif page.collection == "posts" %}
+    {% assign page_class = "page-post-detail" %}
+  {% elsif page.collection == "docs" %}
+    {% assign page_class = "page-doc-detail" %}
+  {% endif %}
+  <body class="{{ page_class }}">
+    <noscript>
+      <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5BTZG6C" height="0" width="0" style="display:none;visibility:hidden"></iframe>
+    </noscript>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <div class="site-shell">
+      {% include header.html %}
+      <main class="site-main" id="main-content" role="main">
+        <div class="site-container">
+          {{ content }}
         </div>
-      </div>
+      </main>
       {% include footer.html %}
     </div>
     {% include scripts.html %}

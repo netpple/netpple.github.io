@@ -1,41 +1,22 @@
-<footer class="bg-dark py-5 row d-print-none">
-  <div class="container-fluid mx-sm-5">
-    <div class="row">
-      <div class="col-6 col-sm-4 text-xs-center order-sm-2">
-        
-<ul class="list-inline mb-0">  
-  {% if site.twitter %}
-  <li class="list-inline-item mx-2 h3" data-toggle="tooltip" data-placement="top" title="" aria-label="Twitter" data-original-title="Twitter">
-    <a class="text-white" target="_blank" href="https://twitter.com/{{ site.twitter }}">
-      <i class="fab fa-twitter"></i>
-    </a>
-  </li>{% endif %}
-  {% if site.linkedin %}
-  <li class="list-inline-item mx-2 h3" data-toggle="tooltip" data-placement="top" title="" aria-label="LinkedIn" data-original-title="LinkedIn">
-    <a class="text-white" target="_blank" href="https://linkedin.com/in/{{ site.linkedin }}">
-      <i class="fab fa-linkedin"></i>
-    </a>
-  </li>{% endif %}
-</ul>
-</div>
-<div class="col-6 col-sm-4 text-right text-xs-center order-sm-3">
-<ul class="list-inline mb-0">  
-  <li class="list-inline-item mx-2 h3" data-toggle="tooltip" data-placement="top" title="" aria-label="GitHub" data-original-title="GitHub">
-    <a class="text-white" target="_blank" href="{{ site.repo }}">
-      <i class="fab fa-github"></i>
-    </a>
-  </li>
-</ul>
-</div>
-<div class="col-12 col-sm-4 text-center py-2 order-sm-2">
-  <small class="text-white">© 2025 {{ site.author }} All Rights Reserved. since 2021</small>
-  <!-- HITS https://hits.seeyoufarm.com/ -->
-  <p>
-    <img src="https://visitor-badge.laobi.icu/badge?page_id=netpple.github.io&left_color=555555&right_color=79C83D&left_text=Visitors"/>
-  </p>
-  <!-- -->
-  {% if site.privacy %}<small class="ml-1"><a href="{{ site.privacy }}" target="_blank">Privacy Policy</a></small>{% endif %}
+<footer class="site-footer">
+  <div class="site-container site-footer__inner">
+    <div class="site-footer__top">
+      <div>
+        <p class="site-footer__title">{{ site.title }} · 기술 블로그</p>
+        <p class="site-footer__description">클라우드 네이티브, 분산 시스템, 보안 운영 경험을 기록합니다.</p>
       </div>
+      <div class="site-footer__links">
+        <a class="site-footer__link" href="{{ site.baseurl }}/news/">News</a>
+        <a class="site-footer__link" href="{{ site.baseurl }}/docs/">Docs</a>
+        <a class="site-footer__link" href="{{ site.baseurl }}/about/">About</a>
+        <a class="site-footer__link" href="https://github.com/netpple/netpple.github.io" target="_blank" rel="noreferrer noopener">GitHub</a>
+        {% if site.linkedin %}<a class="site-footer__link" href="https://linkedin.com/in/{{ site.linkedin }}" target="_blank" rel="noreferrer noopener">LinkedIn</a>{% endif %}
+      </div>
+    </div>
+
+    <div class="site-footer__bottom">
+      <span>© {{ "now" | date: "%Y" }} {{ site.author }}. All rights reserved.</span>
+      <span>Since 2021 · GitHub Pages + Jekyll</span>
     </div>
   </div>
 </footer>

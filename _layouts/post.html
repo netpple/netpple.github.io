@@ -1,10 +1,45 @@
 ---
-layout: page
+layout: default
 ---
-<!-- Copyright 2019-2021 Vanessa Sochat-->
-<h1 style="margin-bottom:0px">{{ page.title }} </h1>
-<span class="post-date" style="font-style: italic;">{{ page.date | date: "%B %d, %Y" }}</span>
-{% if page.badges %}{% for badge in page.badges %}<span class="badge badge-{{ badge.type }}">{{ badge.tag }}</span>{% endfor %}{% endif %}
-<span class="badge badge-info">{{ page.version | default: "v1.0" }}</span>
-{{ content }}
+<article class="article-shell">
+  <header class="article-header">
+    <p class="article-header__eyebrow">News</p>
+    <h1 class="article-header__title">{{ page.title }}</h1>
+    {% if page.description %}<p class="article-header__description">{{ page.description }}</p>{% endif %}
+    <div class="article-meta">
+      <a class="entry-card__cta" href="{{ site.baseurl }}/news/">All News</a>
+      <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%Y.%m.%d" }}</time>
+      <span class="badge">{{ page.version | default: "v1.0" }}</span>
+      {% if page.badges %}{% for badge in page.badges %}<span class="badge badge-{{ badge.type }}">{{ badge.tag }}</span>{% endfor %}{% endif %}
+      {% if page.categories %}<span class="badge badge-secondary">{{ page.categories | join: ", " }}</span>{% endif %}
+    </div>
+    {% if page.tags %}
+      <div class="chip-row" style="margin-top: 0.9rem;">
+        {% for tag in page.tags %}<span class="chip">{{ tag }}</span>{% endfor %}
+      </div>
+    {% endif %}
+    {% if page.histories %}
+      <ul class="article-history">
+        {% for history in page.histories %}
+          <li>
+            <span>{{ history.description }}</span>
+            <time datetime="{{ history.date | date_to_xmlschema }}">{{ history.date | date: "%Y.%m.%d %H:%M" }}</time>
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </header>
 
+  <div class="article-layout">
+    <div class="article-content" data-article-content>
+      {{ content }}
+    </div>
+    <aside class="article-toc" data-article-toc>
+      <p class="article-toc__title">Table of contents</p>
+      <ul class="article-toc__list" data-toc-list></ul>
+    </aside>
+  </div>
+</article>
+{% if page.comments %}
+  {% include comment_utterances.html %}
+{% endif %}

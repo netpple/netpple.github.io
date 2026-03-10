@@ -1,7 +1,91 @@
 ---
 layout: default
 ---
-{{ content }}
-{% include toc.html %}
-{% include permalinks.html %}
-{% include tags.html %}
+{% assign is_home = false %}
+{% if page.url == "/" %}
+  {% assign is_home = true %}
+{% endif %}
+{% assign is_docs_detail = false %}
+{% if page.collection == "docs" and page.url != "/docs/" %}
+  {% assign is_docs_detail = true %}
+{% endif %}
+
+{% if is_docs_detail %}
+  <article class="article-shell">
+    <header class="article-header">
+      <p class="article-header__eyebrow">Documentation</p>
+      <h1 class="article-header__title article-header__title--compact">{{ page.title }}</h1>
+      {% if page.description %}<p class="article-header__description">{{ page.description }}</p>{% endif %}
+      <div class="article-meta">
+        <a class="entry-card__cta" href="{{ site.baseurl }}/docs/">Documentation Hub</a>
+        {% if page.date %}<time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%Y.%m.%d" }}</time>{% endif %}
+        {% if page.version %}<span class="badge">{{ page.version }}</span>{% endif %}
+        {% if page.badges %}{% for badge in page.badges %}<span class="badge badge-{{ badge.type }}">{{ badge.tag }}</span>{% endfor %}{% endif %}
+      </div>
+      {% if page.tags %}
+        <div class="chip-row" style="margin-top: 0.9rem;">
+          {% for tag in page.tags %}<span class="chip">{{ tag }}</span>{% endfor %}
+        </div>
+      {% endif %}
+      {% if page.histories %}
+        <ul class="article-history">
+          {% for history in page.histories %}
+            <li>
+              <span>{{ history.description }}</span>
+              <time datetime="{{ history.date | date_to_xmlschema }}">{{ history.date | date: "%Y.%m.%d %H:%M" }}</time>
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </header>
+
+    <div class="article-layout">
+      <div class="article-content" data-article-content>
+        {{ content }}
+      </div>
+      <aside class="article-toc" data-article-toc>
+        <p class="article-toc__title">Table of contents</p>
+        <ul class="article-toc__list" data-toc-list></ul>
+        {% if page.label %}
+          {% assign related_docs = site.docs | where: "label", page.label %}
+          {% if related_docs.size > 1 %}
+            <div class="article-series">
+              <p class="article-series__title">{{ page.label }} series</p>
+              <ul class="article-series__list">
+                {% for doc in related_docs limit:8 %}
+                  <li><a href="{{ doc.url | prepend: site.baseurl }}">{{ doc.title }}</a></li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+        {% endif %}
+      </aside>
+    </div>
+  </article>
+  {% if page.comments %}
+    {% include comment_utterances.html %}
+  {% endif %}
+{% else %}
+  {% unless is_home %}
+    {% assign intro_eyebrow = "Page" %}
+    {% if page.url == "/news/" or page.url == "/archive/" %}
+      {% assign intro_eyebrow = "News" %}
+    {% elsif page.url == "/docs/" %}
+      {% assign intro_eyebrow = "Documentation" %}
+    {% elsif page.url == "/about/" %}
+      {% assign intro_eyebrow = "About" %}
+    {% elsif page.url == "/search/" %}
+      {% assign intro_eyebrow = "Search" %}
+    {% elsif page.url == "/tags/" %}
+      {% assign intro_eyebrow = "Tags" %}
+    {% endif %}
+    <header class="page-intro">
+      <p class="page-intro__eyebrow">{{ intro_eyebrow }}</p>
+      <h1 class="page-intro__title">{{ page.title }}</h1>
+      {% if page.description %}<p class="page-intro__description">{{ page.description }}</p>{% endif %}
+    </header>
+  {% endunless %}
+  <div class="page-content">
+    {{ content }}
+  </div>
+{% endif %}
