@@ -16,6 +16,49 @@ routes=(
 sample_post="/2023/c-for-beginner-hongongc/"
 sample_doc="/docs/istio-in-action"
 
+fail() {
+  echo "[fail] $1"
+  exit 1
+}
+
+extract_active_nav_href() {
+  local route="$1"
+  local html_file
+  local active
+  html_file="$(mktemp)"
+  curl -fsSL "${BASE_URL}${route}" > "${html_file}"
+  active="$(
+    (grep 'gnb__link is-active' "${html_file}" || true) \
+      | head -n 1 \
+      | sed -E 's/.*href=\"([^\"]*)\".*/\1/'
+  )"
+  rm -f "${html_file}"
+  printf '%s' "${active}"
+}
+
+assert_route_layout() {
+  local route="$1"
+  local html_file
+  html_file="$(mktemp)"
+  curl -fsSL "${BASE_URL}${route}" > "${html_file}"
+  grep -q 'class="skip-link"' "${html_file}" || fail "${route} is missing skip-link"
+  grep -q 'data-nav-toggle' "${html_file}" || fail "${route} is missing nav toggle"
+  grep -q 'id="main-content"' "${html_file}" || fail "${route} is missing #main-content"
+  grep -q 'class="site-footer"' "${html_file}" || fail "${route} is missing site footer"
+  rm -f "${html_file}"
+}
+
+assert_active_nav() {
+  local route="$1"
+  local expected="$2"
+  local actual
+  actual="$(extract_active_nav_href "${route}")"
+  if [[ "${actual}" != "${expected}" ]]; then
+    fail "${route} expected active nav ${expected} but got '${actual}'"
+  fi
+  echo "[ok] ${route} active nav -> ${actual}"
+}
+
 echo "[smoke] base url: ${BASE_URL}"
 
 echo "[smoke] checking homepage content marker"
@@ -31,16 +74,26 @@ for route in "${routes[@]}"; do
   echo "[ok] ${route} -> ${code}"
 done
 
+echo "[smoke] checking common layout markers"
+for route in "${routes[@]}"; do
+  assert_route_layout "${route}"
+done
+
 echo "[smoke] checking detail template markers"
 curl -fsSL "${BASE_URL}${sample_post}" | grep -Eiq "article-shell|data-article-toc|data-article-content"
 curl -fsSL "${BASE_URL}${sample_doc}" | grep -Eiq "article-shell|data-article-toc|Documentation Hub"
+assert_route_layout "${sample_post}"
+assert_route_layout "${sample_doc}"
 
 echo "[smoke] checking active nav mapping"
-archive_active="$(curl -fsSL "${BASE_URL}/archive/" | grep -m1 'gnb__link is-active' | sed -E 's/.*href=\"([^\"]*)\".*/\1/')"
-if [[ "${archive_active}" != "/news/" ]]; then
-  echo "[fail] /archive/ expected active nav /news/ but got '${archive_active}'"
-  exit 1
-fi
-echo "[ok] /archive/ active nav -> ${archive_active}"
+assert_active_nav "/" "/"
+assert_active_nav "/news/" "/news/"
+assert_active_nav "/docs/" "/docs/"
+assert_active_nav "/about/" "/about/"
+assert_active_nav "/archive/" "/news/"
+assert_active_nav "/tags/" "/news/"
+assert_active_nav "/search/" "/news/"
+assert_active_nav "${sample_post}" "/news/"
+assert_active_nav "${sample_doc}" "/docs/"
 
 echo "[pass] preview smoke checks completed"
