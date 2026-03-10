@@ -28,6 +28,7 @@ const routes = [
   { path: '/search/', expectedActive: '/news/' },
   { path: '/2023/c-for-beginner-hongongc/', expectedActive: '/news/' },
   { path: '/docs/istio-in-action/', expectedActive: '/docs/' },
+  { path: '/docs/istio-in-action/Istio-ch11-performance', expectedActive: '/docs/' },
   { path: '/docs/querypie-handson/multiple-kubernetes-with-querypie-kac', expectedActive: '/docs/' },
 ];
 
