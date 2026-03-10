@@ -20,7 +20,7 @@ const { chromium } = require('playwright');
 const baseUrl = process.argv[2];
 const routes = ['/', '/news/', '/docs/', '/about/', '/archive/', '/tags/', '/search/', '/2023/c-for-beginner-hongongc/', '/docs/istio-in-action/'];
 
-async function waitMobileOpen(page, route, label) {
+async function waitMobileOpen(page) {
   await page.waitForFunction(() => {
     const nav = document.querySelector('nav.gnb');
     const toggle = document.querySelector('[data-nav-toggle]');
@@ -33,7 +33,7 @@ async function waitMobileOpen(page, route, label) {
   }, null, { timeout: 3000 });
 }
 
-async function waitMobileClosed(page, route, label) {
+async function waitMobileClosed(page) {
   await page.waitForFunction(() => {
     const nav = document.querySelector('nav.gnb');
     const toggle = document.querySelector('[data-nav-toggle]');
@@ -154,7 +154,7 @@ async function checkMobile(page, route) {
 
   // Open with toggle and validate open-state metrics.
   await toggle.click();
-  await waitMobileOpen(page, route, 'toggle-open');
+  await waitMobileOpen(page);
 
   const mobile = await page.evaluate(() => {
     const px = (value) => {
@@ -228,17 +228,17 @@ async function checkMobile(page, route) {
 
   // Close by toggle click.
   await toggle.click();
-  await waitMobileClosed(page, route, 'toggle-close');
+  await waitMobileClosed(page);
 
   // Open and close with Escape.
   await toggle.click();
-  await waitMobileOpen(page, route, 'escape-open');
+  await waitMobileOpen(page);
   await page.keyboard.press('Escape');
-  await waitMobileClosed(page, route, 'escape-close');
+  await waitMobileClosed(page);
 
   // Open and close by clicking outside nav/toggle.
   await toggle.click();
-  await waitMobileOpen(page, route, 'outside-open');
+  await waitMobileOpen(page);
   await page.evaluate(() => {
     const event = new MouseEvent('click', {
       bubbles: true,
@@ -247,7 +247,46 @@ async function checkMobile(page, route) {
     });
     document.body.dispatchEvent(event);
   });
-  await waitMobileClosed(page, route, 'outside-close');
+  await waitMobileClosed(page);
+
+  // Open and navigate via internal nav link; destination should load with closed menu state.
+  const targetPath = route.startsWith('/docs/') || route === '/docs/' ? '/news/' : '/docs/';
+  await toggle.click();
+  await waitMobileOpen(page);
+  const targetSelector = `nav.gnb .gnb__link[href="${targetPath}"]`;
+  const targetLink = await page.$(targetSelector);
+  if (!targetLink) {
+    throw new Error(`${route} mobile missing navigation target link ${targetPath}`);
+  }
+
+  await Promise.all([
+    page.waitForURL((url) => {
+      var normalized = url.pathname.endsWith('/') ? url.pathname : `${url.pathname}/`;
+      return normalized === targetPath;
+    }, { timeout: 30000 }),
+    targetLink.click(),
+  ]);
+  await page.waitForLoadState('domcontentloaded');
+
+  const postNavigate = await page.evaluate(() => {
+    const nav = document.querySelector('nav.gnb');
+    const toggle = document.querySelector('[data-nav-toggle]');
+    if (!nav || !toggle) return { ok: false, reason: 'missing nav/toggle after link navigation' };
+    if (nav.classList.contains('is-open')) return { ok: false, reason: 'menu remained open after nav link click' };
+    if (toggle.getAttribute('aria-expanded') !== 'false') return { ok: false, reason: `aria-expanded=${toggle.getAttribute('aria-expanded')}` };
+    if (nav.getAttribute('aria-hidden') !== 'true') return { ok: false, reason: `aria-hidden=${nav.getAttribute('aria-hidden')}` };
+
+    const links = Array.from(nav.querySelectorAll('.gnb__link'));
+    const activeCount = links.filter((link) => link.classList.contains('is-active')).length;
+    const ariaCurrentCount = links.filter((link) => link.getAttribute('aria-current') === 'page').length;
+    if (activeCount !== 1 || ariaCurrentCount !== 1) {
+      return { ok: false, reason: `post-nav active=${activeCount} aria-current=${ariaCurrentCount}` };
+    }
+    return { ok: true };
+  });
+  if (!postNavigate.ok) {
+    throw new Error(`${route} mobile ${postNavigate.reason}`);
+  }
 
   return mobile;
 }
