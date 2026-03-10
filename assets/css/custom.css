@@ -56,6 +56,10 @@ img.align-left{
 }
 
 /* homepage renewal */
+.td-home-row {
+    justify-content: center;
+}
+
 .home-main {
     padding-bottom: 4.5rem !important;
 }
