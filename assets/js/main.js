@@ -5,6 +5,24 @@ layout: null
 (function () {
   "use strict";
 
+  function slugifyHeadingText(text) {
+    return text
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9가-힣\s-]/g, "")
+      .replace(/\s+/g, "-");
+  }
+
+  function collectUsedIds(container) {
+    var usedIds = new Set();
+    container.querySelectorAll("[id]").forEach(function (node) {
+      if (node.id) {
+        usedIds.add(node.id);
+      }
+    });
+    return usedIds;
+  }
+
   function initNavigation() {
     var nav = document.querySelector("[data-nav]");
     var toggle = document.querySelector("[data-nav-toggle]");
@@ -40,24 +58,36 @@ layout: null
         closeMenu();
       }
     });
+
+    window.addEventListener("resize", function () {
+      if (window.innerWidth > 960) {
+        closeMenu();
+      }
+    });
   }
 
-  function ensureHeadingId(heading) {
+  function ensureHeadingId(heading, usedIds) {
     if (heading.id) {
+      usedIds.add(heading.id);
       return heading.id;
     }
-    var slug = heading.textContent
-      .trim()
-      .toLowerCase()
-      .replace(/[^a-z0-9가-힣\s-]/g, "")
-      .replace(/\s+/g, "-");
-    heading.id = slug || "section";
-    return heading.id;
+    var base = slugifyHeadingText(heading.textContent) || "section";
+    var slug = base;
+    var suffix = 2;
+
+    while (usedIds.has(slug)) {
+      slug = base + "-" + suffix;
+      suffix += 1;
+    }
+
+    heading.id = slug;
+    usedIds.add(slug);
+    return slug;
   }
 
-  function appendHeadingAnchors(container) {
+  function appendHeadingAnchors(container, usedIds) {
     container.querySelectorAll("h2, h3, h4").forEach(function (heading) {
-      var id = ensureHeadingId(heading);
+      var id = ensureHeadingId(heading, usedIds);
       if (heading.querySelector(".header-anchor")) {
         return;
       }
@@ -114,7 +144,8 @@ layout: null
       return;
     }
 
-    appendHeadingAnchors(container);
+    var usedIds = collectUsedIds(container);
+    appendHeadingAnchors(container, usedIds);
     var headings = container.querySelectorAll("h2, h3");
     if (!headings.length) {
       toc.classList.add("is-empty");
@@ -123,7 +154,7 @@ layout: null
 
     var linksById = [];
     headings.forEach(function (heading) {
-      var id = ensureHeadingId(heading);
+      var id = ensureHeadingId(heading, usedIds);
       var item = document.createElement("li");
       item.className = "article-toc__item " + (heading.tagName.toLowerCase() === "h3" ? "article-toc__item--depth-3" : "");
 
