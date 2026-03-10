@@ -23,6 +23,8 @@ while IFS= read -r html_file; do
   nav_toggle_controls_count="$(grep -c 'aria-controls="site-navigation"' "${clean_file}" || true)"
   nav_toggle_label_count="$(grep -c 'aria-label="Open navigation menu"' "${clean_file}" || true)"
   main_count="$(grep -c '<main class="site-main" id="main-content"' "${clean_file}" || true)"
+  main_tabindex_count="$(grep -c '<main class="site-main" id="main-content" role="main" tabindex="-1">' "${clean_file}" || true)"
+  autofocus_count="$(grep -c 'autofocus' "${clean_file}" || true)"
   footer_count="$(grep -c '<footer class="site-footer">' "${clean_file}" || true)"
   h1_count="$(
     (grep -o '<h1' "${clean_file}" || true) | wc -l | tr -d ' '
@@ -90,9 +92,9 @@ while IFS= read -r html_file; do
   fi
   rm -f "${clean_file}"
 
-  if [[ "${skip_count}" != "1" || "${header_count}" != "1" || "${nav_toggle_count}" != "1" || "${nav_toggle_controls_count}" != "1" || "${nav_toggle_label_count}" != "1" || "${main_count}" != "1" || "${footer_count}" != "1" || "${h1_count}" != "1" || "${active_nav_count}" != "1" || "${aria_current_count}" != "1" || "${nav_id_count}" != "1" || "${nav_primary_label_count}" != "1" || "${nav_aria_hidden_count}" != "1" || "${home_css_count}" != "${expected_home_css_count}" || "${header_blank_target_count}" != "${header_safe_blank_target_count}" || "${footer_blank_target_count}" != "${footer_safe_blank_target_count}" ]]; then
+  if [[ "${skip_count}" != "1" || "${header_count}" != "1" || "${nav_toggle_count}" != "1" || "${nav_toggle_controls_count}" != "1" || "${nav_toggle_label_count}" != "1" || "${main_count}" != "1" || "${main_tabindex_count}" != "1" || "${autofocus_count}" != "0" || "${footer_count}" != "1" || "${h1_count}" != "1" || "${active_nav_count}" != "1" || "${aria_current_count}" != "1" || "${nav_id_count}" != "1" || "${nav_primary_label_count}" != "1" || "${nav_aria_hidden_count}" != "1" || "${home_css_count}" != "${expected_home_css_count}" || "${header_blank_target_count}" != "${header_safe_blank_target_count}" || "${footer_blank_target_count}" != "${footer_safe_blank_target_count}" ]]; then
     echo "[fail] ${html_file}"
-    echo "       skip=${skip_count} header=${header_count} nav_toggle=${nav_toggle_count} nav_controls=${nav_toggle_controls_count} nav_toggle_label=${nav_toggle_label_count} main=${main_count} footer=${footer_count} h1=${h1_count} active_nav=${active_nav_count} aria_current=${aria_current_count} nav_id=${nav_id_count} nav_primary_label=${nav_primary_label_count} nav_aria_hidden=${nav_aria_hidden_count} home_css=${home_css_count}/${expected_home_css_count} header_blank_rel=${header_safe_blank_target_count}/${header_blank_target_count} footer_blank_rel=${footer_safe_blank_target_count}/${footer_blank_target_count}"
+    echo "       skip=${skip_count} header=${header_count} nav_toggle=${nav_toggle_count} nav_controls=${nav_toggle_controls_count} nav_toggle_label=${nav_toggle_label_count} main=${main_count} main_tabindex=${main_tabindex_count} autofocus=${autofocus_count} footer=${footer_count} h1=${h1_count} active_nav=${active_nav_count} aria_current=${aria_current_count} nav_id=${nav_id_count} nav_primary_label=${nav_primary_label_count} nav_aria_hidden=${nav_aria_hidden_count} home_css=${home_css_count}/${expected_home_css_count} header_blank_rel=${header_safe_blank_target_count}/${header_blank_target_count} footer_blank_rel=${footer_safe_blank_target_count}/${footer_blank_target_count}"
     failed=$((failed + 1))
   fi
 done < <(find "${SITE_DIR}" -name '*.html' -type f | sort)
