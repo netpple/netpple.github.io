@@ -3,7 +3,7 @@ PREVIEW_PORT ?= 4012
 PREVIEW_URL ?= http://127.0.0.1:$(PREVIEW_PORT)
 PREVIEW_IMAGE ?= jekyll/jekyll:4.2.0
 
-.PHONY: preview-up preview-build preview-smoke preview-verify preview-down preview-recreate
+.PHONY: preview-up preview-build preview-smoke preview-verify preview-down preview-recreate preview-info
 
 preview-up:
 	@if docker ps --format '{{.Names}}' | grep -qx '$(PREVIEW_NAME)'; then \
@@ -29,3 +29,14 @@ preview-down:
 	@echo "stopped $(PREVIEW_NAME)"
 
 preview-recreate: preview-down preview-up
+
+preview-info:
+	@echo "Preview URL: $(PREVIEW_URL)"
+	@echo "Quick start: make preview-up"
+	@echo "Build + smoke: make preview-verify"
+	@echo "Stop preview: make preview-down"
+	@echo "Visual checkpoints:"
+	@echo "  1) Hero typography/spacing + CTA alignment"
+	@echo "  2) GNB alignment, hover/active, mobile toggle-close"
+	@echo "  3) News/Docs card rhythm + footer spacing"
+	@echo "  4) Post/Doc detail TOC + code/table/image readability"

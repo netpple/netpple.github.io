@@ -111,6 +111,9 @@ make preview-verify
 # 3) Or run smoke checks only
 make preview-smoke
 
+# optional: print manual visual checkpoints
+make preview-info
+
 # 4) Stop preview server after validation
 make preview-down
 ```
