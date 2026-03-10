@@ -49,6 +49,7 @@ assert_active_nav() {
   local html_file
   local nav_file
   local active_count
+  local aria_current_count
   local actual
 
   html_file="$(mktemp)"
@@ -74,6 +75,12 @@ assert_active_nav() {
   if [[ "${active_count}" != "1" ]]; then
     rm -f "${html_file}" "${nav_file}"
     fail "${route} expected exactly 1 active nav link but got ${active_count}"
+  fi
+
+  aria_current_count="$(grep -c 'aria-current="page"' "${nav_file}" || true)"
+  if [[ "${aria_current_count}" != "1" ]]; then
+    rm -f "${html_file}" "${nav_file}"
+    fail "${route} expected exactly 1 aria-current nav link but got ${aria_current_count}"
   fi
 
   actual="$(

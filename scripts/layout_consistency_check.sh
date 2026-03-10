@@ -38,11 +38,12 @@ while IFS= read -r html_file; do
   )"
 
   active_nav_count="$(printf '%s' "${nav_block}" | grep -c 'gnb__link is-active' || true)"
+  aria_current_count="$(printf '%s' "${nav_block}" | grep -c 'aria-current="page"' || true)"
   rm -f "${clean_file}"
 
-  if [[ "${skip_count}" != "1" || "${header_count}" != "1" || "${main_count}" != "1" || "${footer_count}" != "1" || "${h1_count}" != "1" || "${active_nav_count}" != "1" ]]; then
+  if [[ "${skip_count}" != "1" || "${header_count}" != "1" || "${main_count}" != "1" || "${footer_count}" != "1" || "${h1_count}" != "1" || "${active_nav_count}" != "1" || "${aria_current_count}" != "1" ]]; then
     echo "[fail] ${html_file}"
-    echo "       skip=${skip_count} header=${header_count} main=${main_count} footer=${footer_count} h1=${h1_count} active_nav=${active_nav_count}"
+    echo "       skip=${skip_count} header=${header_count} main=${main_count} footer=${footer_count} h1=${h1_count} active_nav=${active_nav_count} aria_current=${aria_current_count}"
     failed=$((failed + 1))
   fi
 done < <(find "${SITE_DIR}" -name '*.html' -type f | sort)
