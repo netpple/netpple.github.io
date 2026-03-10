@@ -16,7 +16,7 @@ comments: false
     </p>
     <div class="home-cta">
       <a class="home-btn home-btn-primary" href="{{ site.baseurl }}/news/">최신 글 보기</a>
-      <a class="home-btn home-btn-ghost" href="{{ site.baseurl }}/docs/istio-in-action">학습 트랙 시작</a>
+      <a class="home-btn home-btn-ghost" href="{{ site.baseurl }}/docs/istio-in-action/">학습 트랙 시작</a>
     </div>
     <dl class="home-stats">
       <div>
@@ -45,12 +45,12 @@ comments: false
         <h3>최근 기술 글 모아보기</h3>
         <p>최신 포스트를 날짜 순으로 빠르게 훑을 수 있습니다.</p>
       </a>
-      <a class="home-card" href="{{ site.baseurl }}/docs/make-container-without-docker">
+      <a class="home-card" href="{{ site.baseurl }}/docs/make-container-without-docker/">
         <p class="home-card-kicker">Core Concepts</p>
         <h3>도커 없이 컨테이너 만들기</h3>
         <p>리눅스 커널 기능으로 컨테이너 원리를 단계별로 정리한 시리즈입니다.</p>
       </a>
-      <a class="home-card" href="{{ site.baseurl }}/about">
+      <a class="home-card" href="{{ site.baseurl }}/about/">
         <p class="home-card-kicker">Profile</p>
         <h3>작성자와 운영 방향</h3>
         <p>블로그 운영 원칙, 실무 경험, 발표/활동 이력을 확인할 수 있습니다.</p>
@@ -83,15 +83,15 @@ comments: false
       <h2>깊게 학습할 수 있는 시리즈</h2>
     </div>
     <div class="home-track-grid">
-      <a class="home-track" href="{{ site.baseurl }}/docs/istio-in-action">
+      <a class="home-track" href="{{ site.baseurl }}/docs/istio-in-action/">
         <h3>Istio IN ACTION</h3>
         <p>서비스 메시 아키텍처와 운영 패턴을 실습 중심으로 학습합니다.</p>
       </a>
-      <a class="home-track" href="{{ site.baseurl }}/docs/make-container-without-docker">
+      <a class="home-track" href="{{ site.baseurl }}/docs/make-container-without-docker/">
         <h3>도커 없이 컨테이너 만들기</h3>
         <p>컨테이너 런타임의 핵심 원리를 커널 레벨에서 이해할 수 있습니다.</p>
       </a>
-      <a class="home-track" href="{{ site.baseurl }}/docs/deepdive-into-kubernetes">
+      <a class="home-track" href="{{ site.baseurl }}/docs/deepdive-into-kubernetes/">
         <h3>쿠버네티스 딥다이브</h3>
         <p>제어 플레인부터 노드 컴포넌트까지 구조를 깊이 있게 다룹니다.</p>
       </a>
