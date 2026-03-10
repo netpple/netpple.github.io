@@ -14,6 +14,8 @@ routes=(
   "/search/?q=kubernetes"
   "/2023/c-for-beginner-hongongc/"
   "/docs/istio-in-action/"
+  "/docs/istio-in-action/Istio-ch11-performance"
+  "/docs/querypie-handson/multiple-kubernetes-with-querypie-kac"
 )
 
 viewports=(
