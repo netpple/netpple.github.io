@@ -929,10 +929,12 @@ img {
   padding: 0;
   list-style: none;
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-3);
 }
 
 .search-results li {
+  min-width: 0;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   padding: var(--space-4);
@@ -946,6 +948,13 @@ img {
 
 .search-results p {
   margin: var(--space-2) 0 0;
+}
+
+.search-results h4,
+.search-results p,
+.search-results small {
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .search-results small {

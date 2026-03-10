@@ -114,24 +114,27 @@ make preview-smoke
 # 3-1) Or run responsive viewport screenshot checks only
 make preview-responsive
 
-# 3-2) Or run internal link checks only (strict: redirects fail)
+# 3-2) Or run responsive overflow checks only (horizontal overflow fails)
+make preview-overflow
+
+# 3-3) Or run internal link checks only (strict: redirects fail)
 make preview-linkcheck
 # optional relaxed mode:
 ALLOW_REDIRECTS=true make preview-linkcheck
 
-# 3-3) Or run structure consistency checks only
+# 3-4) Or run structure consistency checks only
 make preview-structure
 
-# 3-4) Or run style scope checks only
+# 3-5) Or run style scope checks only
 make preview-style-scope
 
-# 3-5) Or run inline-style checks only (core templates/pages)
+# 3-6) Or run inline-style checks only (core templates/pages)
 make preview-inline-style
 
-# 3-6) Or run HTML id uniqueness checks only
+# 3-7) Or run HTML id uniqueness checks only
 make preview-ids
 
-# 3-7) Or run metadata consistency checks only
+# 3-8) Or run metadata consistency checks only
 make preview-meta
 
 # optional: print manual visual checkpoints
@@ -147,6 +150,7 @@ Smoke checks cover:
 - Search route variants (`/search/?q=kubernetes`, `/search/?q=%28`, empty query)
 - Key page redesign markers (Home/News/Docs/About/Search)
 - Responsive viewport rendering smoke check (`desktop/tablet/mobile` screenshots across core routes incl. search results route)
+- Responsive layout overflow check (`desktop/tablet/mobile`, core routes with horizontal overflow fail)
 - Home-only stylesheet loading (`home.css` on `/`, absent on non-home routes)
 - Post/Doc detail template markers
 - Navigation active mapping (`/archive/` -> `News`)
