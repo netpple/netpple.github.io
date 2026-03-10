@@ -575,6 +575,7 @@ img {
   color: var(--color-text);
   max-width: 74ch;
   font-size: 1.01rem;
+  overflow-wrap: anywhere;
 }
 
 .article-content > :first-child {
@@ -608,6 +609,13 @@ img {
 .article-content li {
   color: var(--color-text);
   line-height: 1.78;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.article-content a {
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .article-content ul,
@@ -636,6 +644,7 @@ img {
   border: 1px solid #d0dbeb;
   background: #f5f9ff;
   color: #1b355a;
+  max-width: 100%;
   overflow: auto;
   line-height: 1.65;
   font-size: 0.9rem;
@@ -656,6 +665,9 @@ img {
   color: inherit;
   background: transparent;
   padding: 0;
+  white-space: pre;
+  overflow-wrap: normal;
+  word-break: normal;
 }
 
 .article-content code {
@@ -663,6 +675,9 @@ img {
   border-radius: 6px;
   background: #ecf2fb;
   color: #163a6f;
+  white-space: break-spaces;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .article-content table {
@@ -697,6 +712,13 @@ img {
   border: 1px solid var(--color-border);
   background: #fff;
   box-shadow: var(--shadow-sm);
+}
+
+.article-content iframe,
+.article-content video,
+.article-content svg,
+.article-content canvas {
+  max-width: 100%;
 }
 
 .article-content img.align-left {

@@ -117,6 +117,9 @@ make preview-responsive
 # 3-2) Or run responsive overflow checks only (horizontal overflow fails)
 make preview-overflow
 
+# Optional full-site mode (all generated HTML routes in _site)
+make preview-overflow-full
+
 # 3-3) Or run internal link checks only (strict: redirects fail)
 make preview-linkcheck
 # optional relaxed mode:
@@ -150,7 +153,7 @@ Smoke checks cover:
 - Search route variants (`/search/?q=kubernetes`, `/search/?q=%28`, empty query)
 - Key page redesign markers (Home/News/Docs/About/Search)
 - Responsive viewport rendering smoke check (`desktop/tablet/mobile` screenshots across core routes incl. search results route)
-- Responsive layout overflow check (`desktop/tablet/mobile`, core routes with horizontal overflow fail)
+- Responsive layout overflow check (`desktop/tablet/mobile`, core routes with horizontal overflow fail; optional `_site` full-route mode)
 - Home-only stylesheet loading (`home.css` on `/`, absent on non-home routes)
 - Post/Doc detail template markers
 - Navigation active mapping (`/archive/` -> `News`)

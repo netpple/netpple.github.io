@@ -3,7 +3,7 @@ PREVIEW_PORT ?= 4012
 PREVIEW_URL ?= http://127.0.0.1:$(PREVIEW_PORT)
 PREVIEW_IMAGE ?= jekyll/jekyll:4.2.0
 
-.PHONY: preview-up preview-build preview-smoke preview-responsive preview-overflow preview-linkcheck preview-structure preview-style-scope preview-inline-style preview-ids preview-meta preview-verify preview-down preview-recreate preview-info
+.PHONY: preview-up preview-build preview-smoke preview-responsive preview-overflow preview-overflow-full preview-linkcheck preview-structure preview-style-scope preview-inline-style preview-ids preview-meta preview-verify preview-down preview-recreate preview-info
 
 preview-up:
 	@if docker ps --format '{{.Names}}' | grep -qx '$(PREVIEW_NAME)'; then \
@@ -27,6 +27,9 @@ preview-responsive:
 
 preview-overflow:
 	scripts/responsive_overflow_check.sh $(PREVIEW_URL)
+
+preview-overflow-full:
+	FULL_SITE_OVERFLOW=true scripts/responsive_overflow_check.sh $(PREVIEW_URL)
 
 preview-linkcheck:
 	scripts/internal_link_check.sh $(PREVIEW_URL)
@@ -60,6 +63,7 @@ preview-info:
 	@echo "Build + smoke: make preview-verify"
 	@echo "Responsive smoke only: make preview-responsive"
 	@echo "Responsive overflow only: make preview-overflow"
+	@echo "Responsive overflow full-site: make preview-overflow-full"
 	@echo "Link check only (strict): make preview-linkcheck"
 	@echo "Link check relaxed: ALLOW_REDIRECTS=true make preview-linkcheck"
 	@echo "Structure check only: make preview-structure"

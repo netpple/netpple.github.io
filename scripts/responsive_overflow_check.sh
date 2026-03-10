@@ -2,6 +2,9 @@
 set -euo pipefail
 
 BASE_URL="${1:-http://127.0.0.1:4012}"
+SITE_DIR="${2:-_site}"
+FULL_SITE_OVERFLOW="${FULL_SITE_OVERFLOW:-false}"
+OVERFLOW_MAX_ROUTES="${OVERFLOW_MAX_ROUTES:-0}"
 
 if ! command -v npx >/dev/null 2>&1; then
   echo "[fail] npx is required for responsive overflow checks"
@@ -9,24 +12,100 @@ if ! command -v npx >/dev/null 2>&1; then
 fi
 
 node_script="$(mktemp)"
-trap 'rm -f "${node_script}"' EXIT
+routes_file="$(mktemp)"
+trap 'rm -f "${node_script}" "${routes_file}"' EXIT
 
 playwright_bin="$(npx --yes -p playwright -c 'which playwright')"
 playwright_node_modules="$(cd "$(dirname "${playwright_bin}")/.." && pwd)"
 
+default_routes=(
+  "/"
+  "/news/"
+  "/docs/"
+  "/about/"
+  "/search/?q=kubernetes"
+  "/2023/c-for-beginner-hongongc/"
+  "/docs/istio-in-action/"
+)
+
+to_route_from_html_file() {
+  local html_file="$1"
+  local rel
+  rel="${html_file#${SITE_DIR}/}"
+
+  if [[ "${rel}" == "index.html" ]]; then
+    printf '/\n'
+    return
+  fi
+
+  if [[ "${rel}" == */index.html ]]; then
+    printf '/%s/\n' "${rel%/index.html}"
+    return
+  fi
+
+  printf '/%s\n' "${rel}"
+}
+
+build_full_routes() {
+  if [[ ! -d "${SITE_DIR}" ]]; then
+    echo "[fail] site directory not found: ${SITE_DIR}"
+    exit 1
+  fi
+
+  mapfile -t generated_routes < <(
+    find "${SITE_DIR}" -name '*.html' -type f | sort \
+      | while IFS= read -r html_file; do
+          to_route_from_html_file "${html_file}"
+        done \
+      | sort -u
+  )
+
+  if [[ "${#generated_routes[@]}" -eq 0 ]]; then
+    echo "[fail] no html routes found in ${SITE_DIR}"
+    exit 1
+  fi
+
+  {
+    for route in "${generated_routes[@]}"; do
+      printf '%s\n' "${route}"
+    done
+    # Search results view needs explicit query for realistic content layout checks.
+    printf '/search/?q=kubernetes\n'
+  } | sort -u > "${routes_file}"
+}
+
+build_default_routes() {
+  printf '%s\n' "${default_routes[@]}" > "${routes_file}"
+}
+
+if [[ "${FULL_SITE_OVERFLOW}" == "true" ]]; then
+  build_full_routes
+else
+  build_default_routes
+fi
+
+if [[ "${OVERFLOW_MAX_ROUTES}" =~ ^[0-9]+$ ]] && [[ "${OVERFLOW_MAX_ROUTES}" -gt 0 ]]; then
+  tmp_routes_file="$(mktemp)"
+  head -n "${OVERFLOW_MAX_ROUTES}" "${routes_file}" > "${tmp_routes_file}"
+  mv "${tmp_routes_file}" "${routes_file}"
+fi
+
+route_count="$(wc -l < "${routes_file}" | tr -d ' ')"
+echo "[overflow] base url: ${BASE_URL}"
+echo "[overflow] mode: FULL_SITE_OVERFLOW=${FULL_SITE_OVERFLOW}, routes=${route_count}"
+
 cat > "${node_script}" <<'NODE'
 const { chromium } = require('playwright');
+const fs = require('fs');
 
 const baseUrl = process.argv[2];
-const routes = [
-  '/',
-  '/news/',
-  '/docs/',
-  '/about/',
-  '/search/?q=kubernetes',
-  '/2023/c-for-beginner-hongongc/',
-  '/docs/istio-in-action/',
-];
+const routesFile = process.argv[3];
+const routes = fs
+  .readFileSync(routesFile, 'utf8')
+  .split(/\r?\n/)
+  .map((value) => value.trim())
+  .filter((value) => value.length > 0);
+
 const viewports = [
   { name: 'desktop', width: 1366, height: 900 },
   { name: 'tablet', width: 1024, height: 768 },
@@ -104,4 +183,4 @@ const hasHorizontalOverflow = (metrics) => metrics.scrollWidth > metrics.viewpor
 })();
 NODE
 
-NODE_PATH="${playwright_node_modules}" node "${node_script}" "${BASE_URL}"
+NODE_PATH="${playwright_node_modules}" node "${node_script}" "${BASE_URL}" "${routes_file}"
