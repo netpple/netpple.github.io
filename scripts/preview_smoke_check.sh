@@ -138,6 +138,22 @@ assert_route_reachable() {
   echo "[ok] ${route} reachable"
 }
 
+assert_route_contains() {
+  local route="$1"
+  local pattern="$2"
+  local description="$3"
+  local html_file
+
+  html_file="$(mktemp)"
+  curl -fsSL "${BASE_URL}${route}" > "${html_file}"
+  if ! grep -Eiq "${pattern}" "${html_file}"; then
+    rm -f "${html_file}"
+    fail "${route} missing ${description}"
+  fi
+  rm -f "${html_file}"
+  echo "[ok] ${route} ${description}"
+}
+
 echo "[smoke] base url: ${BASE_URL}"
 
 echo "[smoke] checking homepage content marker"
@@ -167,6 +183,13 @@ echo "[smoke] checking common layout markers"
 for route in "${routes[@]}"; do
   assert_route_layout "${route}"
 done
+
+echo "[smoke] checking key page redesign markers"
+assert_route_contains "/" 'home-hero|home-stats|home-track-grid' "home redesign markers"
+assert_route_contains "/news/" 'entry-card--news' "news list card markers"
+assert_route_contains "/docs/" 'track-grid|entry-card--doc' "docs hub markers"
+assert_route_contains "/about/" 'section-heading__kicker\">Interests|chip-row' "about redesign markers"
+assert_route_contains "/search/" 'search-panel|id=\"search-input\"' "search ui markers"
 
 echo "[smoke] checking home-only stylesheet loading"
 home_html_file="$(mktemp)"

@@ -145,6 +145,7 @@ Smoke checks cover:
 - Homepage content marker
 - Core routes HTTP 200 status
 - Search route variants (`/search/?q=kubernetes`, `/search/?q=%28`, empty query)
+- Key page redesign markers (Home/News/Docs/About/Search)
 - Responsive viewport rendering smoke check (`desktop/tablet/mobile` screenshots across core routes incl. search results route)
 - Home-only stylesheet loading (`home.css` on `/`, absent on non-home routes)
 - Post/Doc detail template markers
