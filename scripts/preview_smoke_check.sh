@@ -59,6 +59,29 @@ assert_active_nav() {
   echo "[ok] ${route} active nav -> ${actual}"
 }
 
+assert_article_content_heading_hierarchy() {
+  local route="$1"
+  local html_file
+  local section_file
+  html_file="$(mktemp)"
+  section_file="$(mktemp)"
+
+  curl -fsSL "${BASE_URL}${route}" > "${html_file}"
+  awk '
+    /data-article-content/ { in_block=1; next }
+    /<aside class="article-toc"/ { in_block=0 }
+    in_block { print }
+  ' "${html_file}" > "${section_file}"
+
+  if grep -q '<h1' "${section_file}"; then
+    fail "${route} has <h1> inside article content"
+  fi
+  grep -Eq '<h2|<h3' "${section_file}" || fail "${route} has no h2/h3 heading in article content"
+
+  rm -f "${html_file}" "${section_file}"
+  echo "[ok] ${route} article content heading hierarchy"
+}
+
 echo "[smoke] base url: ${BASE_URL}"
 
 echo "[smoke] checking homepage content marker"
@@ -84,6 +107,8 @@ curl -fsSL "${BASE_URL}${sample_post}" | grep -Eiq "article-shell|data-article-t
 curl -fsSL "${BASE_URL}${sample_doc}" | grep -Eiq "article-shell|data-article-toc|Documentation Hub"
 assert_route_layout "${sample_post}"
 assert_route_layout "${sample_doc}"
+assert_article_content_heading_hierarchy "${sample_post}"
+assert_article_content_heading_hierarchy "${sample_doc}"
 
 echo "[smoke] checking active nav mapping"
 assert_active_nav "/" "/"

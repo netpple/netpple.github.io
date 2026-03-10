@@ -31,8 +31,9 @@ layout: default
   </header>
 
   <div class="article-layout">
+    {% assign normalized_content = content | replace: '<h1', '<h2' | replace: '</h1>', '</h2>' %}
     <div class="article-content" data-article-content>
-      {{ content }}
+      {{ normalized_content }}
     </div>
     <aside class="article-toc" data-article-toc>
       <p class="article-toc__title">Table of contents</p>
