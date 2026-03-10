@@ -31,21 +31,6 @@ fail() {
   exit 1
 }
 
-extract_active_nav_href() {
-  local route="$1"
-  local html_file
-  local active
-  html_file="$(mktemp)"
-  curl -fsSL "${BASE_URL}${route}" > "${html_file}"
-  active="$(
-    (grep 'gnb__link is-active' "${html_file}" || true) \
-      | head -n 1 \
-      | sed -E 's/.*href=\"([^\"]*)\".*/\1/'
-  )"
-  rm -f "${html_file}"
-  printf '%s' "${active}"
-}
-
 assert_route_layout() {
   local route="$1"
   local html_file
@@ -61,8 +46,44 @@ assert_route_layout() {
 assert_active_nav() {
   local route="$1"
   local expected="$2"
+  local html_file
+  local nav_file
+  local active_count
   local actual
-  actual="$(extract_active_nav_href "${route}")"
+
+  html_file="$(mktemp)"
+  nav_file="$(mktemp)"
+
+  curl -fsSL "${BASE_URL}${route}" > "${html_file}"
+  awk '
+    /<nav class="gnb"/ { in_nav=1 }
+    in_nav { print }
+    /<\/nav>/ {
+      if (in_nav) {
+        exit
+      }
+    }
+  ' "${html_file}" > "${nav_file}"
+
+  if [[ ! -s "${nav_file}" ]]; then
+    rm -f "${html_file}" "${nav_file}"
+    fail "${route} has no gnb nav block"
+  fi
+
+  active_count="$(grep -c 'gnb__link is-active' "${nav_file}" || true)"
+  if [[ "${active_count}" != "1" ]]; then
+    rm -f "${html_file}" "${nav_file}"
+    fail "${route} expected exactly 1 active nav link but got ${active_count}"
+  fi
+
+  actual="$(
+    grep 'gnb__link is-active' "${nav_file}" \
+      | head -n 1 \
+      | sed -E 's/.*href=\"([^\"]*)\".*/\1/'
+  )"
+
+  rm -f "${html_file}" "${nav_file}"
+
   if [[ "${actual}" != "${expected}" ]]; then
     fail "${route} expected active nav ${expected} but got '${actual}'"
   fi
