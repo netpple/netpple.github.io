@@ -9,6 +9,7 @@ routes=(
   "/news/"
   "/docs/"
   "/about/"
+  "/search/?q=kubernetes"
   "/2023/c-for-beginner-hongongc/"
   "/docs/istio-in-action/"
 )
@@ -52,7 +53,7 @@ for route in "${routes[@]}"; do
     npx --yes playwright screenshot \
       --browser chromium \
       --viewport-size "${size}" \
-      --wait-for-timeout 250 \
+      --wait-for-timeout 500 \
       --full-page \
       "${BASE_URL}${route}" \
       "${out}" >/dev/null

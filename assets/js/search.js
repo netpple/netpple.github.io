@@ -3,15 +3,27 @@ layout: null
 excluded_in_search: true
 ---
 (function () {
+	function safeDecodeURIComponent(value) {
+		try {
+			return decodeURIComponent((value || "").replace(/\+/g, "%20"));
+		} catch (error) {
+			return value || "";
+		}
+	}
+
 	function getQueryVariable(variable) {
 		var query = window.location.search.substring(1),
 			vars = query.split("&");
+
+		if (!query) {
+			return "";
+		}
 
 		for (var i = 0; i < vars.length; i++) {
 			var pair = vars[i].split("=");
 
 			if (pair[0] === variable) {
-				return decodeURIComponent((pair[1] || "").replace(/\+/g, "%20")).trim();
+				return safeDecodeURIComponent(pair[1]).trim();
 			}
 		}
 
@@ -173,6 +185,11 @@ excluded_in_search: true
 	}
 	if (searchQueryContainerEl && query !== "") {
 		searchQueryContainerEl.style.display = "inline";
+	}
+
+	if (!window.data || typeof window.data !== "object") {
+		displaySearchResults([], query);
+		return;
 	}
 
 	for (var key in window.data) {
