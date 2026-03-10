@@ -18,7 +18,18 @@ cat > "${node_script}" <<'NODE'
 const { chromium } = require('playwright');
 
 const baseUrl = process.argv[2];
-const routes = ['/', '/news/', '/docs/', '/about/', '/archive/', '/tags/', '/search/', '/2023/c-for-beginner-hongongc/', '/docs/istio-in-action/'];
+const routes = [
+  { path: '/', expectedActive: '/' },
+  { path: '/news/', expectedActive: '/news/' },
+  { path: '/docs/', expectedActive: '/docs/' },
+  { path: '/about/', expectedActive: '/about/' },
+  { path: '/archive/', expectedActive: '/news/' },
+  { path: '/tags/', expectedActive: '/news/' },
+  { path: '/search/', expectedActive: '/news/' },
+  { path: '/2023/c-for-beginner-hongongc/', expectedActive: '/news/' },
+  { path: '/docs/istio-in-action/', expectedActive: '/docs/' },
+  { path: '/docs/querypie-handson/multiple-kubernetes-with-querypie-kac', expectedActive: '/docs/' },
+];
 
 async function waitMobileOpen(page) {
   await page.waitForFunction(() => {
@@ -48,8 +59,13 @@ async function waitMobileClosed(page) {
   }, null, { timeout: 3000 });
 }
 
-async function checkDesktop(page, route) {
-  const desktop = await page.evaluate(() => {
+async function checkDesktop(page, route, expectedActive) {
+  const desktop = await page.evaluate((expected) => {
+    const normalizePath = (value) => {
+      const pathname = value.endsWith('/') ? value : `${value}/`;
+      return pathname;
+    };
+
     const px = (value) => {
       const parsed = Number.parseFloat(value || '0');
       return Number.isFinite(parsed) ? parsed : 0;
@@ -105,6 +121,13 @@ async function checkDesktop(page, route) {
     if (activeCount !== 1 || ariaCurrentCount !== 1) {
       return { ok: false, reason: `desktop active=${activeCount} aria-current=${ariaCurrentCount}` };
     }
+    const activeLink = links.find((link) => link.classList.contains('is-active'));
+    if (!activeLink) return { ok: false, reason: 'desktop active link missing' };
+    const activeHref = new URL(activeLink.getAttribute('href'), window.location.origin).pathname;
+    const normalizedActive = normalizePath(activeHref);
+    if (normalizedActive !== expected) {
+      return { ok: false, reason: `desktop active href=${normalizedActive} expected=${expected}` };
+    }
 
     return {
       ok: true,
@@ -112,7 +135,7 @@ async function checkDesktop(page, route) {
       linkHeight: minHeight,
       headerHeight,
     };
-  });
+  }, expectedActive);
 
   if (!desktop.ok) {
     throw new Error(`${route} desktop ${desktop.reason}`);
@@ -154,7 +177,7 @@ async function checkDesktop(page, route) {
   return desktop;
 }
 
-async function checkMobile(page, route) {
+async function checkMobile(page, route, expectedActive) {
   const toggle = await page.$('[data-nav-toggle]');
   if (!toggle) {
     throw new Error(`${route} mobile missing nav toggle`);
@@ -172,7 +195,12 @@ async function checkMobile(page, route) {
   await toggle.click();
   await waitMobileOpen(page);
 
-  const mobile = await page.evaluate(() => {
+  const mobile = await page.evaluate((expected) => {
+    const normalizePath = (value) => {
+      const pathname = value.endsWith('/') ? value : `${value}/`;
+      return pathname;
+    };
+
     const px = (value) => {
       const parsed = Number.parseFloat(value || '0');
       return Number.isFinite(parsed) ? parsed : 0;
@@ -234,6 +262,13 @@ async function checkMobile(page, route) {
     if (activeCount !== 1 || ariaCurrentCount !== 1) {
       return { ok: false, reason: `mobile active=${activeCount} aria-current=${ariaCurrentCount}` };
     }
+    const activeLink = links.find((link) => link.classList.contains('is-active'));
+    if (!activeLink) return { ok: false, reason: 'mobile active link missing' };
+    const activeHref = new URL(activeLink.getAttribute('href'), window.location.origin).pathname;
+    const normalizedActive = normalizePath(activeHref);
+    if (normalizedActive !== expected) {
+      return { ok: false, reason: `mobile active href=${normalizedActive} expected=${expected}` };
+    }
 
     return {
       ok: true,
@@ -241,7 +276,7 @@ async function checkMobile(page, route) {
       linkHeight: minHeight,
       headerHeight,
     };
-  });
+  }, expectedActive);
 
   if (!mobile.ok) {
     throw new Error(`${route} mobile ${mobile.reason}`);
@@ -350,23 +385,25 @@ async function checkMobile(page, route) {
   let checks = 0;
 
   try {
-    for (const route of routes) {
+    for (const routeConfig of routes) {
+      const route = routeConfig.path;
+      const expectedActive = routeConfig.expectedActive;
       const desktopContext = await browser.newContext({ viewport: { width: 1366, height: 900 } });
       const desktopPage = await desktopContext.newPage();
       await desktopPage.goto(`${baseUrl}${route}`, { waitUntil: 'domcontentloaded', timeout: 30000 });
       await desktopPage.waitForTimeout(120);
-      const desktop = await checkDesktop(desktopPage, route);
+      const desktop = await checkDesktop(desktopPage, route, expectedActive);
       checks += 1;
-      console.log(`[ok] ${route} desktop nav consistency (links=${desktop.linkCount}, link-h=${desktop.linkHeight.toFixed(1)}, header-h=${desktop.headerHeight.toFixed(1)})`);
+      console.log(`[ok] ${route} desktop nav consistency (active=${expectedActive}, links=${desktop.linkCount}, link-h=${desktop.linkHeight.toFixed(1)}, header-h=${desktop.headerHeight.toFixed(1)})`);
       await desktopContext.close();
 
       const mobileContext = await browser.newContext({ viewport: { width: 390, height: 844 } });
       const mobilePage = await mobileContext.newPage();
       await mobilePage.goto(`${baseUrl}${route}`, { waitUntil: 'domcontentloaded', timeout: 30000 });
       await mobilePage.waitForTimeout(120);
-      const mobile = await checkMobile(mobilePage, route);
+      const mobile = await checkMobile(mobilePage, route, expectedActive);
       checks += 1;
-      console.log(`[ok] ${route} mobile nav consistency (links=${mobile.linkCount}, link-h=${mobile.linkHeight.toFixed(1)}, header-h=${mobile.headerHeight.toFixed(1)})`);
+      console.log(`[ok] ${route} mobile nav consistency (active=${expectedActive}, links=${mobile.linkCount}, link-h=${mobile.linkHeight.toFixed(1)}, header-h=${mobile.headerHeight.toFixed(1)})`);
       await mobileContext.close();
     }
   } catch (error) {
