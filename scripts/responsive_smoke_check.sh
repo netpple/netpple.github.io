@@ -9,6 +9,8 @@ routes=(
   "/news/"
   "/docs/"
   "/about/"
+  "/archive/"
+  "/tags/"
   "/search/?q=kubernetes"
   "/2023/c-for-beginner-hongongc/"
   "/docs/istio-in-action/"

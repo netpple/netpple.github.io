@@ -18,7 +18,7 @@ cat > "${node_script}" <<'NODE'
 const { chromium } = require('playwright');
 
 const baseUrl = process.argv[2];
-const routes = ['/', '/news/', '/docs/', '/about/', '/archive/', '/tags/', '/search/'];
+const routes = ['/', '/news/', '/docs/', '/about/', '/archive/', '/tags/', '/search/', '/2023/c-for-beginner-hongongc/', '/docs/istio-in-action/'];
 
 async function checkDesktop(page, route) {
   const desktop = await page.evaluate(() => {
