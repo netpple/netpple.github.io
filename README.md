@@ -133,4 +133,4 @@ Smoke checks cover:
 - Navigation active mapping (`/archive/` -> `News`)
 - Key internal navigation route reachability (Home/News/Docs 대표 링크)
 - Site-wide internal link check from generated `_site` (`href/src`, redirects disallowed by default)
-- Site-wide structure consistency check (`skip-link`, header/main/footer, single h1, single active nav + `aria-current` per HTML page)
+- Site-wide structure consistency check (`skip-link`, nav toggle/nav ARIA markers, header/main/footer, single h1, single active nav + `aria-current` per HTML page)

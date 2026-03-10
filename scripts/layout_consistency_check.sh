@@ -19,6 +19,9 @@ while IFS= read -r html_file; do
 
   skip_count="$(grep -c 'class="skip-link"' "${clean_file}" || true)"
   header_count="$(grep -c '<header class="site-header">' "${clean_file}" || true)"
+  nav_toggle_count="$(grep -c 'data-nav-toggle' "${clean_file}" || true)"
+  nav_toggle_controls_count="$(grep -c 'aria-controls="site-navigation"' "${clean_file}" || true)"
+  nav_toggle_label_count="$(grep -c 'aria-label="Open navigation menu"' "${clean_file}" || true)"
   main_count="$(grep -c '<main class="site-main" id="main-content"' "${clean_file}" || true)"
   footer_count="$(grep -c '<footer class="site-footer">' "${clean_file}" || true)"
   h1_count="$(
@@ -39,11 +42,14 @@ while IFS= read -r html_file; do
 
   active_nav_count="$(printf '%s' "${nav_block}" | grep -c 'gnb__link is-active' || true)"
   aria_current_count="$(printf '%s' "${nav_block}" | grep -c 'aria-current="page"' || true)"
+  nav_id_count="$(printf '%s' "${nav_block}" | grep -c 'id="site-navigation"' || true)"
+  nav_primary_label_count="$(printf '%s' "${nav_block}" | grep -c 'aria-label="Primary"' || true)"
+  nav_aria_hidden_count="$(printf '%s' "${nav_block}" | grep -c 'aria-hidden="false"' || true)"
   rm -f "${clean_file}"
 
-  if [[ "${skip_count}" != "1" || "${header_count}" != "1" || "${main_count}" != "1" || "${footer_count}" != "1" || "${h1_count}" != "1" || "${active_nav_count}" != "1" || "${aria_current_count}" != "1" ]]; then
+  if [[ "${skip_count}" != "1" || "${header_count}" != "1" || "${nav_toggle_count}" != "1" || "${nav_toggle_controls_count}" != "1" || "${nav_toggle_label_count}" != "1" || "${main_count}" != "1" || "${footer_count}" != "1" || "${h1_count}" != "1" || "${active_nav_count}" != "1" || "${aria_current_count}" != "1" || "${nav_id_count}" != "1" || "${nav_primary_label_count}" != "1" || "${nav_aria_hidden_count}" != "1" ]]; then
     echo "[fail] ${html_file}"
-    echo "       skip=${skip_count} header=${header_count} main=${main_count} footer=${footer_count} h1=${h1_count} active_nav=${active_nav_count} aria_current=${aria_current_count}"
+    echo "       skip=${skip_count} header=${header_count} nav_toggle=${nav_toggle_count} nav_controls=${nav_toggle_controls_count} nav_toggle_label=${nav_toggle_label_count} main=${main_count} footer=${footer_count} h1=${h1_count} active_nav=${active_nav_count} aria_current=${aria_current_count} nav_id=${nav_id_count} nav_primary_label=${nav_primary_label_count} nav_aria_hidden=${nav_aria_hidden_count}"
     failed=$((failed + 1))
   fi
 done < <(find "${SITE_DIR}" -name '*.html' -type f | sort)
