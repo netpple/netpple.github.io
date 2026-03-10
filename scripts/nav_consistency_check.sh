@@ -20,6 +20,32 @@ const { chromium } = require('playwright');
 const baseUrl = process.argv[2];
 const routes = ['/', '/news/', '/docs/', '/about/', '/archive/', '/tags/', '/search/', '/2023/c-for-beginner-hongongc/', '/docs/istio-in-action/'];
 
+async function waitMobileOpen(page, route, label) {
+  await page.waitForFunction(() => {
+    const nav = document.querySelector('nav.gnb');
+    const toggle = document.querySelector('[data-nav-toggle]');
+    if (!nav || !toggle) return false;
+    if (!nav.classList.contains('is-open')) return false;
+    if (toggle.getAttribute('aria-expanded') !== 'true') return false;
+    if (nav.getAttribute('aria-hidden') !== 'false') return false;
+    const style = getComputedStyle(nav);
+    return style.visibility === 'visible' && Number.parseFloat(style.opacity || '0') > 0.95;
+  }, null, { timeout: 3000 });
+}
+
+async function waitMobileClosed(page, route, label) {
+  await page.waitForFunction(() => {
+    const nav = document.querySelector('nav.gnb');
+    const toggle = document.querySelector('[data-nav-toggle]');
+    if (!nav || !toggle) return false;
+    if (nav.classList.contains('is-open')) return false;
+    if (toggle.getAttribute('aria-expanded') !== 'false') return false;
+    if (nav.getAttribute('aria-hidden') !== 'true') return false;
+    const style = getComputedStyle(nav);
+    return style.visibility === 'hidden' && Number.parseFloat(style.opacity || '0') < 0.05;
+  }, null, { timeout: 3000 });
+}
+
 async function checkDesktop(page, route) {
   const desktop = await page.evaluate(() => {
     const px = (value) => {
@@ -125,13 +151,10 @@ async function checkMobile(page, route) {
   if (!toggle) {
     throw new Error(`${route} mobile missing nav toggle`);
   }
+
+  // Open with toggle and validate open-state metrics.
   await toggle.click();
-  await page.waitForFunction(() => {
-    const nav = document.querySelector('nav.gnb');
-    if (!nav || !nav.classList.contains('is-open')) return false;
-    const style = getComputedStyle(nav);
-    return style.visibility === 'visible' && Number.parseFloat(style.opacity || '0') > 0.95;
-  }, null, { timeout: 3000 });
+  await waitMobileOpen(page, route, 'toggle-open');
 
   const mobile = await page.evaluate(() => {
     const px = (value) => {
@@ -155,6 +178,7 @@ async function checkMobile(page, route) {
     const navStyle = getComputedStyle(nav);
     if (navStyle.visibility !== 'visible') return { ok: false, reason: `mobile nav visibility=${navStyle.visibility}` };
     if (px(navStyle.opacity) < 0.95) return { ok: false, reason: `mobile nav opacity=${navStyle.opacity}` };
+    if (nav.getAttribute('aria-hidden') !== 'false') return { ok: false, reason: `mobile nav aria-hidden=${nav.getAttribute('aria-hidden')}` };
 
     const headerHeight = px(getComputedStyle(headerInner).height);
     if (headerHeight < 68 || headerHeight > 72) {
@@ -201,6 +225,30 @@ async function checkMobile(page, route) {
   if (!mobile.ok) {
     throw new Error(`${route} mobile ${mobile.reason}`);
   }
+
+  // Close by toggle click.
+  await toggle.click();
+  await waitMobileClosed(page, route, 'toggle-close');
+
+  // Open and close with Escape.
+  await toggle.click();
+  await waitMobileOpen(page, route, 'escape-open');
+  await page.keyboard.press('Escape');
+  await waitMobileClosed(page, route, 'escape-close');
+
+  // Open and close by clicking outside nav/toggle.
+  await toggle.click();
+  await waitMobileOpen(page, route, 'outside-open');
+  await page.evaluate(() => {
+    const event = new MouseEvent('click', {
+      bubbles: true,
+      cancelable: true,
+      view: window,
+    });
+    document.body.dispatchEvent(event);
+  });
+  await waitMobileClosed(page, route, 'outside-close');
+
   return mobile;
 }
 
