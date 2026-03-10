@@ -10,10 +10,10 @@ excluded_in_search: true
 		for (var i = 0; i < vars.length; i++) {
 			var pair = vars[i].split("=");
 
-				if (pair[0] === variable) {
-					return decodeURIComponent(pair[1].replace(/\+/g, '%20')).trim();
-				}
+			if (pair[0] === variable) {
+				return decodeURIComponent((pair[1] || "").replace(/\+/g, "%20")).trim();
 			}
+		}
 
 		return "";
 	}
@@ -110,7 +110,8 @@ excluded_in_search: true
 
 	function displaySearchResults(results, query) {
 		var searchResultsEl = document.getElementById("search-results"),
-			searchProcessEl = document.getElementById("search-process");
+			searchProcessEl = document.getElementById("search-process"),
+			renderedCount = 0;
 
 		if (!searchResultsEl || !searchProcessEl) {
 			return;
@@ -133,13 +134,20 @@ excluded_in_search: true
 				if (item && item.title) {
 					contentPreview = getPreview(query, item.content, 170);
 					titlePreview = getPreview(query, item.title);
-					resultsHTML += "<li><h4><a href='{{ site.baseurl }}" + item.url.trim() + "'>" + titlePreview + "</a></h4><p><small>" + contentPreview + "</small></p></li>";
+					resultsHTML += "<li><h4><a href='{{ site.baseurl }}" + (item.url || "").trim() + "'>" + titlePreview + "</a></h4><p><small>" + contentPreview + "</small></p></li>";
+					renderedCount += 1;
 				}
 			});
 
-			searchResultsEl.innerHTML = resultsHTML;
-			searchResultsEl.style.display = "grid";
-			searchProcessEl.innerText = "Showing";
+			if (renderedCount > 0) {
+				searchResultsEl.innerHTML = resultsHTML;
+				searchResultsEl.style.display = "grid";
+				searchProcessEl.innerText = "Showing";
+			} else {
+				searchResultsEl.innerHTML = "";
+				searchResultsEl.style.display = "none";
+				searchProcessEl.innerText = "No";
+			}
 		} else {
 			searchResultsEl.innerHTML = "";
 			searchResultsEl.style.display = "none";
@@ -160,8 +168,10 @@ excluded_in_search: true
 		searchQueryEl = document.getElementById("search-query"),
 		results;
 
-	searchQueryEl.innerText = query;
-	if (query !== "") {
+	if (searchQueryEl) {
+		searchQueryEl.innerText = query;
+	}
+	if (searchQueryContainerEl && query !== "") {
 		searchQueryContainerEl.style.display = "inline";
 	}
 

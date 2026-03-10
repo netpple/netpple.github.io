@@ -138,6 +138,7 @@ make preview-down
 Smoke checks cover:
 - Homepage content marker
 - Core routes HTTP 200 status
+- Search route variants (`/search/?q=kubernetes`, `/search/?q=%28`, empty query)
 - Home-only stylesheet loading (`home.css` on `/`, absent on non-home routes)
 - Post/Doc detail template markers
 - Navigation active mapping (`/archive/` -> `News`)

@@ -13,6 +13,12 @@ routes=(
   "/search/"
 )
 
+search_query_routes=(
+  "/search/?q=kubernetes"
+  "/search/?q=%28"
+  "/search/?q="
+)
+
 sample_post="/2023/c-for-beginner-hongongc/"
 sample_doc="/docs/istio-in-action"
 key_nav_paths=(
@@ -139,6 +145,16 @@ curl -fsSL "${BASE_URL}/" | grep -Eiq "netpple|김삼영|기술 블로그"
 
 echo "[smoke] checking core route status codes"
 for route in "${routes[@]}"; do
+  code="$(curl -s -o /dev/null -w "%{http_code}" "${BASE_URL}${route}")"
+  if [[ "${code}" != "200" ]]; then
+    echo "[fail] ${route} returned ${code}"
+    exit 1
+  fi
+  echo "[ok] ${route} -> ${code}"
+done
+
+echo "[smoke] checking search route variants"
+for route in "${search_query_routes[@]}"; do
   code="$(curl -s -o /dev/null -w "%{http_code}" "${BASE_URL}${route}")"
   if [[ "${code}" != "200" ]]; then
     echo "[fail] ${route} returned ${code}"
