@@ -38,6 +38,8 @@ assert_route_layout() {
   curl -fsSL "${BASE_URL}${route}" > "${html_file}"
   grep -q 'class="skip-link"' "${html_file}" || fail "${route} is missing skip-link"
   grep -q 'data-nav-toggle' "${html_file}" || fail "${route} is missing nav toggle"
+  grep -q 'aria-label="Open navigation menu"' "${html_file}" || fail "${route} is missing nav toggle aria-label"
+  grep -q 'aria-label="Primary"' "${html_file}" || fail "${route} is missing nav aria-label"
   grep -q 'id="main-content"' "${html_file}" || fail "${route} is missing #main-content"
   grep -q 'class="site-footer"' "${html_file}" || fail "${route} is missing site footer"
   rm -f "${html_file}"

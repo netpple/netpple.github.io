@@ -5,11 +5,11 @@
       <span class="brand__text">{{ site.title }}</span>
     </a>
 
-    <button class="gnb__toggle" type="button" aria-expanded="false" aria-controls="site-navigation" data-nav-toggle>
+    <button class="gnb__toggle" type="button" aria-expanded="false" aria-controls="site-navigation" aria-label="Open navigation menu" data-nav-toggle>
       Menu
     </button>
 
-    <nav class="gnb" id="site-navigation" data-nav>
+    <nav class="gnb" id="site-navigation" aria-label="Primary" aria-hidden="false" data-nav>
       <ul class="gnb__list">
         {% for link in site.data.navigation %}
           {% assign href = link.external_url %}

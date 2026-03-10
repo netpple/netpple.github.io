@@ -30,14 +30,21 @@ layout: null
       return;
     }
 
+    function syncMenuA11y(open) {
+      var isMobile = window.innerWidth <= 960;
+      toggle.setAttribute("aria-expanded", open ? "true" : "false");
+      toggle.setAttribute("aria-label", open ? "Close navigation menu" : "Open navigation menu");
+      nav.setAttribute("aria-hidden", isMobile && !open ? "true" : "false");
+    }
+
     function closeMenu() {
       nav.classList.remove("is-open");
-      toggle.setAttribute("aria-expanded", "false");
+      syncMenuA11y(false);
     }
 
     toggle.addEventListener("click", function () {
       var open = nav.classList.toggle("is-open");
-      toggle.setAttribute("aria-expanded", open ? "true" : "false");
+      syncMenuA11y(open);
     });
 
     document.addEventListener("keydown", function (event) {
@@ -61,9 +68,12 @@ layout: null
 
     window.addEventListener("resize", function () {
       if (window.innerWidth > 960) {
-        closeMenu();
+        nav.classList.remove("is-open");
       }
+      syncMenuA11y(nav.classList.contains("is-open"));
     });
+
+    syncMenuA11y(nav.classList.contains("is-open"));
   }
 
   function ensureHeadingId(heading, usedIds) {
