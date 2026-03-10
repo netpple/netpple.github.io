@@ -263,6 +263,26 @@ async function checkMobile(page, route) {
   });
   await waitMobileClosed(page);
 
+  // Open in mobile, then resize to desktop should force-close and reset desktop a11y state.
+  await toggle.click();
+  await waitMobileOpen(page);
+  await page.setViewportSize({ width: 1366, height: 900 });
+  await page.waitForFunction(() => {
+    const nav = document.querySelector('nav.gnb');
+    const toggle = document.querySelector('[data-nav-toggle]');
+    if (!nav || !toggle) return false;
+    if (nav.classList.contains('is-open')) return false;
+    if (toggle.getAttribute('aria-expanded') !== 'false') return false;
+    if (toggle.getAttribute('aria-label') !== 'Open navigation menu') return false;
+    if (nav.getAttribute('aria-hidden') !== 'false') return false;
+    if (getComputedStyle(toggle).display !== 'none') return false;
+    return getComputedStyle(nav).display === 'flex';
+  }, null, { timeout: 3000 });
+
+  // Resize back to mobile should keep menu closed and hidden.
+  await page.setViewportSize({ width: 390, height: 844 });
+  await waitMobileClosed(page);
+
   // Open and navigate via internal nav link; destination should load with closed menu state.
   const targetPath = route.startsWith('/docs/') || route === '/docs/' ? '/news/' : '/docs/';
   await toggle.click();
