@@ -19,7 +19,7 @@ description: 시리즈 중심으로 구성한 기술 문서 허브
   </div>
   <div class="track-grid">
     <article class="track-card">
-      <h3 class="track-card__title"><a href="{{ site.baseurl }}/docs/istio-in-action">Istio IN ACTION</a></h3>
+      <h3 class="track-card__title"><a href="{{ site.baseurl }}/docs/istio-in-action/">Istio IN ACTION</a></h3>
       <p class="track-card__description">서비스 메시 트래픽 제어, 보안, 관측성, 트러블슈팅까지 실습 중심으로 정리했습니다.</p>
       <div class="track-card__foot">
         <span>{{ istio_docs | size }} docs</span>
@@ -28,7 +28,7 @@ description: 시리즈 중심으로 구성한 기술 문서 허브
       </div>
     </article>
     <article class="track-card">
-      <h3 class="track-card__title"><a href="{{ site.baseurl }}/docs/make-container-without-docker">도커 없이 컨테이너 만들기</a></h3>
+      <h3 class="track-card__title"><a href="{{ site.baseurl }}/docs/make-container-without-docker/">도커 없이 컨테이너 만들기</a></h3>
       <p class="track-card__description">네임스페이스, cgroup, 파일시스템, 네트워크를 이해하기 위한 깊이 있는 자료입니다.</p>
       <div class="track-card__foot">
         <span>{{ docker_docs | size }} docs</span>
@@ -37,7 +37,7 @@ description: 시리즈 중심으로 구성한 기술 문서 허브
       </div>
     </article>
     <article class="track-card">
-      <h3 class="track-card__title"><a href="{{ site.baseurl }}/docs/deepdive-into-kubernetes">쿠버네티스 딥다이브</a></h3>
+      <h3 class="track-card__title"><a href="{{ site.baseurl }}/docs/deepdive-into-kubernetes/">쿠버네티스 딥다이브</a></h3>
       <p class="track-card__description">핵심 컴포넌트 동작 원리, 디버깅 전략, 운영 체크포인트를 정리했습니다.</p>
       <div class="track-card__foot">
         <span>{{ kube_docs | size }} docs</span>
