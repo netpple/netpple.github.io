@@ -116,6 +116,9 @@ make preview-linkcheck
 # optional relaxed mode:
 ALLOW_REDIRECTS=true make preview-linkcheck
 
+# 3-2) Or run structure consistency checks only
+make preview-structure
+
 # optional: print manual visual checkpoints
 make preview-info
 
@@ -130,3 +133,4 @@ Smoke checks cover:
 - Navigation active mapping (`/archive/` -> `News`)
 - Key internal navigation route reachability (Home/News/Docs 대표 링크)
 - Site-wide internal link check from generated `_site` (`href/src`, redirects disallowed by default)
+- Site-wide structure consistency check (`skip-link`, header/main/footer, single h1, single active nav per HTML page)

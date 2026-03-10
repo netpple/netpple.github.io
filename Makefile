@@ -3,7 +3,7 @@ PREVIEW_PORT ?= 4012
 PREVIEW_URL ?= http://127.0.0.1:$(PREVIEW_PORT)
 PREVIEW_IMAGE ?= jekyll/jekyll:4.2.0
 
-.PHONY: preview-up preview-build preview-smoke preview-linkcheck preview-verify preview-down preview-recreate preview-info
+.PHONY: preview-up preview-build preview-smoke preview-linkcheck preview-structure preview-verify preview-down preview-recreate preview-info
 
 preview-up:
 	@if docker ps --format '{{.Names}}' | grep -qx '$(PREVIEW_NAME)'; then \
@@ -25,7 +25,10 @@ preview-smoke:
 preview-linkcheck:
 	scripts/internal_link_check.sh $(PREVIEW_URL)
 
-preview-verify: preview-build preview-smoke preview-linkcheck
+preview-structure:
+	scripts/layout_consistency_check.sh _site
+
+preview-verify: preview-build preview-smoke preview-linkcheck preview-structure
 
 preview-down:
 	@docker rm -f $(PREVIEW_NAME) >/dev/null 2>&1 || true
@@ -39,6 +42,7 @@ preview-info:
 	@echo "Build + smoke: make preview-verify"
 	@echo "Link check only (strict): make preview-linkcheck"
 	@echo "Link check relaxed: ALLOW_REDIRECTS=true make preview-linkcheck"
+	@echo "Structure check only: make preview-structure"
 	@echo "Stop preview: make preview-down"
 	@echo "Visual checkpoints:"
 	@echo "  1) Hero typography/spacing + CTA alignment"
