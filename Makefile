@@ -3,7 +3,7 @@ PREVIEW_PORT ?= 4012
 PREVIEW_URL ?= http://127.0.0.1:$(PREVIEW_PORT)
 PREVIEW_IMAGE ?= jekyll/jekyll:4.2.0
 
-.PHONY: preview-up preview-build preview-smoke preview-responsive preview-overflow preview-overflow-full preview-nav preview-runtime preview-a11y preview-linkcheck preview-structure preview-style-scope preview-inline-style preview-ids preview-meta preview-verify preview-down preview-recreate preview-info
+.PHONY: preview-up preview-build preview-smoke preview-responsive preview-overflow preview-overflow-full preview-nav preview-runtime preview-runtime-full preview-a11y preview-linkcheck preview-structure preview-style-scope preview-inline-style preview-ids preview-meta preview-verify preview-down preview-recreate preview-info
 
 preview-up:
 	@if docker ps --format '{{.Names}}' | grep -qx '$(PREVIEW_NAME)'; then \
@@ -36,6 +36,9 @@ preview-nav:
 
 preview-runtime:
 	scripts/runtime_console_check.sh $(PREVIEW_URL)
+
+preview-runtime-full:
+	FULL_SITE_RUNTIME=true scripts/runtime_console_check.sh $(PREVIEW_URL)
 
 preview-a11y:
 	scripts/accessibility_smoke_check.sh $(PREVIEW_URL)
@@ -75,6 +78,7 @@ preview-info:
 	@echo "Responsive overflow full-site: make preview-overflow-full"
 	@echo "Nav consistency only: make preview-nav"
 	@echo "Runtime console only: make preview-runtime"
+	@echo "Runtime console full-site: make preview-runtime-full"
 	@echo "Accessibility smoke only: make preview-a11y"
 	@echo "Link check only (strict): make preview-linkcheck"
 	@echo "Link check relaxed: ALLOW_REDIRECTS=true make preview-linkcheck"

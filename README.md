@@ -149,6 +149,9 @@ make preview-meta
 # 3-9) Or run runtime console/pageerror/requestfailed checks only
 make preview-runtime
 
+# Optional full-site runtime mode (all generated HTML routes in _site)
+make preview-runtime-full
+
 # optional: print manual visual checkpoints
 make preview-info
 
@@ -166,6 +169,7 @@ Smoke checks cover:
 - Responsive layout overflow check (`desktop/tablet/mobile`, core routes + docs detail routes with horizontal overflow fail; optional `_site` full-route mode)
 - Runtime nav consistency check (`desktop/mobile`, GNB height/alignment/hover/active + route-specific active target mapping + toggle visibility/aria-label transitions, keyboard toggle Enter/Space, resize transition, toggle/Escape/outside-click close behavior, and page-wide `target="_blank"` rel safety)
 - Runtime console stability check (core routes console.error/pageerror/requestfailed 없는지 점검, GA/GTM 외부 차단 노이즈 제외)
+- Optional full-site runtime console stability check (`_site` 전체 라우트 대상)
 - Accessibility smoke check (`desktop`, skip-link first-focus visibility + Enter activation hash 이동 + `#main-content` 포커스 전달)
 - Home-only stylesheet loading (`home.css` on `/`, absent on non-home routes)
 - Post/Doc detail template markers
