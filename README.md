@@ -108,6 +108,10 @@ make preview-up
 # 2) Build + smoke checks
 make preview-verify
 
+# 2-1) Optional comprehensive full-site verify
+# (includes preview-verify + overflow-full + runtime-full)
+make preview-verify-full
+
 # 3) Or run smoke checks only
 make preview-smoke
 
@@ -119,6 +123,8 @@ make preview-overflow
 
 # Optional full-site mode (all generated HTML routes in _site)
 make preview-overflow-full
+# Optional timeout tuning for slower environments:
+# OVERFLOW_TIMEOUT_MS=45000 make preview-overflow-full
 
 # 3-2-1) Or run nav consistency checks only (desktop/mobile)
 make preview-nav

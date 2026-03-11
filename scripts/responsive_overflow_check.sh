@@ -5,6 +5,7 @@ BASE_URL="${1:-http://127.0.0.1:4012}"
 SITE_DIR="${2:-_site}"
 FULL_SITE_OVERFLOW="${FULL_SITE_OVERFLOW:-false}"
 OVERFLOW_MAX_ROUTES="${OVERFLOW_MAX_ROUTES:-0}"
+OVERFLOW_TIMEOUT_MS="${OVERFLOW_TIMEOUT_MS:-30000}"
 
 if ! command -v npx >/dev/null 2>&1; then
   echo "[fail] npx is required for responsive overflow checks"
@@ -102,6 +103,7 @@ const fs = require('fs');
 
 const baseUrl = process.argv[2];
 const routesFile = process.argv[3];
+const timeoutMs = Number.parseInt(process.argv[4] || '30000', 10);
 const routes = fs
   .readFileSync(routesFile, 'utf8')
   .split(/\r?\n/)
@@ -130,10 +132,29 @@ const hasHorizontalOverflow = (metrics) => metrics.scrollWidth > metrics.viewpor
         const page = await context.newPage();
 
         try {
-          const response = await page.goto(`${baseUrl}${route}`, {
-            waitUntil: 'domcontentloaded',
-            timeout: 30000,
-          });
+          let response;
+          let navigationError;
+          for (let attempt = 1; attempt <= 2; attempt += 1) {
+            try {
+              response = await page.goto(`${baseUrl}${route}`, {
+                waitUntil: 'domcontentloaded',
+                timeout: timeoutMs,
+              });
+              navigationError = null;
+              break;
+            } catch (error) {
+              navigationError = error;
+              if (attempt < 2) {
+                console.warn(
+                  `[warn] ${route} @ ${viewport.name} retrying after navigation error: ${error.message}`
+                );
+                await page.waitForTimeout(400);
+              }
+            }
+          }
+          if (navigationError) {
+            throw navigationError;
+          }
           if (!response || !response.ok()) {
             const status = response ? response.status() : 'no-response';
             throw new Error(`navigation status ${status}`);
@@ -185,4 +206,4 @@ const hasHorizontalOverflow = (metrics) => metrics.scrollWidth > metrics.viewpor
 })();
 NODE
 
-NODE_PATH="${playwright_node_modules}" node "${node_script}" "${BASE_URL}" "${routes_file}"
+NODE_PATH="${playwright_node_modules}" node "${node_script}" "${BASE_URL}" "${routes_file}" "${OVERFLOW_TIMEOUT_MS}"

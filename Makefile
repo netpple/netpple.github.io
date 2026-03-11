@@ -3,7 +3,7 @@ PREVIEW_PORT ?= 4012
 PREVIEW_URL ?= http://127.0.0.1:$(PREVIEW_PORT)
 PREVIEW_IMAGE ?= jekyll/jekyll:4.2.0
 
-.PHONY: preview-up preview-build preview-smoke preview-responsive preview-overflow preview-overflow-full preview-nav preview-runtime preview-runtime-full preview-a11y preview-linkcheck preview-structure preview-style-scope preview-inline-style preview-ids preview-meta preview-verify preview-down preview-recreate preview-info
+.PHONY: preview-up preview-build preview-smoke preview-responsive preview-overflow preview-overflow-full preview-nav preview-runtime preview-runtime-full preview-a11y preview-linkcheck preview-structure preview-style-scope preview-inline-style preview-ids preview-meta preview-verify preview-verify-full preview-down preview-recreate preview-info
 
 preview-up:
 	@if docker ps --format '{{.Names}}' | grep -qx '$(PREVIEW_NAME)'; then \
@@ -63,6 +63,8 @@ preview-meta:
 
 preview-verify: preview-build preview-smoke preview-responsive preview-overflow preview-nav preview-runtime preview-a11y preview-linkcheck preview-structure preview-style-scope preview-inline-style preview-ids preview-meta
 
+preview-verify-full: preview-verify preview-overflow-full preview-runtime-full
+
 preview-down:
 	@docker rm -f $(PREVIEW_NAME) >/dev/null 2>&1 || true
 	@echo "stopped $(PREVIEW_NAME)"
@@ -73,6 +75,7 @@ preview-info:
 	@echo "Preview URL: $(PREVIEW_URL)"
 	@echo "Quick start: make preview-up"
 	@echo "Build + smoke: make preview-verify"
+	@echo "Comprehensive full-site verify: make preview-verify-full"
 	@echo "Responsive smoke only: make preview-responsive"
 	@echo "Responsive overflow only: make preview-overflow"
 	@echo "Responsive overflow full-site: make preview-overflow-full"
