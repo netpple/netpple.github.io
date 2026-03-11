@@ -5,6 +5,7 @@ BASE_URL="${1:-http://127.0.0.1:4012}"
 SITE_DIR="${2:-_site}"
 FULL_SITE_RUNTIME="${FULL_SITE_RUNTIME:-false}"
 RUNTIME_MAX_ROUTES="${RUNTIME_MAX_ROUTES:-0}"
+RUNTIME_TIMEOUT_MS="${RUNTIME_TIMEOUT_MS:-30000}"
 
 if ! command -v npx >/dev/null 2>&1; then
   echo "[fail] npx is required for runtime console checks"
@@ -98,6 +99,7 @@ fi
 route_count="$(wc -l < "${routes_file}" | tr -d ' ')"
 echo "[runtime] base url: ${BASE_URL}"
 echo "[runtime] mode: FULL_SITE_RUNTIME=${FULL_SITE_RUNTIME}, routes=${route_count}"
+echo "[runtime] timeout: ${RUNTIME_TIMEOUT_MS}ms"
 
 cat > "${node_script}" <<'NODE'
 const { chromium } = require('playwright');
@@ -105,6 +107,7 @@ const fs = require('fs');
 
 const baseUrl = process.argv[2];
 const routesFile = process.argv[3];
+const timeoutMs = Number.parseInt(process.argv[4] || '30000', 10);
 const routes = fs
   .readFileSync(routesFile, 'utf8')
   .split(/\r?\n/)
@@ -168,10 +171,27 @@ function isIgnorableConsoleError(message) {
       });
 
       try {
-        const response = await page.goto(`${baseUrl}${route}`, {
-          waitUntil: 'domcontentloaded',
-          timeout: 30000,
-        });
+        let response;
+        let navigationError;
+        for (let attempt = 1; attempt <= 2; attempt += 1) {
+          try {
+            response = await page.goto(`${baseUrl}${route}`, {
+              waitUntil: 'domcontentloaded',
+              timeout: timeoutMs,
+            });
+            navigationError = null;
+            break;
+          } catch (error) {
+            navigationError = error;
+            if (attempt < 2) {
+              console.warn(`[warn] ${route} retrying after navigation error: ${error.message}`);
+              await page.waitForTimeout(400);
+            }
+          }
+        }
+        if (navigationError) {
+          throw navigationError;
+        }
         if (!response || !response.ok()) {
           const status = response ? response.status() : 'no-response';
           errors.push(`navigation status ${status}`);
@@ -205,4 +225,4 @@ function isIgnorableConsoleError(message) {
 })();
 NODE
 
-NODE_PATH="${playwright_node_modules}" node "${node_script}" "${BASE_URL}" "${routes_file}"
+NODE_PATH="${playwright_node_modules}" node "${node_script}" "${BASE_URL}" "${routes_file}" "${RUNTIME_TIMEOUT_MS}"
