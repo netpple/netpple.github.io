@@ -5,7 +5,14 @@ BASE_URL="${1:-http://127.0.0.1:4012}"
 SITE_DIR="${2:-_site}"
 FULL_SITE_RUNTIME="${FULL_SITE_RUNTIME:-false}"
 RUNTIME_MAX_ROUTES="${RUNTIME_MAX_ROUTES:-0}"
-RUNTIME_TIMEOUT_MS="${RUNTIME_TIMEOUT_MS:-30000}"
+
+if [[ "${FULL_SITE_RUNTIME}" == "true" ]]; then
+  RUNTIME_TIMEOUT_MS="${RUNTIME_TIMEOUT_MS:-60000}"
+  RUNTIME_RETRIES="${RUNTIME_RETRIES:-3}"
+else
+  RUNTIME_TIMEOUT_MS="${RUNTIME_TIMEOUT_MS:-30000}"
+  RUNTIME_RETRIES="${RUNTIME_RETRIES:-2}"
+fi
 
 if ! command -v npx >/dev/null 2>&1; then
   echo "[fail] npx is required for runtime console checks"
@@ -99,7 +106,7 @@ fi
 route_count="$(wc -l < "${routes_file}" | tr -d ' ')"
 echo "[runtime] base url: ${BASE_URL}"
 echo "[runtime] mode: FULL_SITE_RUNTIME=${FULL_SITE_RUNTIME}, routes=${route_count}"
-echo "[runtime] timeout: ${RUNTIME_TIMEOUT_MS}ms"
+echo "[runtime] navigation: timeout=${RUNTIME_TIMEOUT_MS}ms retries=${RUNTIME_RETRIES}"
 
 cat > "${node_script}" <<'NODE'
 const { chromium } = require('playwright');
@@ -108,6 +115,7 @@ const fs = require('fs');
 const baseUrl = process.argv[2];
 const routesFile = process.argv[3];
 const timeoutMs = Number.parseInt(process.argv[4] || '30000', 10);
+const retryLimit = Number.parseInt(process.argv[5] || '2', 10);
 const routes = fs
   .readFileSync(routesFile, 'utf8')
   .split(/\r?\n/)
@@ -173,7 +181,7 @@ function isIgnorableConsoleError(message) {
       try {
         let response;
         let navigationError;
-        for (let attempt = 1; attempt <= 2; attempt += 1) {
+        for (let attempt = 1; attempt <= retryLimit; attempt += 1) {
           try {
             response = await page.goto(`${baseUrl}${route}`, {
               waitUntil: 'domcontentloaded',
@@ -183,7 +191,7 @@ function isIgnorableConsoleError(message) {
             break;
           } catch (error) {
             navigationError = error;
-            if (attempt < 2) {
+            if (attempt < retryLimit) {
               console.warn(`[warn] ${route} retrying after navigation error: ${error.message}`);
               await page.waitForTimeout(400);
             }
@@ -225,4 +233,4 @@ function isIgnorableConsoleError(message) {
 })();
 NODE
 
-NODE_PATH="${playwright_node_modules}" node "${node_script}" "${BASE_URL}" "${routes_file}" "${RUNTIME_TIMEOUT_MS}"
+NODE_PATH="${playwright_node_modules}" node "${node_script}" "${BASE_URL}" "${routes_file}" "${RUNTIME_TIMEOUT_MS}" "${RUNTIME_RETRIES}"

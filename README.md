@@ -157,8 +157,8 @@ make preview-runtime
 
 # Optional full-site runtime mode (all generated HTML routes in _site)
 make preview-runtime-full
-# Optional timeout tuning for slower environments:
-# RUNTIME_TIMEOUT_MS=45000 make preview-runtime-full
+# Optional timeout/retry tuning for slower environments:
+# RUNTIME_TIMEOUT_MS=90000 RUNTIME_RETRIES=4 make preview-runtime-full
 
 # optional: print manual visual checkpoints
 make preview-info
