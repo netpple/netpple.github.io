@@ -33,7 +33,10 @@ const routes = [
   { path: '/docs/querypie-handson/multiple-kubernetes-with-querypie-kac', expectedActive: '/docs/' },
 ];
 
-const desktopViewport = { width: 1366, height: 900 };
+const desktopViewports = [
+  { name: 'desktop', width: 1366, height: 900 },
+  { name: 'tablet', width: 1024, height: 768 },
+];
 const mobileViewports = [
   { name: 'mobile-max', width: 760, height: 900 },
   { name: 'mobile', width: 390, height: 844 },
@@ -67,7 +70,7 @@ async function waitMobileClosed(page) {
   }, null, { timeout: 3000 });
 }
 
-async function checkDesktop(page, route, expectedActive) {
+async function checkDesktop(page, route, expectedActive, viewportName) {
   const desktop = await page.evaluate((expected) => {
     const normalizePath = (value) => {
       const pathname = value.endsWith('/') ? value : `${value}/`;
@@ -157,17 +160,17 @@ async function checkDesktop(page, route, expectedActive) {
   }, expectedActive);
 
   if (!desktop.ok) {
-    throw new Error(`${route} desktop ${desktop.reason}`);
+    throw new Error(`${route} ${viewportName} ${desktop.reason}`);
   }
   if (desktop.invalidBlankTargetLinks.length) {
     throw new Error(
-      `${route} desktop target=_blank links missing rel safety: ${desktop.invalidBlankTargetLinks.join(', ')}`
+      `${route} ${viewportName} target=_blank links missing rel safety: ${desktop.invalidBlankTargetLinks.join(', ')}`
     );
   }
 
   const hoverTarget = await page.$('nav.gnb .gnb__link:not(.is-active)');
   if (!hoverTarget) {
-    throw new Error(`${route} desktop missing non-active nav link for hover check`);
+    throw new Error(`${route} ${viewportName} missing non-active nav link for hover check`);
   }
 
   const before = await hoverTarget.evaluate((el) => {
@@ -195,7 +198,7 @@ async function checkDesktop(page, route, expectedActive) {
     || before.backgroundColor !== after.backgroundColor
     || before.transform !== after.transform;
   if (!changed) {
-    throw new Error(`${route} desktop hover style did not change`);
+    throw new Error(`${route} ${viewportName} hover style did not change`);
   }
 
   return desktop;
@@ -335,7 +338,8 @@ async function checkMobile(page, route, expectedActive, mobileViewport) {
   // Open in mobile, then resize to desktop should force-close and reset desktop a11y state.
   await toggle.click();
   await waitMobileOpen(page);
-  await page.setViewportSize(desktopViewport);
+  const desktopViewport = desktopViewports[0];
+  await page.setViewportSize({ width: desktopViewport.width, height: desktopViewport.height });
   await page.waitForFunction(() => {
     const nav = document.querySelector('nav.gnb');
     const toggle = document.querySelector('[data-nav-toggle]');
@@ -415,14 +419,18 @@ async function checkMobile(page, route, expectedActive, mobileViewport) {
     for (const routeConfig of routes) {
       const route = routeConfig.path;
       const expectedActive = routeConfig.expectedActive;
-      const desktopContext = await browser.newContext({ viewport: desktopViewport });
-      const desktopPage = await desktopContext.newPage();
-      await desktopPage.goto(`${baseUrl}${route}`, { waitUntil: 'domcontentloaded', timeout: 30000 });
-      await desktopPage.waitForTimeout(120);
-      const desktop = await checkDesktop(desktopPage, route, expectedActive);
-      checks += 1;
-      console.log(`[ok] ${route} desktop nav consistency (active=${expectedActive}, links=${desktop.linkCount}, link-h=${desktop.linkHeight.toFixed(1)}, header-h=${desktop.headerHeight.toFixed(1)}, blank-target=${desktop.blankTargetCount})`);
-      await desktopContext.close();
+      for (const desktopViewport of desktopViewports) {
+        const desktopContext = await browser.newContext({
+          viewport: { width: desktopViewport.width, height: desktopViewport.height },
+        });
+        const desktopPage = await desktopContext.newPage();
+        await desktopPage.goto(`${baseUrl}${route}`, { waitUntil: 'domcontentloaded', timeout: 30000 });
+        await desktopPage.waitForTimeout(120);
+        const desktop = await checkDesktop(desktopPage, route, expectedActive, desktopViewport.name);
+        checks += 1;
+        console.log(`[ok] ${route} ${desktopViewport.name} nav consistency (active=${expectedActive}, links=${desktop.linkCount}, link-h=${desktop.linkHeight.toFixed(1)}, header-h=${desktop.headerHeight.toFixed(1)}, blank-target=${desktop.blankTargetCount})`);
+        await desktopContext.close();
+      }
 
       for (const mobileViewport of mobileViewports) {
         const mobileContext = await browser.newContext({
