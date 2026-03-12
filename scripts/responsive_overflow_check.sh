@@ -5,7 +5,14 @@ BASE_URL="${1:-http://127.0.0.1:4012}"
 SITE_DIR="${2:-_site}"
 FULL_SITE_OVERFLOW="${FULL_SITE_OVERFLOW:-false}"
 OVERFLOW_MAX_ROUTES="${OVERFLOW_MAX_ROUTES:-0}"
-OVERFLOW_TIMEOUT_MS="${OVERFLOW_TIMEOUT_MS:-30000}"
+
+if [[ "${FULL_SITE_OVERFLOW}" == "true" ]]; then
+  OVERFLOW_TIMEOUT_MS="${OVERFLOW_TIMEOUT_MS:-60000}"
+  OVERFLOW_RETRIES="${OVERFLOW_RETRIES:-3}"
+else
+  OVERFLOW_TIMEOUT_MS="${OVERFLOW_TIMEOUT_MS:-30000}"
+  OVERFLOW_RETRIES="${OVERFLOW_RETRIES:-2}"
+fi
 
 if ! command -v npx >/dev/null 2>&1; then
   echo "[fail] npx is required for responsive overflow checks"
@@ -96,6 +103,7 @@ fi
 route_count="$(wc -l < "${routes_file}" | tr -d ' ')"
 echo "[overflow] base url: ${BASE_URL}"
 echo "[overflow] mode: FULL_SITE_OVERFLOW=${FULL_SITE_OVERFLOW}, routes=${route_count}"
+echo "[overflow] navigation: timeout=${OVERFLOW_TIMEOUT_MS}ms retries=${OVERFLOW_RETRIES}"
 
 cat > "${node_script}" <<'NODE'
 const { chromium } = require('playwright');
@@ -104,6 +112,7 @@ const fs = require('fs');
 const baseUrl = process.argv[2];
 const routesFile = process.argv[3];
 const timeoutMs = Number.parseInt(process.argv[4] || '30000', 10);
+const retryLimit = Number.parseInt(process.argv[5] || '2', 10);
 const routes = fs
   .readFileSync(routesFile, 'utf8')
   .split(/\r?\n/)
@@ -113,6 +122,7 @@ const routes = fs
 const viewports = [
   { name: 'desktop', width: 1366, height: 900 },
   { name: 'tablet', width: 1024, height: 768 },
+  { name: 'mobile-max', width: 760, height: 900 },
   { name: 'mobile', width: 390, height: 844 },
 ];
 
@@ -134,7 +144,7 @@ const hasHorizontalOverflow = (metrics) => metrics.scrollWidth > metrics.viewpor
         try {
           let response;
           let navigationError;
-          for (let attempt = 1; attempt <= 2; attempt += 1) {
+          for (let attempt = 1; attempt <= retryLimit; attempt += 1) {
             try {
               response = await page.goto(`${baseUrl}${route}`, {
                 waitUntil: 'domcontentloaded',
@@ -144,7 +154,7 @@ const hasHorizontalOverflow = (metrics) => metrics.scrollWidth > metrics.viewpor
               break;
             } catch (error) {
               navigationError = error;
-              if (attempt < 2) {
+              if (attempt < retryLimit) {
                 console.warn(
                   `[warn] ${route} @ ${viewport.name} retrying after navigation error: ${error.message}`
                 );
@@ -206,4 +216,4 @@ const hasHorizontalOverflow = (metrics) => metrics.scrollWidth > metrics.viewpor
 })();
 NODE
 
-NODE_PATH="${playwright_node_modules}" node "${node_script}" "${BASE_URL}" "${routes_file}" "${OVERFLOW_TIMEOUT_MS}"
+NODE_PATH="${playwright_node_modules}" node "${node_script}" "${BASE_URL}" "${routes_file}" "${OVERFLOW_TIMEOUT_MS}" "${OVERFLOW_RETRIES}"

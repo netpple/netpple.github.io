@@ -33,6 +33,12 @@ const routes = [
   { path: '/docs/querypie-handson/multiple-kubernetes-with-querypie-kac', expectedActive: '/docs/' },
 ];
 
+const desktopViewport = { width: 1366, height: 900 };
+const mobileViewports = [
+  { name: 'mobile-max', width: 760, height: 900 },
+  { name: 'mobile', width: 390, height: 844 },
+];
+
 async function waitMobileOpen(page) {
   await page.waitForFunction(() => {
     const nav = document.querySelector('nav.gnb');
@@ -195,10 +201,13 @@ async function checkDesktop(page, route, expectedActive) {
   return desktop;
 }
 
-async function checkMobile(page, route, expectedActive) {
+async function checkMobile(page, route, expectedActive, mobileViewport) {
+  const mobileLabel = mobileViewport.name;
+  const mobileWidth = mobileViewport.width;
+  const mobileHeight = mobileViewport.height;
   const toggle = await page.$('[data-nav-toggle]');
   if (!toggle) {
-    throw new Error(`${route} mobile missing nav toggle`);
+    throw new Error(`${route} ${mobileLabel} missing nav toggle`);
   }
   await waitMobileClosed(page);
 
@@ -297,7 +306,7 @@ async function checkMobile(page, route, expectedActive) {
   }, expectedActive);
 
   if (!mobile.ok) {
-    throw new Error(`${route} mobile ${mobile.reason}`);
+    throw new Error(`${route} ${mobileLabel} ${mobile.reason}`);
   }
 
   // Close by toggle click.
@@ -326,7 +335,7 @@ async function checkMobile(page, route, expectedActive) {
   // Open in mobile, then resize to desktop should force-close and reset desktop a11y state.
   await toggle.click();
   await waitMobileOpen(page);
-  await page.setViewportSize({ width: 1366, height: 900 });
+  await page.setViewportSize(desktopViewport);
   await page.waitForFunction(() => {
     const nav = document.querySelector('nav.gnb');
     const toggle = document.querySelector('[data-nav-toggle]');
@@ -340,7 +349,7 @@ async function checkMobile(page, route, expectedActive) {
   }, null, { timeout: 3000 });
 
   // Resize back to mobile should keep menu closed and hidden.
-  await page.setViewportSize({ width: 390, height: 844 });
+  await page.setViewportSize({ width: mobileWidth, height: mobileHeight });
   await waitMobileClosed(page);
 
   // Open and navigate via internal nav link; destination should load with closed menu state.
@@ -350,7 +359,7 @@ async function checkMobile(page, route, expectedActive) {
   const targetSelector = `nav.gnb .gnb__link[href="${targetPath}"]`;
   const targetLink = await page.$(targetSelector);
   if (!targetLink) {
-    throw new Error(`${route} mobile missing navigation target link ${targetPath}`);
+    throw new Error(`${route} ${mobileLabel} missing navigation target link ${targetPath}`);
   }
 
   await Promise.all([
@@ -392,7 +401,7 @@ async function checkMobile(page, route, expectedActive) {
     return { ok: true };
   }, targetPath);
   if (!postNavigate.ok) {
-    throw new Error(`${route} mobile ${postNavigate.reason}`);
+    throw new Error(`${route} ${mobileLabel} ${postNavigate.reason}`);
   }
 
   return mobile;
@@ -406,7 +415,7 @@ async function checkMobile(page, route, expectedActive) {
     for (const routeConfig of routes) {
       const route = routeConfig.path;
       const expectedActive = routeConfig.expectedActive;
-      const desktopContext = await browser.newContext({ viewport: { width: 1366, height: 900 } });
+      const desktopContext = await browser.newContext({ viewport: desktopViewport });
       const desktopPage = await desktopContext.newPage();
       await desktopPage.goto(`${baseUrl}${route}`, { waitUntil: 'domcontentloaded', timeout: 30000 });
       await desktopPage.waitForTimeout(120);
@@ -415,14 +424,18 @@ async function checkMobile(page, route, expectedActive) {
       console.log(`[ok] ${route} desktop nav consistency (active=${expectedActive}, links=${desktop.linkCount}, link-h=${desktop.linkHeight.toFixed(1)}, header-h=${desktop.headerHeight.toFixed(1)}, blank-target=${desktop.blankTargetCount})`);
       await desktopContext.close();
 
-      const mobileContext = await browser.newContext({ viewport: { width: 390, height: 844 } });
-      const mobilePage = await mobileContext.newPage();
-      await mobilePage.goto(`${baseUrl}${route}`, { waitUntil: 'domcontentloaded', timeout: 30000 });
-      await mobilePage.waitForTimeout(120);
-      const mobile = await checkMobile(mobilePage, route, expectedActive);
-      checks += 1;
-      console.log(`[ok] ${route} mobile nav consistency (active=${expectedActive}, links=${mobile.linkCount}, link-h=${mobile.linkHeight.toFixed(1)}, header-h=${mobile.headerHeight.toFixed(1)})`);
-      await mobileContext.close();
+      for (const mobileViewport of mobileViewports) {
+        const mobileContext = await browser.newContext({
+          viewport: { width: mobileViewport.width, height: mobileViewport.height },
+        });
+        const mobilePage = await mobileContext.newPage();
+        await mobilePage.goto(`${baseUrl}${route}`, { waitUntil: 'domcontentloaded', timeout: 30000 });
+        await mobilePage.waitForTimeout(120);
+        const mobile = await checkMobile(mobilePage, route, expectedActive, mobileViewport);
+        checks += 1;
+        console.log(`[ok] ${route} ${mobileViewport.name} nav consistency (active=${expectedActive}, links=${mobile.linkCount}, link-h=${mobile.linkHeight.toFixed(1)}, header-h=${mobile.headerHeight.toFixed(1)})`);
+        await mobileContext.close();
+      }
     }
   } catch (error) {
     console.error(`[fail] nav consistency: ${error.message}`);
