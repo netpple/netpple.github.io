@@ -73,6 +73,11 @@ preview-recreate: preview-down preview-up
 
 preview-info:
 	@echo "Preview URL: $(PREVIEW_URL)"
+	@if docker ps --format '{{.Names}}' | grep -qx '$(PREVIEW_NAME)'; then \
+		echo "Preview container status: running ($(PREVIEW_NAME))"; \
+	else \
+		echo "Preview container status: not running ($(PREVIEW_NAME)); run make preview-up"; \
+	fi
 	@echo "Viewport matrix: desktop-min(961), desktop(1366), tablet(1024), mobile-break(960), tablet-min(761), mobile-max(760), mobile(390)"
 	@if [ -d test-results/responsive-check ] && [ "$$(ls -A test-results/responsive-check 2>/dev/null)" ]; then \
 		latest="$$(ls -1 test-results/responsive-check | tail -n 1)"; \
