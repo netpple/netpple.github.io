@@ -19,8 +19,10 @@ routes=(
 )
 
 viewports=(
+  "desktop-min:961,800"
   "desktop:1366,900"
   "tablet:1024,768"
+  "mobile-break:960,800"
   "mobile-max:760,900"
   "mobile:390,844"
 )
