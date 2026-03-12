@@ -74,6 +74,12 @@ preview-recreate: preview-down preview-up
 preview-info:
 	@echo "Preview URL: $(PREVIEW_URL)"
 	@echo "Viewport matrix: desktop-min(961), desktop(1366), tablet(1024), mobile-break(960), tablet-min(761), mobile-max(760), mobile(390)"
+	@if [ -d test-results/responsive-check ] && [ "$$(ls -A test-results/responsive-check 2>/dev/null)" ]; then \
+		latest="$$(ls -1 test-results/responsive-check | tail -n 1)"; \
+		echo "Latest responsive artifacts: test-results/responsive-check/$$latest"; \
+	else \
+		echo "Latest responsive artifacts: (none; run KEEP_RESPONSIVE_ARTIFACTS=true make preview-responsive)"; \
+	fi
 	@echo "Quick start: make preview-up"
 	@echo "Build + smoke: make preview-verify"
 	@echo "Comprehensive full-site verify: make preview-verify-full"
