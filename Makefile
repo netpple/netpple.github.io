@@ -73,6 +73,7 @@ preview-recreate: preview-down preview-up
 
 preview-info:
 	@echo "Preview URL: $(PREVIEW_URL)"
+	@echo "Viewport matrix: desktop-min(961), desktop(1366), tablet(1024), mobile-break(960), tablet-min(761), mobile-max(760), mobile(390)"
 	@echo "Quick start: make preview-up"
 	@echo "Build + smoke: make preview-verify"
 	@echo "Comprehensive full-site verify: make preview-verify-full"
