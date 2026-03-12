@@ -3,7 +3,7 @@ title: Istio Ingress Gateway (2)
 version: v1.0  
 description: istio in action 4장 실습2  
 date: 2022-12-24 22:00:00 +09:00
-layout: post  
+layout: page  
 toc: 4  
 categories: network
 label: istio in action

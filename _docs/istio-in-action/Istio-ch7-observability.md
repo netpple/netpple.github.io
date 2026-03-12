@@ -3,7 +3,7 @@ title: Istio Observability (1)
 version: v0.6  
 description: istio in action 7장  
 date: 2023-04-04 10:00:00 +09:00  
-layout: post  
+layout: page  
 toc: 9    
 categories: network
 label: istio in action

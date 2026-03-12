@@ -3,7 +3,7 @@ title: Istio Troubleshooting
 version: v1.0  
 description: istio in action 10장  
 date: 2023-05-08 19:00:00 +09:00  
-layout: post  
+layout: page  
 toc: 16  
 categories: network
 label: istio in action

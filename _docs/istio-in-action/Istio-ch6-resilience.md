@@ -3,7 +3,7 @@ title: Istio Resilience
 version: v0.6  
 description: istio in action 6장  
 date: 2023-03-31 09:00:00 +09:00  
-layout: post  
+layout: page  
 toc: 8  
 categories: network
 label: istio in action
