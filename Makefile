@@ -76,7 +76,9 @@ preview-info:
 	@echo "Viewport matrix: desktop-min(961), desktop(1366), tablet(1024), mobile-break(960), tablet-min(761), mobile-max(760), mobile(390)"
 	@if [ -d test-results/responsive-check ] && [ "$$(ls -A test-results/responsive-check 2>/dev/null)" ]; then \
 		latest="$$(ls -1 test-results/responsive-check | tail -n 1)"; \
+		count="$$(find "test-results/responsive-check/$$latest" -maxdepth 1 -type f -name '*.png' | wc -l | tr -d ' ')"; \
 		echo "Latest responsive artifacts: test-results/responsive-check/$$latest"; \
+		echo "Latest responsive artifacts count: $$count"; \
 	else \
 		echo "Latest responsive artifacts: (none; run KEEP_RESPONSIVE_ARTIFACTS=true make preview-responsive)"; \
 	fi
