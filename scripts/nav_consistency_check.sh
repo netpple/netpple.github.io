@@ -40,6 +40,7 @@ const desktopViewports = [
 ];
 const mobileViewports = [
   { name: 'mobile-break', width: 960, height: 800 },
+  { name: 'tablet-min', width: 761, height: 900 },
   { name: 'mobile-max', width: 760, height: 900 },
   { name: 'mobile', width: 390, height: 844 },
 ];
