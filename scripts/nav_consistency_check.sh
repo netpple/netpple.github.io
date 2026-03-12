@@ -34,10 +34,12 @@ const routes = [
 ];
 
 const desktopViewports = [
+  { name: 'desktop-min', width: 961, height: 800 },
   { name: 'desktop', width: 1366, height: 900 },
   { name: 'tablet', width: 1024, height: 768 },
 ];
 const mobileViewports = [
+  { name: 'mobile-break', width: 960, height: 800 },
   { name: 'mobile-max', width: 760, height: 900 },
   { name: 'mobile', width: 390, height: 844 },
 ];

@@ -126,7 +126,7 @@ make preview-overflow-full
 # Optional timeout/retry tuning for slower environments:
 # OVERFLOW_TIMEOUT_MS=90000 OVERFLOW_RETRIES=4 make preview-overflow-full
 
-# 3-2-1) Or run nav consistency checks only (desktop/tablet/mobile-max/mobile)
+# 3-2-1) Or run nav consistency checks only (desktop-min(961)/desktop/tablet/mobile-break(960)/mobile-max/mobile)
 make preview-nav
 
 # 3-2-2) Or run accessibility smoke checks only (skip-link keyboard flow)
@@ -175,7 +175,7 @@ Smoke checks cover:
 - Tags page empty tag navigation guard (no `href="#"` in `.tag-nav__link`)
 - Responsive viewport rendering smoke check (`desktop/tablet/mobile-max(760)/mobile` screenshots across core + navigation routes incl. search results + docs detail routes)
 - Responsive layout overflow check (`desktop/tablet/mobile-max(760)/mobile`, core routes + docs detail routes with horizontal overflow fail; optional `_site` full-route mode)
-- Runtime nav consistency check (`desktop/tablet/mobile-max(760)/mobile`, GNB height/alignment/hover/active + route-specific active target mapping + toggle visibility/aria-label transitions, keyboard toggle Enter/Space, resize transition, toggle/Escape/outside-click close behavior, and page-wide `target="_blank"` rel safety)
+- Runtime nav consistency check (`desktop-min(961)/desktop/tablet/mobile-break(960)/mobile-max(760)/mobile`, GNB height/alignment/hover/active + route-specific active target mapping + toggle visibility/aria-label transitions, keyboard toggle Enter/Space, resize transition, toggle/Escape/outside-click close behavior, and page-wide `target="_blank"` rel safety)
 - Runtime console stability check (core routes console.error/pageerror/requestfailed 없는지 점검, GA/GTM 외부 차단 노이즈 제외)
 - Optional full-site runtime console stability check (`_site` 전체 라우트 대상)
 - Accessibility smoke check (`desktop`, skip-link first-focus visibility + Enter activation hash 이동 + `#main-content` 포커스 전달)
