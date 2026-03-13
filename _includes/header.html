@@ -19,7 +19,7 @@
             {% assign is_active = true %}
           {% elsif link.url == "/news/" and (page.url == "/news/" or page.url == "/archive/" or page.url == "/tags/" or page.url == "/search/" or page.collection == "posts") %}
             {% assign is_active = true %}
-          {% elsif link.url == "/docs/" and (page.url == "/docs/" or page.collection == "docs") %}
+          {% elsif link.url == "/docs/" and (page.url == "/docs/" or page.collection == "docs" or page.url contains "/docs/") %}
             {% assign is_active = true %}
           {% elsif link.url == "/about/" and page.url == "/about/" %}
             {% assign is_active = true %}
