@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="titleB descB">
+  <title id="titleB">netpple concept B</title>
+  <desc id="descB">Beacon monogram in a rounded square.</desc>
+  <defs>
+    <linearGradient id="cardGradient" x1="10%" y1="0%" x2="90%" y2="100%">
+      <stop offset="0%" stop-color="#1d5d99"/>
+      <stop offset="55%" stop-color="#2872af"/>
+      <stop offset="100%" stop-color="#3f9bcf"/>
+    </linearGradient>
+  </defs>
+  <rect x="8" y="8" width="112" height="112" rx="28" fill="url(#cardGradient)"/>
+  <path d="M34 92V36h16l38 42V36h16v56H88L50 50v42H34z" fill="#ffffff"/>
+  <circle cx="96" cy="32" r="7" fill="#a6ddff"/>
+</svg>

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="titleC descC">
+  <title id="titleC">netpple concept C</title>
+  <desc id="descC">Hexagon frame with wave pulse.</desc>
+  <defs>
+    <linearGradient id="hexGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f4f8a"/>
+      <stop offset="100%" stop-color="#47b0dc"/>
+    </linearGradient>
+  </defs>
+  <path d="M64 10L108 34V94L64 118L20 94V34L64 10z" fill="none" stroke="url(#hexGradient)" stroke-width="10" stroke-linejoin="round"/>
+  <path d="M28 68h16l8-18 13 34 10-24h25" fill="none" stroke="#154571" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="103" cy="60" r="6" fill="#53c2e6"/>
+</svg>

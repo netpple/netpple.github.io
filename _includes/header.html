@@ -1,12 +1,12 @@
 <header class="site-header">
   <div class="site-container site-header__inner">
     <a class="brand" href="{{ site.baseurl }}/" aria-label="{{ site.title }}">
-      <span class="brand__mark">NP</span>
+      <span class="brand__mark" aria-hidden="true">{% include logo.svg %}</span>
       <span class="brand__text">{{ site.title }}</span>
     </a>
 
     <button class="gnb__toggle" type="button" aria-expanded="false" aria-controls="site-navigation" aria-label="Open navigation menu" data-nav-toggle>
-      Menu
+      <span class="gnb__toggle-label">Menu</span>
     </button>
 
     <nav class="gnb" id="site-navigation" aria-label="Primary" aria-hidden="false" data-nav>
