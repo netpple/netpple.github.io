@@ -45,7 +45,7 @@ section_ids="$(
 chip_count="$(printf '%s\n' "${chip_targets}" | sed '/^$/d' | wc -l | tr -d ' ')"
 section_count="$(printf '%s\n' "${section_ids}" | sed '/^$/d' | wc -l | tr -d ' ')"
 recent_card_count="$(
-  (grep -o 'class="entry-card entry-card--doc"' "${clean_file}" || true) | wc -l | tr -d ' '
+  (grep -o 'class="entry-card entry-card--list"' "${clean_file}" || true) | wc -l | tr -d ' '
 )"
 recent_badge_count="$(
   (grep -o 'class="badge badge-secondary"' "${clean_file}" || true) | wc -l | tr -d ' '

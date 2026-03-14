@@ -420,11 +420,11 @@ img {
   color: var(--color-primary);
 }
 
-.entry-card--news {
+.entry-card--list {
   grid-column: span 12;
 }
 
-.entry-card--doc {
+.entry-card--full {
   grid-column: span 12;
 }
 
@@ -1087,8 +1087,7 @@ img {
 }
 
 @media (min-width: 980px) {
-  .entry-card--news,
-  .entry-card--doc {
+  .entry-card--list {
     grid-column: span 6;
   }
 
@@ -1096,7 +1095,7 @@ img {
     grid-column: span 6;
   }
 
-  .page-about .entry-card--news {
+  .page-about .entry-card--full {
     grid-column: span 12;
   }
 }

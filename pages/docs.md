@@ -37,7 +37,7 @@ description: 주제별 시리즈와 엔트리를 빠르게 탐색할 수 있는 
   </div>
   <div class="entry-grid">
     {% for post in series_entries limit: 8 %}
-      <article class="entry-card entry-card--doc">
+      <article class="entry-card entry-card--list">
         <div class="entry-card__meta">
           {% if post.label %}<span class="badge badge-secondary">{{ post.label | strip }}</span>{% endif %}
           {% if post.date %}<time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%Y.%m.%d" }}</time>{% endif %}

@@ -14,7 +14,7 @@ description: netpple 기술 블로그 포스트 목록
 
 <div class="entry-grid">
   {% for post in posts %}
-    <article class="entry-card entry-card--news">
+    <article class="entry-card entry-card--list">
       <div class="entry-card__meta">
         <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%Y.%m.%d" }}</time>
         {% if post.categories %}<span class="badge badge-secondary">{{ post.categories | join: ", " }}</span>{% endif %}
