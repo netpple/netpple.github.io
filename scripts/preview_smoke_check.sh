@@ -205,7 +205,7 @@ done
 echo "[smoke] checking key page redesign markers"
 assert_route_contains "/" 'home-hero|home-stats|home-track-grid' "home redesign markers"
 assert_route_contains "/news/" 'entry-card--news' "posts list card markers"
-assert_route_contains "/docs/" 'track-grid|entry-card--doc' "docs hub markers"
+assert_route_contains "/docs/" 'track-grid|entry-card--doc' "series hub markers"
 assert_route_contains "/about/" 'section-heading__kicker\">Interests|chip-row' "about redesign markers"
 assert_route_contains "/search/" 'search-panel|id=\"search-input\"' "search ui markers"
 assert_route_not_contains "/tags/" 'class="tag-nav__link" href="#"' "empty tag navigation links"
