@@ -59,4 +59,40 @@ if [[ -n "${missing_series_labels}" ]]; then
   exit 1
 fi
 
+landing_pages_with_labels="$(
+  ROOT_DIR="${ROOT_DIR}" ruby <<'RUBY'
+require "yaml"
+require "date"
+
+root = ENV.fetch("ROOT_DIR")
+invalid = []
+
+Dir[File.join(root, "_docs/**/index.md")].sort.each do |path|
+  content = File.read(path)
+  front_matter = content.match(/\A---\s*\r?\n(.*?)\r?\n---\s*\r?\n/m)
+  relative_path = path.delete_prefix("#{root}/")
+
+  unless front_matter
+    invalid << "#{relative_path} (missing front matter)"
+    next
+  end
+
+  data = YAML.safe_load(front_matter[1], permitted_classes: [Date, Time], aliases: true) || {}
+  label = data.is_a?(Hash) ? data["label"] : nil
+
+  next if label.nil? || label.to_s.strip.empty?
+
+  invalid << "#{relative_path} (label: #{label})"
+end
+
+puts invalid.join("\n")
+RUBY
+)"
+
+if [[ -n "${landing_pages_with_labels}" ]]; then
+  echo "[fail] series landing source files must not define entry labels"
+  printf '%s\n' "${landing_pages_with_labels}"
+  exit 1
+fi
+
 echo "[pass] source format check"
