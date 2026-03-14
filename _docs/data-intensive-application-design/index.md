@@ -35,7 +35,7 @@ rightpanel: true
 ### [{{ post.title }}]({{ post.url }})
 {% if post.badges %}{% for badge in post.badges %}<span class="badge badge-{{ badge.type }}">{{ badge.tag }}</span>{% endfor %}{% endif %} 
 {{ post. description }}
-<span class="post-date" style="font-style: italic; color: #999999">{{ post.date | date: "%m/%d %H:%m, %Y" }}</span>
+<span class="post-date" style="font-style: italic; color: #999999">{{ post.date | date: "%m/%d %H:%M, %Y" }}</span>
 
 
 {% endfor %}

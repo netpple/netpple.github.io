@@ -4,13 +4,13 @@ sitemap: false
 permalink: /search/
 not_editable: true
 excluded_in_search: true
-description: 문서/게시글 통합 검색
+description: 시리즈 엔트리/포스트 통합 검색
 ---
 
 <div class="section-heading">
   <p class="section-heading__kicker">Search</p>
   <h2 class="section-heading__title">사이트 통합 검색</h2>
-  <p class="section-heading__description">문서, 뉴스, 정적 페이지를 한 번에 검색합니다.</p>
+  <p class="section-heading__description">시리즈 엔트리, 포스트, 정적 페이지를 한 번에 검색합니다.</p>
 </div>
 
 <section class="search-panel">
@@ -65,5 +65,5 @@ description: 문서/게시글 통합 검색
 		{% endfor %}
 	};
 </script>
-<script src="{{ site.baseurl }}/assets/js/lunr.min.js"></script>
-<script src="{{ site.baseurl }}/assets/js/search.js"></script>
+<script defer src="{{ site.baseurl }}/assets/js/lunr.min.js"></script>
+<script defer src="{{ site.baseurl }}/assets/js/search.js"></script>

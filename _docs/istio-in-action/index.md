@@ -38,7 +38,7 @@ istio 를 통한 서비스 메시에 대한 이해와 활용에 초점을 두었
 
 <span class="badge badge-info">{{ post.version | default: "v1.0" }}</span>
 {% if post.badges %}{% for badge in post.badges %}<span class="badge badge-{{ badge.type }}">{{ badge.tag }}</span>{% endfor %}{% endif %}
-<span class="post-date" style="font-style: italic;">{{ post.date | date: "%m/%d %H:%m, %Y" }}</span>  
+<span class="post-date" style="font-style: italic;">{{ post.date | date: "%m/%d %H:%M, %Y" }}</span>
 <b>{{ post. description }}</b>  
 {{ post.content | split:'<!--more-->' | first }}
 {% endfor %}

@@ -11,13 +11,13 @@ histories:
   description: 최초 등록
 ---
 <div class="responsive-wrap">
-    <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vRxyVbKWw2H2yLOC-B6P2lOv808nVaqZZ76Xp7SlubL4wDP9i__wokfCXGtPfrh-R_q32886ViIcwpL/embed?start=false&loop=false&delayms=3000" frameborder="0" width="100%" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+    <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vRxyVbKWw2H2yLOC-B6P2lOv808nVaqZZ76Xp7SlubL4wDP9i__wokfCXGtPfrh-R_q32886ViIcwpL/embed?start=false&loop=false&delayms=3000" title="{{ page.title | escape }}" loading="lazy" frameborder="0" width="100%" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
 </div>
 
 [[슬라이드 보기]](https://docs.google.com/presentation/d/1DMb9h-4_aO2QtunEiowEiwb4HoSjGLdy5Ot-ChEB-nE/edit#){:target="_blank"}
 
 
-### references
+## References
 
 - [DELVE : https://github.com/go-delve/delve](https://github.com/go-delve/delve){:target="_blank"}
 - [Building Kubernetes : https://github.com/kubernetes/kubernetes/blob/release-1.19/build/README.md](https://github.com/kubernetes/kubernetes/blob/release-1.19/build/README.md){:target="_blank"}

@@ -11,12 +11,12 @@ histories:
   description: 최초 게시
 ---
 <div class="responsive-wrap">
-    <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vSesDmeRbVmGoXG8RaCE_RRNFaUybWiN30s-UawDds05usmkclFPt0UR7pbcWn1O1nwtDu26yoMwxOc/embed?start=false&loop=false&delayms=3000" frameborder="0" width="100%" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+    <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vSesDmeRbVmGoXG8RaCE_RRNFaUybWiN30s-UawDds05usmkclFPt0UR7pbcWn1O1nwtDu26yoMwxOc/embed?start=false&loop=false&delayms=3000" title="{{ page.title | escape }}" loading="lazy" frameborder="0" width="100%" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
 </div>
 
 [[슬라이드 보기]](https://docs.google.com/presentation/d/1ORyI8sj7RM1ziXhuInDoE_UTaQGYQ7pUwXVS-laVm1Y/edit#){:target="_blank"}
 
-### references
+## References
 - [Kubernetes Architecture - Controllers](https://kubernetes.io/docs/concepts/architecture/controller/){:target="_blank"}
 - [Programming Kubernetes by Michael Hausenblas, Stefan Schimanski](https://www.oreilly.com/library/view/programming-kubernetes/9781492047094/){:target="_blank"}
 - [Kubernetes - Beyond a Black Box](https://www.slideshare.net/harryzhang735/kubernetes-beyond-a-black-box-part-1){:target="_blank"}
