@@ -53,6 +53,66 @@ assert_route_layout() {
   rm -f "${html_file}"
 }
 
+assert_nav_not_contains() {
+  local route="$1"
+  local pattern="$2"
+  local description="$3"
+  local html_file
+  local nav_file
+
+  html_file="$(mktemp)"
+  nav_file="$(mktemp)"
+
+  curl -fsSL "${BASE_URL}${route}" > "${html_file}"
+  awk '
+    /<nav class="gnb"/ { in_nav=1 }
+    in_nav { print }
+    /<\/nav>/ {
+      if (in_nav) {
+        exit
+      }
+    }
+  ' "${html_file}" > "${nav_file}"
+
+  if grep -Eiq "${pattern}" "${nav_file}"; then
+    rm -f "${html_file}" "${nav_file}"
+    fail "${route} nav has ${description}"
+  fi
+
+  rm -f "${html_file}" "${nav_file}"
+  echo "[ok] ${route} nav has no ${description}"
+}
+
+assert_footer_contains() {
+  local route="$1"
+  local pattern="$2"
+  local description="$3"
+  local html_file
+  local footer_file
+
+  html_file="$(mktemp)"
+  footer_file="$(mktemp)"
+
+  curl -fsSL "${BASE_URL}${route}" > "${html_file}"
+  awk '
+    /<footer class="site-footer">/ { in_footer=1 }
+    in_footer { print }
+    /<\/footer>/ {
+      if (in_footer) {
+        exit
+      }
+    }
+  ' "${html_file}" > "${footer_file}"
+
+  if ! grep -Eiq "${pattern}" "${footer_file}"; then
+    rm -f "${html_file}" "${footer_file}"
+    fail "${route} footer is missing ${description}"
+  fi
+
+  rm -f "${html_file}" "${footer_file}"
+  echo "[ok] ${route} footer has ${description}"
+}
+
 assert_active_nav() {
   local route="$1"
   local expected="$2"
@@ -209,6 +269,18 @@ assert_route_contains "/docs/" 'track-grid|entry-card--doc' "series hub markers"
 assert_route_contains "/about/" 'section-heading__kicker\">Interests|chip-row' "about redesign markers"
 assert_route_contains "/search/" 'search-panel|id=\"search-input\"' "search ui markers"
 assert_route_not_contains "/tags/" 'class="tag-nav__link" href="#"' "empty tag navigation links"
+
+echo "[smoke] checking IA terminology markers"
+assert_route_contains "/" '>\s*Posts\s*<' "Posts IA label"
+assert_route_contains "/" '>\s*Series\s*<' "Series IA label"
+assert_route_not_contains "/" '>\s*News\s*<' "legacy News IA label"
+assert_route_not_contains "/" '>\s*Docs\s*<' "legacy Docs IA label"
+assert_nav_not_contains "/" '>\s*GitHub\s*<' "top-nav GitHub link"
+assert_footer_contains "/" '>\s*GitHub\s*<' "footer GitHub link"
+assert_route_contains "/news/" 'page-intro__title\">Posts<|<h1[^>]*>Posts</h1>' "Posts page title"
+assert_route_contains "/docs/" 'page-intro__title\">Series<|<h1[^>]*>Series</h1>' "Series page title"
+assert_route_contains "${sample_post}" 'article-header__eyebrow\">Post<' "Post detail eyebrow"
+assert_route_contains "${sample_doc_detail}" 'article-header__eyebrow\">Series entry<' "Series entry detail eyebrow"
 
 echo "[smoke] checking home-only stylesheet loading"
 home_html_file="$(mktemp)"
