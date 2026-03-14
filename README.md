@@ -13,16 +13,16 @@ native deployment on GitHub pages. The original [Apache License](https://github.
 
 ## Changes
 
-The site is intended for purely documentation, so while the front page banner
+The site is organized around long-form Series, so while the front page banner
 is useful for business or similar, this author (@vsoch) preferred to have
-the main site page go directly to the Documentation view. Posts
+the main site page go directly to the Series view. Posts
 are still provided via a feed.
 
 ## Usage
 
 ### 1. Get the code
 
-You can clone the repository right to where you want to host the docs:
+You can clone the repository right to where you want to host the site:
 
 ```bash
 git clone https://github.com/vsoch/docsy-jekyll.git docs
@@ -61,7 +61,7 @@ If you want to run docsy jekyll via a container for development (dev) or product
 
 #### Customization
 
-Note that the [docker-compose.yml](docker-compose.yml) file is using the [jekyll/jekyll:3.8](https://hub.docker.com/r/jekyll/jekyll/tags) image. If you want to make your build more reproducible, you can specify a particular version for jekyll (tag). Note that at the development time of writing this documentation, the latest was tag 4.0.0,
+Note that the [docker-compose.yml](docker-compose.yml) file is using the [jekyll/jekyll:3.8](https://hub.docker.com/r/jekyll/jekyll/tags) image. If you want to make your build more reproducible, you can specify a particular version for jekyll (tag). Note that at the development time of writing this guide, the latest was tag 4.0.0,
 and it [had a bug](https://github.com/fastai/fastpages/issues/267#issuecomment-620612896) that prevented the server from deploying.
 
 If you are deploying a container to production, you should remove the line to
