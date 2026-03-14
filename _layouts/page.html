@@ -5,9 +5,9 @@ layout: default
 {% if page.url == "/" %}
   {% assign is_home = true %}
 {% endif %}
-{% assign is_docs_detail = false %}
+{% assign is_series_page = false %}
 {% if page.collection == "docs" and page.url != "/docs/" %}
-  {% assign is_docs_detail = true %}
+  {% assign is_series_page = true %}
 {% endif %}
 {% assign page_url_leaf = page.url | split: "/" | last %}
 {% assign is_series_landing = false %}
@@ -15,7 +15,7 @@ layout: default
   {% assign is_series_landing = true %}
 {% endif %}
 
-{% if is_docs_detail %}
+{% if is_series_page %}
   <article class="article-shell">
     <header class="article-header">
       <p class="article-header__eyebrow">{% if is_series_landing %}Series{% else %}Series entry{% endif %}</p>
@@ -53,13 +53,13 @@ layout: default
         <p class="article-toc__title">Table of contents</p>
         <ul class="article-toc__list" data-toc-list></ul>
         {% if page.label %}
-          {% assign related_docs = site.docs | where: "label", page.label %}
-          {% if related_docs.size > 1 %}
+          {% assign related_series_entries = site.docs | where: "label", page.label %}
+          {% if related_series_entries.size > 1 %}
             <div class="article-series">
               <p class="article-series__title">{{ page.label | strip }} · Series</p>
               <ul class="article-series__list">
-                {% for doc in related_docs limit:8 %}
-                  <li><a href="{{ doc.url | prepend: site.baseurl }}">{{ doc.title }}</a></li>
+                {% for series_entry in related_series_entries limit:8 %}
+                  <li><a href="{{ series_entry.url | prepend: site.baseurl }}">{{ series_entry.title }}</a></li>
                 {% endfor %}
               </ul>
             </div>

@@ -5,27 +5,27 @@ permalink: /docs/
 description: 주제별 시리즈와 엔트리를 빠르게 탐색할 수 있는 허브
 ---
 
-{% assign sorted_docs = site.docs | sort: "date" | reverse %}
+{% assign all_series_pages = site.docs | sort: "date" | reverse %}
 {% assign series_groups = "series-istio|series-container|series-kubernetes|series-data|series-querypie" | split: "|" %}
-{% assign istio_docs = site.docs | where: "label", "istio in action" | sort: "date" | reverse %}
-{% assign docker_docs = site.docs | where: "label", "도커 없이 컨테이너 만들기" | sort: "date" | reverse %}
-{% assign kube_docs = site.docs | where: "label", "쿠버네티스 딥다이브" | sort: "date" | reverse %}
-{% assign ddd_docs = site.docs | where: "label", "데이터중심 애플리케이션" | sort: "date" | reverse %}
-{% assign querypie_docs = site.docs | where: "label", "쿼리파이 핸즈온" | sort: "date" | reverse %}
-{% assign series_entries = istio_docs | concat: docker_docs | concat: kube_docs | concat: ddd_docs | concat: querypie_docs | sort: "date" | reverse %}
+{% assign istio_series_entries = site.docs | where: "label", "istio in action" | sort: "date" | reverse %}
+{% assign container_series_entries = site.docs | where: "label", "도커 없이 컨테이너 만들기" | sort: "date" | reverse %}
+{% assign kubernetes_series_entries = site.docs | where: "label", "쿠버네티스 딥다이브" | sort: "date" | reverse %}
+{% assign data_series_entries = site.docs | where: "label", "데이터중심 애플리케이션" | sort: "date" | reverse %}
+{% assign querypie_series_entries = site.docs | where: "label", "쿼리파이 핸즈온" | sort: "date" | reverse %}
+{% assign series_entries = istio_series_entries | concat: container_series_entries | concat: kubernetes_series_entries | concat: data_series_entries | concat: querypie_series_entries | sort: "date" | reverse %}
 
 <section class="page-section">
   <div class="section-heading">
     <p class="section-heading__kicker">Series Navigation</p>
     <h2 class="section-heading__title">시리즈 빠른 이동</h2>
-    <p class="section-heading__description">총 {{ sorted_docs | size }}개 페이지를 {{ series_groups | size }}개 Series 묶음과 {{ series_entries | size }}개 Series entry 기준으로 빠르게 이동할 수 있도록 정리했습니다.</p>
+    <p class="section-heading__description">총 {{ all_series_pages | size }}개 페이지를 {{ series_groups | size }}개 Series 묶음과 {{ series_entries | size }}개 Series entry 기준으로 빠르게 이동할 수 있도록 정리했습니다.</p>
   </div>
   <div class="chip-row">
-    <a class="chip" href="#series-istio">Istio IN ACTION · {{ istio_docs | size }} entries</a>
-    <a class="chip" href="#series-container">도커 없이 컨테이너 만들기 · {{ docker_docs | size }} entries</a>
-    <a class="chip" href="#series-kubernetes">쿠버네티스 딥다이브 · {{ kube_docs | size }} entries</a>
-    <a class="chip" href="#series-data">데이터 중심 애플리케이션 설계 · {{ ddd_docs | size }} entries</a>
-    <a class="chip" href="#series-querypie">쿼리파이 핸즈온 · {{ querypie_docs | size }} entry</a>
+    <a class="chip" href="#series-istio">Istio IN ACTION · {{ istio_series_entries | size }} entries</a>
+    <a class="chip" href="#series-container">도커 없이 컨테이너 만들기 · {{ container_series_entries | size }} entries</a>
+    <a class="chip" href="#series-kubernetes">쿠버네티스 딥다이브 · {{ kubernetes_series_entries | size }} entries</a>
+    <a class="chip" href="#series-data">데이터 중심 애플리케이션 설계 · {{ data_series_entries | size }} entries</a>
+    <a class="chip" href="#series-querypie">쿼리파이 핸즈온 · {{ querypie_series_entries | size }} entry</a>
   </div>
 </section>
 
@@ -36,22 +36,22 @@ description: 주제별 시리즈와 엔트리를 빠르게 탐색할 수 있는 
     <p class="section-heading__description">최근 정리한 엔트리를 먼저 확인한 뒤 필요한 시리즈로 바로 이동할 수 있습니다.</p>
   </div>
   <div class="entry-grid">
-    {% for post in series_entries limit: 8 %}
+    {% for series_entry in series_entries limit: 8 %}
       <article class="entry-card entry-card--list">
         <div class="entry-card__meta">
-          {% if post.label %}<span class="badge badge-secondary">{{ post.label | strip }}</span>{% endif %}
-          {% if post.date %}<time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%Y.%m.%d" }}</time>{% endif %}
-          <span class="badge">{{ post.version | default: "v1.0" }}</span>
+          {% if series_entry.label %}<span class="badge badge-secondary">{{ series_entry.label | strip }}</span>{% endif %}
+          {% if series_entry.date %}<time datetime="{{ series_entry.date | date_to_xmlschema }}">{{ series_entry.date | date: "%Y.%m.%d" }}</time>{% endif %}
+          <span class="badge">{{ series_entry.version | default: "v1.0" }}</span>
         </div>
-        <h3 class="entry-card__title"><a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a></h3>
+        <h3 class="entry-card__title"><a href="{{ series_entry.url | prepend: site.baseurl }}">{{ series_entry.title }}</a></h3>
         <p class="entry-card__excerpt">
-          {% if post.description %}
-            {{ post.description | strip_html | strip_newlines | truncate: 170 }}
+          {% if series_entry.description %}
+            {{ series_entry.description | strip_html | strip_newlines | truncate: 170 }}
           {% else %}
-            {{ post.content | split: "<!--more-->" | first | strip_html | strip_newlines | truncate: 170 }}
+            {{ series_entry.content | split: "<!--more-->" | first | strip_html | strip_newlines | truncate: 170 }}
           {% endif %}
         </p>
-        <a class="entry-card__cta" href="{{ post.url | prepend: site.baseurl }}">엔트리 열기 →</a>
+        <a class="entry-card__cta" href="{{ series_entry.url | prepend: site.baseurl }}">엔트리 열기 →</a>
       </article>
     {% endfor %}
   </div>
@@ -64,81 +64,81 @@ description: 주제별 시리즈와 엔트리를 빠르게 탐색할 수 있는 
     <p class="section-heading__description">시리즈 랜딩과 개별 엔트리를 한 화면에서 탐색할 수 있도록 구조를 재정렬했습니다.</p>
   </div>
   <div class="series-grid">
-    {% assign latest = istio_docs | first %}
+    {% assign latest = istio_series_entries | first %}
     <article id="series-istio" class="series-card">
       <div class="series-card__foot">
-        <span>{{ istio_docs | size }} entries</span>
+        <span>{{ istio_series_entries | size }} entries</span>
         {% if latest %}<span>Latest: {{ latest.date | date: "%Y.%m.%d" }}</span>{% endif %}
       </div>
       <h3 class="series-card__title"><a href="{{ site.baseurl }}/docs/istio-in-action/">Istio IN ACTION</a></h3>
       <p class="series-card__description">서비스 메시 핵심 개념부터 보안, 트래픽 제어, 관측성, 트러블슈팅까지 단계적으로 따라갈 수 있는 시리즈입니다.</p>
       <ol class="entry-card__list">
-        {% for post in istio_docs %}
-          <li><a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>{% if post.date %} · {{ post.date | date: "%Y.%m.%d" }}{% endif %}</li>
+        {% for series_entry in istio_series_entries %}
+          <li><a href="{{ series_entry.url | prepend: site.baseurl }}">{{ series_entry.title }}</a>{% if series_entry.date %} · {{ series_entry.date | date: "%Y.%m.%d" }}{% endif %}</li>
         {% endfor %}
       </ol>
       <a class="entry-card__cta" href="{{ site.baseurl }}/docs/istio-in-action/">시리즈 시작점 보기 →</a>
     </article>
 
-    {% assign latest = docker_docs | first %}
+    {% assign latest = container_series_entries | first %}
     <article id="series-container" class="series-card">
       <div class="series-card__foot">
-        <span>{{ docker_docs | size }} entries</span>
+        <span>{{ container_series_entries | size }} entries</span>
         {% if latest %}<span>Latest: {{ latest.date | date: "%Y.%m.%d" }}</span>{% endif %}
       </div>
       <h3 class="series-card__title"><a href="{{ site.baseurl }}/docs/make-container-without-docker/">도커 없이 컨테이너 만들기</a></h3>
       <p class="series-card__description">네임스페이스, cgroup, 파일시스템, 네트워크를 실습 흐름에 맞춰 정리한 깊이 있는 컨테이너 시리즈입니다.</p>
       <ol class="entry-card__list">
-        {% for post in docker_docs %}
-          <li><a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>{% if post.date %} · {{ post.date | date: "%Y.%m.%d" }}{% endif %}</li>
+        {% for series_entry in container_series_entries %}
+          <li><a href="{{ series_entry.url | prepend: site.baseurl }}">{{ series_entry.title }}</a>{% if series_entry.date %} · {{ series_entry.date | date: "%Y.%m.%d" }}{% endif %}</li>
         {% endfor %}
       </ol>
       <a class="entry-card__cta" href="{{ site.baseurl }}/docs/make-container-without-docker/">시리즈 시작점 보기 →</a>
     </article>
 
-    {% assign latest = kube_docs | first %}
+    {% assign latest = kubernetes_series_entries | first %}
     <article id="series-kubernetes" class="series-card">
       <div class="series-card__foot">
-        <span>{{ kube_docs | size }} entries</span>
+        <span>{{ kubernetes_series_entries | size }} entries</span>
         {% if latest %}<span>Latest: {{ latest.date | date: "%Y.%m.%d" }}</span>{% endif %}
       </div>
       <h3 class="series-card__title"><a href="{{ site.baseurl }}/docs/deepdive-into-kubernetes/">쿠버네티스 딥다이브</a></h3>
       <p class="series-card__description">핵심 컴포넌트 동작 원리와 운영 디버깅 포인트를 빠르게 순회할 수 있도록 구성한 시리즈입니다.</p>
       <ol class="entry-card__list">
-        {% for post in kube_docs %}
-          <li><a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>{% if post.date %} · {{ post.date | date: "%Y.%m.%d" }}{% endif %}</li>
+        {% for series_entry in kubernetes_series_entries %}
+          <li><a href="{{ series_entry.url | prepend: site.baseurl }}">{{ series_entry.title }}</a>{% if series_entry.date %} · {{ series_entry.date | date: "%Y.%m.%d" }}{% endif %}</li>
         {% endfor %}
       </ol>
       <a class="entry-card__cta" href="{{ site.baseurl }}/docs/deepdive-into-kubernetes/">시리즈 시작점 보기 →</a>
     </article>
 
-    {% assign latest = ddd_docs | first %}
+    {% assign latest = data_series_entries | first %}
     <article id="series-data" class="series-card">
       <div class="series-card__foot">
-        <span>{{ ddd_docs | size }} entries</span>
+        <span>{{ data_series_entries | size }} entries</span>
         {% if latest %}<span>Latest: {{ latest.date | date: "%Y.%m.%d" }}</span>{% endif %}
       </div>
       <h3 class="series-card__title"><a href="{{ site.baseurl }}/docs/data-intensive-application-design/">데이터 중심 애플리케이션 설계</a></h3>
       <p class="series-card__description">복제, 파티셔닝, 트랜잭션, 분산 시스템 합의를 운영 관점으로 연결해 읽을 수 있는 학습 시리즈입니다.</p>
       <ol class="entry-card__list">
-        {% for post in ddd_docs %}
-          <li><a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>{% if post.date %} · {{ post.date | date: "%Y.%m.%d" }}{% endif %}</li>
+        {% for series_entry in data_series_entries %}
+          <li><a href="{{ series_entry.url | prepend: site.baseurl }}">{{ series_entry.title }}</a>{% if series_entry.date %} · {{ series_entry.date | date: "%Y.%m.%d" }}{% endif %}</li>
         {% endfor %}
       </ol>
       <a class="entry-card__cta" href="{{ site.baseurl }}/docs/data-intensive-application-design/">시리즈 시작점 보기 →</a>
     </article>
 
-    {% assign latest = querypie_docs | first %}
+    {% assign latest = querypie_series_entries | first %}
     <article id="series-querypie" class="series-card">
       <div class="series-card__foot">
-        <span>{{ querypie_docs | size }} entry</span>
+        <span>{{ querypie_series_entries | size }} entry</span>
         {% if latest %}<span>Latest: {{ latest.date | date: "%Y.%m.%d" }}</span>{% endif %}
       </div>
       <h3 class="series-card__title"><a href="{{ site.baseurl }}/docs/querypie-handson/multiple-kubernetes-with-querypie-kac/">쿼리파이 핸즈온</a></h3>
       <p class="series-card__description">여러 Kubernetes 클러스터를 QueryPie KAC로 연결하는 실습형 엔트리를 별도 시리즈로 분리해 탐색성을 높였습니다.</p>
       <ol class="entry-card__list">
-        {% for post in querypie_docs %}
-          <li><a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>{% if post.date %} · {{ post.date | date: "%Y.%m.%d" }}{% endif %}</li>
+        {% for series_entry in querypie_series_entries %}
+          <li><a href="{{ series_entry.url | prepend: site.baseurl }}">{{ series_entry.title }}</a>{% if series_entry.date %} · {{ series_entry.date | date: "%Y.%m.%d" }}{% endif %}</li>
         {% endfor %}
       </ol>
       <a class="entry-card__cta" href="{{ site.baseurl }}/docs/querypie-handson/multiple-kubernetes-with-querypie-kac/">엔트리 바로 보기 →</a>

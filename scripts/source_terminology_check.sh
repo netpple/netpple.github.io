@@ -25,7 +25,7 @@ if [[ -n "${matches}" ]]; then
 fi
 
 internal_matches="$(
-  rg -n 'page-news|page-docs|page-doc-detail|home-news-grid' "${targets[@]}" || true
+  rg -n '\b(is_docs_detail|related_docs|sorted_docs|istio_docs|docker_docs|kube_docs|ddd_docs|querypie_docs|sample_doc|sample_doc_detail|sample_doc_hands_on)\b|page-news|page-docs|page-doc-detail|home-news-grid' "${targets[@]}" || true
 )"
 
 if [[ -n "${internal_matches}" ]]; then
