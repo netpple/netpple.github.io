@@ -50,8 +50,8 @@ recent_card_count="$(
 recent_badge_count="$(
   (grep -o 'class="badge badge-secondary"' "${clean_file}" || true) | wc -l | tr -d ' '
 )"
-track_card_count="$(
-  (grep -o 'class="track-card"' "${clean_file}" || true) | wc -l | tr -d ' '
+series_card_count="$(
+  (grep -o 'class="series-card"' "${clean_file}" || true) | wc -l | tr -d ' '
 )"
 
 if [[ "${chip_count}" != "5" ]]; then
@@ -78,9 +78,9 @@ if [[ "${recent_badge_count}" != "${recent_card_count}" ]]; then
   exit 1
 fi
 
-if [[ "${track_card_count}" != "5" ]]; then
+if [[ "${series_card_count}" != "5" ]]; then
   rm -f "${clean_file}"
-  echo "[fail] series hub expected 5 track cards but got ${track_card_count}"
+  echo "[fail] series hub expected 5 series cards but got ${series_card_count}"
   exit 1
 fi
 

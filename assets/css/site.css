@@ -428,13 +428,13 @@ img {
   grid-column: span 12;
 }
 
-.track-grid {
+.series-grid {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   gap: var(--space-4);
 }
 
-.track-card {
+.series-card {
   grid-column: span 12;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
@@ -443,17 +443,17 @@ img {
   box-shadow: var(--shadow-sm);
 }
 
-.track-card__title {
+.series-card__title {
   margin: 0;
   font-size: 1.15rem;
 }
 
-.track-card__description {
+.series-card__description {
   margin: var(--space-3) 0;
   color: var(--color-text-muted);
 }
 
-.track-card__foot {
+.series-card__foot {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
@@ -1091,7 +1091,7 @@ img {
     grid-column: span 6;
   }
 
-  .page-docs .track-card {
+  .page-docs .series-card {
     grid-column: span 6;
   }
 
@@ -1213,7 +1213,7 @@ img {
   }
 
   .entry-card,
-  .track-card {
+  .series-card {
     padding: var(--space-4);
   }
 

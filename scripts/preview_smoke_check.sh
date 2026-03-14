@@ -325,9 +325,9 @@ for route in "${routes[@]}"; do
 done
 
 echo "[smoke] checking key page redesign markers"
-assert_route_contains "/" 'home-hero|home-stats|home-track-grid' "home redesign markers"
+assert_route_contains "/" 'home-hero|home-stats|home-series-grid' "home redesign markers"
 assert_route_contains "/news/" 'entry-card--list' "posts list card markers"
-assert_route_contains "/docs/" 'track-grid|entry-card--list' "series hub markers"
+assert_route_contains "/docs/" 'series-grid|entry-card--list' "series hub markers"
 assert_route_contains "/docs/" 'Series Navigation' "series navigation heading"
 assert_route_contains "/docs/" 'Recently Updated' "series recent updates heading"
 assert_route_contains "/docs/" 'Series Index' "series index heading"
