@@ -282,7 +282,16 @@ layout: null
 
       presetButtons.forEach(function (button) {
         var presetValue = normalizeText(button.getAttribute("data-series-explorer-preset"));
-        var isActive = normalizedQuery === presetValue || (!normalizedQuery && !presetValue);
+        var presetAliases = normalizeText(button.getAttribute("data-series-explorer-preset-aliases"))
+          .split("|")
+          .map(function (alias) {
+            return alias.trim();
+          })
+          .filter(Boolean);
+        var isActive =
+          normalizedQuery === presetValue ||
+          presetAliases.indexOf(normalizedQuery) !== -1 ||
+          (!normalizedQuery && !presetValue);
 
         button.classList.toggle("is-active", isActive);
         button.setAttribute("aria-pressed", isActive ? "true" : "false");

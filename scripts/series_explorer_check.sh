@@ -149,6 +149,13 @@ async function expectSorted(page, sortValue) {
     assert(state.visibleItems.length === state.totalCount, 'expected All preset to restore the full Series Explorer list');
     console.log('[ok] all preset reset');
 
+    await page.fill('[data-series-explorer-filter]', 'istio in action');
+    await page.waitForTimeout(150);
+    state = await readExplorerState(page);
+    assert(state.visibleItems.length === 18, `expected Istio alias query to show 18 items but got ${state.visibleItems.length}`);
+    assert(state.activePreset.includes('Istio IN ACTION'), 'expected Istio preset button to stay active for the typed alias');
+    console.log('[ok] Istio alias query');
+
     await page.fill('[data-series-explorer-filter]', '쿼리파이');
     await page.waitForTimeout(150);
     state = await readExplorerState(page);
