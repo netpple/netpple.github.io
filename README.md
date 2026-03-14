@@ -171,18 +171,18 @@ Smoke checks cover:
 - Homepage content marker
 - Core routes HTTP 200 status
 - Search route variants (`/search/?q=kubernetes`, `/search/?q=%28`, empty query)
-- Key page redesign markers (Home/News/Docs/About/Search)
+- Key page redesign markers (Home/Posts/Series/About/Search)
 - Tags page empty tag navigation guard (no `href="#"` in `.tag-nav__link`)
-- Responsive viewport rendering smoke check (`desktop-min(961)/desktop/tablet/tablet-min(761)/mobile-break(960)/mobile-max(760)/mobile` screenshots across core + navigation routes incl. search results + docs detail routes)
-- Responsive layout overflow check (`desktop-min(961)/desktop/tablet/tablet-min(761)/mobile-break(960)/mobile-max(760)/mobile`, core routes + docs detail routes with horizontal overflow fail; optional `_site` full-route mode)
+- Responsive viewport rendering smoke check (`desktop-min(961)/desktop/tablet/tablet-min(761)/mobile-break(960)/mobile-max(760)/mobile` screenshots across core + navigation routes incl. search results + series entry detail routes)
+- Responsive layout overflow check (`desktop-min(961)/desktop/tablet/tablet-min(761)/mobile-break(960)/mobile-max(760)/mobile`, core routes + series entry detail routes with horizontal overflow fail; optional `_site` full-route mode)
 - Runtime nav consistency check (`desktop-min(961)/desktop/tablet/mobile-break(960)/tablet-min(761)/mobile-max(760)/mobile`, GNB height/alignment/hover/active + route-specific active target mapping + toggle visibility/aria-label transitions, keyboard toggle Enter/Space, resize transition, toggle/Escape/outside-click close behavior, and page-wide `target="_blank"` rel safety)
 - Runtime console stability check (core routes console.error/pageerror/requestfailed 없는지 점검, GA/GTM 외부 차단 노이즈 제외)
 - Optional full-site runtime console stability check (`_site` 전체 라우트 대상)
 - Accessibility smoke check (`desktop`, skip-link first-focus visibility + Enter activation hash 이동 + `#main-content` 포커스 전달)
 - Home-only stylesheet loading (`home.css` on `/`, absent on non-home routes)
-- Post/Doc detail template markers
-- Navigation active mapping (`/archive/` -> `News`)
-- Key internal navigation route reachability (Home/News/Docs 대표 링크)
+- Post/Series entry detail template markers
+- Navigation active mapping (`/archive/` -> `Posts`)
+- Key internal navigation route reachability (Home/Posts/Series 대표 링크)
 - Site-wide internal link check from generated `_site` (`href/src`, redirects disallowed by default)
 - Site-wide structure consistency check (`skip-link`, nav toggle/nav ARIA markers, header/main/footer, `#main-content` tabindex, no `autofocus`, single h1, single active nav + `aria-current`, header/footer external blank-target rel safety, home.css scope per HTML page)
 - Source-level style scope check (home-only `home-*` class usage restricted to `pages/index.md`)

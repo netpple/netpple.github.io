@@ -108,5 +108,5 @@ preview-info:
 	@echo "Visual checkpoints:"
 	@echo "  1) Hero typography/spacing + CTA alignment"
 	@echo "  2) GNB alignment, hover/active, mobile toggle-close"
-	@echo "  3) News/Docs card rhythm + footer spacing"
-	@echo "  4) Post/Doc detail TOC + code/table/image readability"
+	@echo "  3) Posts/Series card rhythm + footer spacing"
+	@echo "  4) Post/Series entry detail TOC + code/table/image readability"
