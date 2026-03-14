@@ -294,6 +294,28 @@ assert_route_pattern_count() {
   echo "[ok] ${route} ${description} -> ${actual}"
 }
 
+assert_route_pattern_min_count() {
+  local route="$1"
+  local pattern="$2"
+  local minimum="$3"
+  local description="$4"
+  local html_file
+  local actual
+
+  html_file="$(mktemp)"
+  curl -fsSL "${BASE_URL}${route}" > "${html_file}"
+  actual="$(
+    (grep -Eo "${pattern}" "${html_file}" || true) | wc -l | tr -d ' '
+  )"
+  rm -f "${html_file}"
+
+  if [[ "${actual}" -lt "${minimum}" ]]; then
+    fail "${route} expected at least ${minimum} ${description} but got ${actual}"
+  fi
+
+  echo "[ok] ${route} ${description} -> ${actual}"
+}
+
 echo "[smoke] base url: ${BASE_URL}"
 
 echo "[smoke] checking homepage content marker"
@@ -329,12 +351,16 @@ assert_route_contains "/" 'home-hero|home-stats|home-series-grid' "home redesign
 assert_route_contains "/news/" 'entry-card--list' "posts list card markers"
 assert_route_contains "/docs/" 'series-grid|entry-card--list' "series hub markers"
 assert_route_contains "/docs/" 'Series Navigation' "series navigation heading"
+assert_route_contains "/docs/" 'Series Explorer' "series explorer heading"
 assert_route_contains "/docs/" 'Recently Updated' "series recent updates heading"
 assert_route_contains "/docs/" 'Series Index' "series index heading"
 assert_route_contains "/docs/" 'href="/search/"' "series hub search shortcut"
+assert_route_contains "/docs/" 'data-series-explorer-filter|id="series-entry-filter"' "series explorer filter control"
+assert_route_contains "/docs/" 'data-series-explorer-sort|id="series-entry-sort"' "series explorer sort control"
 assert_route_pattern_count "/docs/" 'class="chip" href="#series-[^"]+"' "5" "series quick-jump chips"
 assert_route_pattern_count "/docs/" 'id="series-(istio|container|kubernetes|data|querypie)"' "5" "series index sections"
 assert_route_pattern_count "/docs/" 'class="entry-card entry-card--list"' "8" "recent series entry cards"
+assert_route_pattern_min_count "/docs/" 'data-series-explorer-item' "20" "series explorer items"
 assert_route_contains "/about/" 'section-heading__kicker\">Interests|chip-row' "about redesign markers"
 assert_route_contains "/search/" 'search-panel|id=\"search-input\"' "search ui markers"
 assert_route_not_contains "/tags/" 'class="tag-nav__link" href="#"' "empty tag navigation links"

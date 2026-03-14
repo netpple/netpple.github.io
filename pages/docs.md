@@ -36,6 +36,56 @@ description: 주제별 시리즈와 엔트리를 빠르게 탐색할 수 있는 
 
 <section class="page-section">
   <div class="section-heading">
+    <p class="section-heading__kicker">Series Explorer</p>
+    <h2 class="section-heading__title">전체 Series entry 탐색</h2>
+    <p class="section-heading__description">제목, 시리즈명, 설명 기준으로 필터링하고 최신 업데이트, 제목, 시리즈명 순으로 정렬할 수 있습니다.</p>
+  </div>
+  <div class="series-explorer" data-series-explorer>
+    <div class="series-explorer__controls">
+      <label class="series-explorer__control" for="series-entry-filter">
+        <span class="series-explorer__label">Filter</span>
+        <input id="series-entry-filter" class="search-input series-explorer__input" type="search" placeholder="Series entry 제목, 시리즈명, 설명 검색" autocomplete="off" data-series-explorer-filter>
+      </label>
+      <label class="series-explorer__control series-explorer__control--select" for="series-entry-sort">
+        <span class="series-explorer__label">Sort</span>
+        <select id="series-entry-sort" class="series-explorer__select" data-series-explorer-sort>
+          <option value="latest">최신 업데이트 순</option>
+          <option value="title">제목순</option>
+          <option value="series">시리즈명순</option>
+        </select>
+      </label>
+    </div>
+    <p class="series-explorer__status" role="status" aria-live="polite" data-series-explorer-status>총 {{ series_entries | size }}개 Series entry</p>
+    <div class="series-explorer__list" data-series-explorer-list>
+      {% for series_entry in series_entries %}
+        {% assign series_entry_summary = series_entry.description | default: "" | strip %}
+        {% if series_entry_summary == "" %}
+          {% assign series_entry_summary = series_entry.content | split: "<!--more-->" | first | strip_html | strip_newlines | strip %}
+        {% endif %}
+        <article
+          class="series-explorer__item"
+          data-series-explorer-item
+          data-series-entry-title="{{ series_entry.title | strip | escape }}"
+          data-series-entry-series="{{ series_entry.label | default: '' | strip | escape }}"
+          data-series-entry-date="{{ series_entry.date | date: '%s' }}"
+          data-series-entry-search="{{ series_entry.title | append: ' ' | append: series_entry.label | append: ' ' | append: series_entry_summary | strip_html | strip_newlines | strip | escape }}"
+        >
+          <div class="series-explorer__item-meta">
+            {% if series_entry.label %}<span class="badge badge-secondary">{{ series_entry.label | strip }}</span>{% endif %}
+            {% if series_entry.date %}<time datetime="{{ series_entry.date | date_to_xmlschema }}">{{ series_entry.date | date: "%Y.%m.%d" }}</time>{% endif %}
+            <span class="badge">{{ series_entry.version | default: "v1.0" }}</span>
+          </div>
+          <h3 class="series-explorer__item-title"><a href="{{ series_entry.url | prepend: site.baseurl }}">{{ series_entry.title }}</a></h3>
+          <p class="series-explorer__item-summary">{{ series_entry_summary | truncate: 140 }}</p>
+        </article>
+      {% endfor %}
+    </div>
+    <p class="series-explorer__empty" hidden data-series-explorer-empty>조건에 맞는 Series entry가 없습니다. 검색어를 줄이거나 정렬 기준을 바꿔보세요.</p>
+  </div>
+</section>
+
+<section class="page-section">
+  <div class="section-heading">
     <p class="section-heading__kicker">Recently Updated</p>
     <h2 class="section-heading__title">최근 업데이트된 시리즈 엔트리</h2>
     <p class="section-heading__description">최근 정리한 엔트리를 먼저 확인한 뒤 필요한 시리즈로 바로 이동할 수 있습니다.</p>

@@ -17,7 +17,7 @@ fi
 clean_file="$(mktemp)"
 perl -0777 -pe 's{<script\b[^>]*>.*?</script>}{}gsi' "${HUB_FILE}" > "${clean_file}"
 
-for heading in "Series Navigation" "Recently Updated" "Series Index"; do
+for heading in "Series Navigation" "Series Explorer" "Recently Updated" "Series Index"; do
   if ! grep -Fq "${heading}" "${clean_file}"; then
     rm -f "${clean_file}"
     echo "[fail] series hub is missing heading: ${heading}"
@@ -31,13 +31,25 @@ if ! grep -Eq 'href="/search/"' "${clean_file}"; then
   exit 1
 fi
 
+if ! grep -Eq 'data-series-explorer-filter|id="series-entry-filter"' "${clean_file}"; then
+  rm -f "${clean_file}"
+  echo "[fail] series hub is missing the Series Explorer filter control"
+  exit 1
+fi
+
+if ! grep -Eq 'data-series-explorer-sort|id="series-entry-sort"' "${clean_file}"; then
+  rm -f "${clean_file}"
+  echo "[fail] series hub is missing the Series Explorer sort control"
+  exit 1
+fi
+
 chip_targets="$(
-  (grep -Eo 'href="#series-[^"]+"' "${clean_file}" || true) \
+  (grep -Eo 'href="#series-(istio|container|kubernetes|data|querypie)"' "${clean_file}" || true) \
     | sed -E 's/^href="#|"$//g' \
     | sort -u
 )"
 section_ids="$(
-  (grep -Eo 'id="series-[^"]+"' "${clean_file}" || true) \
+  (grep -Eo 'id="series-(istio|container|kubernetes|data|querypie)"' "${clean_file}" || true) \
     | sed -E 's/^id="|"$//g' \
     | sort -u
 )"
@@ -47,8 +59,8 @@ section_count="$(printf '%s\n' "${section_ids}" | sed '/^$/d' | wc -l | tr -d ' 
 recent_card_count="$(
   (grep -o 'class="entry-card entry-card--list"' "${clean_file}" || true) | wc -l | tr -d ' '
 )"
-recent_badge_count="$(
-  (grep -o 'class="badge badge-secondary"' "${clean_file}" || true) | wc -l | tr -d ' '
+series_explorer_item_count="$(
+  (grep -o 'data-series-explorer-item' "${clean_file}" || true) | wc -l | tr -d ' '
 )"
 series_card_count="$(
   (grep -o 'class="series-card"' "${clean_file}" || true) | wc -l | tr -d ' '
@@ -72,9 +84,9 @@ if [[ "${recent_card_count}" != "8" ]]; then
   exit 1
 fi
 
-if [[ "${recent_badge_count}" != "${recent_card_count}" ]]; then
+if [[ "${series_explorer_item_count}" -lt "20" ]]; then
   rm -f "${clean_file}"
-  echo "[fail] series hub recent cards expected ${recent_card_count} series labels but got ${recent_badge_count}"
+  echo "[fail] series hub expected at least 20 Series Explorer items but got ${series_explorer_item_count}"
   exit 1
 fi
 
