@@ -13,6 +13,11 @@ description: 주제별 시리즈와 엔트리를 빠르게 탐색할 수 있는 
 {% assign data_series_entries = site.docs | where: "label", "데이터중심 애플리케이션" | sort: "date" | reverse %}
 {% assign querypie_series_entries = site.docs | where: "label", "쿼리파이 핸즈온" | sort: "date" | reverse %}
 {% assign series_entries = istio_series_entries | concat: container_series_entries | concat: kubernetes_series_entries | concat: data_series_entries | concat: querypie_series_entries | sort: "date" | reverse %}
+{% assign querypie_entry_count = querypie_series_entries | size %}
+{% assign querypie_entry_label = "entries" %}
+{% if querypie_entry_count == 1 %}
+  {% assign querypie_entry_label = "entry" %}
+{% endif %}
 
 <section class="page-section">
   <div class="section-heading">
@@ -25,7 +30,7 @@ description: 주제별 시리즈와 엔트리를 빠르게 탐색할 수 있는 
     <a class="chip" href="#series-container">도커 없이 컨테이너 만들기 · {{ container_series_entries | size }} entries</a>
     <a class="chip" href="#series-kubernetes">쿠버네티스 딥다이브 · {{ kubernetes_series_entries | size }} entries</a>
     <a class="chip" href="#series-data">데이터 중심 애플리케이션 설계 · {{ data_series_entries | size }} entries</a>
-    <a class="chip" href="#series-querypie">쿼리파이 핸즈온 · {{ querypie_series_entries | size }} entry</a>
+    <a class="chip" href="#series-querypie">쿼리파이 핸즈온 · {{ querypie_entry_count }} {{ querypie_entry_label }}</a>
   </div>
 </section>
 
@@ -131,7 +136,7 @@ description: 주제별 시리즈와 엔트리를 빠르게 탐색할 수 있는 
     {% assign latest = querypie_series_entries | first %}
     <article id="series-querypie" class="series-card">
       <div class="series-card__foot">
-        <span>{{ querypie_series_entries | size }} entry</span>
+        <span>{{ querypie_entry_count }} {{ querypie_entry_label }}</span>
         {% if latest %}<span>Latest: {{ latest.date | date: "%Y.%m.%d" }}</span>{% endif %}
       </div>
       <h3 class="series-card__title"><a href="{{ site.baseurl }}/docs/querypie-handson/multiple-kubernetes-with-querypie-kac/">쿼리파이 핸즈온</a></h3>
