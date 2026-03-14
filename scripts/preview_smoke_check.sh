@@ -232,6 +232,28 @@ assert_route_not_contains() {
   echo "[ok] ${route} no ${description}"
 }
 
+assert_route_pattern_count() {
+  local route="$1"
+  local pattern="$2"
+  local expected="$3"
+  local description="$4"
+  local html_file
+  local actual
+
+  html_file="$(mktemp)"
+  curl -fsSL "${BASE_URL}${route}" > "${html_file}"
+  actual="$(
+    (grep -Eo "${pattern}" "${html_file}" || true) | wc -l | tr -d ' '
+  )"
+  rm -f "${html_file}"
+
+  if [[ "${actual}" != "${expected}" ]]; then
+    fail "${route} expected ${expected} ${description} but got ${actual}"
+  fi
+
+  echo "[ok] ${route} ${description} -> ${actual}"
+}
+
 echo "[smoke] base url: ${BASE_URL}"
 
 echo "[smoke] checking homepage content marker"
@@ -266,6 +288,13 @@ echo "[smoke] checking key page redesign markers"
 assert_route_contains "/" 'home-hero|home-stats|home-track-grid' "home redesign markers"
 assert_route_contains "/news/" 'entry-card--news' "posts list card markers"
 assert_route_contains "/docs/" 'track-grid|entry-card--doc' "series hub markers"
+assert_route_contains "/docs/" 'Series Navigation' "series navigation heading"
+assert_route_contains "/docs/" 'Recently Updated' "series recent updates heading"
+assert_route_contains "/docs/" 'Series Index' "series index heading"
+assert_route_contains "/docs/" 'href="/search/"' "series hub search shortcut"
+assert_route_pattern_count "/docs/" 'class="chip" href="#series-[^"]+"' "5" "series quick-jump chips"
+assert_route_pattern_count "/docs/" 'id="series-(istio|container|kubernetes|data|querypie)"' "5" "series index sections"
+assert_route_pattern_count "/docs/" 'class="entry-card entry-card--doc"' "8" "recent series entry cards"
 assert_route_contains "/about/" 'section-heading__kicker\">Interests|chip-row' "about redesign markers"
 assert_route_contains "/search/" 'search-panel|id=\"search-input\"' "search ui markers"
 assert_route_not_contains "/tags/" 'class="tag-nav__link" href="#"' "empty tag navigation links"
