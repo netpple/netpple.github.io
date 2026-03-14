@@ -21,4 +21,42 @@ if [[ -n "${matches}" ]]; then
   exit 1
 fi
 
+missing_series_labels="$(
+  ROOT_DIR="${ROOT_DIR}" ruby <<'RUBY'
+require "yaml"
+require "date"
+
+root = ENV.fetch("ROOT_DIR")
+missing = []
+
+Dir[File.join(root, "_docs/**/*.md")].sort.each do |path|
+  next if File.basename(path) == "index.md"
+
+  content = File.read(path)
+  front_matter = content.match(/\A---\s*\r?\n(.*?)\r?\n---\s*\r?\n/m)
+  relative_path = path.delete_prefix("#{root}/")
+
+  unless front_matter
+    missing << "#{relative_path} (missing front matter)"
+    next
+  end
+
+  data = YAML.safe_load(front_matter[1], permitted_classes: [Date, Time], aliases: true) || {}
+  label = data.is_a?(Hash) ? data["label"] : nil
+
+  if label.nil? || label.to_s.strip.empty?
+    missing << relative_path
+  end
+end
+
+puts missing.join("\n")
+RUBY
+)"
+
+if [[ -n "${missing_series_labels}" ]]; then
+  echo "[fail] unlabeled series entry source files remain"
+  printf '%s\n' "${missing_series_labels}"
+  exit 1
+fi
+
 echo "[pass] source format check"
