@@ -156,6 +156,20 @@ async function expectSorted(page, sortValue) {
     assert(state.activePreset.includes('Istio IN ACTION'), 'expected Istio preset button to stay active for the typed alias');
     console.log('[ok] Istio alias query');
 
+    await page.fill('[data-series-explorer-filter]', '데이터중심 애플리케이션');
+    await page.waitForTimeout(150);
+    state = await readExplorerState(page);
+    assert(state.visibleItems.length === 5, `expected data alias query to show 5 items but got ${state.visibleItems.length}`);
+    assert(
+      state.visibleItems.every((item) => item.series.includes('데이터중심 애플리케이션')),
+      'expected data alias query to keep only the data-intensive application design series items'
+    );
+    assert(
+      state.activePreset.includes('데이터 중심 애플리케이션 설계'),
+      'expected data preset button to stay active for the typed legacy alias'
+    );
+    console.log('[ok] data alias query');
+
     await page.fill('[data-series-explorer-filter]', '쿼리파이');
     await page.waitForTimeout(150);
     state = await readExplorerState(page);
