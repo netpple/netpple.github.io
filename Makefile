@@ -12,12 +12,13 @@ preview-up:
 		echo "starting existing $(PREVIEW_NAME) container"; \
 		docker start $(PREVIEW_NAME) >/dev/null; \
 	else \
-		docker run -d --name $(PREVIEW_NAME) -p $(PREVIEW_PORT):4000 -v "$$PWD":/srv/jekyll $(PREVIEW_IMAGE) jekyll serve --host 0.0.0.0 --port 4000 --watch >/dev/null; \
+		mkdir -p "$$PWD/vendor/bundle"; \
+		docker run -d --name $(PREVIEW_NAME) -p $(PREVIEW_PORT):4000 -v "$$PWD":/srv/jekyll -v "$$PWD/vendor/bundle":/usr/local/bundle $(PREVIEW_IMAGE) sh -lc 'bundle install && bundle exec jekyll serve --host 0.0.0.0 --port 4000 --watch' >/dev/null; \
 		echo "started $(PREVIEW_NAME) on $(PREVIEW_URL)"; \
 	fi
 
 preview-build:
-	docker exec $(PREVIEW_NAME) jekyll build
+	docker exec $(PREVIEW_NAME) sh -lc 'bundle exec jekyll build'
 
 preview-smoke:
 	scripts/preview_smoke_check.sh $(PREVIEW_URL)

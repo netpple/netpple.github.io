@@ -103,6 +103,7 @@ For local validation of this project revision, run the preview server and smoke 
 
 ```bash
 # 1) Start/reuse preview server
+# (uses ./vendor/bundle cache mount inside Docker)
 make preview-up
 
 # 2) Build + smoke checks
