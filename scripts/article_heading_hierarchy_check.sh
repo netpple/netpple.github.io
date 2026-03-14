@@ -18,7 +18,7 @@ while IFS= read -r html_file; do
 
   perl -0777 -pe 's{<script\b[^>]*>.*?</script>}{}gsi' "${html_file}" > "${clean_file}"
 
-  if ! grep -Eq '<p class="article-header__eyebrow">(Post|Series entry)</p>' "${clean_file}"; then
+  if ! grep -Eq '<p class="article-header__eyebrow">(Post|Series|Series entry)</p>' "${clean_file}"; then
     rm -f "${clean_file}" "${section_file}"
     continue
   fi

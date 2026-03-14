@@ -9,12 +9,17 @@ layout: default
 {% if page.collection == "docs" and page.url != "/docs/" %}
   {% assign is_docs_detail = true %}
 {% endif %}
+{% assign page_url_leaf = page.url | split: "/" | last %}
+{% assign is_series_landing = false %}
+{% if page.collection == "docs" and page.url != "/docs/" and page_url_leaf == "index" %}
+  {% assign is_series_landing = true %}
+{% endif %}
 
 {% if is_docs_detail %}
   <article class="article-shell">
     <header class="article-header">
-      <p class="article-header__eyebrow">Series entry</p>
-      <h1 class="article-header__title article-header__title--compact">{{ page.title }}</h1>
+      <p class="article-header__eyebrow">{% if is_series_landing %}Series{% else %}Series entry{% endif %}</p>
+      <h1 class="article-header__title{% unless is_series_landing %} article-header__title--compact{% endunless %}">{{ page.title }}</h1>
       {% if page.description %}<p class="article-header__description">{{ page.description }}</p>{% endif %}
       <div class="article-meta">
         <a class="entry-card__cta" href="{{ site.baseurl }}/docs/">Series Hub</a>

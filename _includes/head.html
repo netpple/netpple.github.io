@@ -7,6 +7,15 @@
 
 {% assign page_title = page.title | default: site.title %}
 {% assign page_description = page.description | default: site.description %}
+{% assign page_url_leaf = page.url | split: "/" | last %}
+{% assign normalized_page_url = page.url %}
+{% if normalized_page_url != "/" and page_url_leaf == "index" %}
+  {% assign normalized_page_url = normalized_page_url | replace: "/index", "/" %}
+{% endif %}
+{% assign is_series_landing = false %}
+{% if page.collection == "docs" and page.url != "/docs/" and page_url_leaf == "index" %}
+  {% assign is_series_landing = true %}
+{% endif %}
 <title>{{ page_title }}</title>
 <meta name="description" content="{{ page_description | strip_html | strip_newlines | truncate: 160 }}">
 
@@ -23,11 +32,11 @@
 {% assign og_type = "website" %}
 {% if page.collection == "posts" %}
   {% assign og_type = "article" %}
-{% elsif page.collection == "docs" and page.name != "index.md" %}
+{% elsif page.collection == "docs" and is_series_landing != true %}
   {% assign og_type = "article" %}
 {% endif %}
 <meta property="og:type" content="{{ og_type }}">
-<meta property="og:url" content="{{ site.url }}{{ page.url }}">
+<meta property="og:url" content="{{ site.url }}{{ normalized_page_url }}">
 <meta property="og:site_name" content="{{ site.title }}">
 {% if page.image %}<meta property="og:image" content="{{ page.image }}">{% endif %}
 
@@ -36,7 +45,7 @@
 <meta name="twitter:description" content="{{ page_description | strip_html | strip_newlines | truncate: 160 }}">
 {% if page.image %}<meta name="twitter:image" content="{{ page.image }}">{% endif %}
 
-<link rel="canonical" href="{{ site.url }}{{ page.url }}">
+<link rel="canonical" href="{{ site.url }}{{ normalized_page_url }}">
 <link rel="alternate" type="application/rss+xml" href="{{ site.baseurl }}/feed.xml">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
