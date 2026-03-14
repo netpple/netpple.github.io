@@ -30,8 +30,12 @@ description: 시리즈 엔트리/포스트 통합 검색
 					{% if search_url != "/" and search_url_leaf == "index" %}
 						{% assign search_url = search_url | replace: "/index", "/" %}
 					{% endif %}
-					"{{ search_url | slugify }}": {
-						"id": "{{ search_url | slugify }}",
+					{% assign search_id = search_url | slugify %}
+					{% if search_id == "" %}
+						{% assign search_id = "home" %}
+					{% endif %}
+					"{{ search_id }}": {
+						"id": "{{ search_id }}",
 						"title": "{{ post.title | xml_escape }}",
 						"categories": "{{ post.categories | join: ", " | xml_escape }}",
 						"url": "{{ search_url | xml_escape }}",
@@ -49,8 +53,12 @@ description: 시리즈 엔트리/포스트 통합 검색
 					{% if search_url != "/" and search_url_leaf == "index" %}
 						{% assign search_url = search_url | replace: "/index", "/" %}
 					{% endif %}
-					"{{ search_url | slugify }}": {
-						"id": "{{ search_url | slugify }}",
+					{% assign search_id = search_url | slugify %}
+					{% if search_id == "" %}
+						{% assign search_id = "home" %}
+					{% endif %}
+					"{{ search_id }}": {
+						"id": "{{ search_id }}",
 						"title": "{{ post.title | xml_escape }}",
 						"categories": "{{ post.categories | join: ", " | xml_escape }}",
 						"url": "{{ search_url | xml_escape }}",
@@ -68,8 +76,12 @@ description: 시리즈 엔트리/포스트 통합 검색
 					{% if search_url != "/" and search_url_leaf == "index" %}
 						{% assign search_url = search_url | replace: "/index", "/" %}
 					{% endif %}
-					"{{ search_url | slugify }}": {
-						"id": "{{ search_url | slugify }}",
+					{% assign search_id = search_url | slugify %}
+					{% if search_id == "" %}
+						{% assign search_id = "home" %}
+					{% endif %}
+					"{{ search_id }}": {
+						"id": "{{ search_id }}",
 						"title": "{{ post.title | xml_escape }}",
 						"categories": "{{ post.categories | join: ", " | xml_escape }}",
 						"url": "{{ search_url | xml_escape }}",
