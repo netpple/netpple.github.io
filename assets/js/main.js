@@ -233,6 +233,7 @@ layout: null
     var status = explorer.querySelector("[data-series-explorer-status]");
     var emptyState = explorer.querySelector("[data-series-explorer-empty]");
     var list = explorer.querySelector("[data-series-explorer-list]");
+    var presetButtons = Array.prototype.slice.call(explorer.querySelectorAll("[data-series-explorer-preset]"));
     var items = list ? Array.prototype.slice.call(list.querySelectorAll("[data-series-explorer-item]")) : [];
 
     if (!filterInput || !sortSelect || !status || !emptyState || !list || !items.length) {
@@ -276,6 +277,18 @@ layout: null
       status.textContent = parts.join(" · ");
     }
 
+    function syncPresetButtons(query) {
+      var normalizedQuery = normalizeText(query);
+
+      presetButtons.forEach(function (button) {
+        var presetValue = normalizeText(button.getAttribute("data-series-explorer-preset"));
+        var isActive = normalizedQuery === presetValue || (!normalizedQuery && !presetValue);
+
+        button.classList.toggle("is-active", isActive);
+        button.setAttribute("aria-pressed", isActive ? "true" : "false");
+      });
+    }
+
     function applySeriesExplorerState() {
       var query = normalizeText(filterInput.value);
       var sortValue = sortSelect.value || "latest";
@@ -298,10 +311,17 @@ layout: null
 
       emptyState.hidden = visibleItems.length !== 0;
       updateStatus(visibleItems.length, filterInput.value.trim(), sortValue);
+      syncPresetButtons(filterInput.value);
     }
 
     filterInput.addEventListener("input", applySeriesExplorerState);
     sortSelect.addEventListener("change", applySeriesExplorerState);
+    presetButtons.forEach(function (button) {
+      button.addEventListener("click", function () {
+        filterInput.value = button.getAttribute("data-series-explorer-preset") || "";
+        applySeriesExplorerState();
+      });
+    });
     applySeriesExplorerState();
   }
 

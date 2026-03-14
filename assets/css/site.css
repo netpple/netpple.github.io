@@ -521,6 +521,25 @@ img {
   background: #fff;
 }
 
+.chip--button {
+  cursor: pointer;
+  font: inherit;
+  line-height: 1.2;
+  appearance: none;
+}
+
+.chip--button.is-active {
+  border-color: rgba(33, 102, 172, 0.32);
+  background: #eef6ff;
+  color: var(--color-primary);
+  box-shadow: inset 0 0 0 1px rgba(33, 102, 172, 0.14);
+}
+
+.chip--button:focus-visible {
+  outline: 2px solid rgba(33, 102, 172, 0.28);
+  outline-offset: 2px;
+}
+
 .series-explorer {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
@@ -566,6 +585,10 @@ img {
 .series-explorer__status {
   margin: var(--space-4) 0 0;
   color: var(--color-text-muted);
+}
+
+.series-explorer__presets {
+  margin-top: var(--space-4);
 }
 
 .series-explorer__list {
