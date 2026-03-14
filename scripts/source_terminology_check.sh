@@ -8,6 +8,7 @@ declare -a targets=(
   "${ROOT_DIR}/Makefile"
   "${ROOT_DIR}/docs/sam-10-gnb-proposals.md"
   "${ROOT_DIR}/_data"
+  "${ROOT_DIR}/assets/css"
   "${ROOT_DIR}/_includes"
   "${ROOT_DIR}/_layouts"
   "${ROOT_DIR}/pages"
@@ -20,6 +21,16 @@ matches="$(
 if [[ -n "${matches}" ]]; then
   echo "[fail] legacy IA terminology remains in source files"
   printf '%s\n' "${matches}"
+  exit 1
+fi
+
+internal_matches="$(
+  rg -n 'page-news|page-docs|page-doc-detail|home-news-grid' "${targets[@]}" || true
+)"
+
+if [[ -n "${internal_matches}" ]]; then
+  echo "[fail] legacy internal IA identifiers remain in source files"
+  printf '%s\n' "${internal_matches}"
   exit 1
 fi
 

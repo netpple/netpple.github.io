@@ -6,15 +6,15 @@
   {% if page.url == "/" %}
     {% assign page_class = "page-home" %}
   {% elsif page.url == "/news/" %}
-    {% assign page_class = "page-news" %}
+    {% assign page_class = "page-posts" %}
   {% elsif page.url == "/docs/" %}
-    {% assign page_class = "page-docs" %}
+    {% assign page_class = "page-series" %}
   {% elsif page.url == "/about/" %}
     {% assign page_class = "page-about" %}
   {% elsif page.collection == "posts" %}
     {% assign page_class = "page-post-detail" %}
   {% elsif page.collection == "docs" %}
-    {% assign page_class = "page-doc-detail" %}
+    {% assign page_class = "page-series-detail" %}
   {% endif %}
   <body class="{{ page_class }}">
     <noscript>

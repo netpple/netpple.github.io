@@ -308,8 +308,8 @@ img {
 }
 
 .page-home .page-content,
-.page-news .page-content,
-.page-docs .page-content,
+.page-posts .page-content,
+.page-series .page-content,
 .page-about .page-content {
   max-width: none;
 }
@@ -1091,7 +1091,7 @@ img {
     grid-column: span 6;
   }
 
-  .page-docs .series-card {
+  .page-series .series-card {
     grid-column: span 6;
   }
 
