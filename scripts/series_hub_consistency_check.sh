@@ -47,6 +47,9 @@ section_count="$(printf '%s\n' "${section_ids}" | sed '/^$/d' | wc -l | tr -d ' 
 recent_card_count="$(
   (grep -o 'class="entry-card entry-card--doc"' "${clean_file}" || true) | wc -l | tr -d ' '
 )"
+recent_badge_count="$(
+  (grep -o 'class="badge badge-secondary"' "${clean_file}" || true) | wc -l | tr -d ' '
+)"
 track_card_count="$(
   (grep -o 'class="track-card"' "${clean_file}" || true) | wc -l | tr -d ' '
 )"
@@ -66,6 +69,12 @@ fi
 if [[ "${recent_card_count}" != "8" ]]; then
   rm -f "${clean_file}"
   echo "[fail] series hub expected 8 recent entry cards but got ${recent_card_count}"
+  exit 1
+fi
+
+if [[ "${recent_badge_count}" != "${recent_card_count}" ]]; then
+  rm -f "${clean_file}"
+  echo "[fail] series hub recent cards expected ${recent_card_count} series labels but got ${recent_badge_count}"
   exit 1
 fi
 

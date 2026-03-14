@@ -302,6 +302,8 @@ assert_route_not_contains "/tags/" 'class="tag-nav__link" href="#"' "empty tag n
 echo "[smoke] checking IA terminology markers"
 assert_route_contains "/" '>\s*Posts\s*<' "Posts IA label"
 assert_route_contains "/" '>\s*Series\s*<' "Series IA label"
+assert_route_contains "/" 'home-stats__label\">Series entries<' "Series entry home stat label"
+assert_route_not_contains "/" 'home-stats__label\">Series<' "ambiguous Series home stat label"
 assert_route_not_contains "/" '>\s*News\s*<' "legacy News IA label"
 assert_route_not_contains "/" '>\s*Docs\s*<' "legacy Docs IA label"
 assert_nav_not_contains "/" '>\s*GitHub\s*<' "top-nav GitHub link"

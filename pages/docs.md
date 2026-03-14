@@ -6,17 +6,19 @@ description: 주제별 시리즈와 엔트리를 빠르게 탐색할 수 있는 
 ---
 
 {% assign sorted_docs = site.docs | sort: "date" | reverse %}
+{% assign series_groups = "series-istio|series-container|series-kubernetes|series-data|series-querypie" | split: "|" %}
 {% assign istio_docs = site.docs | where: "label", "istio in action" | sort: "date" | reverse %}
 {% assign docker_docs = site.docs | where: "label", "도커 없이 컨테이너 만들기" | sort: "date" | reverse %}
 {% assign kube_docs = site.docs | where: "label", "쿠버네티스 딥다이브" | sort: "date" | reverse %}
 {% assign ddd_docs = site.docs | where: "label", "데이터중심 애플리케이션" | sort: "date" | reverse %}
 {% assign querypie_docs = site.docs | where: "label", "쿼리파이 핸즈온" | sort: "date" | reverse %}
+{% assign series_entries = istio_docs | concat: docker_docs | concat: kube_docs | concat: ddd_docs | concat: querypie_docs | sort: "date" | reverse %}
 
 <section class="page-section">
   <div class="section-heading">
     <p class="section-heading__kicker">Series Navigation</p>
     <h2 class="section-heading__title">시리즈 빠른 이동</h2>
-    <p class="section-heading__description">전체 {{ sorted_docs | size }}개 시리즈 엔트리를 주제별로 묶어 빠르게 이동할 수 있도록 정리했습니다.</p>
+    <p class="section-heading__description">총 {{ sorted_docs | size }}개 페이지를 {{ series_groups | size }}개 Series 묶음과 {{ series_entries | size }}개 Series entry 기준으로 빠르게 이동할 수 있도록 정리했습니다.</p>
   </div>
   <div class="chip-row">
     <a class="chip" href="#series-istio">Istio IN ACTION · {{ istio_docs | size }} entries</a>
@@ -34,7 +36,7 @@ description: 주제별 시리즈와 엔트리를 빠르게 탐색할 수 있는 
     <p class="section-heading__description">최근 정리한 엔트리를 먼저 확인한 뒤 필요한 시리즈로 바로 이동할 수 있습니다.</p>
   </div>
   <div class="entry-grid">
-    {% for post in sorted_docs limit: 8 %}
+    {% for post in series_entries limit: 8 %}
       <article class="entry-card entry-card--doc">
         <div class="entry-card__meta">
           {% if post.label %}<span class="badge badge-secondary">{{ post.label | strip }}</span>{% endif %}
