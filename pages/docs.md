@@ -23,7 +23,7 @@ description: 주제별 시리즈와 엔트리를 빠르게 탐색할 수 있는 
   <div class="section-heading">
     <p class="section-heading__kicker">Series Navigation</p>
     <h2 class="section-heading__title">시리즈 빠른 이동</h2>
-    <p class="section-heading__description">총 {{ all_series_pages | size }}개 페이지를 {{ series_groups | size }}개 Series 묶음과 {{ series_entries | size }}개 Series entry 기준으로 빠르게 이동할 수 있도록 정리했습니다.</p>
+    <p class="section-heading__description">총 {{ all_series_pages | size }}개 페이지를 {{ series_groups | size }}개 Series 묶음별로 재정리했고, 그 안에서 {{ series_entries | size }}개 Series entry를 빠르게 이동할 수 있도록 구성했습니다.</p>
   </div>
   <div class="chip-row">
     <a class="chip" href="#series-istio">Istio IN ACTION · {{ istio_series_entries | size }} entries</a>
