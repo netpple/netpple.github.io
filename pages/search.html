@@ -25,11 +25,16 @@ description: 시리즈 엔트리/포스트 통합 검색
 				{% unless post.excluded_in_search %}
 					{% if added %},{% endif %}
 					{% assign added = false %}
-					"{{ post.url | slugify }}": {
-						"id": "{{ post.url | slugify }}",
+					{% assign search_url = post.url %}
+					{% assign search_url_leaf = search_url | split: "/" | last %}
+					{% if search_url != "/" and search_url_leaf == "index" %}
+						{% assign search_url = search_url | replace: "/index", "/" %}
+					{% endif %}
+					"{{ search_url | slugify }}": {
+						"id": "{{ search_url | slugify }}",
 						"title": "{{ post.title | xml_escape }}",
 						"categories": "{{ post.categories | join: ", " | xml_escape }}",
-						"url": "{{ post.url | xml_escape }}",
+						"url": "{{ search_url | xml_escape }}",
 						"content": {{ post.content | strip_html | replace_regex: "[\s/\n]+"," " | strip | jsonify }}
 					}
 					{% assign added = true %}
@@ -39,11 +44,16 @@ description: 시리즈 엔트리/포스트 통합 검색
 				{% unless post.excluded_in_search %}
 					{% if added %},{% endif %}
 					{% assign added = false %}
-					"{{ post.url | slugify }}": {
-						"id": "{{ post.url | slugify }}",
+					{% assign search_url = post.url %}
+					{% assign search_url_leaf = search_url | split: "/" | last %}
+					{% if search_url != "/" and search_url_leaf == "index" %}
+						{% assign search_url = search_url | replace: "/index", "/" %}
+					{% endif %}
+					"{{ search_url | slugify }}": {
+						"id": "{{ search_url | slugify }}",
 						"title": "{{ post.title | xml_escape }}",
 						"categories": "{{ post.categories | join: ", " | xml_escape }}",
-						"url": "{{ post.url | xml_escape }}",
+						"url": "{{ search_url | xml_escape }}",
 						"content": {{ post.content | strip_html | replace_regex: "[\s/\n]+"," " | strip | jsonify }}
 					}
 					{% assign added = true %}
@@ -53,11 +63,16 @@ description: 시리즈 엔트리/포스트 통합 검색
 				{% unless post.excluded_in_search %}
 					{% if added %},{% endif %}
 					{% assign added = false %}
-					"{{ post.url | slugify }}": {
-						"id": "{{ post.url | slugify }}",
+					{% assign search_url = post.url %}
+					{% assign search_url_leaf = search_url | split: "/" | last %}
+					{% if search_url != "/" and search_url_leaf == "index" %}
+						{% assign search_url = search_url | replace: "/index", "/" %}
+					{% endif %}
+					"{{ search_url | slugify }}": {
+						"id": "{{ search_url | slugify }}",
 						"title": "{{ post.title | xml_escape }}",
 						"categories": "{{ post.categories | join: ", " | xml_escape }}",
-						"url": "{{ post.url | xml_escape }}",
+						"url": "{{ search_url | xml_escape }}",
 						"content": {{ post.content | strip_html | replace_regex: "[\s/\n]+"," " | strip | jsonify }}
 					}
 					{% assign added = true %}
