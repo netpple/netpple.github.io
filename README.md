@@ -155,10 +155,16 @@ make preview-meta
 # 3-9) Or run source terminology checks only
 make preview-terms
 
-# 3-10) Or run Series hub static structure checks only
+# 3-10) Or run source format checks only
+make preview-format
+
+# 3-11) Or run article heading hierarchy checks only
+make preview-headings
+
+# 3-12) Or run Series hub static structure checks only
 make preview-series-hub
 
-# 3-11) Or run runtime console/pageerror/requestfailed checks only
+# 3-13) Or run runtime console/pageerror/requestfailed checks only
 make preview-runtime
 
 # Optional full-site runtime mode (all generated HTML routes in _site)
@@ -196,4 +202,6 @@ Smoke checks cover:
 - Site-wide HTML `id` uniqueness check (duplicate IDs fail)
 - Site-wide metadata consistency check (`title`, description, canonical, og:url/og:title, twitter:title)
 - Source terminology check for maintained IA files (legacy IA label regression guard)
+- Source format check for date token regressions (`%H:%m` guard)
+- Site-wide article heading hierarchy check (`_site` article content has no embedded `h1` and no heading-level jumps deeper than one level)
 - Series hub static consistency check (`_site/docs/index.html` headings, Search shortcut, quick-jump/section count, recent cards, chip-target/section-id match)
