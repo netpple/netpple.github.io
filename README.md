@@ -168,7 +168,10 @@ make preview-series-hub
 # 3-13) Or run resource loading checks only
 make preview-resources
 
-# 3-14) Or run runtime console/pageerror/requestfailed checks only
+# 3-14) Or run sitemap consistency checks only
+make preview-sitemap
+
+# 3-15) Or run runtime console/pageerror/requestfailed checks only
 make preview-runtime
 
 # Optional full-site runtime mode (all generated HTML routes in _site)
@@ -210,3 +213,4 @@ Smoke checks cover:
 - Site-wide article heading hierarchy check (`_site` article content has no embedded `h1` and no heading-level jumps deeper than one level)
 - Series hub static consistency check (`_site/docs/index.html` headings, Search shortcut, quick-jump/section count, recent cards, chip-target/section-id match)
 - Site-wide resource loading check (Google Fonts preconnect/preload + print-onload stylesheet + noscript fallback, and all local `/assets/js/*.js` scripts stay deferred/async)
+- Sitemap consistency check (`sitemap.xml` uses absolute URLs, includes `/`, `/docs/`, `/news/`, and avoids malformed relative or double-slash loc values)
