@@ -133,6 +133,9 @@ make preview-nav
 # 3-2-2) Or run accessibility smoke checks only (skip-link keyboard flow)
 make preview-a11y
 
+# 3-2-3) Or run Series Explorer interaction checks only (/docs/ filter + sort + empty state)
+make preview-series-explorer
+
 # 3-3) Or run internal link checks only (strict: redirects fail)
 make preview-linkcheck
 # optional relaxed mode:
