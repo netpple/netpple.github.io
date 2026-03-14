@@ -152,7 +152,13 @@ make preview-ids
 # 3-8) Or run metadata consistency checks only
 make preview-meta
 
-# 3-9) Or run runtime console/pageerror/requestfailed checks only
+# 3-9) Or run source terminology checks only
+make preview-terms
+
+# 3-10) Or run Series hub static structure checks only
+make preview-series-hub
+
+# 3-11) Or run runtime console/pageerror/requestfailed checks only
 make preview-runtime
 
 # Optional full-site runtime mode (all generated HTML routes in _site)
@@ -189,3 +195,5 @@ Smoke checks cover:
 - Source-level core template/page inline-style check (except GTM noscript iframe)
 - Site-wide HTML `id` uniqueness check (duplicate IDs fail)
 - Site-wide metadata consistency check (`title`, description, canonical, og:url/og:title, twitter:title)
+- Source terminology check for maintained IA files (legacy IA label regression guard)
+- Series hub static consistency check (`_site/docs/index.html` headings, Search shortcut, quick-jump/section count, recent cards, chip-target/section-id match)
