@@ -57,10 +57,10 @@ description: 주제별 시리즈와 엔트리를 빠르게 탐색할 수 있는 
     </div>
     <div class="chip-row chip-row--offset series-explorer__presets" role="toolbar" aria-label="Series Explorer presets">
       <button type="button" class="chip chip--button is-active" aria-pressed="true" aria-controls="series-entry-list" data-series-explorer-preset="">전체 · {{ series_entries | size }} entries</button>
-      <button type="button" class="chip chip--button" aria-pressed="false" aria-controls="series-entry-list" data-series-explorer-preset="istio in action">Istio IN ACTION · {{ istio_series_entries | size }} entries</button>
+      <button type="button" class="chip chip--button" aria-pressed="false" aria-controls="series-entry-list" data-series-explorer-preset="Istio IN ACTION">Istio IN ACTION · {{ istio_series_entries | size }} entries</button>
       <button type="button" class="chip chip--button" aria-pressed="false" aria-controls="series-entry-list" data-series-explorer-preset="도커 없이 컨테이너 만들기">도커 없이 컨테이너 만들기 · {{ container_series_entries | size }} entries</button>
       <button type="button" class="chip chip--button" aria-pressed="false" aria-controls="series-entry-list" data-series-explorer-preset="쿠버네티스 딥다이브">쿠버네티스 딥다이브 · {{ kubernetes_series_entries | size }} entries</button>
-      <button type="button" class="chip chip--button" aria-pressed="false" aria-controls="series-entry-list" data-series-explorer-preset="데이터중심 애플리케이션">데이터 중심 애플리케이션 설계 · {{ data_series_entries | size }} entries</button>
+      <button type="button" class="chip chip--button" aria-pressed="false" aria-controls="series-entry-list" data-series-explorer-preset="데이터 중심 애플리케이션 설계">데이터 중심 애플리케이션 설계 · {{ data_series_entries | size }} entries</button>
       <button type="button" class="chip chip--button" aria-pressed="false" aria-controls="series-entry-list" data-series-explorer-preset="쿼리파이 핸즈온">쿼리파이 핸즈온 · {{ querypie_entry_count }} {{ querypie_entry_label }}</button>
     </div>
     <p class="series-explorer__status" role="status" aria-live="polite" data-series-explorer-status>총 {{ series_entries | size }}개 Series entry</p>
@@ -70,13 +70,19 @@ description: 주제별 시리즈와 엔트리를 빠르게 탐색할 수 있는 
         {% if series_entry_summary == "" %}
           {% assign series_entry_summary = series_entry.content | split: "<!--more-->" | first | strip_html | strip_newlines | strip %}
         {% endif %}
+        {% assign series_entry_alias = series_entry.label | default: '' | strip %}
+        {% if series_entry_alias == 'istio in action' %}
+          {% assign series_entry_alias = 'Istio IN ACTION' %}
+        {% elsif series_entry_alias == '데이터중심 애플리케이션' %}
+          {% assign series_entry_alias = '데이터 중심 애플리케이션 설계' %}
+        {% endif %}
         <article
           class="series-explorer__item"
           data-series-explorer-item
           data-series-entry-title="{{ series_entry.title | strip | escape }}"
           data-series-entry-series="{{ series_entry.label | default: '' | strip | escape }}"
           data-series-entry-date="{{ series_entry.date | date: '%s' }}"
-          data-series-entry-search="{{ series_entry.title | append: ' ' | append: series_entry.label | append: ' ' | append: series_entry_summary | strip_html | strip_newlines | strip | escape }}"
+          data-series-entry-search="{{ series_entry.title | append: ' ' | append: series_entry.label | append: ' ' | append: series_entry_alias | append: ' ' | append: series_entry_summary | strip_html | strip_newlines | strip | escape }}"
         >
           <div class="series-explorer__item-meta">
             {% if series_entry.label %}<span class="badge badge-secondary">{{ series_entry.label | strip }}</span>{% endif %}
