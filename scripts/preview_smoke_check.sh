@@ -167,6 +167,46 @@ assert_active_nav() {
   echo "[ok] ${route} active nav -> ${actual}"
 }
 
+assert_no_active_nav() {
+  local route="$1"
+  local html_file
+  local nav_file
+  local active_count
+  local aria_current_count
+
+  html_file="$(mktemp)"
+  nav_file="$(mktemp)"
+
+  curl -fsSL "${BASE_URL}${route}" > "${html_file}"
+  awk '
+    /<nav class="gnb"/ { in_nav=1 }
+    in_nav { print }
+    /<\/nav>/ {
+      if (in_nav) {
+        exit
+      }
+    }
+  ' "${html_file}" > "${nav_file}"
+
+  if [[ ! -s "${nav_file}" ]]; then
+    rm -f "${html_file}" "${nav_file}"
+    fail "${route} has no gnb nav block"
+  fi
+
+  active_count="$(grep -c 'gnb__link is-active' "${nav_file}" || true)"
+  aria_current_count="$(grep -c 'aria-current="page"' "${nav_file}" || true)"
+
+  rm -f "${html_file}" "${nav_file}"
+
+  if [[ "${active_count}" != "0" ]]; then
+    fail "${route} expected no active nav link but got ${active_count}"
+  fi
+  if [[ "${aria_current_count}" != "0" ]]; then
+    fail "${route} expected no aria-current nav link but got ${aria_current_count}"
+  fi
+  echo "[ok] ${route} has no active nav link"
+}
+
 assert_article_content_heading_hierarchy() {
   local route="$1"
   local html_file
@@ -368,8 +408,9 @@ assert_active_nav "/news/" "/news/"
 assert_active_nav "/docs/" "/docs/"
 assert_active_nav "/about/" "/about/"
 assert_active_nav "/archive/" "/news/"
-assert_active_nav "/tags/" "/news/"
-assert_active_nav "/search/" "/news/"
+assert_no_active_nav "/tags/"
+assert_no_active_nav "/search/"
+assert_no_active_nav "/search/?q=kubernetes"
 assert_active_nav "${sample_post}" "/news/"
 assert_active_nav "${sample_doc}" "/docs/"
 assert_active_nav "${sample_doc_detail}" "/docs/"
