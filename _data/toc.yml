@@ -1,4 +1,4 @@
-- title: Documentation
+- title: Series
   url: "docs/make-container-without-docker"
   links:
     - title: "Istio IN ACTION"

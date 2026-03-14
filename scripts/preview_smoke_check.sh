@@ -281,6 +281,7 @@ assert_route_contains "/news/" 'page-intro__title\">Posts<|<h1[^>]*>Posts</h1>' 
 assert_route_contains "/docs/" 'page-intro__title\">Series<|<h1[^>]*>Series</h1>' "Series page title"
 assert_route_contains "${sample_post}" 'article-header__eyebrow\">Post<' "Post detail eyebrow"
 assert_route_contains "${sample_doc_detail}" 'article-header__eyebrow\">Series entry<' "Series entry detail eyebrow"
+assert_route_not_contains "${sample_doc_detail}" '>\s*Documentation\s*<' "legacy Documentation sidebar label"
 
 echo "[smoke] checking home-only stylesheet loading"
 home_html_file="$(mktemp)"
