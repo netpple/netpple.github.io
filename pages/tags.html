@@ -37,15 +37,25 @@ description: 태그 기반 콘텐츠 인덱스
       <h3 id="{{ normalized_tag | slugify }}" class="tag-section__title">{{ normalized_tag }}</h3>
       <div class="post-list">
         {% for post in site.tags[normalized_tag] %}
+          {% assign post_link = post.url %}
+          {% assign post_link_leaf = post_link | split: "/" | last %}
+          {% if post_link != "/" and post_link_leaf == "index" %}
+            {% assign post_link = post_link | replace: "/index", "/" %}
+          {% endif %}
           <div class="tag-entry">
-            <a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
+            <a href="{{ post_link | prepend: site.baseurl }}">{{ post.title }}</a>
             <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%Y.%m.%d" }}</time>
           </div>
         {% endfor %}
         {% for doc in site.docs %}
           {% if doc.tags contains normalized_tag %}
+            {% assign doc_link = doc.url %}
+            {% assign doc_link_leaf = doc_link | split: "/" | last %}
+            {% if doc_link != "/" and doc_link_leaf == "index" %}
+              {% assign doc_link = doc_link | replace: "/index", "/" %}
+            {% endif %}
             <div class="tag-entry">
-              <a href="{{ doc.url | prepend: site.baseurl }}">{{ doc.title }}</a>
+              <a href="{{ doc_link | prepend: site.baseurl }}">{{ doc.title }}</a>
               {% if doc.date %}<time datetime="{{ doc.date | date_to_xmlschema }}">{{ doc.date | date: "%Y.%m.%d" }}</time>{% endif %}
             </div>
           {% endif %}

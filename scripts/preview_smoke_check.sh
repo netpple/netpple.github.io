@@ -413,6 +413,7 @@ assert_route_not_contains "/search/" '"url":\s*"/docs/[^"]*/index"' "search inde
 assert_route_not_contains "/search/" '"id":\s*""' "search index empty document ids"
 assert_route_not_contains "/search/" '"url":\s*"/assets/' "search index excludes asset pages"
 assert_route_not_contains "/search/" '"url":\s*"/[^"]+\.xml"' "search index excludes xml documents"
+assert_route_not_contains "/tags/" 'href="/docs/[^"]+/index"' "tag page uses canonical series links"
 assert_route_contains "${sample_post}" 'article-header__eyebrow\">Post<' "Post detail eyebrow"
 assert_route_contains "${sample_post}" 'property="og:type" content="article"' "Post detail og:type"
 assert_route_not_contains "${sample_post}" 'property="og:type" content="website"' "Post detail not using website og:type"
