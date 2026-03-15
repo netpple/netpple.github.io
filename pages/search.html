@@ -72,7 +72,7 @@ description: 시리즈 엔트리/포스트 통합 검색
 				{% if post.excluded_in_search or post.exclude_in_search %}
 					{% assign skip_search_page = true %}
 				{% endif %}
-				{% if post.layout == nil or post.url contains '/assets/' %}
+				{% if post.layout == nil or post.layout == "" or post.url contains '/assets/' or post.url contains '.xml' %}
 					{% assign skip_search_page = true %}
 				{% endif %}
 				{% unless skip_search_page %}
