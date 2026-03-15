@@ -22,6 +22,7 @@ search_query_routes=(
 sample_post="/2023/c-for-beginner-hongongc/"
 sample_series="/docs/istio-in-action"
 sample_series_entry="/docs/istio-in-action/Istio-ch11-performance"
+sample_data_series_entry="/docs/data-intensive-application-design/5-replication"
 sample_series_entry_hands_on="/docs/querypie-handson/multiple-kubernetes-with-querypie-kac"
 key_nav_paths=(
   "/2023/c-for-beginner-hongongc/"
@@ -272,6 +273,22 @@ assert_route_not_contains() {
   echo "[ok] ${route} no ${description}"
 }
 
+assert_route_not_contains_case_sensitive() {
+  local route="$1"
+  local pattern="$2"
+  local description="$3"
+  local html_file
+
+  html_file="$(mktemp)"
+  curl -fsSL "${BASE_URL}${route}" > "${html_file}"
+  if grep -Eq "${pattern}" "${html_file}"; then
+    rm -f "${html_file}"
+    fail "${route} has ${description}"
+  fi
+  rm -f "${html_file}"
+  echo "[ok] ${route} no ${description}"
+}
+
 assert_route_pattern_count() {
   local route="$1"
   local pattern="$2"
@@ -363,6 +380,8 @@ assert_route_pattern_count "/docs/" 'class="chip" href="#series-[^"]+"' "5" "ser
 assert_route_pattern_count "/docs/" 'id="series-(istio|container|kubernetes|data|querypie)"' "5" "series index sections"
 assert_route_pattern_count "/docs/" 'class="entry-card entry-card--list"' "8" "recent series entry cards"
 assert_route_pattern_min_count "/docs/" 'data-series-explorer-item' "20" "series explorer items"
+assert_route_not_contains_case_sensitive "/docs/" '>\s*istio in action\s*<' "legacy raw Istio series label on docs hub"
+assert_route_not_contains "/docs/" '>\s*데이터중심 애플리케이션\s*<' "legacy raw data series label on docs hub"
 assert_route_contains "/about/" 'section-heading__kicker\">Interests|chip-row' "about redesign markers"
 assert_route_contains "/search/" 'search-panel|id=\"search-input\"' "search ui markers"
 assert_route_not_contains "/tags/" 'class="tag-nav__link" href="#"' "empty tag navigation links"
@@ -396,6 +415,12 @@ assert_route_not_contains "${sample_series}" 'property="og:url" content="[^"]*/i
 assert_route_contains "${sample_series_entry}" 'article-header__eyebrow\">Series entry<' "Series entry detail eyebrow"
 assert_route_contains "${sample_series_entry}" 'property="og:type" content="article"' "Series entry detail og:type"
 assert_route_not_contains "${sample_series_entry}" 'property="og:type" content="website"' "Series entry detail not using website og:type"
+assert_route_contains "${sample_series_entry}" 'article-header__description\">Istio IN ACTION 11장<' "Series entry description uses friendly Istio label"
+assert_route_not_contains_case_sensitive "${sample_series_entry}" 'article-header__description\">istio in action' "Series entry description no raw Istio label"
+assert_route_contains "${sample_series_entry}" 'article-series__title\">Istio IN ACTION · Series<' "Series entry related series title uses friendly Istio label"
+assert_route_not_contains_case_sensitive "${sample_series_entry}" 'article-series__title\">istio in action' "Series entry related series title no raw Istio label"
+assert_route_contains "${sample_data_series_entry}" 'article-series__title\">데이터 중심 애플리케이션 설계 · Series<' "Data series entry related series title uses friendly label"
+assert_route_not_contains "${sample_data_series_entry}" 'article-series__title\">데이터중심 애플리케이션' "Data series entry related series title no raw label"
 
 echo "[smoke] checking source terminology guards"
 grep -Eq '^- title: Series$' _data/toc.yml || fail "_data/toc.yml is missing the Series root label"

@@ -70,27 +70,29 @@ description: 주제별 시리즈와 엔트리를 빠르게 탐색할 수 있는 
         {% if series_entry_summary == "" %}
           {% assign series_entry_summary = series_entry.content | split: "<!--more-->" | first | strip_html | strip_newlines | strip %}
         {% endif %}
-        {% assign series_entry_alias = series_entry.label | default: '' | strip %}
-        {% if series_entry_alias == 'istio in action' %}
-          {% assign series_entry_alias = 'Istio IN ACTION' %}
-        {% elsif series_entry_alias == '데이터중심 애플리케이션' %}
-          {% assign series_entry_alias = '데이터 중심 애플리케이션 설계' %}
+        {% assign series_entry_label = series_entry.label | default: '' | strip %}
+        {% assign series_entry_label_display = series_entry_label %}
+        {% if series_entry_label_display == 'istio in action' %}
+          {% assign series_entry_label_display = 'Istio IN ACTION' %}
+        {% elsif series_entry_label_display == '데이터중심 애플리케이션' %}
+          {% assign series_entry_label_display = '데이터 중심 애플리케이션 설계' %}
         {% endif %}
+        {% assign series_entry_summary_display = series_entry_summary | replace: 'istio in action', 'Istio IN ACTION' | replace: '데이터중심 애플리케이션', '데이터 중심 애플리케이션 설계' %}
         <article
           class="series-explorer__item"
           data-series-explorer-item
           data-series-entry-title="{{ series_entry.title | strip | escape }}"
-          data-series-entry-series="{{ series_entry.label | default: '' | strip | escape }}"
+          data-series-entry-series="{{ series_entry_label_display | escape }}"
           data-series-entry-date="{{ series_entry.date | date: '%s' }}"
-          data-series-entry-search="{{ series_entry.title | append: ' ' | append: series_entry.label | append: ' ' | append: series_entry_alias | append: ' ' | append: series_entry_summary | strip_html | strip_newlines | strip | escape }}"
+          data-series-entry-search="{{ series_entry.title | append: ' ' | append: series_entry_label | append: ' ' | append: series_entry_label_display | append: ' ' | append: series_entry_summary | append: ' ' | append: series_entry_summary_display | strip_html | strip_newlines | strip | escape }}"
         >
           <div class="series-explorer__item-meta">
-            {% if series_entry.label %}<span class="badge badge-secondary">{{ series_entry.label | strip }}</span>{% endif %}
+            {% if series_entry_label_display != '' %}<span class="badge badge-secondary">{{ series_entry_label_display }}</span>{% endif %}
             {% if series_entry.date %}<time datetime="{{ series_entry.date | date_to_xmlschema }}">{{ series_entry.date | date: "%Y.%m.%d" }}</time>{% endif %}
             <span class="badge">{{ series_entry.version | default: "v1.0" }}</span>
           </div>
           <h3 class="series-explorer__item-title"><a href="{{ series_entry.url | prepend: site.baseurl }}">{{ series_entry.title }}</a></h3>
-          <p class="series-explorer__item-summary">{{ series_entry_summary | truncate: 140 }}</p>
+          <p class="series-explorer__item-summary">{{ series_entry_summary_display | truncate: 140 }}</p>
         </article>
       {% endfor %}
     </div>
@@ -106,20 +108,26 @@ description: 주제별 시리즈와 엔트리를 빠르게 탐색할 수 있는 
   </div>
   <div class="entry-grid">
     {% for series_entry in series_entries limit: 8 %}
+      {% assign series_entry_label = series_entry.label | default: '' | strip %}
+      {% assign series_entry_label_display = series_entry_label %}
+      {% if series_entry_label_display == 'istio in action' %}
+        {% assign series_entry_label_display = 'Istio IN ACTION' %}
+      {% elsif series_entry_label_display == '데이터중심 애플리케이션' %}
+        {% assign series_entry_label_display = '데이터 중심 애플리케이션 설계' %}
+      {% endif %}
+      {% assign series_entry_excerpt = series_entry.description | default: '' | strip_html | strip_newlines %}
+      {% if series_entry_excerpt == "" %}
+        {% assign series_entry_excerpt = series_entry.content | split: "<!--more-->" | first | strip_html | strip_newlines %}
+      {% endif %}
+      {% assign series_entry_excerpt_display = series_entry_excerpt | replace: 'istio in action', 'Istio IN ACTION' | replace: '데이터중심 애플리케이션', '데이터 중심 애플리케이션 설계' %}
       <article class="entry-card entry-card--list">
         <div class="entry-card__meta">
-          {% if series_entry.label %}<span class="badge badge-secondary">{{ series_entry.label | strip }}</span>{% endif %}
+          {% if series_entry_label_display != '' %}<span class="badge badge-secondary">{{ series_entry_label_display }}</span>{% endif %}
           {% if series_entry.date %}<time datetime="{{ series_entry.date | date_to_xmlschema }}">{{ series_entry.date | date: "%Y.%m.%d" }}</time>{% endif %}
           <span class="badge">{{ series_entry.version | default: "v1.0" }}</span>
         </div>
         <h3 class="entry-card__title"><a href="{{ series_entry.url | prepend: site.baseurl }}">{{ series_entry.title }}</a></h3>
-        <p class="entry-card__excerpt">
-          {% if series_entry.description %}
-            {{ series_entry.description | strip_html | strip_newlines | truncate: 170 }}
-          {% else %}
-            {{ series_entry.content | split: "<!--more-->" | first | strip_html | strip_newlines | truncate: 170 }}
-          {% endif %}
-        </p>
+        <p class="entry-card__excerpt">{{ series_entry_excerpt_display | truncate: 170 }}</p>
         <a class="entry-card__cta" href="{{ series_entry.url | prepend: site.baseurl }}">엔트리 열기 →</a>
       </article>
     {% endfor %}

@@ -118,7 +118,7 @@ async function expectSorted(page, sortValue) {
     state = await readExplorerState(page);
     assert(state.visibleItems.length === 5, `expected data preset to show 5 items but got ${state.visibleItems.length}`);
     assert(
-      state.visibleItems.every((item) => item.series.includes('데이터중심 애플리케이션')),
+      state.visibleItems.every((item) => item.series.includes('데이터 중심 애플리케이션 설계')),
       'expected data preset to keep only the data-intensive application design series items'
     );
     assert(state.activePreset.includes('데이터 중심 애플리케이션 설계'), 'expected data preset button to be active');
@@ -161,7 +161,7 @@ async function expectSorted(page, sortValue) {
     state = await readExplorerState(page);
     assert(state.visibleItems.length === 5, `expected data alias query to show 5 items but got ${state.visibleItems.length}`);
     assert(
-      state.visibleItems.every((item) => item.series.includes('데이터중심 애플리케이션')),
+      state.visibleItems.every((item) => item.series.includes('데이터 중심 애플리케이션 설계')),
       'expected data alias query to keep only the data-intensive application design series items'
     );
     assert(
