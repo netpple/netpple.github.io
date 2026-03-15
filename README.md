@@ -141,40 +141,43 @@ make preview-linkcheck
 # optional relaxed mode:
 ALLOW_REDIRECTS=true make preview-linkcheck
 
-# 3-4) Or run structure consistency checks only
+# 3-4) Or run internal canonical-link checks only (`/foo/index` style href regressions fail)
+make preview-canonical-links
+
+# 3-5) Or run structure consistency checks only
 make preview-structure
 
-# 3-5) Or run style scope checks only
+# 3-6) Or run style scope checks only
 make preview-style-scope
 
-# 3-6) Or run inline-style checks only (core templates/pages)
+# 3-7) Or run inline-style checks only (core templates/pages)
 make preview-inline-style
 
-# 3-7) Or run HTML id uniqueness checks only
+# 3-8) Or run HTML id uniqueness checks only
 make preview-ids
 
-# 3-8) Or run metadata consistency checks only
+# 3-9) Or run metadata consistency checks only
 make preview-meta
 
-# 3-9) Or run source terminology checks only
+# 3-10) Or run source terminology checks only
 make preview-terms
 
-# 3-10) Or run source format checks only
+# 3-11) Or run source format checks only
 make preview-format
 
-# 3-11) Or run article heading hierarchy checks only
+# 3-12) Or run article heading hierarchy checks only
 make preview-headings
 
-# 3-12) Or run Series hub static structure checks only
+# 3-13) Or run Series hub static structure checks only
 make preview-series-hub
 
-# 3-13) Or run resource loading checks only
+# 3-14) Or run resource loading checks only
 make preview-resources
 
-# 3-14) Or run sitemap consistency checks only
+# 3-15) Or run sitemap consistency checks only
 make preview-sitemap
 
-# 3-15) Or run runtime console/pageerror/requestfailed checks only
+# 3-16) Or run runtime console/pageerror/requestfailed checks only
 make preview-runtime
 
 # Optional full-site runtime mode (all generated HTML routes in _site)
@@ -206,6 +209,7 @@ Smoke checks cover:
 - Navigation active mapping (`/archive/` -> `Posts`)
 - Key internal navigation route reachability (Home/Posts/Series 대표 링크)
 - Site-wide internal link check from generated `_site` (`href/src`, redirects disallowed by default)
+- Site-wide internal canonical-link check from generated `_site` (internal anchor `href` values must not regress to `/.../index` or `/.../index.html`)
 - Site-wide structure consistency check (`skip-link`, nav toggle/nav ARIA markers, header/main/footer, `#main-content` tabindex, no `autofocus`, single h1, single active nav + `aria-current`, header/footer external blank-target rel safety, home.css scope per HTML page)
 - Source-level style scope check (home-only `home-*` class usage restricted to `pages/index.md`)
 - Source-level core template/page inline-style check (except GTM noscript iframe)
