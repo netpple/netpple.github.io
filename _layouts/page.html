@@ -5,19 +5,34 @@ layout: default
 {% if page.url == "/" %}
   {% assign is_home = true %}
 {% endif %}
-{% assign is_docs_detail = false %}
+{% assign is_series_page = false %}
 {% if page.collection == "docs" and page.url != "/docs/" %}
-  {% assign is_docs_detail = true %}
+  {% assign is_series_page = true %}
+{% endif %}
+{% assign page_url_leaf = page.url | split: "/" | last %}
+{% assign is_series_landing = false %}
+{% if page.collection == "docs" and page.url != "/docs/" and page_url_leaf == "index" %}
+  {% assign is_series_landing = true %}
+{% endif %}
+{% assign page_description_display = page.description | default: "" %}
+{% if page.collection == "docs" %}
+  {% assign page_description_display = page_description_display | replace: 'istio in action', 'Istio IN ACTION' | replace: '데이터중심 애플리케이션', '데이터 중심 애플리케이션 설계' %}
+{% endif %}
+{% assign page_series_label_display = page.label | default: '' | strip %}
+{% if page_series_label_display == 'istio in action' %}
+  {% assign page_series_label_display = 'Istio IN ACTION' %}
+{% elsif page_series_label_display == '데이터중심 애플리케이션' %}
+  {% assign page_series_label_display = '데이터 중심 애플리케이션 설계' %}
 {% endif %}
 
-{% if is_docs_detail %}
+{% if is_series_page %}
   <article class="article-shell">
     <header class="article-header">
-      <p class="article-header__eyebrow">Documentation</p>
-      <h1 class="article-header__title article-header__title--compact">{{ page.title }}</h1>
-      {% if page.description %}<p class="article-header__description">{{ page.description }}</p>{% endif %}
+      <p class="article-header__eyebrow">{% if is_series_landing %}Series{% else %}Series entry{% endif %}</p>
+      <h1 class="article-header__title{% unless is_series_landing %} article-header__title--compact{% endunless %}">{{ page.title }}</h1>
+      {% if page.description %}<p class="article-header__description">{{ page_description_display }}</p>{% endif %}
       <div class="article-meta">
-        <a class="entry-card__cta" href="{{ site.baseurl }}/docs/">Documentation Hub</a>
+        <a class="entry-card__cta" href="{{ site.baseurl }}/docs/">Series Hub</a>
         {% if page.date %}<time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%Y.%m.%d" }}</time>{% endif %}
         {% if page.version %}<span class="badge">{{ page.version }}</span>{% endif %}
         {% if page.badges %}{% for badge in page.badges %}<span class="badge badge-{{ badge.type }}">{{ badge.tag }}</span>{% endfor %}{% endif %}
@@ -48,13 +63,13 @@ layout: default
         <p class="article-toc__title">Table of contents</p>
         <ul class="article-toc__list" data-toc-list></ul>
         {% if page.label %}
-          {% assign related_docs = site.docs | where: "label", page.label %}
-          {% if related_docs.size > 1 %}
+          {% assign related_series_entries = site.docs | where: "label", page.label %}
+          {% if related_series_entries.size > 1 %}
             <div class="article-series">
-              <p class="article-series__title">{{ page.label }} series</p>
+              <p class="article-series__title">{{ page_series_label_display }} · Series</p>
               <ul class="article-series__list">
-                {% for doc in related_docs limit:8 %}
-                  <li><a href="{{ doc.url | prepend: site.baseurl }}">{{ doc.title }}</a></li>
+                {% for series_entry in related_series_entries limit:8 %}
+                  <li><a href="{{ series_entry.url | prepend: site.baseurl }}">{{ series_entry.title }}</a></li>
                 {% endfor %}
               </ul>
             </div>
@@ -70,9 +85,9 @@ layout: default
   {% unless is_home %}
     {% assign intro_eyebrow = "Page" %}
     {% if page.url == "/news/" or page.url == "/archive/" %}
-      {% assign intro_eyebrow = "News" %}
+      {% assign intro_eyebrow = "Posts" %}
     {% elsif page.url == "/docs/" %}
-      {% assign intro_eyebrow = "Documentation" %}
+      {% assign intro_eyebrow = "Series" %}
     {% elsif page.url == "/about/" %}
       {% assign intro_eyebrow = "About" %}
     {% elsif page.url == "/search/" %}

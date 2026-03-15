@@ -1,9 +1,9 @@
-PREVIEW_NAME ?= sam7-manual-preview
+PREVIEW_NAME ?= netpple-preview-sam11
 PREVIEW_PORT ?= 4012
 PREVIEW_URL ?= http://127.0.0.1:$(PREVIEW_PORT)
 PREVIEW_IMAGE ?= jekyll/jekyll:4.2.0
 
-.PHONY: preview-up preview-build preview-smoke preview-responsive preview-overflow preview-overflow-full preview-nav preview-runtime preview-runtime-full preview-a11y preview-linkcheck preview-structure preview-style-scope preview-inline-style preview-ids preview-meta preview-verify preview-verify-full preview-down preview-recreate preview-info
+.PHONY: preview-up preview-build preview-smoke preview-responsive preview-overflow preview-overflow-full preview-nav preview-runtime preview-runtime-full preview-a11y preview-linkcheck preview-canonical-links preview-structure preview-style-scope preview-inline-style preview-ids preview-meta preview-terms preview-format preview-headings preview-series-hub preview-series-explorer preview-resources preview-sitemap preview-verify preview-verify-full preview-down preview-recreate preview-info
 
 preview-up:
 	@if docker ps --format '{{.Names}}' | grep -qx '$(PREVIEW_NAME)'; then \
@@ -12,12 +12,13 @@ preview-up:
 		echo "starting existing $(PREVIEW_NAME) container"; \
 		docker start $(PREVIEW_NAME) >/dev/null; \
 	else \
-		docker run -d --name $(PREVIEW_NAME) -p $(PREVIEW_PORT):4000 -v "$$PWD":/srv/jekyll $(PREVIEW_IMAGE) jekyll serve --host 0.0.0.0 --port 4000 --watch >/dev/null; \
+		mkdir -p "$$PWD/vendor/bundle"; \
+		docker run -d --name $(PREVIEW_NAME) -p $(PREVIEW_PORT):4000 -v "$$PWD":/srv/jekyll -v "$$PWD/vendor/bundle":/usr/local/bundle $(PREVIEW_IMAGE) sh -lc 'bundle install && bundle exec jekyll serve --host 0.0.0.0 --port 4000 --watch' >/dev/null; \
 		echo "started $(PREVIEW_NAME) on $(PREVIEW_URL)"; \
 	fi
 
 preview-build:
-	docker exec $(PREVIEW_NAME) jekyll build
+	docker exec $(PREVIEW_NAME) sh -lc 'bundle exec jekyll build'
 
 preview-smoke:
 	scripts/preview_smoke_check.sh $(PREVIEW_URL)
@@ -46,6 +47,9 @@ preview-a11y:
 preview-linkcheck:
 	scripts/internal_link_check.sh $(PREVIEW_URL)
 
+preview-canonical-links:
+	scripts/internal_canonical_link_check.sh _site
+
 preview-structure:
 	scripts/layout_consistency_check.sh _site
 
@@ -61,7 +65,28 @@ preview-ids:
 preview-meta:
 	scripts/metadata_consistency_check.sh _site
 
-preview-verify: preview-build preview-smoke preview-responsive preview-overflow preview-nav preview-runtime preview-a11y preview-linkcheck preview-structure preview-style-scope preview-inline-style preview-ids preview-meta
+preview-terms:
+	scripts/source_terminology_check.sh
+
+preview-format:
+	scripts/source_format_check.sh
+
+preview-headings:
+	scripts/article_heading_hierarchy_check.sh _site
+
+preview-series-hub:
+	scripts/series_hub_consistency_check.sh _site
+
+preview-series-explorer:
+	scripts/series_explorer_check.sh $(PREVIEW_URL)
+
+preview-resources:
+	scripts/resource_loading_check.sh _site
+
+preview-sitemap:
+	scripts/sitemap_consistency_check.sh _site
+
+preview-verify: preview-build preview-smoke preview-responsive preview-overflow preview-nav preview-runtime preview-a11y preview-linkcheck preview-canonical-links preview-structure preview-style-scope preview-inline-style preview-ids preview-meta preview-terms preview-format preview-headings preview-series-hub preview-series-explorer preview-resources preview-sitemap
 
 preview-verify-full: preview-verify preview-overflow-full preview-runtime-full
 
@@ -99,14 +124,22 @@ preview-info:
 	@echo "Accessibility smoke only: make preview-a11y"
 	@echo "Link check only (strict): make preview-linkcheck"
 	@echo "Link check relaxed: ALLOW_REDIRECTS=true make preview-linkcheck"
+	@echo "Canonical internal-link check only: make preview-canonical-links"
 	@echo "Structure check only: make preview-structure"
 	@echo "Style scope check only: make preview-style-scope"
 	@echo "Inline-style check only: make preview-inline-style"
 	@echo "ID uniqueness only: make preview-ids"
 	@echo "Metadata check only: make preview-meta"
+	@echo "Source terminology check only: make preview-terms"
+	@echo "Source format check only: make preview-format"
+	@echo "Article heading check only: make preview-headings"
+	@echo "Series hub static check only: make preview-series-hub"
+	@echo "Series explorer interaction check only: make preview-series-explorer"
+	@echo "Resource loading check only: make preview-resources"
+	@echo "Sitemap consistency check only: make preview-sitemap"
 	@echo "Stop preview: make preview-down"
 	@echo "Visual checkpoints:"
 	@echo "  1) Hero typography/spacing + CTA alignment"
 	@echo "  2) GNB alignment, hover/active, mobile toggle-close"
-	@echo "  3) News/Docs card rhythm + footer spacing"
-	@echo "  4) Post/Doc detail TOC + code/table/image readability"
+	@echo "  3) Posts/Series card rhythm + footer spacing"
+	@echo "  4) Post/Series entry detail TOC + code/table/image readability"

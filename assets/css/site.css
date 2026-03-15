@@ -308,8 +308,8 @@ img {
 }
 
 .page-home .page-content,
-.page-news .page-content,
-.page-docs .page-content,
+.page-posts .page-content,
+.page-series .page-content,
 .page-about .page-content {
   max-width: none;
 }
@@ -420,21 +420,21 @@ img {
   color: var(--color-primary);
 }
 
-.entry-card--news {
+.entry-card--list {
   grid-column: span 12;
 }
 
-.entry-card--doc {
+.entry-card--full {
   grid-column: span 12;
 }
 
-.track-grid {
+.series-grid {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   gap: var(--space-4);
 }
 
-.track-card {
+.series-card {
   grid-column: span 12;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
@@ -443,17 +443,17 @@ img {
   box-shadow: var(--shadow-sm);
 }
 
-.track-card__title {
+.series-card__title {
   margin: 0;
   font-size: 1.15rem;
 }
 
-.track-card__description {
+.series-card__description {
   margin: var(--space-3) 0;
   color: var(--color-text-muted);
 }
 
-.track-card__foot {
+.series-card__foot {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
@@ -519,6 +519,135 @@ img {
   font-size: 0.83rem;
   font-weight: 700;
   background: #fff;
+}
+
+.chip--button {
+  cursor: pointer;
+  font: inherit;
+  line-height: 1.2;
+  appearance: none;
+}
+
+.chip--button.is-active {
+  border-color: rgba(33, 102, 172, 0.32);
+  background: #eef6ff;
+  color: var(--color-primary);
+  box-shadow: inset 0 0 0 1px rgba(33, 102, 172, 0.14);
+}
+
+.chip--button:focus-visible {
+  outline: 2px solid rgba(33, 102, 172, 0.28);
+  outline-offset: 2px;
+}
+
+.series-explorer {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-5);
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: var(--shadow-sm);
+}
+
+.series-explorer__controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 280px);
+  gap: var(--space-3);
+  align-items: end;
+}
+
+.series-explorer__control {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.series-explorer__label {
+  color: var(--color-text-muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.series-explorer__input,
+.series-explorer__select {
+  width: 100%;
+}
+
+.series-explorer__select {
+  min-height: 48px;
+  border-radius: 12px;
+  border: 1px solid var(--color-border-strong);
+  padding: 0 var(--space-4);
+  font: inherit;
+  background: #fff;
+}
+
+.series-explorer__status {
+  margin: var(--space-4) 0 0;
+  color: var(--color-text-muted);
+}
+
+.series-explorer__presets {
+  margin-top: var(--space-4);
+}
+
+.series-explorer__list {
+  margin-top: var(--space-4);
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.series-explorer__item {
+  grid-column: span 12;
+  display: grid;
+  gap: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-4);
+  background: #fff;
+}
+
+.series-explorer__item[hidden] {
+  display: none;
+}
+
+.series-explorer__item-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-text-muted);
+  font-size: 0.84rem;
+}
+
+.series-explorer__item-title {
+  margin: 0;
+  line-height: 1.35;
+  font-size: 1.04rem;
+}
+
+.series-explorer__item-title a {
+  color: var(--color-text);
+}
+
+.series-explorer__item-title a:hover {
+  color: var(--color-primary);
+}
+
+.series-explorer__item-summary {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+}
+
+.series-explorer__empty {
+  margin: var(--space-4) 0 0;
+  padding: var(--space-4);
+  border-radius: var(--radius-sm);
+  border: 1px solid #efd7ab;
+  background: #fff6e8;
+  color: #7a5212;
 }
 
 .article-shell {
@@ -1087,16 +1216,19 @@ img {
 }
 
 @media (min-width: 980px) {
-  .entry-card--news,
-  .entry-card--doc {
+  .entry-card--list {
     grid-column: span 6;
   }
 
-  .page-docs .track-card {
+  .series-explorer__item {
     grid-column: span 6;
   }
 
-  .page-about .entry-card--news {
+  .page-series .series-card {
+    grid-column: span 6;
+  }
+
+  .page-about .entry-card--full {
     grid-column: span 12;
   }
 }
@@ -1214,7 +1346,8 @@ img {
   }
 
   .entry-card,
-  .track-card {
+  .series-card,
+  .series-explorer {
     padding: var(--space-4);
   }
 
@@ -1225,6 +1358,10 @@ img {
   .archive-year-card,
   .search-panel {
     padding: var(--space-4);
+  }
+
+  .series-explorer__controls {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .archive-year-card__date {

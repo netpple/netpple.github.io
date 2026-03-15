@@ -10,12 +10,12 @@ histories:
   description: 최초 게시
 ---
 <div class="responsive-wrap">
-  <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vR0k4q0PJf-8f9Qu3OXBFxALZxSmXdc3Bn3YWi96SeL2SDn3ouWHM49l_TCNdYL0nwKIX4BoKv5qI3r/embed?start=false&loop=false&delayms=3000" frameborder="0" width="100%" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+  <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vR0k4q0PJf-8f9Qu3OXBFxALZxSmXdc3Bn3YWi96SeL2SDn3ouWHM49l_TCNdYL0nwKIX4BoKv5qI3r/embed?start=false&loop=false&delayms=3000" title="{{ page.title | escape }}" loading="lazy" frameborder="0" width="100%" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
 </div>
 
 [[슬라이드 보기]](https://docs.google.com/presentation/d/1s7PUNDvrWo__IH9gYmQDsVPzzD985NB3MS4ZutEFaFk/edit#){:target="_blank"}
 
-### references
+## References
 - [Programming Kubernetes by Michael Hausenblas, Stefan Schimanski](https://www.oreilly.com/library/view/programming-kubernetes/9781492047094/){:target="_blank"}
 - [The Kubernetes API](https://kubernetes.io/docs/concepts/overview/kubernetes-api/){:target="_blank"}
 - [Kubernetes Workload Resources](https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/){:target="_blank"}

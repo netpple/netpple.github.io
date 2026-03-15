@@ -44,15 +44,15 @@ description: 김삼영의 기술 배경, 관심사, 경력, 발표/출판 이력
     <h2 class="section-heading__title">기술 스택</h2>
   </div>
   <div class="entry-grid">
-    <article class="entry-card entry-card--news">
+    <article class="entry-card entry-card--full">
       <h3 class="entry-card__title">Programming</h3>
       <p class="entry-card__excerpt">Java, Python, Go</p>
     </article>
-    <article class="entry-card entry-card--news">
+    <article class="entry-card entry-card--full">
       <h3 class="entry-card__title">Platform & Infra</h3>
       <p class="entry-card__excerpt">Linux, Container, Kubernetes, ArgoCD, Argo Workflows, Prometheus, Grafana</p>
     </article>
-    <article class="entry-card entry-card--news">
+    <article class="entry-card entry-card--full">
       <h3 class="entry-card__title">Data & Middleware</h3>
       <p class="entry-card__excerpt">Couchbase, Redis, etcd, Hadoop</p>
     </article>
@@ -65,12 +65,12 @@ description: 김삼영의 기술 배경, 관심사, 경력, 발표/출판 이력
     <h2 class="section-heading__title">주요 경력</h2>
   </div>
   <div class="entry-grid">
-    <article class="entry-card entry-card--news">
+    <article class="entry-card entry-card--full">
       <div class="entry-card__meta"><span class="badge">2023 ~</span></div>
       <h3 class="entry-card__title">쿼리파이 (QueryPie) · CTO</h3>
       <p class="entry-card__excerpt"><a href="https://www.querypie.com/" target="_blank" rel="noreferrer noopener">https://www.querypie.com/</a></p>
     </article>
-    <article class="entry-card entry-card--news">
+    <article class="entry-card entry-card--full">
       <div class="entry-card__meta"><span class="badge">2014 ~ 2023</span></div>
       <h3 class="entry-card__title">카카오 / 카카오엔터프라이즈</h3>
       <p class="entry-card__excerpt">다음(2014), 카카오(2015~2019), 카카오엔터프라이즈(2020~2023)</p>
@@ -95,7 +95,7 @@ description: 김삼영의 기술 배경, 관심사, 경력, 발표/출판 이력
         <li>검색 데이터 파이프라인 및 이미지 썸네일 캐시 시스템 개발</li>
       </ul>
     </article>
-    <article class="entry-card entry-card--news">
+    <article class="entry-card entry-card--full">
       <div class="entry-card__meta"><span class="badge">2000 ~ 2013</span></div>
       <h3 class="entry-card__title">이전 경력</h3>
       <ul class="entry-card__list">
@@ -114,11 +114,11 @@ description: 김삼영의 기술 배경, 관심사, 경력, 발표/출판 이력
     <h2 class="section-heading__title">발표 및 아티클</h2>
   </div>
   <div class="entry-grid">
-    <article class="entry-card entry-card--news">
+    <article class="entry-card entry-card--full">
       <h3 class="entry-card__title">발표 영상</h3>
       <p class="entry-card__excerpt"><a href="https://if.kakao.com/2022/session/104" target="_blank" rel="noreferrer noopener">if(kakao)dev2022 - 도커 없이 컨테이너 만들기</a></p>
     </article>
-    <article class="entry-card entry-card--news">
+    <article class="entry-card entry-card--full">
       <h3 class="entry-card__title">사내 블로그 기고</h3>
       <ul class="entry-card__list">
         <li><a href="https://tech.kakaoenterprise.com/150" target="_blank" rel="noreferrer noopener">서비스 개발자를 위한 컨테이너 뽀개기</a></li>
@@ -126,14 +126,14 @@ description: 김삼영의 기술 배경, 관심사, 경력, 발표/출판 이력
         <li><a href="https://tech.kakaoenterprise.com/171" target="_blank" rel="noreferrer noopener">컨테이너 인터널 #2</a></li>
       </ul>
     </article>
-    <article class="entry-card entry-card--news">
+    <article class="entry-card entry-card--full">
       <h3 class="entry-card__title">운영 중인 블로그/자료</h3>
       <ul class="entry-card__list">
         <li><a href="https://netpple.github.io/" target="_blank" rel="noreferrer noopener">개인 기술 블로그</a></li>
         <li><a href="https://blog.deepdivers.dev/" target="_blank" rel="noreferrer noopener">Kubernetes Deepdivers</a></li>
       </ul>
     </article>
-    <article class="entry-card entry-card--news">
+    <article class="entry-card entry-card--full">
       <h3 class="entry-card__title">발표 자료</h3>
       <ul class="entry-card__list">
         <li><a href="{{ site.baseurl }}/docs/make-container-without-docker/" target="_blank" rel="noreferrer noopener">도커 없이 컨테이너 만들기 시리즈</a></li>
@@ -141,7 +141,7 @@ description: 김삼영의 기술 배경, 관심사, 경력, 발표/출판 이력
         <li><a href="https://blog.deepdivers.dev/kubernetes-scheduler/1" target="_blank" rel="noreferrer noopener">Kubernetes 스케줄러 동작 원리와 Scheduling Framework 이해</a></li>
       </ul>
     </article>
-    <article class="entry-card entry-card--news">
+    <article class="entry-card entry-card--full">
       <h3 class="entry-card__title">논문</h3>
       <p class="entry-card__excerpt">A Design and Implementation of Enterprise Information Systems based on Knowledge Management (2004.12)</p>
     </article>
@@ -154,11 +154,11 @@ description: 김삼영의 기술 배경, 관심사, 경력, 발표/출판 이력
     <h2 class="section-heading__title">학력</h2>
   </div>
   <div class="entry-grid">
-    <article class="entry-card entry-card--news">
+    <article class="entry-card entry-card--full">
       <h3 class="entry-card__title">서울대학교</h3>
       <p class="entry-card__excerpt">1996 ~ 2000</p>
     </article>
-    <article class="entry-card entry-card--news">
+    <article class="entry-card entry-card--full">
       <h3 class="entry-card__title">상명대학교 정보통신대학원</h3>
       <p class="entry-card__excerpt">2002 ~ 2004</p>
     </article>

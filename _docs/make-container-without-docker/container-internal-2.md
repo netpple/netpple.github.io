@@ -11,13 +11,13 @@ histories:
   description: 실습 안내페이지 업데이트
 ---
 <div class="responsive-wrap">
-    <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vQ8Umma-Erc8I2_5CGfAVnzUYLzj0Aheq8XZoeLlJI5ox3pGdIwJHFP8FrObmKV1K2BbT9zgdZKTNUO/embed?start=false&loop=false&delayms=3000" frameborder="0" width="100%" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+    <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vQ8Umma-Erc8I2_5CGfAVnzUYLzj0Aheq8XZoeLlJI5ox3pGdIwJHFP8FrObmKV1K2BbT9zgdZKTNUO/embed?start=false&loop=false&delayms=3000" title="{{ page.title | escape }}" loading="lazy" frameborder="0" width="100%" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
 </div>
 
 [[슬라이드 보기]](https://docs.google.com/presentation/d/1ROUHDBp1l7oP6wcCO-kfj9tQHHjDQg5gFm1FXr5IB1I/edit#){:target="_blank"}
 
 사내 블로그(카카오 엔터프라이즈)에 기고한 [컨테이너 톺아보기](https://tech.kakaoenterprise.com/154) 문서도 함께 참고해 주세요. 발표 장표를 보충할 설명들을 자세하게 기술해 두었습니다.
 
-### references
+## References
 
 - [컨테이너 요약/실습 : http://tailhook.github.io/containers-tutorial/#/step-27](http://tailhook.github.io/containers-tutorial/#/step-27){:target="_blank"}

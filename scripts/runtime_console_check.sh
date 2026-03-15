@@ -127,6 +127,13 @@ function isIgnorableConsoleError(message) {
   if (normalized.includes('failed to load resource')) {
     return true;
   }
+  if (
+    normalized.includes("violates the following report-only content security policy directive")
+    && normalized.includes("frame-ancestors 'self'")
+    && normalized.includes('docs.google.com')
+  ) {
+    return true;
+  }
   return normalized.includes('google-analytics.com')
     || normalized.includes('googletagmanager.com');
 }

@@ -3,11 +3,11 @@ layout: default
 ---
 <article class="article-shell">
   <header class="article-header">
-    <p class="article-header__eyebrow">News</p>
+    <p class="article-header__eyebrow">Post</p>
     <h1 class="article-header__title">{{ page.title }}</h1>
     {% if page.description %}<p class="article-header__description">{{ page.description }}</p>{% endif %}
     <div class="article-meta">
-      <a class="entry-card__cta" href="{{ site.baseurl }}/news/">All News</a>
+      <a class="entry-card__cta" href="{{ site.baseurl }}/news/">All Posts</a>
       <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%Y.%m.%d" }}</time>
       <span class="badge">{{ page.version | default: "v1.0" }}</span>
       {% if page.badges %}{% for badge in page.badges %}<span class="badge badge-{{ badge.type }}">{{ badge.tag }}</span>{% endfor %}{% endif %}

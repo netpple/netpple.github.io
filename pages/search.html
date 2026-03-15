@@ -4,13 +4,13 @@ sitemap: false
 permalink: /search/
 not_editable: true
 excluded_in_search: true
-description: 문서/게시글 통합 검색
+description: 시리즈 엔트리/포스트 통합 검색
 ---
 
 <div class="section-heading">
   <p class="section-heading__kicker">Search</p>
   <h2 class="section-heading__title">사이트 통합 검색</h2>
-  <p class="section-heading__description">문서, 뉴스, 정적 페이지를 한 번에 검색합니다.</p>
+  <p class="section-heading__description">시리즈 엔트리, 포스트, 정적 페이지를 한 번에 검색합니다.</p>
 </div>
 
 <section class="search-panel">
@@ -25,11 +25,20 @@ description: 문서/게시글 통합 검색
 				{% unless post.excluded_in_search %}
 					{% if added %},{% endif %}
 					{% assign added = false %}
-					"{{ post.url | slugify }}": {
-						"id": "{{ post.url | slugify }}",
+					{% assign search_url = post.url %}
+					{% assign search_url_leaf = search_url | split: "/" | last %}
+					{% if search_url != "/" and search_url_leaf == "index" %}
+						{% assign search_url = search_url | replace: "/index", "/" %}
+					{% endif %}
+					{% assign search_id = search_url | slugify %}
+					{% if search_id == "" %}
+						{% assign search_id = "home" %}
+					{% endif %}
+					"{{ search_id }}": {
+						"id": "{{ search_id }}",
 						"title": "{{ post.title | xml_escape }}",
 						"categories": "{{ post.categories | join: ", " | xml_escape }}",
-						"url": "{{ post.url | xml_escape }}",
+						"url": "{{ search_url | xml_escape }}",
 						"content": {{ post.content | strip_html | replace_regex: "[\s/\n]+"," " | strip | jsonify }}
 					}
 					{% assign added = true %}
@@ -39,25 +48,50 @@ description: 문서/게시글 통합 검색
 				{% unless post.excluded_in_search %}
 					{% if added %},{% endif %}
 					{% assign added = false %}
-					"{{ post.url | slugify }}": {
-						"id": "{{ post.url | slugify }}",
+					{% assign search_url = post.url %}
+					{% assign search_url_leaf = search_url | split: "/" | last %}
+					{% if search_url != "/" and search_url_leaf == "index" %}
+						{% assign search_url = search_url | replace: "/index", "/" %}
+					{% endif %}
+					{% assign search_id = search_url | slugify %}
+					{% if search_id == "" %}
+						{% assign search_id = "home" %}
+					{% endif %}
+					"{{ search_id }}": {
+						"id": "{{ search_id }}",
 						"title": "{{ post.title | xml_escape }}",
 						"categories": "{{ post.categories | join: ", " | xml_escape }}",
-						"url": "{{ post.url | xml_escape }}",
+						"url": "{{ search_url | xml_escape }}",
 						"content": {{ post.content | strip_html | replace_regex: "[\s/\n]+"," " | strip | jsonify }}
 					}
 					{% assign added = true %}
 				{% endunless %}
 		{% endfor %}
 		{% for post in site.pages %}
-				{% unless post.excluded_in_search %}
+				{% assign skip_search_page = false %}
+				{% if post.excluded_in_search or post.exclude_in_search %}
+					{% assign skip_search_page = true %}
+				{% endif %}
+				{% if post.layout == nil or post.layout == "" or post.url contains '/assets/' or post.url contains '.xml' %}
+					{% assign skip_search_page = true %}
+				{% endif %}
+				{% unless skip_search_page %}
 					{% if added %},{% endif %}
 					{% assign added = false %}
-					"{{ post.url | slugify }}": {
-						"id": "{{ post.url | slugify }}",
+					{% assign search_url = post.url %}
+					{% assign search_url_leaf = search_url | split: "/" | last %}
+					{% if search_url != "/" and search_url_leaf == "index" %}
+						{% assign search_url = search_url | replace: "/index", "/" %}
+					{% endif %}
+					{% assign search_id = search_url | slugify %}
+					{% if search_id == "" %}
+						{% assign search_id = "home" %}
+					{% endif %}
+					"{{ search_id }}": {
+						"id": "{{ search_id }}",
 						"title": "{{ post.title | xml_escape }}",
 						"categories": "{{ post.categories | join: ", " | xml_escape }}",
-						"url": "{{ post.url | xml_escape }}",
+						"url": "{{ search_url | xml_escape }}",
 						"content": {{ post.content | strip_html | replace_regex: "[\s/\n]+"," " | strip | jsonify }}
 					}
 					{% assign added = true %}
@@ -65,5 +99,5 @@ description: 문서/게시글 통합 검색
 		{% endfor %}
 	};
 </script>
-<script src="{{ site.baseurl }}/assets/js/lunr.min.js"></script>
-<script src="{{ site.baseurl }}/assets/js/search.js"></script>
+<script defer src="{{ site.baseurl }}/assets/js/lunr.min.js"></script>
+<script defer src="{{ site.baseurl }}/assets/js/search.js"></script>

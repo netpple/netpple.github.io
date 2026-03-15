@@ -11,7 +11,7 @@ histories:
   description: 최초 등록
 ---
 <div class="responsive-wrap">
-  <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vSEBNIx-9qSsQk43CVTnSYDIZn2_6aznVIOWi0yibWF_FDqKdzQR0brKN6BuzM7SMmpaC4hJLNtGttt/embed?start=false&loop=false&delayms=3000" frameborder="0" width="100%" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+  <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vSEBNIx-9qSsQk43CVTnSYDIZn2_6aznVIOWi0yibWF_FDqKdzQR0brKN6BuzM7SMmpaC4hJLNtGttt/embed?start=false&loop=false&delayms=3000" title="{{ page.title | escape }}" loading="lazy" frameborder="0" width="100%" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
 </div>
 
 [[슬라이드 보기]](https://docs.google.com/presentation/d/10TCStiRnnvF-IBCGx7hNB4na5YI-CSmxWB6HpG9HCrc/edit?usp=sharing){:target="_blank"}

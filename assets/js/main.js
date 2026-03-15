@@ -1,5 +1,5 @@
 ---
-exclude_in_search: true
+excluded_in_search: true
 layout: null
 ---
 (function () {
@@ -214,6 +214,130 @@ layout: null
     });
   }
 
+  function normalizeText(text) {
+    return (text || "").toLowerCase().replace(/\s+/g, " ").trim();
+  }
+
+  function compareText(left, right) {
+    return left.localeCompare(right, "ko", { sensitivity: "base", numeric: true });
+  }
+
+  function formatSeriesEntryCount(count) {
+    return count + "개 " + (count === 1 ? "Series entry" : "Series entries");
+  }
+
+  function initSeriesExplorer() {
+    var explorer = document.querySelector("[data-series-explorer]");
+    if (!explorer) {
+      return;
+    }
+
+    var filterInput = explorer.querySelector("[data-series-explorer-filter]");
+    var sortSelect = explorer.querySelector("[data-series-explorer-sort]");
+    var status = explorer.querySelector("[data-series-explorer-status]");
+    var emptyState = explorer.querySelector("[data-series-explorer-empty]");
+    var list = explorer.querySelector("[data-series-explorer-list]");
+    var presetButtons = Array.prototype.slice.call(explorer.querySelectorAll("[data-series-explorer-preset]"));
+    var items = list ? Array.prototype.slice.call(list.querySelectorAll("[data-series-explorer-item]")) : [];
+
+    if (!filterInput || !sortSelect || !status || !emptyState || !list || !items.length) {
+      return;
+    }
+
+    function sortItems(visibleItems, sortValue) {
+      return visibleItems.sort(function (leftItem, rightItem) {
+        var leftTitle = leftItem.getAttribute("data-series-entry-title") || "";
+        var rightTitle = rightItem.getAttribute("data-series-entry-title") || "";
+        var leftSeries = leftItem.getAttribute("data-series-entry-series") || "";
+        var rightSeries = rightItem.getAttribute("data-series-entry-series") || "";
+        var leftDate = parseInt(leftItem.getAttribute("data-series-entry-date") || "0", 10);
+        var rightDate = parseInt(rightItem.getAttribute("data-series-entry-date") || "0", 10);
+
+        if (sortValue === "title") {
+          return compareText(leftTitle, rightTitle) || rightDate - leftDate;
+        }
+
+        if (sortValue === "series") {
+          return compareText(leftSeries, rightSeries) || rightDate - leftDate || compareText(leftTitle, rightTitle);
+        }
+
+        return rightDate - leftDate || compareText(leftSeries, rightSeries) || compareText(leftTitle, rightTitle);
+      });
+    }
+
+    function updateStatus(visibleCount, query, sortValue) {
+      var sortLabels = {
+        latest: "최신 업데이트 순",
+        title: "제목순",
+        series: "시리즈명순"
+      };
+      var parts = ["총 " + formatSeriesEntryCount(visibleCount)];
+
+      if (query) {
+        parts.push('"' + query + '" 필터 적용');
+      }
+
+      parts.push(sortLabels[sortValue] || sortValue);
+      status.textContent = parts.join(" · ");
+    }
+
+    function syncPresetButtons(query) {
+      var normalizedQuery = normalizeText(query);
+
+      presetButtons.forEach(function (button) {
+        var presetValue = normalizeText(button.getAttribute("data-series-explorer-preset"));
+        var presetAliases = normalizeText(button.getAttribute("data-series-explorer-preset-aliases"))
+          .split("|")
+          .map(function (alias) {
+            return alias.trim();
+          })
+          .filter(Boolean);
+        var isActive =
+          normalizedQuery === presetValue ||
+          presetAliases.indexOf(normalizedQuery) !== -1 ||
+          (!normalizedQuery && !presetValue);
+
+        button.classList.toggle("is-active", isActive);
+        button.setAttribute("aria-pressed", isActive ? "true" : "false");
+      });
+    }
+
+    function applySeriesExplorerState() {
+      var query = normalizeText(filterInput.value);
+      var sortValue = sortSelect.value || "latest";
+      var visibleItems = [];
+
+      items.forEach(function (item) {
+        var haystack = normalizeText(item.getAttribute("data-series-entry-search"));
+        var matches = !query || haystack.indexOf(query) !== -1;
+
+        item.hidden = !matches;
+        if (matches) {
+          visibleItems.push(item);
+        }
+      });
+
+      sortItems(visibleItems, sortValue).forEach(function (item) {
+        item.hidden = false;
+        list.appendChild(item);
+      });
+
+      emptyState.hidden = visibleItems.length !== 0;
+      updateStatus(visibleItems.length, filterInput.value.trim(), sortValue);
+      syncPresetButtons(filterInput.value);
+    }
+
+    filterInput.addEventListener("input", applySeriesExplorerState);
+    sortSelect.addEventListener("change", applySeriesExplorerState);
+    presetButtons.forEach(function (button) {
+      button.addEventListener("click", function () {
+        filterInput.value = button.getAttribute("data-series-explorer-preset") || "";
+        applySeriesExplorerState();
+      });
+    });
+    applySeriesExplorerState();
+  }
+
   function hardenBlankTargetLinks() {
     document.querySelectorAll('a[target="_blank"]').forEach(function (link) {
       var relValue = (link.getAttribute("rel") || "").trim();
@@ -235,5 +359,6 @@ layout: null
     initNavigation();
     buildToc();
     initSearchShortcut();
+    initSeriesExplorer();
   });
 })();
