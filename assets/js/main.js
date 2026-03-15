@@ -222,6 +222,10 @@ layout: null
     return left.localeCompare(right, "ko", { sensitivity: "base", numeric: true });
   }
 
+  function formatSeriesEntryCount(count) {
+    return count + "개 " + (count === 1 ? "Series entry" : "Series entries");
+  }
+
   function initSeriesExplorer() {
     var explorer = document.querySelector("[data-series-explorer]");
     if (!explorer) {
@@ -267,7 +271,7 @@ layout: null
         title: "제목순",
         series: "시리즈명순"
       };
-      var parts = ["총 " + visibleCount + "개 Series entries"];
+      var parts = ["총 " + formatSeriesEntryCount(visibleCount)];
 
       if (query) {
         parts.push('"' + query + '" 필터 적용');

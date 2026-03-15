@@ -142,6 +142,10 @@ async function expectSorted(page, sortValue) {
       (await page.inputValue('[data-series-explorer-filter]')) === '쿼리파이 핸즈온',
       'expected QueryPie preset to sync the filter input value'
     );
+    assert(
+      state.status.includes('총 1개 Series entry'),
+      `expected singular Series entry status copy but got "${state.status}"`
+    );
     console.log('[ok] QueryPie preset filter');
 
     await page.click('[data-series-explorer-preset=""]');
