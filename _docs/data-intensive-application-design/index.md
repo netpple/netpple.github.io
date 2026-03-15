@@ -32,9 +32,10 @@ rightpanel: true
 {% assign docs = site.docs | where:'label', '데이터중심 애플리케이션' %}
 
 {% for post in docs %}
+{% assign post_description_display = post.description | default: '' | replace: 'istio in action', 'Istio IN ACTION' | replace: '데이터중심 애플리케이션', '데이터 중심 애플리케이션 설계' %}
 ### [{{ post.title }}]({{ post.url }})
 {% if post.badges %}{% for badge in post.badges %}<span class="badge badge-{{ badge.type }}">{{ badge.tag }}</span>{% endfor %}{% endif %} 
-{{ post. description }}
+{{ post_description_display }}
 <span class="post-date" style="font-style: italic; color: #999999">{{ post.date | date: "%m/%d %H:%M, %Y" }}</span>
 
 

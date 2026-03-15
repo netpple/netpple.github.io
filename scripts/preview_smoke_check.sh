@@ -412,6 +412,8 @@ assert_route_contains "${sample_series}" 'property="og:type" content="website"' 
 assert_route_not_contains "${sample_series}" 'property="og:type" content="article"' "Series landing not using article og:type"
 assert_route_not_contains "${sample_series}" 'rel="canonical" href="[^"]*/index"' "Series landing canonical without /index"
 assert_route_not_contains "${sample_series}" 'property="og:url" content="[^"]*/index"' "Series landing og:url without /index"
+assert_route_contains "${sample_series}" '<b>Istio IN ACTION 11장</b>' "Series landing entry descriptions use friendly Istio label"
+assert_route_not_contains_case_sensitive "${sample_series}" '<b>istio in action' "Series landing entry descriptions no raw Istio label"
 assert_route_contains "${sample_series_entry}" 'article-header__eyebrow\">Series entry<' "Series entry detail eyebrow"
 assert_route_contains "${sample_series_entry}" 'property="og:type" content="article"' "Series entry detail og:type"
 assert_route_not_contains "${sample_series_entry}" 'property="og:type" content="website"' "Series entry detail not using website og:type"
