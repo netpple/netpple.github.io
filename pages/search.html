@@ -68,7 +68,14 @@ description: 시리즈 엔트리/포스트 통합 검색
 				{% endunless %}
 		{% endfor %}
 		{% for post in site.pages %}
-				{% unless post.excluded_in_search %}
+				{% assign skip_search_page = false %}
+				{% if post.excluded_in_search or post.exclude_in_search %}
+					{% assign skip_search_page = true %}
+				{% endif %}
+				{% if post.layout == nil or post.url contains '/assets/' %}
+					{% assign skip_search_page = true %}
+				{% endif %}
+				{% unless skip_search_page %}
 					{% if added %},{% endif %}
 					{% assign added = false %}
 					{% assign search_url = post.url %}

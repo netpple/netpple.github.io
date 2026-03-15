@@ -1,5 +1,5 @@
 ---
-exclude_in_search: true
+excluded_in_search: true
 layout: null
 ---
 (function () {

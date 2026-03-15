@@ -407,6 +407,7 @@ assert_route_contains "/search/" '데이터 중심 애플리케이션 설계' "s
 assert_route_not_contains "/search/" '데이터중심 애플리케이션' "search index has no raw data series label"
 assert_route_not_contains "/search/" '"url":\s*"/docs/[^"]*/index"' "search index uses canonical series urls"
 assert_route_not_contains "/search/" '"id":\s*""' "search index empty document ids"
+assert_route_not_contains "/search/" '"url":\s*"/assets/' "search index excludes asset pages"
 assert_route_contains "${sample_post}" 'article-header__eyebrow\">Post<' "Post detail eyebrow"
 assert_route_contains "${sample_post}" 'property="og:type" content="article"' "Post detail og:type"
 assert_route_not_contains "${sample_post}" 'property="og:type" content="website"' "Post detail not using website og:type"
