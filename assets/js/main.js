@@ -267,7 +267,7 @@ layout: null
         title: "제목순",
         series: "시리즈명순"
       };
-      var parts = ["총 " + visibleCount + "개 Series entry"];
+      var parts = ["총 " + visibleCount + "개 Series entries"];
 
       if (query) {
         parts.push('"' + query + '" 필터 적용');

@@ -110,6 +110,7 @@ async function expectSorted(page, sortValue) {
       state.visibleItems.length === state.totalCount,
       `expected all Series Explorer items to be visible initially but got ${state.visibleItems.length}/${state.totalCount}`
     );
+    assert(state.status.includes('Series entries'), `expected plural Series entries status copy but got "${state.status}"`);
     await expectSorted(page, 'latest');
     console.log(`[ok] initial explorer state -> ${state.visibleItems.length} visible items`);
 

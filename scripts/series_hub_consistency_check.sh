@@ -25,7 +25,7 @@ for heading in "Series Navigation" "Series Explorer" "Recently Updated" "Series 
   fi
 done
 
-if ! grep -Eq '총 [0-9]+개 페이지.*[0-9]+개 Series entry' "${clean_file}"; then
+if ! grep -Eq '총 [0-9]+개 페이지.*[0-9]+개 Series entries' "${clean_file}"; then
   rm -f "${clean_file}"
   echo "[fail] series hub is missing the page-to-entry navigation summary"
   exit 1

@@ -23,7 +23,7 @@ description: 주제별 시리즈와 엔트리를 빠르게 탐색할 수 있는 
   <div class="section-heading">
     <p class="section-heading__kicker">Series Navigation</p>
     <h2 class="section-heading__title">시리즈 빠른 이동</h2>
-    <p class="section-heading__description">총 {{ all_series_pages | size }}개 페이지를 {{ series_groups | size }}개 Series 묶음별로 재정리했고, 그 안에서 {{ series_entries | size }}개 Series entry를 빠르게 이동할 수 있도록 구성했습니다.</p>
+    <p class="section-heading__description">총 {{ all_series_pages | size }}개 페이지를 {{ series_groups | size }}개 Series 묶음별로 재정리했고, 그 안에서 {{ series_entries | size }}개 Series entries를 빠르게 이동할 수 있도록 구성했습니다.</p>
   </div>
   <div class="chip-row">
     <a class="chip" href="#series-istio">Istio IN ACTION · {{ istio_series_entries | size }} entries</a>
@@ -37,14 +37,14 @@ description: 주제별 시리즈와 엔트리를 빠르게 탐색할 수 있는 
 <section class="page-section">
   <div class="section-heading">
     <p class="section-heading__kicker">Series Explorer</p>
-    <h2 class="section-heading__title">전체 Series entry 탐색</h2>
+    <h2 class="section-heading__title">전체 Series entries 탐색</h2>
     <p class="section-heading__description">제목, 시리즈명, 설명 기준으로 필터링하고 최신 업데이트, 제목, 시리즈명 순으로 정렬할 수 있습니다.</p>
   </div>
   <div class="series-explorer" data-series-explorer>
     <div class="series-explorer__controls">
       <label class="series-explorer__control" for="series-entry-filter">
         <span class="series-explorer__label">Filter</span>
-        <input id="series-entry-filter" class="search-input series-explorer__input" type="search" placeholder="Series entry 제목, 시리즈명, 설명 검색" autocomplete="off" aria-controls="series-entry-list" data-series-explorer-filter>
+        <input id="series-entry-filter" class="search-input series-explorer__input" type="search" placeholder="Series entries 제목, 시리즈명, 설명 검색" autocomplete="off" aria-controls="series-entry-list" data-series-explorer-filter>
       </label>
       <label class="series-explorer__control series-explorer__control--select" for="series-entry-sort">
         <span class="series-explorer__label">Sort</span>
@@ -63,7 +63,7 @@ description: 주제별 시리즈와 엔트리를 빠르게 탐색할 수 있는 
       <button type="button" class="chip chip--button" aria-pressed="false" aria-controls="series-entry-list" data-series-explorer-preset="데이터 중심 애플리케이션 설계" data-series-explorer-preset-aliases="데이터중심 애플리케이션">데이터 중심 애플리케이션 설계 · {{ data_series_entries | size }} entries</button>
       <button type="button" class="chip chip--button" aria-pressed="false" aria-controls="series-entry-list" data-series-explorer-preset="쿼리파이 핸즈온">쿼리파이 핸즈온 · {{ querypie_entry_count }} {{ querypie_entry_label }}</button>
     </div>
-    <p class="series-explorer__status" role="status" aria-live="polite" data-series-explorer-status>총 {{ series_entries | size }}개 Series entry</p>
+    <p class="series-explorer__status" role="status" aria-live="polite" data-series-explorer-status>총 {{ series_entries | size }}개 Series entries</p>
     <div id="series-entry-list" class="series-explorer__list" data-series-explorer-list>
       {% for series_entry in series_entries %}
         {% assign series_entry_summary = series_entry.description | default: "" | strip %}
@@ -96,7 +96,7 @@ description: 주제별 시리즈와 엔트리를 빠르게 탐색할 수 있는 
         </article>
       {% endfor %}
     </div>
-    <p class="series-explorer__empty" hidden data-series-explorer-empty>조건에 맞는 Series entry가 없습니다. 검색어를 줄이거나 정렬 기준을 바꿔보세요.</p>
+    <p class="series-explorer__empty" hidden data-series-explorer-empty>조건에 맞는 Series entries가 없습니다. 검색어를 줄이거나 정렬 기준을 바꿔보세요.</p>
   </div>
 </section>
 
