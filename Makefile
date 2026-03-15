@@ -3,7 +3,7 @@ PREVIEW_PORT ?= 4012
 PREVIEW_URL ?= http://127.0.0.1:$(PREVIEW_PORT)
 PREVIEW_IMAGE ?= jekyll/jekyll:4.2.0
 
-.PHONY: preview-up preview-build preview-smoke preview-responsive preview-overflow preview-overflow-full preview-nav preview-runtime preview-runtime-full preview-a11y preview-linkcheck preview-structure preview-style-scope preview-inline-style preview-ids preview-meta preview-terms preview-format preview-headings preview-series-hub preview-series-explorer preview-resources preview-sitemap preview-verify preview-verify-full preview-down preview-recreate preview-info
+.PHONY: preview-up preview-build preview-smoke preview-responsive preview-overflow preview-overflow-full preview-nav preview-runtime preview-runtime-full preview-a11y preview-linkcheck preview-canonical-links preview-structure preview-style-scope preview-inline-style preview-ids preview-meta preview-terms preview-format preview-headings preview-series-hub preview-series-explorer preview-resources preview-sitemap preview-verify preview-verify-full preview-down preview-recreate preview-info
 
 preview-up:
 	@if docker ps --format '{{.Names}}' | grep -qx '$(PREVIEW_NAME)'; then \
@@ -47,6 +47,9 @@ preview-a11y:
 preview-linkcheck:
 	scripts/internal_link_check.sh $(PREVIEW_URL)
 
+preview-canonical-links:
+	scripts/internal_canonical_link_check.sh _site
+
 preview-structure:
 	scripts/layout_consistency_check.sh _site
 
@@ -83,7 +86,7 @@ preview-resources:
 preview-sitemap:
 	scripts/sitemap_consistency_check.sh _site
 
-preview-verify: preview-build preview-smoke preview-responsive preview-overflow preview-nav preview-runtime preview-a11y preview-linkcheck preview-structure preview-style-scope preview-inline-style preview-ids preview-meta preview-terms preview-format preview-headings preview-series-hub preview-series-explorer preview-resources preview-sitemap
+preview-verify: preview-build preview-smoke preview-responsive preview-overflow preview-nav preview-runtime preview-a11y preview-linkcheck preview-canonical-links preview-structure preview-style-scope preview-inline-style preview-ids preview-meta preview-terms preview-format preview-headings preview-series-hub preview-series-explorer preview-resources preview-sitemap
 
 preview-verify-full: preview-verify preview-overflow-full preview-runtime-full
 
@@ -121,6 +124,7 @@ preview-info:
 	@echo "Accessibility smoke only: make preview-a11y"
 	@echo "Link check only (strict): make preview-linkcheck"
 	@echo "Link check relaxed: ALLOW_REDIRECTS=true make preview-linkcheck"
+	@echo "Canonical internal-link check only: make preview-canonical-links"
 	@echo "Structure check only: make preview-structure"
 	@echo "Style scope check only: make preview-style-scope"
 	@echo "Inline-style check only: make preview-inline-style"
