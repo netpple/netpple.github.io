@@ -14,9 +14,9 @@ description: 주제별 시리즈와 엔트리를 빠르게 탐색할 수 있는 
 {% assign querypie_series_entries = site.docs | where: "label", "쿼리파이 핸즈온" | sort: "date" | reverse %}
 {% assign series_entries = istio_series_entries | concat: container_series_entries | concat: kubernetes_series_entries | concat: data_series_entries | concat: querypie_series_entries | sort: "date" | reverse %}
 {% assign querypie_entry_count = querypie_series_entries | size %}
-{% assign querypie_entry_label = "entries" %}
+{% assign querypie_entry_label = "Series entries" %}
 {% if querypie_entry_count == 1 %}
-  {% assign querypie_entry_label = "entry" %}
+  {% assign querypie_entry_label = "Series entry" %}
 {% endif %}
 
 <section class="page-section">
@@ -26,10 +26,10 @@ description: 주제별 시리즈와 엔트리를 빠르게 탐색할 수 있는 
     <p class="section-heading__description">총 {{ all_series_pages | size }}개 페이지를 {{ series_groups | size }}개 Series 묶음별로 재정리했고, 그 안에서 {{ series_entries | size }}개 Series entries를 빠르게 이동할 수 있도록 구성했습니다.</p>
   </div>
   <div class="chip-row">
-    <a class="chip" href="#series-istio">Istio IN ACTION · {{ istio_series_entries | size }} entries</a>
-    <a class="chip" href="#series-container">도커 없이 컨테이너 만들기 · {{ container_series_entries | size }} entries</a>
-    <a class="chip" href="#series-kubernetes">쿠버네티스 딥다이브 · {{ kubernetes_series_entries | size }} entries</a>
-    <a class="chip" href="#series-data">데이터 중심 애플리케이션 설계 · {{ data_series_entries | size }} entries</a>
+    <a class="chip" href="#series-istio">Istio IN ACTION · {{ istio_series_entries | size }} Series entries</a>
+    <a class="chip" href="#series-container">도커 없이 컨테이너 만들기 · {{ container_series_entries | size }} Series entries</a>
+    <a class="chip" href="#series-kubernetes">쿠버네티스 딥다이브 · {{ kubernetes_series_entries | size }} Series entries</a>
+    <a class="chip" href="#series-data">데이터 중심 애플리케이션 설계 · {{ data_series_entries | size }} Series entries</a>
     <a class="chip" href="#series-querypie">쿼리파이 핸즈온 · {{ querypie_entry_count }} {{ querypie_entry_label }}</a>
   </div>
 </section>
@@ -56,11 +56,11 @@ description: 주제별 시리즈와 엔트리를 빠르게 탐색할 수 있는 
       </label>
     </div>
     <div class="chip-row chip-row--offset series-explorer__presets" role="toolbar" aria-label="Series Explorer presets">
-      <button type="button" class="chip chip--button is-active" aria-pressed="true" aria-controls="series-entry-list" data-series-explorer-preset="">전체 · {{ series_entries | size }} entries</button>
-      <button type="button" class="chip chip--button" aria-pressed="false" aria-controls="series-entry-list" data-series-explorer-preset="Istio IN ACTION" data-series-explorer-preset-aliases="istio in action">Istio IN ACTION · {{ istio_series_entries | size }} entries</button>
-      <button type="button" class="chip chip--button" aria-pressed="false" aria-controls="series-entry-list" data-series-explorer-preset="도커 없이 컨테이너 만들기">도커 없이 컨테이너 만들기 · {{ container_series_entries | size }} entries</button>
-      <button type="button" class="chip chip--button" aria-pressed="false" aria-controls="series-entry-list" data-series-explorer-preset="쿠버네티스 딥다이브">쿠버네티스 딥다이브 · {{ kubernetes_series_entries | size }} entries</button>
-      <button type="button" class="chip chip--button" aria-pressed="false" aria-controls="series-entry-list" data-series-explorer-preset="데이터 중심 애플리케이션 설계" data-series-explorer-preset-aliases="데이터중심 애플리케이션">데이터 중심 애플리케이션 설계 · {{ data_series_entries | size }} entries</button>
+      <button type="button" class="chip chip--button is-active" aria-pressed="true" aria-controls="series-entry-list" data-series-explorer-preset="">전체 · {{ series_entries | size }} Series entries</button>
+      <button type="button" class="chip chip--button" aria-pressed="false" aria-controls="series-entry-list" data-series-explorer-preset="Istio IN ACTION" data-series-explorer-preset-aliases="istio in action">Istio IN ACTION · {{ istio_series_entries | size }} Series entries</button>
+      <button type="button" class="chip chip--button" aria-pressed="false" aria-controls="series-entry-list" data-series-explorer-preset="도커 없이 컨테이너 만들기">도커 없이 컨테이너 만들기 · {{ container_series_entries | size }} Series entries</button>
+      <button type="button" class="chip chip--button" aria-pressed="false" aria-controls="series-entry-list" data-series-explorer-preset="쿠버네티스 딥다이브">쿠버네티스 딥다이브 · {{ kubernetes_series_entries | size }} Series entries</button>
+      <button type="button" class="chip chip--button" aria-pressed="false" aria-controls="series-entry-list" data-series-explorer-preset="데이터 중심 애플리케이션 설계" data-series-explorer-preset-aliases="데이터중심 애플리케이션">데이터 중심 애플리케이션 설계 · {{ data_series_entries | size }} Series entries</button>
       <button type="button" class="chip chip--button" aria-pressed="false" aria-controls="series-entry-list" data-series-explorer-preset="쿼리파이 핸즈온">쿼리파이 핸즈온 · {{ querypie_entry_count }} {{ querypie_entry_label }}</button>
     </div>
     <p class="series-explorer__status" role="status" aria-live="polite" data-series-explorer-status>총 {{ series_entries | size }}개 Series entries</p>
@@ -144,7 +144,7 @@ description: 주제별 시리즈와 엔트리를 빠르게 탐색할 수 있는 
     {% assign latest = istio_series_entries | first %}
     <article id="series-istio" class="series-card">
       <div class="series-card__foot">
-        <span>{{ istio_series_entries | size }} entries</span>
+        <span>{{ istio_series_entries | size }} Series entries</span>
         {% if latest %}<span>Latest: {{ latest.date | date: "%Y.%m.%d" }}</span>{% endif %}
       </div>
       <h3 class="series-card__title"><a href="{{ site.baseurl }}/docs/istio-in-action/">Istio IN ACTION</a></h3>
@@ -160,7 +160,7 @@ description: 주제별 시리즈와 엔트리를 빠르게 탐색할 수 있는 
     {% assign latest = container_series_entries | first %}
     <article id="series-container" class="series-card">
       <div class="series-card__foot">
-        <span>{{ container_series_entries | size }} entries</span>
+        <span>{{ container_series_entries | size }} Series entries</span>
         {% if latest %}<span>Latest: {{ latest.date | date: "%Y.%m.%d" }}</span>{% endif %}
       </div>
       <h3 class="series-card__title"><a href="{{ site.baseurl }}/docs/make-container-without-docker/">도커 없이 컨테이너 만들기</a></h3>
@@ -176,7 +176,7 @@ description: 주제별 시리즈와 엔트리를 빠르게 탐색할 수 있는 
     {% assign latest = kubernetes_series_entries | first %}
     <article id="series-kubernetes" class="series-card">
       <div class="series-card__foot">
-        <span>{{ kubernetes_series_entries | size }} entries</span>
+        <span>{{ kubernetes_series_entries | size }} Series entries</span>
         {% if latest %}<span>Latest: {{ latest.date | date: "%Y.%m.%d" }}</span>{% endif %}
       </div>
       <h3 class="series-card__title"><a href="{{ site.baseurl }}/docs/deepdive-into-kubernetes/">쿠버네티스 딥다이브</a></h3>
@@ -192,7 +192,7 @@ description: 주제별 시리즈와 엔트리를 빠르게 탐색할 수 있는 
     {% assign latest = data_series_entries | first %}
     <article id="series-data" class="series-card">
       <div class="series-card__foot">
-        <span>{{ data_series_entries | size }} entries</span>
+        <span>{{ data_series_entries | size }} Series entries</span>
         {% if latest %}<span>Latest: {{ latest.date | date: "%Y.%m.%d" }}</span>{% endif %}
       </div>
       <h3 class="series-card__title"><a href="{{ site.baseurl }}/docs/data-intensive-application-design/">데이터 중심 애플리케이션 설계</a></h3>
