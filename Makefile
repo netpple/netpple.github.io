@@ -1,4 +1,4 @@
-PREVIEW_NAME ?= netpple-preview-sam11
+PREVIEW_NAME ?= netpple-preview
 PREVIEW_PORT ?= 4012
 PREVIEW_URL ?= http://127.0.0.1:$(PREVIEW_PORT)
 PREVIEW_IMAGE ?= jekyll/jekyll:4.2.0
