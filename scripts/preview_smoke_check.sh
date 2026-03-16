@@ -2,6 +2,8 @@
 set -euo pipefail
 
 BASE_URL="${1:-http://127.0.0.1:4012}"
+READY_RETRIES="${PREVIEW_SMOKE_READY_RETRIES:-12}"
+READY_DELAY_SECONDS="${PREVIEW_SMOKE_READY_DELAY_SECONDS:-1}"
 
 routes=(
   "/"
@@ -38,6 +40,33 @@ key_nav_paths=(
 fail() {
   echo "[fail] $1"
   exit 1
+}
+
+wait_for_preview_ready() {
+  local attempt
+  local body_file
+  local http_code
+
+  body_file="$(mktemp)"
+
+  for (( attempt = 1; attempt <= READY_RETRIES; attempt++ )); do
+    http_code="$(
+      curl -sS -o "${body_file}" -w "%{http_code}" "${BASE_URL}/" || true
+    )"
+
+    if [[ "${http_code}" == "200" ]] && grep -Eiq 'netpple|김삼영|기술 블로그' "${body_file}"; then
+      rm -f "${body_file}"
+      echo "[ok] preview ready after ${attempt} attempt(s)"
+      return 0
+    fi
+
+    if (( attempt < READY_RETRIES )); then
+      sleep "${READY_DELAY_SECONDS}"
+    fi
+  done
+
+  rm -f "${body_file}"
+  fail "preview did not become ready at ${BASE_URL}/ after ${READY_RETRIES} attempt(s)"
 }
 
 assert_route_layout() {
@@ -460,6 +489,9 @@ assert_home_stats() {
 }
 
 echo "[smoke] base url: ${BASE_URL}"
+
+echo "[smoke] waiting for preview readiness"
+wait_for_preview_ready
 
 echo "[smoke] checking homepage content marker"
 curl -fsSL "${BASE_URL}/" | grep -Eiq "netpple|김삼영|기술 블로그"
