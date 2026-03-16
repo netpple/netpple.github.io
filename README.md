@@ -202,7 +202,7 @@ Smoke checks cover:
 - Key page redesign markers (Home/Posts/Series/About/Search)
 - Tags page empty tag navigation guard (no `href="#"` in `.tag-nav__link`)
 - Responsive viewport rendering smoke check (`desktop-min(961)/desktop/tablet/tablet-min(761)/mobile-break(960)/mobile-max(760)/mobile` screenshots across core + navigation routes incl. search results + series entry detail routes)
-- Home first-viewport check (`desktop-min(961)` and `desktop`) ensuring Home hero stats and recommended routes fit within the first screen
+- Home first-viewport check (`desktop-min(961)`, `tablet(1024)`, and `desktop`) ensuring Home hero stats and recommended routes fit within the first screen
 - Responsive layout overflow check (`desktop-min(961)/desktop/tablet/tablet-min(761)/mobile-break(960)/mobile-max(760)/mobile`, core routes + series entry detail routes with horizontal overflow fail; optional `_site` full-route mode)
 - Runtime nav consistency check (`desktop-min(961)/desktop/tablet/mobile-break(960)/tablet-min(761)/mobile-max(760)/mobile`, GNB height/alignment/hover/active + route-specific active target mapping + toggle visibility/aria-label transitions, keyboard toggle Enter/Space, resize transition, toggle/Escape/outside-click close behavior, and page-wide `target="_blank"` rel safety)
 - Runtime console stability check (core routes console.error/pageerror/requestfailed 없는지 점검, GA/GTM 외부 차단 노이즈 제외)

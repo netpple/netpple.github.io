@@ -19,6 +19,7 @@ const { chromium } = require('playwright');
 const baseUrl = process.argv[2];
 const viewports = [
   { name: 'desktop-min', width: 961, height: 800 },
+  { name: 'tablet', width: 1024, height: 768 },
   { name: 'desktop', width: 1366, height: 900 },
 ];
 
