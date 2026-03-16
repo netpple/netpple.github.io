@@ -3,7 +3,7 @@ PREVIEW_PORT ?= 4012
 PREVIEW_URL ?= http://127.0.0.1:$(PREVIEW_PORT)
 PREVIEW_IMAGE ?= jekyll/jekyll:4.2.0
 
-.PHONY: preview-up preview-build preview-smoke preview-responsive preview-overflow preview-overflow-full preview-nav preview-runtime preview-runtime-full preview-a11y preview-linkcheck preview-canonical-links preview-structure preview-style-scope preview-inline-style preview-ids preview-meta preview-terms preview-format preview-headings preview-series-hub preview-series-explorer preview-resources preview-sitemap preview-verify preview-verify-full preview-down preview-recreate preview-info
+.PHONY: preview-up preview-build preview-smoke preview-responsive preview-home-fold preview-overflow preview-overflow-full preview-nav preview-runtime preview-runtime-full preview-a11y preview-linkcheck preview-canonical-links preview-structure preview-style-scope preview-inline-style preview-ids preview-meta preview-terms preview-format preview-headings preview-series-hub preview-series-explorer preview-resources preview-sitemap preview-verify preview-verify-full preview-down preview-recreate preview-info
 
 preview-up:
 	@if docker ps --format '{{.Names}}' | grep -qx '$(PREVIEW_NAME)'; then \
@@ -25,6 +25,9 @@ preview-smoke:
 
 preview-responsive:
 	scripts/responsive_smoke_check.sh $(PREVIEW_URL)
+
+preview-home-fold:
+	scripts/home_first_viewport_check.sh $(PREVIEW_URL)
 
 preview-overflow:
 	scripts/responsive_overflow_check.sh $(PREVIEW_URL)
@@ -86,7 +89,7 @@ preview-resources:
 preview-sitemap:
 	scripts/sitemap_consistency_check.sh _site
 
-preview-verify: preview-build preview-smoke preview-responsive preview-overflow preview-nav preview-runtime preview-a11y preview-linkcheck preview-canonical-links preview-structure preview-style-scope preview-inline-style preview-ids preview-meta preview-terms preview-format preview-headings preview-series-hub preview-series-explorer preview-resources preview-sitemap
+preview-verify: preview-build preview-smoke preview-responsive preview-home-fold preview-overflow preview-nav preview-runtime preview-a11y preview-linkcheck preview-canonical-links preview-structure preview-style-scope preview-inline-style preview-ids preview-meta preview-terms preview-format preview-headings preview-series-hub preview-series-explorer preview-resources preview-sitemap
 
 preview-verify-full: preview-verify preview-overflow-full preview-runtime-full
 
@@ -116,6 +119,7 @@ preview-info:
 	@echo "Build + smoke: make preview-verify"
 	@echo "Comprehensive full-site verify: make preview-verify-full"
 	@echo "Responsive smoke only: make preview-responsive"
+	@echo "Home first-viewport check only: make preview-home-fold"
 	@echo "Responsive overflow only: make preview-overflow"
 	@echo "Responsive overflow full-site: make preview-overflow-full"
 	@echo "Nav consistency only: make preview-nav"
