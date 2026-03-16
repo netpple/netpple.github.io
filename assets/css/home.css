@@ -283,8 +283,19 @@
 }
 
 @media (max-width: 760px) {
+  .home-hero {
+    padding: var(--space-3);
+  }
+
   .home-stats {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .home-stats__item,
+  .home-hero__featured,
+  .home-feature-card {
+    padding: var(--space-2);
   }
 
   .home-posts-grid .entry-card,
