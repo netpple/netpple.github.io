@@ -521,6 +521,70 @@ img {
   background: #fff;
 }
 
+.about-hero {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  background: linear-gradient(140deg, #ffffff 0%, #f4f8ff 100%);
+  box-shadow: var(--shadow-sm);
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(280px, 0.9fr);
+  gap: var(--space-5);
+  align-items: start;
+}
+
+.about-hero__title {
+  margin: var(--space-3) 0 0;
+  line-height: 1.2;
+  font-size: clamp(1.7rem, 2.9vw, 2.35rem);
+  letter-spacing: -0.02em;
+}
+
+.about-hero__text {
+  margin: var(--space-4) 0 0;
+  color: var(--color-text-muted);
+  font-size: 1rem;
+}
+
+.about-highlight-grid {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.about-highlight-card {
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: #fff;
+}
+
+.about-highlight-card__label {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.about-highlight-card__title {
+  margin: var(--space-2) 0 0;
+  font-size: 1.08rem;
+}
+
+.about-highlight-card__text {
+  margin: var(--space-2) 0 0;
+  color: var(--color-text-muted);
+}
+
+.about-career-card {
+  grid-column: span 12;
+}
+
+.about-evidence-card {
+  grid-column: span 6;
+}
+
 .article-shell {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
@@ -1102,6 +1166,10 @@ img {
 }
 
 @media (max-width: 1080px) {
+  .about-hero {
+    grid-template-columns: 1fr;
+  }
+
   .article-layout {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -1190,6 +1258,10 @@ img {
   .article-content .responsive-wrap iframe {
     min-height: 300px;
   }
+
+  .about-evidence-card {
+    grid-column: span 12;
+  }
 }
 
 @media (max-width: 760px) {
@@ -1216,6 +1288,11 @@ img {
   .entry-card,
   .track-card {
     padding: var(--space-4);
+  }
+
+  .about-hero {
+    padding: var(--space-5);
+    border-radius: var(--radius-md);
   }
 
   .site-footer {
