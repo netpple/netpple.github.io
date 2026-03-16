@@ -544,6 +544,13 @@ img {
   line-height: 1.7;
 }
 
+.about-profile-strip__title {
+  margin: var(--space-3) 0 0;
+  line-height: 1.15;
+  font-size: clamp(1.45rem, 2.2vw, 1.9rem);
+  letter-spacing: -0.02em;
+}
+
 .about-profile-strip__side {
   display: grid;
   gap: var(--space-3);

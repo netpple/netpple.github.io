@@ -83,6 +83,7 @@ layout: default
   {% endif %}
 {% else %}
   {% unless is_home %}
+    {% assign hide_page_intro = page.hide_page_intro | default: false %}
     {% assign intro_eyebrow = "Page" %}
     {% if page.url == "/news/" or page.url == "/archive/" %}
       {% assign intro_eyebrow = "Posts" %}
@@ -95,11 +96,13 @@ layout: default
     {% elsif page.url == "/tags/" %}
       {% assign intro_eyebrow = "Tags" %}
     {% endif %}
-    <header class="page-intro">
-      <p class="page-intro__eyebrow">{{ intro_eyebrow }}</p>
-      <h1 class="page-intro__title">{{ page.title }}</h1>
-      {% if page.description %}<p class="page-intro__description">{{ page.description }}</p>{% endif %}
-    </header>
+    {% unless hide_page_intro %}
+      <header class="page-intro">
+        <p class="page-intro__eyebrow">{{ intro_eyebrow }}</p>
+        <h1 class="page-intro__title">{{ page.title }}</h1>
+        {% if page.description %}<p class="page-intro__description">{{ page.description }}</p>{% endif %}
+      </header>
+    {% endunless %}
   {% endunless %}
   <div class="page-content">
     {{ content }}

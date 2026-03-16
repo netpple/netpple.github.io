@@ -2,6 +2,7 @@
 title: About
 permalink: /about/
 description: 김삼영의 경력, 주요 역할, 발표 및 공개 자료를 정리한 프로필
+hide_page_intro: true
 ---
 
 <section class="page-section">
@@ -11,6 +12,7 @@ description: 김삼영의 경력, 주요 역할, 발표 및 공개 자료를 정
         <span class="badge">Profile</span>
         <span>김삼영 · QueryPie CTO</span>
       </div>
+      <h1 class="about-profile-strip__title">김삼영</h1>
       <p class="about-profile-strip__summary">
         2000년부터 검색, 플랫폼, 보안, 운영 자동화 영역에서 제품 개발과 조직 리딩을 맡아왔습니다.
         현재는 <a href="https://www.querypie.com/" target="_blank" rel="noreferrer noopener">QueryPie</a> CTO로서 접근 제어 플랫폼의 기술 방향과 실행을 리드하고,
