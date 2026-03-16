@@ -119,7 +119,10 @@ make preview-smoke
 # 3-1) Or run responsive viewport screenshot checks only
 make preview-responsive
 
-# 3-2) Or run responsive overflow checks only (horizontal overflow fails)
+# 3-2) Or run the Home first-viewport check only
+make preview-home-fold
+
+# 3-3) Or run responsive overflow checks only (horizontal overflow fails)
 make preview-overflow
 
 # Optional full-site mode (all generated HTML routes in _site)
@@ -127,36 +130,36 @@ make preview-overflow-full
 # Optional timeout/retry tuning for slower environments:
 # OVERFLOW_TIMEOUT_MS=90000 OVERFLOW_RETRIES=4 make preview-overflow-full
 
-# 3-2-1) Or run nav consistency checks only (desktop-min(961)/desktop/tablet/mobile-break(960)/tablet-min(761)/mobile-max/mobile)
+# 3-3-1) Or run nav consistency checks only (desktop-min(961)/desktop/tablet/mobile-break(960)/tablet-min(761)/mobile-max/mobile)
 make preview-nav
 
-# 3-2-2) Or run accessibility smoke checks only (skip-link keyboard flow)
+# 3-3-2) Or run accessibility smoke checks only (skip-link keyboard flow)
 make preview-a11y
 
-# 3-2-3) Or run Series Explorer interaction checks only (/docs/ filter + sort + empty state)
+# 3-3-3) Or run Series Explorer interaction checks only (/docs/ filter + sort + empty state)
 make preview-series-explorer
 
-# 3-3) Or run internal link checks only (strict: redirects fail)
+# 3-4) Or run internal link checks only (strict: redirects fail)
 make preview-linkcheck
 # optional relaxed mode:
 ALLOW_REDIRECTS=true make preview-linkcheck
 
-# 3-4) Or run internal canonical-link checks only (`/foo/index` style href regressions fail)
+# 3-5) Or run internal canonical-link checks only (`/foo/index` style href regressions fail)
 make preview-canonical-links
 
-# 3-5) Or run structure consistency checks only
+# 3-6) Or run structure consistency checks only
 make preview-structure
 
-# 3-6) Or run style scope checks only
+# 3-7) Or run style scope checks only
 make preview-style-scope
 
-# 3-7) Or run inline-style checks only (core templates/pages)
+# 3-8) Or run inline-style checks only (core templates/pages)
 make preview-inline-style
 
-# 3-8) Or run HTML id uniqueness checks only
+# 3-9) Or run HTML id uniqueness checks only
 make preview-ids
 
-# 3-9) Or run metadata consistency checks only
+# 3-10) Or run metadata consistency checks only
 make preview-meta
 
 # 3-10) Or run source terminology checks only
@@ -199,6 +202,7 @@ Smoke checks cover:
 - Key page redesign markers (Home/Posts/Series/About/Search)
 - Tags page empty tag navigation guard (no `href="#"` in `.tag-nav__link`)
 - Responsive viewport rendering smoke check (`desktop-min(961)/desktop/tablet/tablet-min(761)/mobile-break(960)/mobile-max(760)/mobile` screenshots across core + navigation routes incl. search results + series entry detail routes)
+- Home first-viewport check (`desktop-min(961)` and `desktop`) ensuring Home hero stats and recommended routes fit within the first screen
 - Responsive layout overflow check (`desktop-min(961)/desktop/tablet/tablet-min(761)/mobile-break(960)/mobile-max(760)/mobile`, core routes + series entry detail routes with horizontal overflow fail; optional `_site` full-route mode)
 - Runtime nav consistency check (`desktop-min(961)/desktop/tablet/mobile-break(960)/tablet-min(761)/mobile-max(760)/mobile`, GNB height/alignment/hover/active + route-specific active target mapping + toggle visibility/aria-label transitions, keyboard toggle Enter/Space, resize transition, toggle/Escape/outside-click close behavior, and page-wide `target="_blank"` rel safety)
 - Runtime console stability check (core routes console.error/pageerror/requestfailed 없는지 점검, GA/GTM 외부 차단 노이즈 제외)
