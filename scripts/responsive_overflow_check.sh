@@ -131,6 +131,35 @@ const viewports = [
 
 const hasHorizontalOverflow = (metrics) => metrics.scrollWidth > metrics.viewportWidth + 1;
 
+async function readOverflowMetrics(page, timeoutMs) {
+  const collect = async () => {
+    await page.waitForTimeout(500);
+    return page.evaluate(() => {
+      const doc = document.documentElement;
+      const body = document.body;
+      const scrollWidth = Math.max(
+        doc ? doc.scrollWidth : 0,
+        body ? body.scrollWidth : 0
+      );
+      const viewportWidth = window.innerWidth || 0;
+      return { scrollWidth, viewportWidth };
+    });
+  };
+
+  try {
+    return await collect();
+  } catch (error) {
+    const message = error && error.message ? error.message : '';
+    if (!message.includes('Execution context was destroyed')) {
+      throw error;
+    }
+
+    // Redirect pages can replace the document between the wait and evaluate steps.
+    await page.waitForLoadState('domcontentloaded', { timeout: Math.min(timeoutMs, 5000) });
+    return collect();
+  }
+}
+
 (async () => {
   const browser = await chromium.launch({ headless: true });
   let checks = 0;
@@ -173,17 +202,7 @@ const hasHorizontalOverflow = (metrics) => metrics.scrollWidth > metrics.viewpor
             throw new Error(`navigation status ${status}`);
           }
 
-          await page.waitForTimeout(500);
-          const metrics = await page.evaluate(() => {
-            const doc = document.documentElement;
-            const body = document.body;
-            const scrollWidth = Math.max(
-              doc ? doc.scrollWidth : 0,
-              body ? body.scrollWidth : 0
-            );
-            const viewportWidth = window.innerWidth || 0;
-            return { scrollWidth, viewportWidth };
-          });
+          const metrics = await readOverflowMetrics(page, timeoutMs);
 
           if (hasHorizontalOverflow(metrics)) {
             failed = true;

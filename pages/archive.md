@@ -1,16 +1,16 @@
 ---
 layout: page
-title: News Archive
+title: Posts Archive
 permalink: /archive/
-description: 연도별 게시글 아카이브
+description: 연도별 포스트 아카이브
 ---
 
 {% assign posts = site.posts | where_exp: "post", "post.excluded_in_search != true" %}
 
 <div class="section-heading">
   <p class="section-heading__kicker">Chronological View</p>
-  <h2 class="section-heading__title">연도별 아카이브</h2>
-  <p class="section-heading__description">모든 게시글을 연도별로 빠르게 탐색할 수 있습니다.</p>
+  <h2 class="section-heading__title">연도별 포스트 아카이브</h2>
+  <p class="section-heading__description">모든 포스트를 연도별로 빠르게 탐색할 수 있습니다.</p>
 </div>
 
 {% if posts.size > 0 %}

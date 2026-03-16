@@ -11,14 +11,13 @@ histories:
   description: 최초 등록
 ---
 <div class="responsive-wrap">
-  <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vRc6oMsAYrOevqIb-zGH5ANcarxW-TTpkuv986CiRWJL64eWHHDYiW2MPOBWgQW56pp4TJUy2z42dIS/embed?start=false&loop=false&delayms=3000" frameborder="0" width="100%" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+  <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vRc6oMsAYrOevqIb-zGH5ANcarxW-TTpkuv986CiRWJL64eWHHDYiW2MPOBWgQW56pp4TJUy2z42dIS/embed?start=false&loop=false&delayms=3000" title="{{ page.title | escape }}" loading="lazy" frameborder="0" width="100%" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
 </div>
 
 [[슬라이드 보기]](https://docs.google.com/presentation/d/1fVYobLDfPWq77jIH536ST0a425f4QjVkr3dFitTIkyI/edit#){:target="_blank"}
 
-### references
+## References
 - [Kubelet create pod workflow](https://blog.hdls.me/15961134056881.html){:target="_blank"}
 - [Kubelet API](https://www.deepnetwork.com/blog/2020/01/13/kubelet-api.html){:target="_blank"}
 - [Kubernetes - Beyond a Black Box](https://www.slideshare.net/harryzhang735/kubernetes-beyond-a-black-box-part-1){:target="_blank"}
 - [Kubernetes Design Proposals PLEG](https://github.com/kubernetes/design-proposals-archive/blob/main/node/pod-lifecycle-event-generator.md){:target="_blank"}
-

@@ -24,8 +24,8 @@ const routes = [
   { path: '/docs/', expectedActive: '/docs/' },
   { path: '/about/', expectedActive: '/about/' },
   { path: '/archive/', expectedActive: '/news/' },
-  { path: '/tags/', expectedActive: '/news/' },
-  { path: '/search/', expectedActive: '/news/' },
+  { path: '/tags/', expectedActive: null },
+  { path: '/search/', expectedActive: null },
   { path: '/2023/c-for-beginner-hongongc/', expectedActive: '/news/' },
   { path: '/2021/how-uid-gid-work-in-container/', expectedActive: '/news/' },
   { path: '/docs/istio-in-action/', expectedActive: '/docs/' },
@@ -132,15 +132,21 @@ async function checkDesktop(page, route, expectedActive, viewportName) {
 
     const activeCount = links.filter((link) => link.classList.contains('is-active')).length;
     const ariaCurrentCount = links.filter((link) => link.getAttribute('aria-current') === 'page').length;
-    if (activeCount !== 1 || ariaCurrentCount !== 1) {
-      return { ok: false, reason: `desktop active=${activeCount} aria-current=${ariaCurrentCount}` };
-    }
-    const activeLink = links.find((link) => link.classList.contains('is-active'));
-    if (!activeLink) return { ok: false, reason: 'desktop active link missing' };
-    const activeHref = new URL(activeLink.getAttribute('href'), window.location.origin).pathname;
-    const normalizedActive = normalizePath(activeHref);
-    if (normalizedActive !== expected) {
-      return { ok: false, reason: `desktop active href=${normalizedActive} expected=${expected}` };
+    if (expected === null) {
+      if (activeCount !== 0 || ariaCurrentCount !== 0) {
+        return { ok: false, reason: `desktop active=${activeCount} aria-current=${ariaCurrentCount}` };
+      }
+    } else {
+      if (activeCount !== 1 || ariaCurrentCount !== 1) {
+        return { ok: false, reason: `desktop active=${activeCount} aria-current=${ariaCurrentCount}` };
+      }
+      const activeLink = links.find((link) => link.classList.contains('is-active'));
+      if (!activeLink) return { ok: false, reason: 'desktop active link missing' };
+      const activeHref = new URL(activeLink.getAttribute('href'), window.location.origin).pathname;
+      const normalizedActive = normalizePath(activeHref);
+      if (normalizedActive !== expected) {
+        return { ok: false, reason: `desktop active href=${normalizedActive} expected=${expected}` };
+      }
     }
 
     const blankTargetLinks = Array.from(document.querySelectorAll('a[target="_blank"]'));
@@ -292,15 +298,21 @@ async function checkMobile(page, route, expectedActive, mobileViewport) {
 
     const activeCount = links.filter((link) => link.classList.contains('is-active')).length;
     const ariaCurrentCount = links.filter((link) => link.getAttribute('aria-current') === 'page').length;
-    if (activeCount !== 1 || ariaCurrentCount !== 1) {
-      return { ok: false, reason: `mobile active=${activeCount} aria-current=${ariaCurrentCount}` };
-    }
-    const activeLink = links.find((link) => link.classList.contains('is-active'));
-    if (!activeLink) return { ok: false, reason: 'mobile active link missing' };
-    const activeHref = new URL(activeLink.getAttribute('href'), window.location.origin).pathname;
-    const normalizedActive = normalizePath(activeHref);
-    if (normalizedActive !== expected) {
-      return { ok: false, reason: `mobile active href=${normalizedActive} expected=${expected}` };
+    if (expected === null) {
+      if (activeCount !== 0 || ariaCurrentCount !== 0) {
+        return { ok: false, reason: `mobile active=${activeCount} aria-current=${ariaCurrentCount}` };
+      }
+    } else {
+      if (activeCount !== 1 || ariaCurrentCount !== 1) {
+        return { ok: false, reason: `mobile active=${activeCount} aria-current=${ariaCurrentCount}` };
+      }
+      const activeLink = links.find((link) => link.classList.contains('is-active'));
+      if (!activeLink) return { ok: false, reason: 'mobile active link missing' };
+      const activeHref = new URL(activeLink.getAttribute('href'), window.location.origin).pathname;
+      const normalizedActive = normalizePath(activeHref);
+      if (normalizedActive !== expected) {
+        return { ok: false, reason: `mobile active href=${normalizedActive} expected=${expected}` };
+      }
     }
 
     return {
@@ -431,7 +443,7 @@ async function checkMobile(page, route, expectedActive, mobileViewport) {
         await desktopPage.waitForTimeout(120);
         const desktop = await checkDesktop(desktopPage, route, expectedActive, desktopViewport.name);
         checks += 1;
-        console.log(`[ok] ${route} ${desktopViewport.name} nav consistency (active=${expectedActive}, links=${desktop.linkCount}, link-h=${desktop.linkHeight.toFixed(1)}, header-h=${desktop.headerHeight.toFixed(1)}, blank-target=${desktop.blankTargetCount})`);
+        console.log(`[ok] ${route} ${desktopViewport.name} nav consistency (active=${expectedActive ?? 'none'}, links=${desktop.linkCount}, link-h=${desktop.linkHeight.toFixed(1)}, header-h=${desktop.headerHeight.toFixed(1)}, blank-target=${desktop.blankTargetCount})`);
         await desktopContext.close();
       }
 
@@ -444,7 +456,7 @@ async function checkMobile(page, route, expectedActive, mobileViewport) {
         await mobilePage.waitForTimeout(120);
         const mobile = await checkMobile(mobilePage, route, expectedActive, mobileViewport);
         checks += 1;
-        console.log(`[ok] ${route} ${mobileViewport.name} nav consistency (active=${expectedActive}, links=${mobile.linkCount}, link-h=${mobile.linkHeight.toFixed(1)}, header-h=${mobile.headerHeight.toFixed(1)})`);
+        console.log(`[ok] ${route} ${mobileViewport.name} nav consistency (active=${expectedActive ?? 'none'}, links=${mobile.linkCount}, link-h=${mobile.linkHeight.toFixed(1)}, header-h=${mobile.headerHeight.toFixed(1)})`);
         await mobileContext.close();
       }
     }

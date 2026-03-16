@@ -175,11 +175,11 @@ description: 김삼영의 경력, 주요 역할, 발표 및 공개 자료를 정
     <h2 class="section-heading__title">학력</h2>
   </div>
   <div class="entry-grid">
-    <article class="entry-card entry-card--news">
+    <article class="entry-card entry-card--full">
       <h3 class="entry-card__title">서울대학교</h3>
       <p class="entry-card__excerpt">1996 ~ 2000</p>
     </article>
-    <article class="entry-card entry-card--news">
+    <article class="entry-card entry-card--full">
       <h3 class="entry-card__title">상명대학교 정보통신대학원</h3>
       <p class="entry-card__excerpt">2002 ~ 2004</p>
     </article>

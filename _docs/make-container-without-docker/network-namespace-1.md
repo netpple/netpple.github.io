@@ -11,12 +11,12 @@ histories:
   description: 실습 안내페이지 업데이트
 ---
 <div class="responsive-wrap">
-    <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vTOsEXasBt7H7qHJNNNOn4RQKzgWnsXQriK0hh2UEAP2AyKr4gnFqlEPF0nOe8no55mByBhzrqdZR7U/embed?start=false&loop=false&delayms=3000" frameborder="0" width="100%" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+    <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vTOsEXasBt7H7qHJNNNOn4RQKzgWnsXQriK0hh2UEAP2AyKr4gnFqlEPF0nOe8no55mByBhzrqdZR7U/embed?start=false&loop=false&delayms=3000" title="{{ page.title | escape }}" loading="lazy" frameborder="0" width="100%" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
 </div>
 
 [[슬라이드 보기]](https://docs.google.com/presentation/d/1NhzhNDiWTCIKCViWPW8Wvza8GrT56xugymX5TV-WLbc/edit#){:target="_blank"}
 
-### references
+## References
 - [Ethernet and IP Networking 101](https://iximiuz.com/en/posts/computer-networking-101/){:target="_blank"}
 - [Container Networking Is Simple](https://iximiuz.com/en/posts/container-networking-is-simple/?fbclid=IwAR0-ohNRdnoQgcCCQSAyhGtPNsJ8tBL_Fd1YUSOscXFsSrr_eXIRu6PKO28){:target="_blank"}
 - [Introduction to Linux interfaces for virtual networking](https://developers.redhat.com/blog/2018/10/22/introduction-to-linux-interfaces-for-virtual-networking/){:target="_blank"}

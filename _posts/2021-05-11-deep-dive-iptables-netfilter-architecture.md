@@ -364,7 +364,7 @@ Q7) br0 interface에 대하여 in/out FORWARD 허용
 k8s Service : https://ssup2.github.io/theory_analysis/Kubernetes_Service_Proxy/
 
 
-### references
+## References
 - [Iptables 위키 : https://itwiki.kr/w/%EB%A6%AC%EB%88%85%EC%8A%A4_iptables](https://itwiki.kr/w/%EB%A6%AC%EB%88%85%EC%8A%A4_iptables){:target="_blank"}
 - [iptables 정리 : https://mozzihacker.tistory.com/25](https://mozzihacker.tistory.com/25){:target="_blank"}
 - [iptables flow : http://www.adminsehow.com/2011/09/iptables-packet-traverse-map/](http://www.adminsehow.com/2011/09/iptables-packet-traverse-map/){:target="_blank"}
