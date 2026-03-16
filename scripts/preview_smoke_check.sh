@@ -375,6 +375,49 @@ assert_home_series_count_matches_docs() {
   echo "[ok] / Series home stat value -> ${actual}"
 }
 
+assert_home_feature_cards() {
+  local html_file
+  local card_count
+  local post_count
+  local series_count
+  local topic_count
+  local reason_count
+  local cta_count
+
+  html_file="$(mktemp)"
+  curl -fsSL "${BASE_URL}/" > "${html_file}"
+
+  card_count="$(
+    (grep -o 'class="home-feature-card"' "${html_file}" || true) | wc -l | tr -d ' '
+  )"
+  post_count="$(
+    (grep -o '추천 포스트' "${html_file}" || true) | wc -l | tr -d ' '
+  )"
+  series_count="$(
+    (grep -o '추천 시리즈' "${html_file}" || true) | wc -l | tr -d ' '
+  )"
+  topic_count="$(
+    (grep -o '주제:' "${html_file}" || true) | wc -l | tr -d ' '
+  )"
+  reason_count="$(
+    (grep -o 'class="home-feature-card__reason"' "${html_file}" || true) | wc -l | tr -d ' '
+  )"
+  cta_count="$(
+    (grep -Eo '>(포스트 보기|시리즈 보기) →<' "${html_file}" || true) | wc -l | tr -d ' '
+  )"
+
+  rm -f "${html_file}"
+
+  [[ "${card_count}" == "4" ]] || fail "/ expected 4 home feature cards but got ${card_count}"
+  [[ "${post_count}" == "2" ]] || fail "/ expected 2 recommended post cards but got ${post_count}"
+  [[ "${series_count}" == "2" ]] || fail "/ expected 2 recommended series cards but got ${series_count}"
+  [[ "${topic_count}" == "4" ]] || fail "/ expected 4 feature-card topic lines but got ${topic_count}"
+  [[ "${reason_count}" == "4" ]] || fail "/ expected 4 feature-card reason lines but got ${reason_count}"
+  [[ "${cta_count}" == "4" ]] || fail "/ expected 4 feature-card CTA labels but got ${cta_count}"
+
+  echo "[ok] / home feature cards -> cards=${card_count}, posts=${post_count}, series=${series_count}"
+}
+
 echo "[smoke] base url: ${BASE_URL}"
 
 echo "[smoke] checking homepage content marker"
@@ -407,6 +450,7 @@ done
 
 echo "[smoke] checking key page redesign markers"
 assert_route_contains "/" 'home-hero|home-stats|home-series-grid' "home redesign markers"
+assert_home_feature_cards
 assert_route_contains "/news/" 'entry-card--list' "posts list card markers"
 assert_route_contains "/docs/" 'series-grid|entry-card--list' "series hub markers"
 assert_route_contains "/docs/" 'Series Navigation' "series navigation heading"
@@ -425,6 +469,8 @@ assert_route_pattern_min_count "/docs/" 'data-series-explorer-item' "20" "series
 assert_route_not_contains_case_sensitive "/docs/" '>\s*istio in action\s*<' "legacy raw Istio series label on docs hub"
 assert_route_not_contains "/docs/" '>\s*데이터중심 애플리케이션\s*<' "legacy raw data series label on docs hub"
 assert_route_contains "/about/" 'about-hero|about-highlight-grid|about-evidence-grid' "about redesign markers"
+assert_route_not_contains "/about/" '기술스택|기술 스택' "legacy tech-stack section labels"
+assert_route_not_contains "/about/" '관심영역|관심 영역' "legacy interest section labels"
 assert_route_contains "/search/" 'search-panel|id=\"search-input\"' "search ui markers"
 assert_route_not_contains "/tags/" 'class="tag-nav__link" href="#"' "empty tag navigation links"
 
