@@ -64,8 +64,8 @@ function fail(message) {
     if (!result.title || !result.stats || !result.featured) {
       fail(`${viewport.name} is missing required home hero sections`);
     }
-    if (result.featuredCards < 4) {
-      fail(`${viewport.name} expected at least 4 home feature cards but got ${result.featuredCards}`);
+    if (result.featuredCards < 2) {
+      fail(`${viewport.name} expected at least 2 home feature cards but got ${result.featuredCards}`);
     }
 
     const columnCount = (result.gridTemplateColumns.match(/px/g) || []).length;

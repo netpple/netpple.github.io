@@ -408,12 +408,12 @@ assert_home_feature_cards() {
 
   rm -f "${html_file}"
 
-  [[ "${card_count}" == "4" ]] || fail "/ expected 4 home feature cards but got ${card_count}"
-  [[ "${post_count}" == "2" ]] || fail "/ expected 2 recommended post cards but got ${post_count}"
-  [[ "${series_count}" == "2" ]] || fail "/ expected 2 recommended series cards but got ${series_count}"
-  [[ "${topic_count}" == "4" ]] || fail "/ expected 4 feature-card topic lines but got ${topic_count}"
-  [[ "${reason_count}" == "4" ]] || fail "/ expected 4 feature-card reason lines but got ${reason_count}"
-  [[ "${cta_count}" == "4" ]] || fail "/ expected 4 feature-card CTA labels but got ${cta_count}"
+  [[ "${card_count}" == "2" ]] || fail "/ expected 2 home feature cards but got ${card_count}"
+  [[ "${post_count}" == "1" ]] || fail "/ expected 1 recommended post card but got ${post_count}"
+  [[ "${series_count}" == "1" ]] || fail "/ expected 1 recommended series card but got ${series_count}"
+  [[ "${topic_count}" == "2" ]] || fail "/ expected 2 feature-card topic lines but got ${topic_count}"
+  [[ "${reason_count}" == "2" ]] || fail "/ expected 2 feature-card reason lines but got ${reason_count}"
+  [[ "${cta_count}" == "2" ]] || fail "/ expected 2 feature-card CTA labels but got ${cta_count}"
 
   echo "[ok] / home feature cards -> cards=${card_count}, posts=${post_count}, series=${series_count}"
 }
@@ -431,9 +431,9 @@ assert_home_stats() {
     (grep -o 'class="home-stats__item"' "${html_file}" || true) | wc -l | tr -d ' '
   )"
 
-  if [[ "${stats_count}" != "4" ]]; then
+  if [[ "${stats_count}" != "3" ]]; then
     rm -f "${html_file}" "${stats_file}"
-    fail "/ expected 4 home stats but got ${stats_count}"
+    fail "/ expected 3 home stats but got ${stats_count}"
   fi
 
   awk '
@@ -494,9 +494,7 @@ assert_route_contains "/" 'home-hero|home-stats|home-series-grid' "home redesign
 assert_home_stats
 assert_home_feature_cards
 assert_route_contains "/" 'href="/2023/k8s-1.26-install/"' "home featured install post link"
-assert_route_contains "/" 'href="/2022/etcd/"' "home featured etcd post link"
 assert_route_contains "/" 'href="/docs/istio-in-action/"' "home featured Istio series link"
-assert_route_contains "/" 'href="/docs/make-container-without-docker/"' "home featured container series link"
 assert_route_contains "/news/" 'entry-card--list' "posts list card markers"
 assert_route_contains "/docs/" 'series-grid|entry-card--list' "series hub markers"
 assert_route_contains "/docs/" 'Series Navigation' "series navigation heading"
@@ -514,10 +512,10 @@ assert_route_pattern_count "/docs/" 'class="entry-card entry-card--list"' "8" "r
 assert_route_pattern_min_count "/docs/" 'data-series-explorer-item' "20" "series explorer items"
 assert_route_not_contains_case_sensitive "/docs/" '>\s*istio in action\s*<' "legacy raw Istio series label on docs hub"
 assert_route_not_contains "/docs/" '>\s*데이터중심 애플리케이션\s*<' "legacy raw data series label on docs hub"
-assert_route_contains "/about/" 'about-hero|about-highlight-grid|about-evidence-grid' "about redesign markers"
+assert_route_contains "/about/" 'about-profile-strip|about-proof-list|about-evidence-grid' "about redesign markers"
 assert_route_contains "/about/" 'QueryPie CTO' "about current role marker"
 assert_route_contains "/about/" 'if\(kakao\)dev2022' "about talk credibility marker"
-assert_route_contains "/about/" 'querypie\.com|linkedin\.com/in/sam0-kim' "about external profile links"
+assert_route_contains "/about/" 'linkedin\.com/in/sam0-kim|github\.com/netpple' "about external profile links"
 assert_route_not_contains "/about/" '기술스택|기술 스택' "legacy tech-stack section labels"
 assert_route_not_contains "/about/" '관심영역|관심 영역' "legacy interest section labels"
 assert_route_contains "/search/" 'search-panel|id=\"search-input\"' "search ui markers"
@@ -527,7 +525,7 @@ echo "[smoke] checking IA terminology markers"
 assert_route_contains "/" '>\s*Posts\s*<' "Posts IA label"
 assert_route_contains "/" '>\s*Series\s*<' "Series IA label"
 assert_route_contains "/" 'home-stats__label\">Series<' "Series home stat label"
-assert_route_contains "/" 'home-stats__meta\">현재 운영 중인 시리즈 묶음<' "Series home stat helper copy"
+assert_route_contains "/" 'home-stats__meta\">대표 학습 경로로 정리한 시리즈<' "Series home stat helper copy"
 assert_home_series_count_matches_docs
 assert_route_not_contains "/" '>\s*News\s*<' "legacy News IA label"
 assert_route_not_contains "/" '>\s*Docs\s*<' "legacy Docs IA label"

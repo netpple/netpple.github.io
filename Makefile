@@ -143,7 +143,7 @@ preview-info:
 	@echo "Sitemap consistency check only: make preview-sitemap"
 	@echo "Stop preview: make preview-down"
 	@echo "Visual checkpoints:"
-	@echo "  1) Home first screen shows value proposition, 4 metrics, and 4 recommendation cards together"
+	@echo "  1) Home first screen shows value proposition, 3 key metrics, and 2 representative entry cards together"
 	@echo "  2) Home recommendation cards clearly show topic, reason, and correct destination type"
 	@echo "  3) About emphasizes current role, career history, and talk credibility without stack/interest sections"
 	@echo "  4) Posts / Series navigation stays consistent across Home, About, and detail routes"

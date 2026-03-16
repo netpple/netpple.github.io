@@ -521,44 +521,51 @@ img {
   background: #fff;
 }
 
-.about-hero {
+.about-profile-strip {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  padding: var(--space-6);
+  padding: var(--space-5);
   background: linear-gradient(140deg, #ffffff 0%, #f4f8ff 100%);
   box-shadow: var(--shadow-sm);
   display: grid;
-  grid-template-columns: minmax(0, 1.3fr) minmax(280px, 0.9fr);
-  gap: var(--space-5);
+  grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.85fr);
+  gap: var(--space-4);
   align-items: start;
 }
 
-.about-hero__title {
-  margin: var(--space-3) 0 0;
-  line-height: 1.2;
-  font-size: clamp(1.7rem, 2.9vw, 2.35rem);
-  letter-spacing: -0.02em;
+.about-profile-strip__main {
+  min-width: 0;
 }
 
-.about-hero__text {
-  margin: var(--space-4) 0 0;
+.about-profile-strip__summary {
+  margin: var(--space-3) 0 0;
   color: var(--color-text-muted);
   font-size: 1rem;
+  line-height: 1.7;
 }
 
-.about-highlight-grid {
+.about-profile-strip__side {
   display: grid;
   gap: var(--space-3);
 }
 
-.about-highlight-card {
+.about-profile-strip__links {
+  margin: 0;
+}
+
+.about-proof-list {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.about-proof-item {
   padding: var(--space-4);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   background: #fff;
 }
 
-.about-highlight-card__label {
+.about-proof-item__label {
   margin: 0;
   color: var(--color-text-muted);
   font-size: 0.76rem;
@@ -567,14 +574,9 @@ img {
   text-transform: uppercase;
 }
 
-.about-highlight-card__title {
+.about-proof-item__value {
   margin: var(--space-2) 0 0;
-  font-size: 1.08rem;
-}
-
-.about-highlight-card__text {
-  margin: var(--space-2) 0 0;
-  color: var(--color-text-muted);
+  font-weight: 700;
 }
 
 .about-career-card {
@@ -1298,7 +1300,7 @@ img {
 }
 
 @media (max-width: 1080px) {
-  .about-hero {
+  .about-profile-strip {
     grid-template-columns: 1fr;
   }
 
@@ -1423,7 +1425,7 @@ img {
     padding: var(--space-4);
   }
 
-  .about-hero {
+  .about-profile-strip {
     padding: var(--space-5);
     border-radius: var(--radius-md);
   }
