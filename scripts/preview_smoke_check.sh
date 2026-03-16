@@ -333,6 +333,48 @@ assert_route_pattern_min_count() {
   echo "[ok] ${route} ${description} -> ${actual}"
 }
 
+assert_home_series_count_matches_docs() {
+  local html_file
+  local expected
+  local actual
+
+  html_file="$(mktemp)"
+  curl -fsSL "${BASE_URL}/" > "${html_file}"
+
+  expected="$(
+    find _docs -mindepth 2 -maxdepth 2 -type f -name '*.md' -print \
+      | sed -E 's#^_docs/([^/]+)/.*#\1#' \
+      | sort -u \
+      | wc -l \
+      | tr -d ' '
+  )"
+
+  actual="$(
+    awk '
+      /<p class="home-stats__label">Series<\/p>/ { capture=1; next }
+      capture && /<p class="home-stats__value">/ {
+        line = $0
+        sub(/^.*<p class="home-stats__value">/, "", line)
+        sub(/<\/p>.*$/, "", line)
+        print line
+        exit
+      }
+    ' "${html_file}"
+  )"
+
+  rm -f "${html_file}"
+
+  if [[ -z "${actual}" ]]; then
+    fail "/ missing rendered Series home stat value"
+  fi
+
+  if [[ "${actual}" != "${expected}" ]]; then
+    fail "/ expected Series home stat ${expected} from docs groups but got ${actual}"
+  fi
+
+  echo "[ok] / Series home stat value -> ${actual}"
+}
+
 echo "[smoke] base url: ${BASE_URL}"
 
 echo "[smoke] checking homepage content marker"
@@ -391,6 +433,7 @@ assert_route_contains "/" '>\s*Posts\s*<' "Posts IA label"
 assert_route_contains "/" '>\s*Series\s*<' "Series IA label"
 assert_route_contains "/" 'home-stats__label\">Series<' "Series home stat label"
 assert_route_contains "/" 'home-stats__meta\">현재 운영 중인 시리즈 묶음<' "Series home stat helper copy"
+assert_home_series_count_matches_docs
 assert_route_not_contains "/" '>\s*News\s*<' "legacy News IA label"
 assert_route_not_contains "/" '>\s*Docs\s*<' "legacy Docs IA label"
 assert_nav_not_contains "/" '>\s*GitHub\s*<' "top-nav GitHub link"
