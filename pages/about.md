@@ -113,19 +113,6 @@ hide_page_intro: true
         <li><a href="https://tech.kakaoenterprise.com/171" target="_blank" rel="noreferrer noopener">컨테이너 인터널 #2</a></li>
       </ul>
     </article>
-    <article class="entry-card about-evidence-card">
-      <div class="entry-card__meta">
-        <span class="badge">Profiles</span>
-        <span>External</span>
-      </div>
-      <h3 class="entry-card__title">LinkedIn · GitHub</h3>
-      <p class="entry-card__excerpt">프로필 확인과 공개 저장소 탐색은 아래 두 링크를 중심으로 정리했습니다.</p>
-      <ul class="entry-card__list">
-        <li><a href="https://www.linkedin.com/in/sam0-kim/" target="_blank" rel="noreferrer noopener">LinkedIn 프로필</a></li>
-        <li><a href="https://github.com/netpple" target="_blank" rel="noreferrer noopener">GitHub 프로필</a></li>
-        <li><a href="{{ site.baseurl }}/docs/make-container-without-docker/">도커 없이 컨테이너 만들기 시리즈</a></li>
-      </ul>
-    </article>
   </div>
 </section>
 
