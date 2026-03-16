@@ -409,8 +409,7 @@ assert_home_feature_cards() {
   local card_count
   local post_count
   local series_count
-  local topic_count
-  local reason_count
+  local summary_count
   local cta_count
 
   html_file="$(mktemp)"
@@ -425,11 +424,8 @@ assert_home_feature_cards() {
   series_count="$(
     (grep -o '추천 시리즈' "${html_file}" || true) | wc -l | tr -d ' '
   )"
-  topic_count="$(
-    (grep -o '주제:' "${html_file}" || true) | wc -l | tr -d ' '
-  )"
-  reason_count="$(
-    (grep -o 'class="home-feature-card__reason"' "${html_file}" || true) | wc -l | tr -d ' '
+  summary_count="$(
+    (grep -o 'class="home-feature-card__summary"' "${html_file}" || true) | wc -l | tr -d ' '
   )"
   cta_count="$(
     (grep -Eo '>(포스트 보기|시리즈 보기) →<' "${html_file}" || true) | wc -l | tr -d ' '
@@ -440,8 +436,7 @@ assert_home_feature_cards() {
   [[ "${card_count}" == "2" ]] || fail "/ expected 2 home feature cards but got ${card_count}"
   [[ "${post_count}" == "1" ]] || fail "/ expected 1 recommended post card but got ${post_count}"
   [[ "${series_count}" == "1" ]] || fail "/ expected 1 recommended series card but got ${series_count}"
-  [[ "${topic_count}" == "2" ]] || fail "/ expected 2 feature-card topic lines but got ${topic_count}"
-  [[ "${reason_count}" == "2" ]] || fail "/ expected 2 feature-card reason lines but got ${reason_count}"
+  [[ "${summary_count}" == "2" ]] || fail "/ expected 2 feature-card summary lines but got ${summary_count}"
   [[ "${cta_count}" == "2" ]] || fail "/ expected 2 feature-card CTA labels but got ${cta_count}"
 
   echo "[ok] / home feature cards -> cards=${card_count}, posts=${post_count}, series=${series_count}"

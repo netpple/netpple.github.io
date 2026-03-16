@@ -56,12 +56,17 @@
   font-size: clamp(0.94rem, 1.5vw, 1.04rem);
 }
 
-.home-hero__summary {
+.home-hero__note {
   margin: 0.6rem 0 0;
   max-width: 680px;
   color: rgba(255, 255, 255, 0.76);
   font-size: 0.9rem;
   line-height: 1.42;
+}
+
+.home-hero__note a,
+.home-hero__note a:hover {
+  color: #fff;
 }
 
 .home-hero__actions {
@@ -76,18 +81,6 @@
 
 .home-hero .button--ghost:hover {
   background: rgba(255, 255, 255, 0.22);
-}
-
-.home-hero__subnav {
-  margin: 0.3rem 0 0;
-  color: rgba(255, 255, 255, 0.74);
-  font-size: 0.8rem;
-  line-height: 1.35;
-}
-
-.home-hero__subnav a,
-.home-hero__subnav a:hover {
-  color: #fff;
 }
 
 .home-stats {
@@ -186,16 +179,11 @@
   color: #fff;
 }
 
-.home-feature-card__topic,
-.home-feature-card__reason {
+.home-feature-card__summary {
   margin: 6px 0 0;
   color: rgba(255, 255, 255, 0.86);
   font-size: 0.8rem;
   line-height: 1.45;
-}
-
-.home-feature-card__reason {
-  color: rgba(255, 255, 255, 0.7);
 }
 
 .home-feature-card__cta {
