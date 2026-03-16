@@ -44,19 +44,16 @@ function fail(message) {
         return { top: box.top, bottom: box.bottom, height: box.height };
       };
 
-      const grid = select('.home-hero__grid');
       const title = rect('.home-hero__title');
       const stats = rect('.home-stats');
-      const featured = rect('.home-hero__featured');
+      const featured = rect('.home-hero__quickstart') || rect('.home-hero__featured');
       const featuredCards = document.querySelectorAll('.home-feature-card').length;
-      const gridTemplateColumns = grid ? getComputedStyle(grid).gridTemplateColumns : '';
 
       return {
         title,
         stats,
         featured,
         featuredCards,
-        gridTemplateColumns,
         viewportHeight: window.innerHeight,
       };
     });
@@ -66,11 +63,6 @@ function fail(message) {
     }
     if (result.featuredCards < 2) {
       fail(`${viewport.name} expected at least 2 home feature cards but got ${result.featuredCards}`);
-    }
-
-    const columnCount = (result.gridTemplateColumns.match(/px/g) || []).length;
-    if (columnCount < 2) {
-      fail(`${viewport.name} expected a two-column home hero but got '${result.gridTemplateColumns}'`);
     }
 
     if (result.stats.bottom > result.viewportHeight) {

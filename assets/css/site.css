@@ -526,7 +526,6 @@ img {
   border-radius: var(--radius-lg);
   padding: var(--space-5);
   background: linear-gradient(140deg, #ffffff 0%, #f4f8ff 100%);
-  box-shadow: var(--shadow-sm);
   display: grid;
   grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.85fr);
   gap: var(--space-4);
@@ -562,14 +561,21 @@ img {
 
 .about-proof-list {
   display: grid;
-  gap: var(--space-3);
+  gap: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: #fff;
 }
 
 .about-proof-item {
   padding: var(--space-4);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background: #fff;
+  border-top: 1px solid var(--color-border);
+  background: transparent;
+}
+
+.about-proof-item:first-child {
+  border-top: 0;
 }
 
 .about-proof-item__label {

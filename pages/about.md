@@ -14,8 +14,8 @@ hide_page_intro: true
       </div>
       <h1 class="about-profile-strip__title">김삼영</h1>
       <p class="about-profile-strip__summary">
-        2000년부터 검색, 플랫폼, 보안, 운영 자동화 영역에서 제품 개발과 조직 리딩을 맡아왔습니다.
-        현재는 <a href="https://www.querypie.com/" target="_blank" rel="noreferrer noopener">QueryPie</a> CTO로서 접근 제어 플랫폼의 기술 방향과 실행을 리드하고,
+        검색, 플랫폼, 보안, 운영 자동화 영역에서 제품 개발과 조직 리딩을 맡아왔습니다.
+        현재는 <a href="https://www.querypie.com/" target="_blank" rel="noreferrer noopener">QueryPie</a> CTO로서 접근 제어 플랫폼의 기술 방향과 실행을 이끌고 있으며,
         이전에는 카카오/카카오엔터프라이즈에서 검색 클라우드 전환과 대규모 운영 체계 정착을 주도했습니다.
       </p>
     </div>
@@ -69,7 +69,6 @@ hide_page_intro: true
       <ul class="entry-card__list">
         <li>7명 규모 팀 리딩과 20명 규모 검색 클라우드 TF 리드를 맡아 전환 과제를 주도했습니다.</li>
         <li>온프레미스 기반 검색 시스템을 Kubernetes 중심 Cloud Native 구조로 전환했습니다.</li>
-        <li>배포 파이프라인, 테스트, 모니터링, 자동화 기반 운영 체계를 정착시켰습니다.</li>
         <li>팀 내 컨테이너/Kubernetes 스터디와 사내 교육을 꾸준히 운영했습니다.</li>
       </ul>
     </article>
@@ -79,7 +78,6 @@ hide_page_intro: true
       <p class="entry-card__excerpt">금융, 공공, 제조, 위성 장비, 포털 서비스 등 다양한 도메인에서 개발 리드와 시스템 구축 경험을 쌓았습니다.</p>
       <ul class="entry-card__list">
         <li>유진데이터 기술연구소(2006~2013)에서 금융, 공공, 제조 프로젝트 개발 리드와 전자문서관리시스템 개발을 맡았습니다.</li>
-        <li>스페이스링크 기술연구소(2005)에서 위성장비관리시스템을 개발했습니다.</li>
         <li>한국아이오테크(2002~2004), 올퍼스트(2000~2002)에서 웹 기반 업무/포털 시스템을 구축했습니다.</li>
       </ul>
     </article>
