@@ -455,9 +455,9 @@ assert_home_stats() {
     (grep -o 'class="home-stats__item"' "${html_file}" || true) | wc -l | tr -d ' '
   )"
 
-  if [[ "${stats_count}" != "3" ]]; then
+  if [[ "${stats_count}" != "2" ]]; then
     rm -f "${html_file}" "${stats_file}"
-    fail "/ expected 3 home stats but got ${stats_count}"
+    fail "/ expected 2 home stats but got ${stats_count}"
   fi
 
   awk '
@@ -539,12 +539,13 @@ assert_route_pattern_count "/docs/" 'class="entry-card entry-card--list"' "8" "r
 assert_route_pattern_min_count "/docs/" 'data-series-explorer-item' "20" "series explorer items"
 assert_route_not_contains_case_sensitive "/docs/" '>\s*istio in action\s*<' "legacy raw Istio series label on docs hub"
 assert_route_not_contains "/docs/" '>\s*데이터중심 애플리케이션\s*<' "legacy raw data series label on docs hub"
-assert_route_contains "/about/" 'about-profile-strip|about-proof-list|about-evidence-grid' "about redesign markers"
+assert_route_contains "/about/" 'about-intro|about-evidence-grid' "about redesign markers"
 assert_route_contains "/about/" 'QueryPie CTO' "about current role marker"
 assert_route_contains "/about/" 'if\(kakao\)dev2022' "about talk credibility marker"
 assert_route_contains "/about/" 'linkedin\.com/in/sam0-kim|github\.com/netpple' "about external profile links"
 assert_route_not_contains "/about/" '기술스택|기술 스택' "legacy tech-stack section labels"
 assert_route_not_contains "/about/" '관심영역|관심 영역' "legacy interest section labels"
+assert_route_not_contains "/about/" '>\s*학력\s*<' "legacy education section label"
 assert_route_contains "/search/" 'search-panel|id=\"search-input\"' "search ui markers"
 assert_route_not_contains "/tags/" 'class="tag-nav__link" href="#"' "empty tag navigation links"
 

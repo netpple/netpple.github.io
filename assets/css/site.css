@@ -521,75 +521,39 @@ img {
   background: #fff;
 }
 
-.about-profile-strip {
+.about-intro {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   padding: var(--space-5);
   background: linear-gradient(140deg, #ffffff 0%, #f4f8ff 100%);
-  display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.85fr);
-  gap: var(--space-4);
-  align-items: start;
 }
 
-.about-profile-strip__main {
-  min-width: 0;
-}
-
-.about-profile-strip__summary {
-  margin: var(--space-3) 0 0;
+.about-intro__eyebrow {
+  margin: 0;
   color: var(--color-text-muted);
-  font-size: 1rem;
-  line-height: 1.7;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
-.about-profile-strip__title {
+.about-intro__title {
   margin: var(--space-3) 0 0;
   line-height: 1.15;
   font-size: clamp(1.45rem, 2.2vw, 1.9rem);
   letter-spacing: -0.02em;
 }
 
-.about-profile-strip__side {
-  display: grid;
-  gap: var(--space-3);
-}
-
-.about-profile-strip__links {
-  margin: 0;
-}
-
-.about-proof-list {
-  display: grid;
-  gap: 0;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  background: #fff;
-}
-
-.about-proof-item {
-  padding: var(--space-4);
-  border-top: 1px solid var(--color-border);
-  background: transparent;
-}
-
-.about-proof-item:first-child {
-  border-top: 0;
-}
-
-.about-proof-item__label {
-  margin: 0;
+.about-intro__summary {
+  margin: var(--space-3) 0 0;
   color: var(--color-text-muted);
-  font-size: 0.76rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-size: 1rem;
+  line-height: 1.7;
 }
 
-.about-proof-item__value {
-  margin: var(--space-2) 0 0;
-  font-weight: 700;
+.about-intro__links {
+  margin: 0;
+  margin-top: var(--space-4);
 }
 
 .about-career-card {
@@ -1313,10 +1277,6 @@ img {
 }
 
 @media (max-width: 1080px) {
-  .about-profile-strip {
-    grid-template-columns: 1fr;
-  }
-
   .article-layout {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -1438,7 +1398,7 @@ img {
     padding: var(--space-4);
   }
 
-  .about-profile-strip {
+  .about-intro {
     padding: var(--space-5);
     border-radius: var(--radius-md);
   }

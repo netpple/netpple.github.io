@@ -6,34 +6,17 @@ hide_page_intro: true
 ---
 
 <section class="page-section">
-  <div class="about-profile-strip">
-    <div class="about-profile-strip__main">
-      <div class="entry-card__meta">
-        <span class="badge">Profile</span>
-        <span>김삼영 · QueryPie CTO</span>
-      </div>
-      <h1 class="about-profile-strip__title">김삼영</h1>
-      <p class="about-profile-strip__summary">
-        검색, 플랫폼, 보안, 운영 자동화 영역에서 제품 개발과 조직 리딩을 맡아왔습니다.
-        현재는 <a href="https://www.querypie.com/" target="_blank" rel="noreferrer noopener">QueryPie</a> CTO로서 접근 제어 플랫폼의 기술 방향과 실행을 이끌고 있으며,
-        이전에는 카카오/카카오엔터프라이즈에서 검색 클라우드 전환과 대규모 운영 체계 정착을 주도했습니다.
-      </p>
-    </div>
-    <div class="about-profile-strip__side">
-      <div class="button-row about-profile-strip__links">
-        <a class="button button--primary" href="https://www.linkedin.com/in/sam0-kim/" target="_blank" rel="noreferrer noopener">LinkedIn</a>
-        <a class="button button--ghost" href="https://github.com/netpple" target="_blank" rel="noreferrer noopener">GitHub</a>
-      </div>
-      <div class="about-proof-list">
-        <div class="about-proof-item">
-          <p class="about-proof-item__label">Current Role</p>
-          <p class="about-proof-item__value">QueryPie CTO · 2023 ~ 현재</p>
-        </div>
-        <div class="about-proof-item">
-          <p class="about-proof-item__label">Representative Talk</p>
-          <p class="about-proof-item__value"><a href="https://if.kakao.com/2022/session/104" target="_blank" rel="noreferrer noopener">if(kakao)dev2022 · 도커 없이 컨테이너 만들기</a></p>
-        </div>
-      </div>
+  <div class="about-intro">
+    <p class="about-intro__eyebrow">김삼영 · QueryPie CTO</p>
+    <h1 class="about-intro__title">김삼영</h1>
+    <p class="about-intro__summary">
+      검색, 플랫폼, 보안, 운영 자동화 영역에서 제품 개발과 조직 리딩을 맡아왔습니다.
+      현재는 <a href="https://www.querypie.com/" target="_blank" rel="noreferrer noopener">QueryPie</a> CTO로서 접근 제어 플랫폼의 기술 방향과 실행을 이끌고 있으며,
+      이전에는 카카오/카카오엔터프라이즈에서 검색 클라우드 전환과 대규모 운영 체계 정착을 주도했습니다.
+    </p>
+    <div class="button-row about-intro__links">
+      <a class="button button--primary" href="https://www.linkedin.com/in/sam0-kim/" target="_blank" rel="noreferrer noopener">LinkedIn</a>
+      <a class="button button--ghost" href="https://github.com/netpple" target="_blank" rel="noreferrer noopener">GitHub</a>
     </div>
   </div>
 </section>
@@ -112,23 +95,6 @@ hide_page_intro: true
         <li><a href="https://tech.kakaoenterprise.com/154" target="_blank" rel="noreferrer noopener">컨테이너 인터널 #1</a></li>
         <li><a href="https://tech.kakaoenterprise.com/171" target="_blank" rel="noreferrer noopener">컨테이너 인터널 #2</a></li>
       </ul>
-    </article>
-  </div>
-</section>
-
-<section class="page-section">
-  <div class="section-heading">
-    <p class="section-heading__kicker">Education</p>
-    <h2 class="section-heading__title">학력</h2>
-  </div>
-  <div class="entry-grid">
-    <article class="entry-card entry-card--full">
-      <h3 class="entry-card__title">서울대학교</h3>
-      <p class="entry-card__excerpt">1996 ~ 2000</p>
-    </article>
-    <article class="entry-card entry-card--full">
-      <h3 class="entry-card__title">상명대학교 정보통신대학원</h3>
-      <p class="entry-card__excerpt">2002 ~ 2004</p>
     </article>
   </div>
 </section>
