@@ -418,6 +418,47 @@ assert_home_feature_cards() {
   echo "[ok] / home feature cards -> cards=${card_count}, posts=${post_count}, series=${series_count}"
 }
 
+assert_home_stats() {
+  local html_file
+  local stats_file
+  local stats_count
+
+  html_file="$(mktemp)"
+  stats_file="$(mktemp)"
+  curl -fsSL "${BASE_URL}/" > "${html_file}"
+
+  stats_count="$(
+    (grep -o 'class="home-stats__item"' "${html_file}" || true) | wc -l | tr -d ' '
+  )"
+
+  if [[ "${stats_count}" != "4" ]]; then
+    rm -f "${html_file}" "${stats_file}"
+    fail "/ expected 4 home stats but got ${stats_count}"
+  fi
+
+  awk '
+    /<div class="home-stats">/ { in_stats=1 }
+    in_stats { print }
+    /<\/div>/ {
+      if (in_stats) {
+        depth += gsub(/<div/, "&")
+        depth -= gsub(/<\/div>/, "&")
+        if (depth <= 0) {
+          exit
+        }
+      }
+    }
+  ' "${html_file}" > "${stats_file}"
+
+  if grep -Eiq '방문자|visitor|visitors|analytics' "${stats_file}"; then
+    rm -f "${html_file}" "${stats_file}"
+    fail "/ unexpectedly exposes visitor or analytics copy in home stats"
+  fi
+
+  rm -f "${html_file}" "${stats_file}"
+  echo "[ok] / home stats -> ${stats_count} items without visitor metric"
+}
+
 echo "[smoke] base url: ${BASE_URL}"
 
 echo "[smoke] checking homepage content marker"
@@ -450,6 +491,7 @@ done
 
 echo "[smoke] checking key page redesign markers"
 assert_route_contains "/" 'home-hero|home-stats|home-series-grid' "home redesign markers"
+assert_home_stats
 assert_home_feature_cards
 assert_route_contains "/" 'href="/2023/k8s-1.26-install/"' "home featured install post link"
 assert_route_contains "/" 'href="/2022/etcd/"' "home featured etcd post link"
