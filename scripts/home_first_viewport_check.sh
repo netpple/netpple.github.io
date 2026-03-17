@@ -46,7 +46,7 @@ function fail(message) {
 
       const title = rect('.home-hero__title');
       const stats = rect('.home-stats');
-      const featured = rect('.home-hero__quickstart') || rect('.home-hero__featured');
+      const featured = rect('.home-featured-panel') || rect('.home-hero__quickstart') || rect('.home-hero__featured');
       const featuredCards = document.querySelectorAll('.home-feature-card').length;
 
       return {
