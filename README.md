@@ -99,6 +99,9 @@ Run the broader verification set:
 make preview-verify-full
 ```
 
+`preview-verify-full` includes the announcement edge-case suite in addition to
+the broader full-site overflow/runtime checks.
+
 Useful focused targets:
 
 ```bash
@@ -137,6 +140,8 @@ The current checks cover:
 - internal link and canonical-link regressions
 - metadata, heading hierarchy, ID uniqueness, terminology, and sitemap checks
 - Series Hub and Series Explorer behavior
+- announcement content rule checks
+- announcement edge-case checks
 
 ## Updating Content
 
