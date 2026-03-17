@@ -3,7 +3,11 @@ PREVIEW_PORT ?= 4012
 PREVIEW_URL ?= http://127.0.0.1:$(PREVIEW_PORT)
 PREVIEW_IMAGE ?= jekyll/jekyll:4.2.0
 
-.PHONY: preview-up preview-build preview-smoke preview-responsive preview-home-fold preview-overflow preview-overflow-full preview-nav preview-runtime preview-runtime-full preview-a11y preview-linkcheck preview-canonical-links preview-structure preview-style-scope preview-inline-style preview-ids preview-meta preview-terms preview-format preview-headings preview-series-hub preview-series-explorer preview-resources preview-sitemap preview-verify preview-verify-full preview-down preview-recreate preview-info
+<<<<<<< HEAD
+.PHONY: preview-up preview-build preview-smoke preview-responsive preview-home-fold preview-overflow preview-overflow-full preview-nav preview-runtime preview-runtime-full preview-a11y preview-linkcheck preview-canonical-links preview-structure preview-style-scope preview-inline-style preview-ids preview-meta preview-terms preview-format preview-headings preview-series-hub preview-series-explorer preview-resources preview-sitemap preview-announcements preview-verify preview-verify-full preview-down preview-recreate preview-info
+=======
+.PHONY: preview-up preview-build preview-smoke preview-responsive preview-overflow preview-overflow-full preview-nav preview-runtime preview-runtime-full preview-a11y preview-linkcheck preview-structure preview-style-scope preview-inline-style preview-ids preview-meta preview-announcements preview-verify preview-verify-full preview-down preview-recreate preview-info
+>>>>>>> 6bd3de0 (Add announcement content validation)
 
 preview-up:
 	@if docker ps --format '{{.Names}}' | grep -qx '$(PREVIEW_NAME)'; then \
@@ -89,7 +93,10 @@ preview-resources:
 preview-sitemap:
 	scripts/sitemap_consistency_check.sh _site
 
-preview-verify: preview-build preview-smoke preview-responsive preview-home-fold preview-overflow preview-nav preview-runtime preview-a11y preview-linkcheck preview-canonical-links preview-structure preview-style-scope preview-inline-style preview-ids preview-meta preview-terms preview-format preview-headings preview-series-hub preview-series-explorer preview-resources preview-sitemap
+preview-announcements:
+	scripts/announcement_content_check.sh _announcements
+
+preview-verify: preview-build preview-smoke preview-responsive preview-home-fold preview-overflow preview-nav preview-runtime preview-a11y preview-linkcheck preview-canonical-links preview-structure preview-style-scope preview-inline-style preview-ids preview-meta preview-terms preview-format preview-headings preview-series-hub preview-series-explorer preview-resources preview-sitemap preview-announcements
 
 preview-verify-full: preview-verify preview-overflow-full preview-runtime-full
 
@@ -134,6 +141,7 @@ preview-info:
 	@echo "Inline-style check only: make preview-inline-style"
 	@echo "ID uniqueness only: make preview-ids"
 	@echo "Metadata check only: make preview-meta"
+<<<<<<< HEAD
 	@echo "Source terminology check only: make preview-terms"
 	@echo "Source format check only: make preview-format"
 	@echo "Article heading check only: make preview-headings"
@@ -141,6 +149,9 @@ preview-info:
 	@echo "Series explorer interaction check only: make preview-series-explorer"
 	@echo "Resource loading check only: make preview-resources"
 	@echo "Sitemap consistency check only: make preview-sitemap"
+=======
+	@echo "Announcement content check only: make preview-announcements"
+>>>>>>> 6bd3de0 (Add announcement content validation)
 	@echo "Stop preview: make preview-down"
 	@echo "Visual checkpoints:"
 	@echo "  1) Home first screen shows value proposition and 2 key metrics first, without an extra featured-series deck"

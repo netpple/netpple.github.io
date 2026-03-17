@@ -174,6 +174,7 @@ Homepage updates are managed through the `_announcements` collection.
 - Visibility rules: items with `published: false` or an `expires_at` earlier than the build time are hidden from Home, archive, and search
 - Archive path: `/announcements/`
 - Detail path: each announcement is published at `/announcements/<slug>/` and shows its own date, pinned badge, and archive backlink automatically
+- Validation path: `scripts/announcement_content_check.sh _announcements` verifies required fields, boolean flags, date parsing, and CTA URL shape before preview/release checks
 
 ## Deployment Notes
 
