@@ -553,6 +553,8 @@ assert_route_not_contains "/about/" '기술스택|기술 스택' "legacy tech-st
 assert_route_not_contains "/about/" '관심영역|관심 영역' "legacy interest section labels"
 assert_route_not_contains "/about/" '>\s*학력\s*<' "legacy education section label"
 assert_route_contains "/search/" 'search-panel|id=\"search-input\"' "search ui markers"
+assert_route_contains "/search/" '"categories": "announcement"' "search index includes announcement category entry"
+assert_route_contains "/search/" '"url": "/announcements/blog-renewal/"' "search index includes active announcement detail url"
 assert_route_not_contains "/tags/" 'class="tag-nav__link" href="#"' "empty tag navigation links"
 
 echo "[smoke] checking IA terminology markers"

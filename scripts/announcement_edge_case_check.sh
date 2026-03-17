@@ -91,6 +91,8 @@ hidden_search="${hidden_dir}/_site_edge_hidden/search/index.html"
 
 assert_contains "${hidden_home}" '블로그 리뉴얼 안내' "active announcement still renders on Home"
 assert_contains "${hidden_archive}" '블로그 리뉴얼 안내' "active announcement still renders in archive"
+assert_contains "${hidden_search}" '"categories": "announcement"' "active announcement stays in search index"
+assert_contains "${hidden_search}" '"url": "/announcements/blog-renewal/"' "active announcement detail url stays in search index"
 assert_not_contains "${hidden_home}" '비공개 공지 테스트|만료 공지 테스트' "hidden/expired announcements stay off Home"
 assert_not_contains "${hidden_archive}" '비공개 공지 테스트|만료 공지 테스트' "hidden/expired announcements stay off archive"
 assert_not_contains "${hidden_search}" '비공개 공지 테스트|만료 공지 테스트' "hidden/expired announcements stay off search"
