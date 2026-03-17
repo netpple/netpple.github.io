@@ -3,6 +3,7 @@
 
 vendor
 _site
+_site_build
 Gemfile.lock
 test-results
 playwright-report

@@ -2,6 +2,7 @@ PREVIEW_NAME ?= netpple-preview
 PREVIEW_PORT ?= 4012
 PREVIEW_URL ?= http://127.0.0.1:$(PREVIEW_PORT)
 PREVIEW_IMAGE ?= jekyll/jekyll:4.2.0
+BUILD_DIR ?= _site_build
 
 .PHONY: preview-up preview-build preview-smoke preview-responsive preview-home-fold preview-overflow preview-overflow-full preview-nav preview-runtime preview-runtime-full preview-a11y preview-linkcheck preview-canonical-links preview-structure preview-style-scope preview-inline-style preview-ids preview-meta preview-terms preview-format preview-headings preview-series-hub preview-series-explorer preview-resources preview-sitemap preview-announcements preview-announcement-edges preview-verify preview-verify-full preview-down preview-recreate preview-info
 
@@ -18,7 +19,7 @@ preview-up:
 	fi
 
 preview-build:
-	docker exec -u "$$(id -u):$$(id -g)" $(PREVIEW_NAME) bundle exec jekyll build
+	docker exec -u "$$(id -u):$$(id -g)" $(PREVIEW_NAME) bundle exec jekyll build -d $(BUILD_DIR)
 
 preview-smoke:
 	scripts/preview_smoke_check.sh $(PREVIEW_URL)
@@ -51,10 +52,10 @@ preview-linkcheck:
 	scripts/internal_link_check.sh $(PREVIEW_URL)
 
 preview-canonical-links:
-	scripts/internal_canonical_link_check.sh _site
+	scripts/internal_canonical_link_check.sh $(BUILD_DIR)
 
 preview-structure:
-	scripts/layout_consistency_check.sh _site
+	scripts/layout_consistency_check.sh $(BUILD_DIR)
 
 preview-style-scope:
 	bash scripts/style_scope_check.sh
@@ -63,10 +64,10 @@ preview-inline-style:
 	bash scripts/template_inline_style_check.sh
 
 preview-ids:
-	scripts/html_id_uniqueness_check.sh _site
+	scripts/html_id_uniqueness_check.sh $(BUILD_DIR)
 
 preview-meta:
-	scripts/metadata_consistency_check.sh _site
+	scripts/metadata_consistency_check.sh $(BUILD_DIR)
 
 preview-terms:
 	scripts/source_terminology_check.sh
@@ -75,19 +76,19 @@ preview-format:
 	scripts/source_format_check.sh
 
 preview-headings:
-	scripts/article_heading_hierarchy_check.sh _site
+	scripts/article_heading_hierarchy_check.sh $(BUILD_DIR)
 
 preview-series-hub:
-	scripts/series_hub_consistency_check.sh _site
+	scripts/series_hub_consistency_check.sh $(BUILD_DIR)
 
 preview-series-explorer:
 	scripts/series_explorer_check.sh $(PREVIEW_URL)
 
 preview-resources:
-	scripts/resource_loading_check.sh _site
+	scripts/resource_loading_check.sh $(BUILD_DIR)
 
 preview-sitemap:
-	scripts/sitemap_consistency_check.sh _site
+	scripts/sitemap_consistency_check.sh $(BUILD_DIR)
 
 preview-announcements:
 	scripts/announcement_content_check.sh _announcements
@@ -112,6 +113,7 @@ preview-info:
 	else \
 		echo "Preview container status: not running ($(PREVIEW_NAME)); run make preview-up"; \
 	fi
+	@echo "Production build dir: $(BUILD_DIR)"
 	@echo "Viewport matrix: desktop-min(961), desktop(1366), tablet(1024), mobile-break(960), tablet-min(761), mobile-max(760), mobile(390)"
 	@if [ -d test-results/responsive-check ] && [ "$$(ls -A test-results/responsive-check 2>/dev/null)" ]; then \
 		latest="$$(ls -1 test-results/responsive-check | tail -n 1)"; \

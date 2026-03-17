@@ -66,6 +66,9 @@ make preview-up
 # rebuild generated output inside the running container
 make preview-build
 
+# production-like static output is written to _site_build
+# so metadata/canonical checks do not read the live serve output
+
 # build + standard verify
 # (includes smoke/layout/runtime checks + announcement content validation)
 make preview-verify
@@ -105,6 +108,10 @@ make preview-verify-full
 
 `preview-verify-full` includes the announcement edge-case suite in addition to
 the broader full-site overflow/runtime checks.
+
+`make preview-build` writes production-style static output to `_site_build/`.
+Static metadata, canonical, sitemap, resource, and structural checks read from
+that directory rather than the live `jekyll serve` output.
 
 Useful focused targets:
 
