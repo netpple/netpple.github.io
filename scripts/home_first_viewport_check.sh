@@ -45,20 +45,26 @@ function fail(message) {
       };
 
       const title = rect('.home-hero__title');
+      const hero = rect('.home-hero');
       const stats = rect('.home-stats');
+      const announcement = rect('.home-announcement');
       const featured = rect('.home-featured-panel') || rect('.home-hero__quickstart') || rect('.home-hero__featured');
       const featuredCards = document.querySelectorAll('.home-feature-card').length;
+      const announcementTitle = rect('.home-announcement__title');
 
       return {
         title,
+        hero,
         stats,
+        announcement,
+        announcementTitle,
         featured,
         featuredCards,
         viewportHeight: window.innerHeight,
       };
     });
 
-    if (!result.title || !result.stats || !result.featured) {
+    if (!result.title || !result.hero || !result.stats || !result.announcement || !result.featured) {
       fail(`${viewport.name} is missing required home hero sections`);
     }
     if (result.featuredCards < 2) {
@@ -68,12 +74,18 @@ function fail(message) {
     if (result.stats.bottom > result.viewportHeight) {
       fail(`${viewport.name} stats fall below first viewport (${Math.round(result.stats.bottom)} > ${result.viewportHeight})`);
     }
-    if (result.featured.bottom > result.viewportHeight) {
-      fail(`${viewport.name} featured routes fall below first viewport (${Math.round(result.featured.bottom)} > ${result.viewportHeight})`);
+    if (result.announcement.top >= result.featured.top) {
+      fail(`${viewport.name} announcement is not placed before Start Here`);
+    }
+    if (result.announcement.height >= result.hero.height) {
+      fail(`${viewport.name} announcement is not visually smaller than hero (${Math.round(result.announcement.height)} >= ${Math.round(result.hero.height)})`);
+    }
+    if (result.announcementTitle && result.announcementTitle.bottom > result.viewportHeight) {
+      fail(`${viewport.name} announcement title falls below first viewport (${Math.round(result.announcementTitle.bottom)} > ${result.viewportHeight})`);
     }
 
     console.log(
-      `[ok] ${viewport.name} first viewport: stats=${Math.round(result.stats.bottom)} featured=${Math.round(result.featured.bottom)} viewport=${result.viewportHeight}`
+      `[ok] ${viewport.name} first viewport: stats=${Math.round(result.stats.bottom)} announcement=${Math.round(result.announcement.bottom)} featuredTop=${Math.round(result.featured.top)} viewport=${result.viewportHeight}`
     );
 
     await page.close();
