@@ -3,11 +3,7 @@ PREVIEW_PORT ?= 4012
 PREVIEW_URL ?= http://127.0.0.1:$(PREVIEW_PORT)
 PREVIEW_IMAGE ?= jekyll/jekyll:4.2.0
 
-<<<<<<< HEAD
 .PHONY: preview-up preview-build preview-smoke preview-responsive preview-home-fold preview-overflow preview-overflow-full preview-nav preview-runtime preview-runtime-full preview-a11y preview-linkcheck preview-canonical-links preview-structure preview-style-scope preview-inline-style preview-ids preview-meta preview-terms preview-format preview-headings preview-series-hub preview-series-explorer preview-resources preview-sitemap preview-announcements preview-verify preview-verify-full preview-down preview-recreate preview-info
-=======
-.PHONY: preview-up preview-build preview-smoke preview-responsive preview-overflow preview-overflow-full preview-nav preview-runtime preview-runtime-full preview-a11y preview-linkcheck preview-structure preview-style-scope preview-inline-style preview-ids preview-meta preview-announcements preview-verify preview-verify-full preview-down preview-recreate preview-info
->>>>>>> 6bd3de0 (Add announcement content validation)
 
 preview-up:
 	@if docker ps --format '{{.Names}}' | grep -qx '$(PREVIEW_NAME)'; then \
@@ -17,12 +13,12 @@ preview-up:
 		docker start $(PREVIEW_NAME) >/dev/null; \
 	else \
 		mkdir -p "$$PWD/vendor/bundle"; \
-		docker run -d --name $(PREVIEW_NAME) -p $(PREVIEW_PORT):4000 -v "$$PWD":/srv/jekyll -v "$$PWD/vendor/bundle":/usr/local/bundle $(PREVIEW_IMAGE) sh -lc 'bundle install && bundle exec jekyll serve --host 0.0.0.0 --port 4000 --watch' >/dev/null; \
+		docker run -d --name $(PREVIEW_NAME) -e BUNDLE_PATH=/usr/local/bundle -p $(PREVIEW_PORT):4000 -v "$$PWD":/srv/jekyll -v "$$PWD/vendor/bundle":/usr/local/bundle $(PREVIEW_IMAGE) bash -lc "bundle install && bundle exec jekyll serve --host 0.0.0.0 --port 4000 --watch" >/dev/null; \
 		echo "started $(PREVIEW_NAME) on $(PREVIEW_URL)"; \
 	fi
 
 preview-build:
-	docker exec $(PREVIEW_NAME) sh -lc 'bundle exec jekyll build'
+	docker exec -u "$$(id -u):$$(id -g)" $(PREVIEW_NAME) bundle exec jekyll build
 
 preview-smoke:
 	scripts/preview_smoke_check.sh $(PREVIEW_URL)
@@ -141,7 +137,6 @@ preview-info:
 	@echo "Inline-style check only: make preview-inline-style"
 	@echo "ID uniqueness only: make preview-ids"
 	@echo "Metadata check only: make preview-meta"
-<<<<<<< HEAD
 	@echo "Source terminology check only: make preview-terms"
 	@echo "Source format check only: make preview-format"
 	@echo "Article heading check only: make preview-headings"
@@ -149,9 +144,7 @@ preview-info:
 	@echo "Series explorer interaction check only: make preview-series-explorer"
 	@echo "Resource loading check only: make preview-resources"
 	@echo "Sitemap consistency check only: make preview-sitemap"
-=======
 	@echo "Announcement content check only: make preview-announcements"
->>>>>>> 6bd3de0 (Add announcement content validation)
 	@echo "Stop preview: make preview-down"
 	@echo "Visual checkpoints:"
 	@echo "  1) Home first screen shows value proposition and 2 key metrics first, without an extra featured-series deck"
