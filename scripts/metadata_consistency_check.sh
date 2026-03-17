@@ -22,12 +22,32 @@ while IFS= read -r html_file; do
   canonical_count="$(grep -c 'rel="canonical"' "${clean_file}" || true)"
   og_url_count="$(grep -c 'property="og:url"' "${clean_file}" || true)"
   og_title_count="$(grep -c 'property="og:title"' "${clean_file}" || true)"
+  og_type_count="$(grep -c 'property="og:type"' "${clean_file}" || true)"
+  og_type_article_count="$(grep -c 'property="og:type" content="article"' "${clean_file}" || true)"
+  og_type_website_count="$(grep -c 'property="og:type" content="website"' "${clean_file}" || true)"
   twitter_title_count="$(grep -c 'name="twitter:title"' "${clean_file}" || true)"
+  canonical_index_count="$(grep -Ec 'rel="canonical" href="[^"]*/index"' "${clean_file}" || true)"
+  og_url_index_count="$(grep -Ec 'property="og:url" content="[^"]*/index"' "${clean_file}" || true)"
+  iframe_missing_title_count="$(
+    perl -0777 -ne 'while (/<iframe\b(?![^>]*\btitle=)[^>]*>/gsi) { $count += 1 } END { print $count || 0 }' "${clean_file}"
+  )"
+
+  expected_og_type="website"
+  if grep -Eq '<p class="article-header__eyebrow">(Post|Series entry)</p>' "${clean_file}"; then
+    expected_og_type="article"
+  fi
   rm -f "${clean_file}"
 
-  if [[ "${title_count}" != "1" || "${desc_count}" != "1" || "${canonical_count}" != "1" || "${og_url_count}" != "1" || "${og_title_count}" != "1" || "${twitter_title_count}" != "1" ]]; then
+  actual_og_type="missing"
+  if [[ "${og_type_article_count}" == "1" ]]; then
+    actual_og_type="article"
+  elif [[ "${og_type_website_count}" == "1" ]]; then
+    actual_og_type="website"
+  fi
+
+  if [[ "${title_count}" != "1" || "${desc_count}" != "1" || "${canonical_count}" != "1" || "${og_url_count}" != "1" || "${og_title_count}" != "1" || "${og_type_count}" != "1" || "${twitter_title_count}" != "1" || "${canonical_index_count}" != "0" || "${og_url_index_count}" != "0" || "${actual_og_type}" != "${expected_og_type}" || "${iframe_missing_title_count}" != "0" ]]; then
     echo "[fail] ${html_file}"
-    echo "       title=${title_count} desc=${desc_count} canonical=${canonical_count} og_url=${og_url_count} og_title=${og_title_count} twitter_title=${twitter_title_count}"
+    echo "       title=${title_count} desc=${desc_count} canonical=${canonical_count} og_url=${og_url_count} og_title=${og_title_count} og_type=${actual_og_type}/${expected_og_type} og_type_count=${og_type_count} twitter_title=${twitter_title_count} canonical_index=${canonical_index_count} og_url_index=${og_url_index_count} iframe_missing_title=${iframe_missing_title_count}"
     failed=$((failed + 1))
   fi
 done < <(find "${SITE_DIR}" -name '*.html' -type f | sort)

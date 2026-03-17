@@ -10,12 +10,12 @@ histories:
   description: 최초 게시
 ---
 <div class="responsive-wrap">
-  <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vRvsEaVbT3zV94Ro2fMvzm2Q1WCgNGOfjP7Myn3q-xJhBebQOzPGzMYv9xch-M_3bCJHA6Xi0sXyVK4/embed?start=false&loop=false&delayms=3000" frameborder="0" width="100%" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+  <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vRvsEaVbT3zV94Ro2fMvzm2Q1WCgNGOfjP7Myn3q-xJhBebQOzPGzMYv9xch-M_3bCJHA6Xi0sXyVK4/embed?start=false&loop=false&delayms=3000" title="{{ page.title | escape }}" loading="lazy" frameborder="0" width="100%" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
 </div>
 
 [[슬라이드 보기]](https://docs.google.com/presentation/d/1vTNfO-Vi4WAgaDO8dF7Pv6HB_F3zVUZZI8rIHaQSrxM/edit#){:target="_blank"}
 
-### references
+## References
 - [Assigning Pods to Nodes](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/){:target="_blank"}
 - [Scheduler Algorithm in Kubernetes](https://github.com/kubernetes/community/blob/master/contributors/devel/sig-scheduling/scheduler_algorithm.md){:target="_blank"}
 - [Kubernetes Scheduler](https://www.bookstack.cn/read/kubernetes-1.16-zh/9439d7205ea09efd.md#Default%20policies){:target="_blank"}

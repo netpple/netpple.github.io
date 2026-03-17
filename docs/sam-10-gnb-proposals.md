@@ -44,7 +44,7 @@
 ## 선택 결과
 - 선택안: **시안 C (세그먼트형)**
 - 선택 근거
-  - Home/News/Docs/About 간 현재 위치 인지가 가장 명확함
+  - Home/Posts/Series/About 간 현재 위치 인지가 가장 명확함
   - hover/active/toggle 규칙이 단일 패턴으로 통일되어 학습 비용이 낮음
   - SAM-10 목표(브랜딩 정돈 + 사용성 개선)에 가장 직접적으로 부합
 

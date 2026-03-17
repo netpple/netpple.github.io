@@ -40,7 +40,7 @@ rightpanel: true
 
 <span class="badge badge-info">{{ post.version | default: "v1.0" }}</span>
 {% if post.badges %}{% for badge in post.badges %}<span class="badge badge-{{ badge.type }}">{{ badge.tag }}</span>{% endfor %}{% endif %}
-<span class="post-date" style="font-style: italic;">{{ post.date | date: "%m/%d %H:%m, %Y" }}</span>
+<span class="post-date" style="font-style: italic;">{{ post.date | date: "%m/%d %H:%M, %Y" }}</span>
 
 <p>{{ post. description }}</p>
 

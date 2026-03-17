@@ -10,7 +10,7 @@ histories:
   description: 최초 게시
 ---
 <div class="responsive-wrap">
-  <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vRBV22GjJhwirgAGcAmEu7qH0Fi9VUUwHz1vaLmWYWmS8gFfp7-g3ArVQ3w1YxgYP3B56f2noQDN7Kf/embed?start=false&loop=false&delayms=3000" frameborder="0" width="100%" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+  <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vRBV22GjJhwirgAGcAmEu7qH0Fi9VUUwHz1vaLmWYWmS8gFfp7-g3ArVQ3w1YxgYP3B56f2noQDN7Kf/embed?start=false&loop=false&delayms=3000" title="{{ page.title | escape }}" loading="lazy" frameborder="0" width="100%" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
 </div>
 
 [[슬라이드 보기]](https://docs.google.com/presentation/d/1rQQzmg83m_lU6mcIy2eZSXDlLqKmJB748GfPeHDWTeI/edit#){:target="_blank"}

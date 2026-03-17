@@ -169,7 +169,7 @@ Rkt sandbox model 임.
 6. 동시에 동일한 pid namespace 안에서 동적인 컨테이너 프로세스 실행이 가능해짐
 
 
-### references
+## References
 - [man page - pid namespace](https://man7.org/linux/man-pages/man7/pid_namespaces.7.html){:target="_blank"}
 - [A Tutorial for Isolating Your System with Linux Namespaces](https://lwn.net/Articles/259217/
   https://www.toptal.com/linux/separation-anxiety-isolating-your-system-with-linux-namespaces){:target="_blank"}

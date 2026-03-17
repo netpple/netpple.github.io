@@ -12,10 +12,10 @@ histories:
 rightpanel: false
 ---
 <div class="responsive-wrap">
-    <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vRz1JSuWcOsIjhyMvnjU2yQk6P8ciAAWU_6BExOx8OsOyH4Dm0kOoBftTE1NRKgih3SZxQkdrBweW3e/embed?start=false&loop=false&delayms=3000" frameborder="0" width="100%" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+    <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vRz1JSuWcOsIjhyMvnjU2yQk6P8ciAAWU_6BExOx8OsOyH4Dm0kOoBftTE1NRKgih3SZxQkdrBweW3e/embed?start=false&loop=false&delayms=3000" title="{{ page.title | escape }}" loading="lazy" frameborder="0" width="100%" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
 </div>
 
 [[슬라이드 보기]](https://docs.google.com/presentation/d/1a8mKTpI0Sx_-6ZgbAvc9uiNn48uFRzUjeP6x_oxOlYY/edit#){:target="_blank"}
 
-### references
+## References
 - [Kubernetes The Hard Way : https://github.com/kelseyhightower/kubernetes-the-hard-way](https://github.com/kelseyhightower/kubernetes-the-hard-way){:target="_blank"}

@@ -78,11 +78,35 @@ while IFS= read -r html_file; do
   header_safe_blank_target_count="$(
     (printf '%s' "${header_block}" | grep -Eo 'target="_blank"[^>]*rel="noreferrer noopener"|rel="noreferrer noopener"[^>]*target="_blank"' || true) | wc -l | tr -d ' '
   )"
+  header_posts_count="$(
+    printf '%s' "${header_block}" | perl -0ne 'print scalar(() = /href="\/news\/"[^>]*>\s*Posts\s*<\/a>/gsi)'
+  )"
+  header_series_count="$(
+    printf '%s' "${header_block}" | perl -0ne 'print scalar(() = /href="\/docs\/"[^>]*>\s*Series\s*<\/a>/gsi)'
+  )"
+  header_legacy_news_count="$(
+    printf '%s' "${header_block}" | perl -0ne 'print scalar(() = /href="\/news\/"[^>]*>\s*News\s*<\/a>/gsi)'
+  )"
+  header_legacy_docs_count="$(
+    printf '%s' "${header_block}" | perl -0ne 'print scalar(() = /href="\/docs\/"[^>]*>\s*Docs\s*<\/a>/gsi)'
+  )"
+  header_github_count="$(
+    printf '%s' "${header_block}" | perl -0ne 'print scalar(() = /href="https:\/\/github\.com\/netpple\/netpple\.github\.io"/gsi)'
+  )"
   footer_blank_target_count="$(
     (printf '%s' "${footer_block}" | grep -o 'target="_blank"' || true) | wc -l | tr -d ' '
   )"
   footer_safe_blank_target_count="$(
     (printf '%s' "${footer_block}" | grep -Eo 'target="_blank"[^>]*rel="noreferrer noopener"|rel="noreferrer noopener"[^>]*target="_blank"' || true) | wc -l | tr -d ' '
+  )"
+  footer_posts_count="$(
+    printf '%s' "${footer_block}" | perl -0ne 'print scalar(() = /href="\/news\/"[^>]*>\s*Posts\s*<\/a>/gsi)'
+  )"
+  footer_series_count="$(
+    printf '%s' "${footer_block}" | perl -0ne 'print scalar(() = /href="\/docs\/"[^>]*>\s*Series\s*<\/a>/gsi)'
+  )"
+  footer_github_count="$(
+    printf '%s' "${footer_block}" | perl -0ne 'print scalar(() = /href="https:\/\/github\.com\/netpple\/netpple\.github\.io"[^>]*>\s*GitHub\s*<\/a>/gsi)'
   )"
 
   home_css_count="$(grep -c '/assets/css/home.css' "${clean_file}" || true)"
@@ -90,11 +114,17 @@ while IFS= read -r html_file; do
   if [[ "${html_file}" == "${SITE_DIR}/index.html" ]]; then
     expected_home_css_count="1"
   fi
+  expected_active_nav_count="1"
+  expected_aria_current_count="1"
+  if [[ "${html_file}" == "${SITE_DIR}/search/index.html" || "${html_file}" == "${SITE_DIR}/tags/index.html" ]]; then
+    expected_active_nav_count="0"
+    expected_aria_current_count="0"
+  fi
   rm -f "${clean_file}"
 
-  if [[ "${skip_count}" != "1" || "${header_count}" != "1" || "${nav_toggle_count}" != "1" || "${nav_toggle_controls_count}" != "1" || "${nav_toggle_label_count}" != "1" || "${main_count}" != "1" || "${main_tabindex_count}" != "1" || "${autofocus_count}" != "0" || "${footer_count}" != "1" || "${h1_count}" != "1" || "${active_nav_count}" != "1" || "${aria_current_count}" != "1" || "${nav_id_count}" != "1" || "${nav_primary_label_count}" != "1" || "${nav_aria_hidden_count}" != "1" || "${home_css_count}" != "${expected_home_css_count}" || "${header_blank_target_count}" != "${header_safe_blank_target_count}" || "${footer_blank_target_count}" != "${footer_safe_blank_target_count}" ]]; then
+  if [[ "${skip_count}" != "1" || "${header_count}" != "1" || "${nav_toggle_count}" != "1" || "${nav_toggle_controls_count}" != "1" || "${nav_toggle_label_count}" != "1" || "${main_count}" != "1" || "${main_tabindex_count}" != "1" || "${autofocus_count}" != "0" || "${footer_count}" != "1" || "${h1_count}" != "1" || "${active_nav_count}" != "${expected_active_nav_count}" || "${aria_current_count}" != "${expected_aria_current_count}" || "${nav_id_count}" != "1" || "${nav_primary_label_count}" != "1" || "${nav_aria_hidden_count}" != "1" || "${home_css_count}" != "${expected_home_css_count}" || "${header_blank_target_count}" != "${header_safe_blank_target_count}" || "${footer_blank_target_count}" != "${footer_safe_blank_target_count}" || "${header_posts_count}" != "1" || "${header_series_count}" != "1" || "${header_legacy_news_count}" != "0" || "${header_legacy_docs_count}" != "0" || "${header_github_count}" != "0" || "${footer_posts_count}" != "1" || "${footer_series_count}" != "1" || "${footer_github_count}" != "1" ]]; then
     echo "[fail] ${html_file}"
-    echo "       skip=${skip_count} header=${header_count} nav_toggle=${nav_toggle_count} nav_controls=${nav_toggle_controls_count} nav_toggle_label=${nav_toggle_label_count} main=${main_count} main_tabindex=${main_tabindex_count} autofocus=${autofocus_count} footer=${footer_count} h1=${h1_count} active_nav=${active_nav_count} aria_current=${aria_current_count} nav_id=${nav_id_count} nav_primary_label=${nav_primary_label_count} nav_aria_hidden=${nav_aria_hidden_count} home_css=${home_css_count}/${expected_home_css_count} header_blank_rel=${header_safe_blank_target_count}/${header_blank_target_count} footer_blank_rel=${footer_safe_blank_target_count}/${footer_blank_target_count}"
+    echo "       skip=${skip_count} header=${header_count} nav_toggle=${nav_toggle_count} nav_controls=${nav_toggle_controls_count} nav_toggle_label=${nav_toggle_label_count} main=${main_count} main_tabindex=${main_tabindex_count} autofocus=${autofocus_count} footer=${footer_count} h1=${h1_count} active_nav=${active_nav_count}/${expected_active_nav_count} aria_current=${aria_current_count}/${expected_aria_current_count} nav_id=${nav_id_count} nav_primary_label=${nav_primary_label_count} nav_aria_hidden=${nav_aria_hidden_count} home_css=${home_css_count}/${expected_home_css_count} header_blank_rel=${header_safe_blank_target_count}/${header_blank_target_count} footer_blank_rel=${footer_safe_blank_target_count}/${footer_blank_target_count} header_posts=${header_posts_count} header_series=${header_series_count} header_news=${header_legacy_news_count} header_docs=${header_legacy_docs_count} header_github=${header_github_count} footer_posts=${footer_posts_count} footer_series=${footer_series_count} footer_github=${footer_github_count}"
     failed=$((failed + 1))
   fi
 done < <(find "${SITE_DIR}" -name '*.html' -type f | sort)

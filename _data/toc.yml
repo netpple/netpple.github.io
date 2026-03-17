@@ -1,5 +1,5 @@
-- title: Documentation
-  url: "docs/make-container-without-docker"
+- title: Series
+  url: "docs"
   links:
     - title: "Istio IN ACTION"
       url: "docs/istio-in-action"
