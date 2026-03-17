@@ -25,7 +25,7 @@ reworked into a custom site with:
 
 - a compact Home first screen with 2 key stats and 2 representative entry
   points
-- a `Posts / Series` IA replacing the older `News / Docs` wording
+- a `Posts / Series` IA replacing the site's earlier section naming
 - a `Series Hub` at `/docs/` with quick jumps, filter/sort, and recent update
   sections
 - a streamlined About page focused on career history, talks, and public writing
