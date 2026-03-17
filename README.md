@@ -176,6 +176,31 @@ Homepage updates are managed through the `_announcements` collection.
 - Archive path: `/announcements/`
 - Detail path: each announcement is published at `/announcements/<slug>/` and shows its own date, pinned badge, and archive backlink automatically
 - Validation path: `scripts/announcement_content_check.sh _announcements` verifies required fields, boolean flags, date parsing, `expires_at` ordering, unique active pinned announcements, and CTA URL shape before preview/release checks
+- Deep edge-case path: `scripts/announcement_edge_case_check.sh .` verifies hidden/expired announcements stay out of Home/archive/search and that Home/archive empty states behave correctly when no active announcement exists
+
+Example:
+
+```yaml
+---
+title: 새 시리즈 공개 안내
+description: 새 시리즈 공개를 알리는 공지
+summary: 새 시리즈를 시작했거나 사이트 구조가 바뀌었을 때 Home과 공지 목록에 노출하는 공지입니다.
+date: 2026-03-20 09:00:00 +0900
+cta_label: 시리즈 보러 가기
+cta_url: /docs/new-series/
+pinned: true
+published: true
+expires_at: 2026-04-03 23:59:59 +0900
+---
+```
+
+Operating lifecycle:
+
+- Publish: add a new markdown file to `_announcements/` with `published: true`
+- Pin: keep `pinned: true` on only one active announcement at a time
+- Hide: switch to `published: false` if the notice should disappear immediately
+- Expire: set `expires_at` when the notice should stop showing automatically after a deadline
+- Archive-only note: there is no dedicated archive-only flag today. An active unpinned notice may still appear in the Home secondary list while it is recent.
 
 ## Deployment Notes
 
