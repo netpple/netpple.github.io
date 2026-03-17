@@ -64,7 +64,7 @@ function fail(message) {
       };
     });
 
-    if (!result.title || !result.hero || !result.stats || !result.announcement || !result.featured) {
+    if (!result.title || !result.hero || !result.stats || !result.featured) {
       fail(`${viewport.name} is missing required home hero sections`);
     }
     if (result.featuredCards < 2) {
@@ -74,19 +74,31 @@ function fail(message) {
     if (result.stats.bottom > result.viewportHeight) {
       fail(`${viewport.name} stats fall below first viewport (${Math.round(result.stats.bottom)} > ${result.viewportHeight})`);
     }
-    if (result.announcement.top >= result.featured.top) {
-      fail(`${viewport.name} announcement is not placed before Start Here`);
-    }
-    if (result.announcement.height >= result.hero.height) {
-      fail(`${viewport.name} announcement is not visually smaller than hero (${Math.round(result.announcement.height)} >= ${Math.round(result.hero.height)})`);
-    }
-    if (result.announcementTitle && result.announcementTitle.bottom > result.viewportHeight) {
-      fail(`${viewport.name} announcement title falls below first viewport (${Math.round(result.announcementTitle.bottom)} > ${result.viewportHeight})`);
-    }
 
-    console.log(
-      `[ok] ${viewport.name} first viewport: stats=${Math.round(result.stats.bottom)} announcement=${Math.round(result.announcement.bottom)} featuredTop=${Math.round(result.featured.top)} viewport=${result.viewportHeight}`
-    );
+    if (result.announcement) {
+      if (result.announcement.top >= result.featured.top) {
+        fail(`${viewport.name} announcement is not placed before Start Here`);
+      }
+      if (result.announcement.height >= result.hero.height) {
+        fail(`${viewport.name} announcement is not visually smaller than hero (${Math.round(result.announcement.height)} >= ${Math.round(result.hero.height)})`);
+      }
+      if (result.announcementTitle && result.announcementTitle.bottom > result.viewportHeight) {
+        fail(`${viewport.name} announcement title falls below first viewport (${Math.round(result.announcementTitle.bottom)} > ${result.viewportHeight})`);
+      }
+      console.log(
+        `[ok] ${viewport.name} first viewport: stats=${Math.round(result.stats.bottom)} announcement=${Math.round(result.announcement.bottom)} featuredTop=${Math.round(result.featured.top)} viewport=${result.viewportHeight}`
+      );
+    } else {
+      if (result.featured.top <= result.stats.bottom) {
+        fail(`${viewport.name} Start Here overlaps the hero/stats flow when no announcement is active`);
+      }
+      if (result.featured.bottom > result.viewportHeight) {
+        fail(`${viewport.name} Start Here falls below first viewport when no announcement is active (${Math.round(result.featured.bottom)} > ${result.viewportHeight})`);
+      }
+      console.log(
+        `[ok] ${viewport.name} first viewport without announcement: stats=${Math.round(result.stats.bottom)} featured=${Math.round(result.featured.bottom)} viewport=${result.viewportHeight}`
+      );
+    }
 
     await page.close();
   }

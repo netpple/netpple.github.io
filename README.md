@@ -135,6 +135,7 @@ make preview-format
 make preview-headings
 make preview-series-hub
 make preview-series-explorer
+make preview-search
 make preview-resources
 make preview-sitemap
 make preview-info
@@ -151,6 +152,7 @@ The current checks cover:
 - internal link and canonical-link regressions
 - metadata, heading hierarchy, ID uniqueness, terminology, and sitemap checks
 - Series Hub and Series Explorer behavior
+- search interaction checks for representative queries
 - announcement content rule checks
 - announcement edge-case checks
 

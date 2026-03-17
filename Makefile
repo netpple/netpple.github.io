@@ -4,7 +4,7 @@ PREVIEW_URL ?= http://127.0.0.1:$(PREVIEW_PORT)
 PREVIEW_IMAGE ?= jekyll/jekyll:4.2.0
 BUILD_DIR ?= _site_build
 
-.PHONY: preview-up preview-build preview-smoke preview-responsive preview-home-fold preview-overflow preview-overflow-full preview-nav preview-runtime preview-runtime-full preview-a11y preview-linkcheck preview-canonical-links preview-structure preview-style-scope preview-inline-style preview-ids preview-meta preview-terms preview-format preview-headings preview-series-hub preview-series-explorer preview-resources preview-sitemap preview-announcements preview-announcement-edges preview-verify preview-verify-full preview-down preview-recreate preview-info
+.PHONY: preview-up preview-build preview-smoke preview-responsive preview-home-fold preview-overflow preview-overflow-full preview-nav preview-runtime preview-runtime-full preview-a11y preview-linkcheck preview-canonical-links preview-structure preview-style-scope preview-inline-style preview-ids preview-meta preview-terms preview-format preview-headings preview-series-hub preview-series-explorer preview-search preview-resources preview-sitemap preview-announcements preview-announcement-edges preview-verify preview-verify-full preview-down preview-recreate preview-info
 
 preview-up:
 	@if docker ps --format '{{.Names}}' | grep -qx '$(PREVIEW_NAME)'; then \
@@ -84,6 +84,9 @@ preview-series-hub:
 preview-series-explorer:
 	scripts/series_explorer_check.sh $(PREVIEW_URL)
 
+preview-search:
+	scripts/search_interaction_check.sh $(PREVIEW_URL)
+
 preview-resources:
 	scripts/resource_loading_check.sh $(BUILD_DIR)
 
@@ -96,7 +99,7 @@ preview-announcements:
 preview-announcement-edges:
 	scripts/announcement_edge_case_check.sh .
 
-preview-verify: preview-build preview-smoke preview-responsive preview-home-fold preview-overflow preview-nav preview-runtime preview-a11y preview-linkcheck preview-canonical-links preview-structure preview-style-scope preview-inline-style preview-ids preview-meta preview-terms preview-format preview-headings preview-series-hub preview-series-explorer preview-resources preview-sitemap preview-announcements
+preview-verify: preview-build preview-smoke preview-responsive preview-home-fold preview-overflow preview-nav preview-runtime preview-a11y preview-linkcheck preview-canonical-links preview-structure preview-style-scope preview-inline-style preview-ids preview-meta preview-terms preview-format preview-headings preview-series-hub preview-series-explorer preview-search preview-resources preview-sitemap preview-announcements
 
 preview-verify-full: preview-verify preview-overflow-full preview-runtime-full preview-announcement-edges
 
@@ -147,6 +150,7 @@ preview-info:
 	@echo "Article heading check only: make preview-headings"
 	@echo "Series hub static check only: make preview-series-hub"
 	@echo "Series explorer interaction check only: make preview-series-explorer"
+	@echo "Search interaction check only: make preview-search"
 	@echo "Resource loading check only: make preview-resources"
 	@echo "Sitemap consistency check only: make preview-sitemap"
 	@echo "Announcement content check only: make preview-announcements"
