@@ -2,8 +2,9 @@ PREVIEW_NAME ?= netpple-preview
 PREVIEW_PORT ?= 4012
 PREVIEW_URL ?= http://127.0.0.1:$(PREVIEW_PORT)
 PREVIEW_IMAGE ?= jekyll/jekyll:4.2.0
+BUILD_DIR ?= _site_build
 
-.PHONY: preview-up preview-build preview-smoke preview-responsive preview-home-fold preview-overflow preview-overflow-full preview-nav preview-runtime preview-runtime-full preview-a11y preview-linkcheck preview-canonical-links preview-structure preview-style-scope preview-inline-style preview-ids preview-meta preview-terms preview-format preview-headings preview-series-hub preview-series-explorer preview-resources preview-sitemap preview-verify preview-verify-full preview-down preview-recreate preview-info
+.PHONY: preview-up preview-build preview-smoke preview-responsive preview-home-fold preview-overflow preview-overflow-full preview-nav preview-runtime preview-runtime-full preview-a11y preview-linkcheck preview-canonical-links preview-structure preview-style-scope preview-inline-style preview-ids preview-meta preview-terms preview-format preview-headings preview-series-hub preview-series-explorer preview-search preview-resources preview-sitemap preview-announcements preview-announcement-edges preview-verify preview-verify-full preview-down preview-recreate preview-info
 
 preview-up:
 	@if docker ps --format '{{.Names}}' | grep -qx '$(PREVIEW_NAME)'; then \
@@ -13,12 +14,12 @@ preview-up:
 		docker start $(PREVIEW_NAME) >/dev/null; \
 	else \
 		mkdir -p "$$PWD/vendor/bundle"; \
-		docker run -d --name $(PREVIEW_NAME) -p $(PREVIEW_PORT):4000 -v "$$PWD":/srv/jekyll -v "$$PWD/vendor/bundle":/usr/local/bundle $(PREVIEW_IMAGE) sh -lc 'bundle install && bundle exec jekyll serve --host 0.0.0.0 --port 4000 --watch' >/dev/null; \
+		docker run -d --name $(PREVIEW_NAME) -e BUNDLE_PATH=/usr/local/bundle -p $(PREVIEW_PORT):4000 -v "$$PWD":/srv/jekyll -v "$$PWD/vendor/bundle":/usr/local/bundle $(PREVIEW_IMAGE) bash -lc "bundle install && bundle exec jekyll serve --host 0.0.0.0 --port 4000 --watch" >/dev/null; \
 		echo "started $(PREVIEW_NAME) on $(PREVIEW_URL)"; \
 	fi
 
 preview-build:
-	docker exec $(PREVIEW_NAME) sh -lc 'bundle exec jekyll build'
+	docker exec -u "$$(id -u):$$(id -g)" $(PREVIEW_NAME) bundle exec jekyll build -d $(BUILD_DIR)
 
 preview-smoke:
 	scripts/preview_smoke_check.sh $(PREVIEW_URL)
@@ -51,10 +52,10 @@ preview-linkcheck:
 	scripts/internal_link_check.sh $(PREVIEW_URL)
 
 preview-canonical-links:
-	scripts/internal_canonical_link_check.sh _site
+	scripts/internal_canonical_link_check.sh $(BUILD_DIR)
 
 preview-structure:
-	scripts/layout_consistency_check.sh _site
+	scripts/layout_consistency_check.sh $(BUILD_DIR)
 
 preview-style-scope:
 	bash scripts/style_scope_check.sh
@@ -63,10 +64,10 @@ preview-inline-style:
 	bash scripts/template_inline_style_check.sh
 
 preview-ids:
-	scripts/html_id_uniqueness_check.sh _site
+	scripts/html_id_uniqueness_check.sh $(BUILD_DIR)
 
 preview-meta:
-	scripts/metadata_consistency_check.sh _site
+	scripts/metadata_consistency_check.sh $(BUILD_DIR)
 
 preview-terms:
 	scripts/source_terminology_check.sh
@@ -75,23 +76,32 @@ preview-format:
 	scripts/source_format_check.sh
 
 preview-headings:
-	scripts/article_heading_hierarchy_check.sh _site
+	scripts/article_heading_hierarchy_check.sh $(BUILD_DIR)
 
 preview-series-hub:
-	scripts/series_hub_consistency_check.sh _site
+	scripts/series_hub_consistency_check.sh $(BUILD_DIR)
 
 preview-series-explorer:
 	scripts/series_explorer_check.sh $(PREVIEW_URL)
 
+preview-search:
+	scripts/search_interaction_check.sh $(PREVIEW_URL)
+
 preview-resources:
-	scripts/resource_loading_check.sh _site
+	scripts/resource_loading_check.sh $(BUILD_DIR)
 
 preview-sitemap:
-	scripts/sitemap_consistency_check.sh _site
+	scripts/sitemap_consistency_check.sh $(BUILD_DIR)
 
-preview-verify: preview-build preview-smoke preview-responsive preview-home-fold preview-overflow preview-nav preview-runtime preview-a11y preview-linkcheck preview-canonical-links preview-structure preview-style-scope preview-inline-style preview-ids preview-meta preview-terms preview-format preview-headings preview-series-hub preview-series-explorer preview-resources preview-sitemap
+preview-announcements:
+	scripts/announcement_content_check.sh _announcements
 
-preview-verify-full: preview-verify preview-overflow-full preview-runtime-full
+preview-announcement-edges:
+	scripts/announcement_edge_case_check.sh .
+
+preview-verify: preview-build preview-smoke preview-responsive preview-home-fold preview-overflow preview-nav preview-runtime preview-a11y preview-linkcheck preview-canonical-links preview-structure preview-style-scope preview-inline-style preview-ids preview-meta preview-terms preview-format preview-headings preview-series-hub preview-series-explorer preview-search preview-resources preview-sitemap preview-announcements
+
+preview-verify-full: preview-verify preview-overflow-full preview-runtime-full preview-announcement-edges
 
 preview-down:
 	@docker rm -f $(PREVIEW_NAME) >/dev/null 2>&1 || true
@@ -106,6 +116,7 @@ preview-info:
 	else \
 		echo "Preview container status: not running ($(PREVIEW_NAME)); run make preview-up"; \
 	fi
+	@echo "Production build dir: $(BUILD_DIR)"
 	@echo "Viewport matrix: desktop-min(961), desktop(1366), tablet(1024), mobile-break(960), tablet-min(761), mobile-max(760), mobile(390)"
 	@if [ -d test-results/responsive-check ] && [ "$$(ls -A test-results/responsive-check 2>/dev/null)" ]; then \
 		latest="$$(ls -1 test-results/responsive-check | tail -n 1)"; \
@@ -116,8 +127,8 @@ preview-info:
 		echo "Latest responsive artifacts: (none; run KEEP_RESPONSIVE_ARTIFACTS=true make preview-responsive)"; \
 	fi
 	@echo "Quick start: make preview-up"
-	@echo "Build + smoke: make preview-verify"
-	@echo "Comprehensive full-site verify: make preview-verify-full"
+	@echo "Build + standard verify (includes announcement content check): make preview-verify"
+	@echo "Comprehensive full-site verify (includes announcement edge checks): make preview-verify-full"
 	@echo "Responsive smoke only: make preview-responsive"
 	@echo "Home first-viewport check only: make preview-home-fold"
 	@echo "Responsive overflow only: make preview-overflow"
@@ -139,8 +150,11 @@ preview-info:
 	@echo "Article heading check only: make preview-headings"
 	@echo "Series hub static check only: make preview-series-hub"
 	@echo "Series explorer interaction check only: make preview-series-explorer"
+	@echo "Search interaction check only: make preview-search"
 	@echo "Resource loading check only: make preview-resources"
 	@echo "Sitemap consistency check only: make preview-sitemap"
+	@echo "Announcement content check only: make preview-announcements"
+	@echo "Announcement edge-case check only: make preview-announcement-edges"
 	@echo "Stop preview: make preview-down"
 	@echo "Visual checkpoints:"
 	@echo "  1) Home first screen shows value proposition and 2 key metrics first, without an extra featured-series deck"

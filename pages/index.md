@@ -14,6 +14,24 @@ description: 클라우드 네이티브와 분산 시스템 운영 경험을 정�
 {% assign series_count = series_slug_stream | split: "|" | uniq | size %}
 {% assign featured_series_istio_url = "/docs/istio-in-action/" %}
 {% assign featured_post_install = posts | where: "url", "/2023/k8s-1.26-install/" | first %}
+{% assign sorted_announcements = site.announcements | where_exp: "announcement", "announcement.published != false" | sort: "date" | reverse %}
+{% assign primary_announcement = nil %}
+{% for announcement in sorted_announcements %}
+  {% if announcement.expires_at == nil or announcement.expires_at > site.time %}
+    {% if announcement.pinned %}
+      {% assign primary_announcement = announcement %}
+      {% break %}
+    {% endif %}
+  {% endif %}
+{% endfor %}
+{% if primary_announcement == nil %}
+  {% for announcement in sorted_announcements %}
+    {% if announcement.expires_at == nil or announcement.expires_at > site.time %}
+      {% assign primary_announcement = announcement %}
+      {% break %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
 
 <section class="home-hero">
   <div class="home-hero__content">
@@ -38,6 +56,36 @@ description: 클라우드 네이티브와 분산 시스템 운영 경험을 정�
     </div>
   </div>
 </section>
+
+{% if primary_announcement %}
+  {% assign primary_cta_url = primary_announcement.cta_url | default: primary_announcement.url %}
+  {% if primary_cta_url contains "://" %}
+    {% assign primary_cta_href = primary_cta_url %}
+  {% else %}
+    {% assign primary_cta_href = primary_cta_url | prepend: site.baseurl %}
+  {% endif %}
+  <section class="home-section home-announcement-section" aria-labelledby="home-announcements-title">
+    <div class="home-announcement home-announcement--compact">
+      <div class="home-announcement__main">
+        <div class="home-announcement__meta">
+          <p class="home-announcement__eyebrow">Announcement</p>
+          <time datetime="{{ primary_announcement.date | date_to_xmlschema }}">{{ primary_announcement.date | date: "%Y.%m.%d" }}</time>
+          {% if primary_announcement.pinned %}<span class="badge">Pinned</span>{% endif %}
+        </div>
+        <h2 class="home-announcement__title home-announcement__title--compact" id="home-announcements-title">
+          <a href="{{ primary_announcement.url | prepend: site.baseurl }}">{{ primary_announcement.title }}</a>
+        </h2>
+        <p class="home-announcement__summary home-announcement__summary--compact">{{ primary_announcement.summary | truncate: 140 }}</p>
+      </div>
+      <div class="home-announcement__actions home-announcement__actions--inline">
+        <a class="home-announcement__link" href="{{ primary_cta_href }}"{% if primary_cta_url contains "://" %} target="_blank" rel="noreferrer noopener"{% endif %}>
+          {{ primary_announcement.cta_label | default: "공지 보기" }}
+        </a>
+        <a class="home-announcement__archive-link" href="{{ site.baseurl }}/announcements/">모든 공지 보기</a>
+      </div>
+    </div>
+  </section>
+{% endif %}
 
 <section class="home-section home-section--compact">
   <div class="home-featured-panel">

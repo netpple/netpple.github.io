@@ -189,6 +189,89 @@
   margin-bottom: var(--space-8);
 }
 
+.home-announcement-section {
+  margin-top: calc(var(--space-6) * -0.25);
+}
+
+.home-announcement {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-4);
+  align-items: center;
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid rgba(15, 91, 216, 0.14);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.94);
+}
+
+.home-announcement__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-text-muted);
+  font-size: 0.84rem;
+}
+
+.home-announcement__eyebrow {
+  margin: 0;
+  color: var(--color-primary);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.home-announcement__title {
+  margin: var(--space-2) 0 0;
+  font-size: clamp(1.2rem, 2.1vw, 1.55rem);
+  line-height: 1.3;
+}
+
+.home-announcement__title--compact {
+  margin-top: 0.35rem;
+  font-size: clamp(1rem, 1.6vw, 1.2rem);
+  line-height: 1.35;
+}
+
+.home-announcement__title a {
+  color: var(--color-text);
+}
+
+.home-announcement__title a:hover {
+  color: var(--color-primary);
+}
+
+.home-announcement__summary {
+  margin: var(--space-2) 0 0;
+  color: var(--color-text-muted);
+  max-width: 760px;
+}
+
+.home-announcement__summary--compact {
+  margin-top: 0.35rem;
+  font-size: 0.94rem;
+  line-height: 1.6;
+}
+
+.home-announcement__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-3);
+}
+
+.home-announcement__actions--inline {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.home-announcement__link,
+.home-announcement__archive-link {
+  font-weight: 700;
+}
+
 .home-posts-grid .entry-card {
   grid-column: span 4;
 }
@@ -300,6 +383,14 @@
   .home-about-panel {
     grid-template-columns: 1fr;
     padding: var(--space-5);
+  }
+
+  .home-announcement {
+    grid-template-columns: 1fr;
+  }
+
+  .home-announcement__actions {
+    align-items: flex-start;
   }
 
   .home-stats {

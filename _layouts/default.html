@@ -11,6 +11,8 @@
     {% assign page_class = "page-series" %}
   {% elsif page.url == "/about/" %}
     {% assign page_class = "page-about" %}
+  {% elsif page.url == "/announcements/" %}
+    {% assign page_class = "page-announcements" %}
   {% elsif page.collection == "posts" %}
     {% assign page_class = "page-post-detail" %}
   {% elsif page.collection == "docs" %}

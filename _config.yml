@@ -25,6 +25,7 @@ baseurl: "" # the subpath of your site, e.g. /blog
 
 # This is mostly for testing
 url: "https://netpple.github.io" # the base hostname & protocol for your site
+timezone: "Asia/Seoul"
 
 # Social (First three Required)
 #repo: "https://github.com/netpple/make-container-without-docker"
@@ -66,13 +67,16 @@ fixedNav: 'true' # true or false
 
 permalink: /:year/:title/
 markdown: kramdown
-exclude: [_site, CHANGELOG.md, LICENSE, README.md, vendor]
+exclude: [_site, _site_build, CHANGELOG.md, LICENSE, README.md, vendor]
 
 # Collections
 collections:
   docs:
     output: true
     permalink: /:collection/:path
+  announcements:
+    output: true
+    permalink: /:collection/:path/
 
 # Defaults
 defaults:
@@ -81,6 +85,11 @@ defaults:
       type: "docs"
     values:
       layout: page
+  - scope:
+      path: "_announcements"
+      type: "announcements"
+    values:
+      layout: "page"
   -
     scope:
       path: ""

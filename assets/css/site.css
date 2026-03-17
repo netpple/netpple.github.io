@@ -310,7 +310,8 @@ img {
 .page-home .page-content,
 .page-posts .page-content,
 .page-series .page-content,
-.page-about .page-content {
+.page-about .page-content,
+.page-announcements .page-content {
   max-width: none;
 }
 
@@ -426,6 +427,13 @@ img {
 
 .entry-card--full {
   grid-column: span 12;
+}
+
+.announcement-page__policy {
+  margin-top: calc(var(--space-5) * -0.35);
+  margin-bottom: var(--space-4);
+  max-width: 760px;
+  font-size: 0.98rem;
 }
 
 .series-grid {
@@ -1386,6 +1394,11 @@ img {
   .article-shell {
     padding: var(--space-5);
     border-radius: var(--radius-md);
+  }
+
+  .announcement-page__policy {
+    font-size: 0.95rem;
+    line-height: 1.65;
   }
 
   .article-content img.align-left {

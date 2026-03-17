@@ -20,6 +20,8 @@ const { chromium } = require('playwright');
 const baseUrl = process.argv[2];
 const routes = [
   { path: '/', expectedActive: '/' },
+  { path: '/announcements/', expectedActive: '/' },
+  { path: '/announcements/blog-renewal/', expectedActive: '/' },
   { path: '/news/', expectedActive: '/news/' },
   { path: '/docs/', expectedActive: '/docs/' },
   { path: '/about/', expectedActive: '/about/' },

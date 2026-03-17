@@ -6,6 +6,8 @@ KEEP_ARTIFACTS="${KEEP_RESPONSIVE_ARTIFACTS:-false}"
 
 routes=(
   "/"
+  "/announcements/"
+  "/announcements/blog-renewal/"
   "/news/"
   "/docs/"
   "/about/"

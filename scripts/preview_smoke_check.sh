@@ -4,9 +4,48 @@ set -euo pipefail
 BASE_URL="${1:-http://127.0.0.1:4012}"
 READY_RETRIES="${PREVIEW_SMOKE_READY_RETRIES:-12}"
 READY_DELAY_SECONDS="${PREVIEW_SMOKE_READY_DELAY_SECONDS:-1}"
+ANNOUNCEMENTS_DIR="${ANNOUNCEMENTS_DIR:-_announcements}"
+
+announcement_meta="$(
+  ruby - "${ANNOUNCEMENTS_DIR}" <<'RUBY'
+require "time"
+require "yaml"
+
+announcements_dir = ARGV.fetch(0)
+now = Time.now
+announcements = Dir.glob(File.join(announcements_dir, "*.md")).map do |path|
+  content = File.read(path)
+  match = content.match(/\A---\s*\n(.*?)\n---\s*\n/m)
+  next unless match
+  data = YAML.safe_load(match[1], permitted_classes: [Date, Time], aliases: false) || {}
+  next if data["published"] == false
+  expires_at = data["expires_at"] ? Time.parse(data["expires_at"].to_s) : nil
+  next if expires_at && expires_at <= now
+  {
+    "title" => data["title"].to_s,
+    "date" => Time.parse(data["date"].to_s),
+    "url" => data["cta_url"].to_s.empty? ? path : data["cta_url"].to_s,
+    "detail_url" => "/announcements/#{File.basename(path, ".md")}/",
+    "pinned" => data["pinned"] == true,
+  }
+end.compact
+
+primary = announcements.sort_by { |item| item["date"] }.reverse.find { |item| item["pinned"] } ||
+  announcements.sort_by { |item| item["date"] }.reverse.first
+
+abort("no active announcement found") unless primary
+
+slug = primary["detail_url"].sub(%r{\A/announcements/}, "").sub(%r{/\z}, "")
+query = slug.split(/[^A-Za-z0-9]+/).select { |part| part.length >= 3 }.join(" ")
+
+puts [primary["detail_url"], primary["title"], primary["date"].strftime("%Y.%m.%d"), query].join("\t")
+RUBY
+)"
+IFS=$'\t' read -r sample_announcement active_announcement_title active_announcement_date active_announcement_query <<< "${announcement_meta}"
 
 routes=(
   "/"
+  "/announcements/"
   "/news/"
   "/docs/"
   "/about/"
@@ -27,6 +66,8 @@ sample_series_entry="/docs/istio-in-action/Istio-ch11-performance"
 sample_data_series_entry="/docs/data-intensive-application-design/5-replication"
 sample_series_entry_hands_on="/docs/querypie-handson/multiple-kubernetes-with-querypie-kac"
 key_nav_paths=(
+  "/announcements/"
+  "${sample_announcement}"
   "/2023/c-for-beginner-hongongc/"
   "/2023/k8s-1.26-install/"
   "/docs/istio-in-action/"
@@ -517,12 +558,13 @@ for route in "${routes[@]}"; do
 done
 
 echo "[smoke] checking key page redesign markers"
-assert_route_contains "/" 'home-hero|home-stats|home-featured-panel' "home redesign markers"
+assert_route_contains "/" 'home-hero|home-stats|home-featured-panel|home-announcement' "home redesign markers"
 assert_home_stats
 assert_home_feature_cards
 assert_route_not_contains "/" 'home-series-grid|<h2 class="section-heading__title">주요 시리즈</h2>' "legacy home featured series section"
 assert_route_contains "/" 'href="/2023/k8s-1.26-install/"' "home featured install post link"
 assert_route_contains "/" 'href="/docs/istio-in-action/"' "home featured Istio series link"
+assert_route_contains "/announcements/" 'Announcement|현재 노출 중인 공지|entry-card--news' "announcements markers"
 assert_route_contains "/news/" 'entry-card--list' "posts list card markers"
 assert_route_contains "/docs/" 'series-grid|entry-card--list' "series hub markers"
 assert_route_contains "/docs/" 'Series Navigation' "series navigation heading"
@@ -548,6 +590,8 @@ assert_route_not_contains "/about/" '기술스택|기술 스택' "legacy tech-st
 assert_route_not_contains "/about/" '관심영역|관심 영역' "legacy interest section labels"
 assert_route_not_contains "/about/" '>\s*학력\s*<' "legacy education section label"
 assert_route_contains "/search/" 'search-panel|id=\"search-input\"' "search ui markers"
+assert_route_contains "/search/" '"categories": "announcement"' "search index includes announcement category entry"
+assert_route_contains "/search/" "\"url\": \"${sample_announcement}\"" "search index includes active announcement detail url"
 assert_route_not_contains "/tags/" 'class="tag-nav__link" href="#"' "empty tag navigation links"
 
 echo "[smoke] checking IA terminology markers"
@@ -617,16 +661,24 @@ fi
 rm -f "${home_html_file}" "${news_html_file}"
 
 echo "[smoke] checking detail template markers"
+curl -fsSL "${BASE_URL}${sample_announcement}" | grep -Eiq "블로그 리뉴얼 안내|문서 허브 보기|About Sam 보기"
 curl -fsSL "${BASE_URL}${sample_post}" | grep -Eiq "article-shell|data-article-toc|data-article-content"
 curl -fsSL "${BASE_URL}${sample_series}" | grep -Eiq "article-shell|data-article-toc|Series Hub"
 curl -fsSL "${BASE_URL}${sample_series_entry}" | grep -Eiq "article-shell|data-article-toc|data-article-content"
 curl -fsSL "${BASE_URL}${sample_series_entry_hands_on}" | grep -Eiq "article-shell|data-article-toc|data-article-content"
+assert_route_layout "${sample_announcement}"
 assert_route_contains "${sample_series}" 'Series Hub' "series detail hub backlink"
 assert_route_contains "${sample_series_entry}" 'Series Hub' "series detail hub backlink"
 assert_route_contains "${sample_series_entry_hands_on}" 'Series Hub' "series detail hub backlink"
+assert_route_contains "${sample_announcement}" '문서 허브 보기|About Sam 보기|Series Hub 보기|About 페이지 보기' "announcement follow-up links"
 assert_route_not_contains "${sample_series}" 'All Posts' "post-only backlink in series detail"
 assert_route_not_contains "${sample_series_entry}" 'All Posts' "post-only backlink in series detail"
 assert_route_not_contains "${sample_series_entry_hands_on}" 'All Posts' "post-only backlink in series detail"
+assert_route_contains "${sample_announcement}" '무엇이 바뀌었나|바로 둘러보기' "announcement content headings"
+assert_route_contains "${sample_announcement}" '모든 공지 보기|Pinned' "announcement detail meta row"
+assert_route_contains "/" "${active_announcement_date}" "expected active announcement date on Home"
+assert_route_contains "/announcements/" "${active_announcement_date}" "expected active announcement date in archive"
+assert_route_contains "${sample_announcement}" "${active_announcement_date}" "expected active announcement detail date"
 assert_route_layout "${sample_post}"
 assert_route_layout "${sample_series}"
 assert_route_layout "${sample_series_entry}"
@@ -643,6 +695,8 @@ done
 
 echo "[smoke] checking active nav mapping"
 assert_active_nav "/" "/"
+assert_active_nav "/announcements/" "/"
+assert_active_nav "${sample_announcement}" "/"
 assert_active_nav "/news/" "/news/"
 assert_active_nav "/docs/" "/docs/"
 assert_active_nav "/about/" "/about/"

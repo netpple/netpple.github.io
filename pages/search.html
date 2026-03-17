@@ -97,6 +97,22 @@ description: 시리즈 엔트리/포스트 통합 검색
 					{% assign added = true %}
 				{% endunless %}
 		{% endfor %}
+		{% for post in site.announcements %}
+				{% unless post.excluded_in_search or post.published == false %}
+					{% if post.expires_at == nil or post.expires_at > site.time %}
+					{% if added %},{% endif %}
+					{% assign added = false %}
+					"{{ post.url | slugify }}": {
+						"id": "{{ post.url | slugify }}",
+						"title": "{{ post.title | xml_escape }}",
+						"categories": "announcement",
+						"url": "{{ post.url | xml_escape }}",
+						"content": {{ post.content | strip_html | replace_regex: "[\s/\n]+"," " | strip | jsonify }}
+					}
+					{% assign added = true %}
+					{% endif %}
+				{% endunless %}
+		{% endfor %}
 	};
 </script>
 <script defer src="{{ site.baseurl }}/assets/js/lunr.min.js"></script>

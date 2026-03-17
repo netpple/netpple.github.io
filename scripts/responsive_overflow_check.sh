@@ -28,6 +28,8 @@ playwright_node_modules="$(cd "$(dirname "${playwright_bin}")/.." && pwd)"
 
 default_routes=(
   "/"
+  "/announcements/"
+  "/announcements/blog-renewal/"
   "/news/"
   "/docs/"
   "/about/"
