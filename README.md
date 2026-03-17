@@ -66,6 +66,10 @@ make preview-up
 # rebuild generated output inside the running container
 make preview-build
 
+# build + standard verify
+# (includes smoke/layout/runtime checks + announcement content validation)
+make preview-verify
+
 # recreate the preview container from scratch
 make preview-recreate
 

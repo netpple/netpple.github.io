@@ -122,8 +122,8 @@ preview-info:
 		echo "Latest responsive artifacts: (none; run KEEP_RESPONSIVE_ARTIFACTS=true make preview-responsive)"; \
 	fi
 	@echo "Quick start: make preview-up"
-	@echo "Build + smoke: make preview-verify"
-	@echo "Comprehensive full-site verify: make preview-verify-full"
+	@echo "Build + standard verify (includes announcement content check): make preview-verify"
+	@echo "Comprehensive full-site verify (includes announcement edge checks): make preview-verify-full"
 	@echo "Responsive smoke only: make preview-responsive"
 	@echo "Home first-viewport check only: make preview-home-fold"
 	@echo "Responsive overflow only: make preview-overflow"
