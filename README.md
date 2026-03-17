@@ -188,7 +188,7 @@ Homepage updates are managed through the `_announcements` collection.
 - Required front matter: `title`, `summary`, `date`, `cta_label`, `cta_url`, `pinned`, `published`
 - Optional front matter: `description`, `expires_at`, `excluded_in_search`
 - Site timezone: dates are rendered in `Asia/Seoul`, so `date` and `expires_at` values should be authored in Korea time
-- Home rendering rules: show one active pinned announcement first, then up to two newer active items as secondary links
+- Home rendering rules: show one active pinned announcement first; if no active pinned item exists, fall back to the latest active unpinned announcement
 - Visibility rules: items with `published: false` or an `expires_at` earlier than the build time are hidden from Home, archive, and search
 - Validation rules: keep at most one active `pinned: true` announcement at a time, and ensure `expires_at` is later than `date`
 - Archive path: `/announcements/`
@@ -218,7 +218,7 @@ Operating lifecycle:
 - Pin: keep `pinned: true` on only one active announcement at a time
 - Hide: switch to `published: false` if the notice should disappear immediately
 - Expire: set `expires_at` when the notice should stop showing automatically after a deadline
-- Archive-only note: there is no dedicated archive-only flag today. An active unpinned notice may still appear in the Home secondary list while it is recent.
+- Archive-only note: there is no dedicated archive-only flag today. Active announcements continue to appear in `/announcements/`, while Home stays limited to a single compact announcement slot.
 
 ## Deployment Notes
 
