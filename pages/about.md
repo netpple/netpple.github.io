@@ -71,7 +71,7 @@ hide_page_intro: true
   <div class="section-heading">
     <p class="section-heading__kicker">Talks & Writing</p>
     <h2 class="section-heading__title">발표 및 대외 공개 자료</h2>
-    <p class="section-heading__description">대표 발표와 외부 공개 자료 위주로 검증 가능한 링크를 남겼습니다.</p>
+    <p class="section-heading__description">대표 발표와 공개 글 주제만 간결하게 남겼습니다.</p>
   </div>
   <div class="entry-grid about-evidence-grid">
     <article class="entry-card about-evidence-card">
@@ -89,11 +89,11 @@ hide_page_intro: true
         <span>Kakao Enterprise Tech</span>
       </div>
       <h3 class="entry-card__title">컨테이너 내부 구조 연재</h3>
-      <p class="entry-card__excerpt">카카오엔터프라이즈 기술 블로그에 컨테이너 이해를 위한 연재 글을 기고했습니다.</p>
+      <p class="entry-card__excerpt">카카오엔터프라이즈 기술 블로그에 기고한 컨테이너 이해 연재 주제를 정리했습니다.</p>
       <ul class="entry-card__list">
-        <li><a href="https://tech.kakaoenterprise.com/150" target="_blank" rel="noreferrer noopener">서비스 개발자를 위한 컨테이너 뽀개기</a></li>
-        <li><a href="https://tech.kakaoenterprise.com/154" target="_blank" rel="noreferrer noopener">컨테이너 인터널 #1</a></li>
-        <li><a href="https://tech.kakaoenterprise.com/171" target="_blank" rel="noreferrer noopener">컨테이너 인터널 #2</a></li>
+        <li>서비스 개발자를 위한 컨테이너 뽀개기</li>
+        <li>컨테이너 인터널 #1</li>
+        <li>컨테이너 인터널 #2</li>
       </ul>
     </article>
   </div>
