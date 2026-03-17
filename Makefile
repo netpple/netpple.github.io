@@ -3,7 +3,7 @@ PREVIEW_PORT ?= 4012
 PREVIEW_URL ?= http://127.0.0.1:$(PREVIEW_PORT)
 PREVIEW_IMAGE ?= jekyll/jekyll:4.2.0
 
-.PHONY: preview-up preview-build preview-smoke preview-responsive preview-home-fold preview-overflow preview-overflow-full preview-nav preview-runtime preview-runtime-full preview-a11y preview-linkcheck preview-canonical-links preview-structure preview-style-scope preview-inline-style preview-ids preview-meta preview-terms preview-format preview-headings preview-series-hub preview-series-explorer preview-resources preview-sitemap preview-announcements preview-verify preview-verify-full preview-down preview-recreate preview-info
+.PHONY: preview-up preview-build preview-smoke preview-responsive preview-home-fold preview-overflow preview-overflow-full preview-nav preview-runtime preview-runtime-full preview-a11y preview-linkcheck preview-canonical-links preview-structure preview-style-scope preview-inline-style preview-ids preview-meta preview-terms preview-format preview-headings preview-series-hub preview-series-explorer preview-resources preview-sitemap preview-announcements preview-announcement-edges preview-verify preview-verify-full preview-down preview-recreate preview-info
 
 preview-up:
 	@if docker ps --format '{{.Names}}' | grep -qx '$(PREVIEW_NAME)'; then \
@@ -92,9 +92,12 @@ preview-sitemap:
 preview-announcements:
 	scripts/announcement_content_check.sh _announcements
 
+preview-announcement-edges:
+	scripts/announcement_edge_case_check.sh .
+
 preview-verify: preview-build preview-smoke preview-responsive preview-home-fold preview-overflow preview-nav preview-runtime preview-a11y preview-linkcheck preview-canonical-links preview-structure preview-style-scope preview-inline-style preview-ids preview-meta preview-terms preview-format preview-headings preview-series-hub preview-series-explorer preview-resources preview-sitemap preview-announcements
 
-preview-verify-full: preview-verify preview-overflow-full preview-runtime-full
+preview-verify-full: preview-verify preview-overflow-full preview-runtime-full preview-announcement-edges
 
 preview-down:
 	@docker rm -f $(PREVIEW_NAME) >/dev/null 2>&1 || true
@@ -145,6 +148,7 @@ preview-info:
 	@echo "Resource loading check only: make preview-resources"
 	@echo "Sitemap consistency check only: make preview-sitemap"
 	@echo "Announcement content check only: make preview-announcements"
+	@echo "Announcement edge-case check only: make preview-announcement-edges"
 	@echo "Stop preview: make preview-down"
 	@echo "Visual checkpoints:"
 	@echo "  1) Home first screen shows value proposition and 2 key metrics first, without an extra featured-series deck"
