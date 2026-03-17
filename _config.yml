@@ -73,6 +73,9 @@ collections:
   docs:
     output: true
     permalink: /:collection/:path
+  announcements:
+    output: true
+    permalink: /:collection/:path/
 
 # Defaults
 defaults:
@@ -81,6 +84,11 @@ defaults:
       type: "docs"
     values:
       layout: page
+  - scope:
+      path: "_announcements"
+      type: "announcements"
+    values:
+      layout: "page"
   -
     scope:
       path: ""

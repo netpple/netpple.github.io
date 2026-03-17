@@ -91,6 +91,8 @@ layout: default
       {% assign intro_eyebrow = "Series" %}
     {% elsif page.url == "/about/" %}
       {% assign intro_eyebrow = "About" %}
+    {% elsif page.url == "/announcements/" or page.collection == "announcements" %}
+      {% assign intro_eyebrow = "Announcements" %}
     {% elsif page.url == "/search/" %}
       {% assign intro_eyebrow = "Search" %}
     {% elsif page.url == "/tags/" %}

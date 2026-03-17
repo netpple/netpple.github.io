@@ -517,12 +517,13 @@ for route in "${routes[@]}"; do
 done
 
 echo "[smoke] checking key page redesign markers"
-assert_route_contains "/" 'home-hero|home-stats|home-featured-panel' "home redesign markers"
+assert_route_contains "/" 'home-hero|home-stats|home-featured-panel|home-announcement' "home redesign markers"
 assert_home_stats
 assert_home_feature_cards
 assert_route_not_contains "/" 'home-series-grid|<h2 class="section-heading__title">주요 시리즈</h2>' "legacy home featured series section"
 assert_route_contains "/" 'href="/2023/k8s-1.26-install/"' "home featured install post link"
 assert_route_contains "/" 'href="/docs/istio-in-action/"' "home featured Istio series link"
+assert_route_contains "/announcements/" 'Announcement|현재 노출 중인 공지|entry-card--news' "announcements markers"
 assert_route_contains "/news/" 'entry-card--list' "posts list card markers"
 assert_route_contains "/docs/" 'series-grid|entry-card--list' "series hub markers"
 assert_route_contains "/docs/" 'Series Navigation' "series navigation heading"

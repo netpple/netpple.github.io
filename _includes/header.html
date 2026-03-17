@@ -15,7 +15,7 @@
           {% assign href = link.external_url %}
           {% if link.url %}{% assign href = site.baseurl | append: link.url %}{% endif %}
           {% assign is_active = false %}
-          {% if link.url == "/" and page.url == "/" %}
+          {% if link.url == "/" and (page.url == "/" or page.url == "/announcements/" or page.collection == "announcements") %}
             {% assign is_active = true %}
           {% elsif link.url == "/news/" and (page.url == "/news/" or page.url == "/archive/" or page.collection == "posts") %}
             {% assign is_active = true %}

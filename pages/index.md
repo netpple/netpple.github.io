@@ -14,6 +14,35 @@ description: 클라우드 네이티브와 분산 시스템 운영 경험을 정�
 {% assign series_count = series_slug_stream | split: "|" | uniq | size %}
 {% assign featured_series_istio_url = "/docs/istio-in-action/" %}
 {% assign featured_post_install = posts | where: "url", "/2023/k8s-1.26-install/" | first %}
+{% assign sorted_announcements = site.announcements | where_exp: "announcement", "announcement.published != false" | sort: "date" | reverse %}
+{% assign primary_announcement = nil %}
+{% for announcement in sorted_announcements %}
+  {% if announcement.expires_at == nil or announcement.expires_at > site.time %}
+    {% if announcement.pinned %}
+      {% assign primary_announcement = announcement %}
+      {% break %}
+    {% endif %}
+  {% endif %}
+{% endfor %}
+{% if primary_announcement == nil %}
+  {% for announcement in sorted_announcements %}
+    {% if announcement.expires_at == nil or announcement.expires_at > site.time %}
+      {% assign primary_announcement = announcement %}
+      {% break %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+{% assign has_secondary_announcements = false %}
+{% if primary_announcement %}
+  {% for announcement in sorted_announcements %}
+    {% if announcement.expires_at == nil or announcement.expires_at > site.time %}
+      {% if announcement.url != primary_announcement.url %}
+        {% assign has_secondary_announcements = true %}
+        {% break %}
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
 
 <section class="home-hero">
   <div class="home-hero__content">
@@ -72,6 +101,68 @@ description: 클라우드 네이티브와 분산 시스템 운영 경험을 정�
     </div>
   </div>
 </section>
+
+{% if primary_announcement %}
+  {% assign primary_cta_url = primary_announcement.cta_url | default: primary_announcement.url %}
+  {% if primary_cta_url contains "://" %}
+    {% assign primary_cta_href = primary_cta_url %}
+  {% else %}
+    {% assign primary_cta_href = primary_cta_url | prepend: site.baseurl %}
+  {% endif %}
+  <section class="home-section home-announcement-section" aria-labelledby="home-announcements-title">
+    <div class="home-announcement">
+      <div class="home-announcement__main">
+        <div class="home-announcement__meta">
+          <p class="home-announcement__eyebrow">Updates</p>
+          <time datetime="{{ primary_announcement.date | date_to_xmlschema }}">{{ primary_announcement.date | date: "%Y.%m.%d" }}</time>
+          {% if primary_announcement.pinned %}<span class="badge">Pinned</span>{% endif %}
+        </div>
+        <h2 class="home-announcement__title" id="home-announcements-title">
+          <a href="{{ primary_announcement.url | prepend: site.baseurl }}">{{ primary_announcement.title }}</a>
+        </h2>
+        <p class="home-announcement__summary">{{ primary_announcement.summary }}</p>
+      </div>
+      <div class="home-announcement__actions">
+        <a class="button button--ghost" href="{{ primary_cta_href }}"{% if primary_cta_url contains "://" %} target="_blank" rel="noreferrer noopener"{% endif %}>
+          {{ primary_announcement.cta_label | default: "공지 보기" }}
+        </a>
+        <a class="home-announcement__archive-link" href="{{ site.baseurl }}/announcements/">모든 공지 보기</a>
+      </div>
+    </div>
+    {% if has_secondary_announcements %}
+      <div class="home-announcement-list" aria-label="최근 공지">
+        {% assign secondary_count = 0 %}
+        {% for announcement in sorted_announcements %}
+          {% if announcement.expires_at == nil or announcement.expires_at > site.time %}
+            {% if announcement.url == primary_announcement.url %}
+              {% continue %}
+            {% endif %}
+            {% assign secondary_cta_url = announcement.cta_url | default: announcement.url %}
+            {% if secondary_cta_url contains "://" %}
+              {% assign secondary_cta_href = secondary_cta_url %}
+            {% else %}
+              {% assign secondary_cta_href = secondary_cta_url | prepend: site.baseurl %}
+            {% endif %}
+            {% assign secondary_count = secondary_count | plus: 1 %}
+            <article class="home-announcement-list__item">
+              <div>
+                <p class="home-announcement-list__date">{{ announcement.date | date: "%Y.%m.%d" }}</p>
+                <h3 class="home-announcement-list__title"><a href="{{ announcement.url | prepend: site.baseurl }}">{{ announcement.title }}</a></h3>
+                <p class="home-announcement-list__summary">{{ announcement.summary }}</p>
+              </div>
+              <a class="home-announcement-list__link" href="{{ secondary_cta_href }}"{% if secondary_cta_url contains "://" %} target="_blank" rel="noreferrer noopener"{% endif %}>
+                {{ announcement.cta_label | default: "바로가기" }}
+              </a>
+            </article>
+            {% if secondary_count >= 2 %}
+              {% break %}
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+  </section>
+{% endif %}
 
 <section class="home-section">
   <div class="section-heading">

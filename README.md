@@ -163,12 +163,19 @@ make preview-meta
 make preview-terms
 ```
 
+## Announcement Content Flow
+
+Homepage updates are managed through the `_announcements` collection.
+
+- Required front matter: `title`, `summary`, `date`, `cta_label`, `cta_url`, `pinned`, `published`
+- Optional front matter: `description`, `expires_at`, `excluded_in_search`
+- Home rendering rules: show one active pinned announcement first, then up to two newer active items as secondary links
+- Visibility rules: items with `published: false` or an `expires_at` earlier than the build time are hidden from Home, archive, and search
+- Archive path: `/announcements/`
+
 ## Deployment Notes
 
 GitHub Pages publishes from the repository's `master` branch.
-
-In practice, larger site work may be accumulated on an integration branch such
-as `sam-10-uiux-phase2` and then promoted to `master` when ready for release.
 
 Live site:
 
