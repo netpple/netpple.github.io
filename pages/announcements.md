@@ -75,38 +75,38 @@ hide_page_intro: true
     </article>
   </div>
   {% if has_secondary_announcements %}
-    <div class="section-heading announcement-page__secondary-heading">
-      <p class="section-heading__kicker">More Updates</p>
-      <h2 class="section-heading__title">추가 공지</h2>
-      <p class="section-heading__description">현재 활성 상태인 다른 공지들도 함께 확인할 수 있습니다.</p>
-    </div>
-    <div class="entry-grid">
-      {% for announcement in sorted_announcements %}
-        {% if announcement.expires_at == nil or announcement.expires_at > site.time %}
-          {% if announcement.url == primary_announcement.url %}
-            {% continue %}
-          {% endif %}
-          {% assign announcement_cta_url = announcement.cta_url | default: announcement.url %}
-          {% if announcement_cta_url contains "://" %}
-            {% assign announcement_cta_href = announcement_cta_url %}
-          {% else %}
-            {% assign announcement_cta_href = announcement_cta_url | prepend: site.baseurl %}
-          {% endif %}
-          <article class="entry-card entry-card--list">
-            <div class="entry-card__meta">
-              <time datetime="{{ announcement.date | date_to_xmlschema }}">{{ announcement.date | date: "%Y.%m.%d" }}</time>
-              {% if announcement.pinned %}<span class="badge">Pinned</span>{% endif %}
-              <span class="badge badge-secondary">Announcement</span>
-            </div>
-            <h3 class="entry-card__title"><a href="{{ announcement.url | prepend: site.baseurl }}">{{ announcement.title }}</a></h3>
-            <p class="entry-card__excerpt">{{ announcement.summary }}</p>
-            <a class="entry-card__cta" href="{{ announcement_cta_href }}"{% if announcement_cta_url contains "://" %} target="_blank" rel="noreferrer noopener"{% endif %}>
-              {{ announcement.cta_label | default: "공지 보기" }}
-            </a>
-          </article>
-        {% endif %}
-      {% endfor %}
-    </div>
+<div class="section-heading announcement-page__secondary-heading">
+  <p class="section-heading__kicker">More Updates</p>
+  <h2 class="section-heading__title">추가 공지</h2>
+  <p class="section-heading__description">현재 활성 상태인 다른 공지들도 함께 확인할 수 있습니다.</p>
+</div>
+<div class="entry-grid">
+  {% for announcement in sorted_announcements %}
+    {% if announcement.expires_at == nil or announcement.expires_at > site.time %}
+      {% if announcement.url == primary_announcement.url %}
+        {% continue %}
+      {% endif %}
+      {% assign announcement_cta_url = announcement.cta_url | default: announcement.url %}
+      {% if announcement_cta_url contains "://" %}
+        {% assign announcement_cta_href = announcement_cta_url %}
+      {% else %}
+        {% assign announcement_cta_href = announcement_cta_url | prepend: site.baseurl %}
+      {% endif %}
+      <article class="entry-card entry-card--list">
+        <div class="entry-card__meta">
+          <time datetime="{{ announcement.date | date_to_xmlschema }}">{{ announcement.date | date: "%Y.%m.%d" }}</time>
+          {% if announcement.pinned %}<span class="badge">Pinned</span>{% endif %}
+          <span class="badge badge-secondary">Announcement</span>
+        </div>
+        <h3 class="entry-card__title"><a href="{{ announcement.url | prepend: site.baseurl }}">{{ announcement.title }}</a></h3>
+        <p class="entry-card__excerpt">{{ announcement.summary }}</p>
+        <a class="entry-card__cta" href="{{ announcement_cta_href }}"{% if announcement_cta_url contains "://" %} target="_blank" rel="noreferrer noopener"{% endif %}>
+          {{ announcement.cta_label | default: "공지 보기" }}
+        </a>
+      </article>
+    {% endif %}
+  {% endfor %}
+</div>
   {% endif %}
 {% else %}
   <p class="section-note">현재 노출 중인 공지가 없습니다. Home은 기존 탐색 흐름을 그대로 유지합니다.</p>
