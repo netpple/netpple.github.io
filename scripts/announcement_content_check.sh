@@ -21,6 +21,7 @@ date_fields = %w[date expires_at]
 
 failed = 0
 total = 0
+active_pinned = []
 
 Dir.glob(File.join(announcements_dir, "*.md")).sort.each do |path|
   total += 1
@@ -81,6 +82,22 @@ Dir.glob(File.join(announcements_dir, "*.md")).sort.each do |path|
     end
   end
 
+  if data["date"] && data["expires_at"]
+    begin
+      date_value = Time.parse(data["date"].to_s)
+      expires_at_value = Time.parse(data["expires_at"].to_s)
+      if expires_at_value <= date_value
+        errors << "`expires_at` must be later than `date`"
+      end
+    rescue ArgumentError
+      # Individual date parsing failures are already reported above.
+    end
+  end
+
+  if data["published"] == true && data["pinned"] == true
+    active_pinned << path
+  end
+
   if errors.any?
     puts "[fail] #{path}"
     errors.each { |error| puts "       - #{error}" }
@@ -91,6 +108,12 @@ end
 if total.zero?
   puts "[fail] no announcement markdown files found in #{announcements_dir}"
   exit 1
+end
+
+if active_pinned.length > 1
+  puts "[fail] announcement content check failed: multiple published pinned announcements"
+  active_pinned.each { |path| puts "       - #{path}" }
+  failed += 1
 end
 
 if failed.positive?
