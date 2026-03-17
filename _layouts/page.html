@@ -103,6 +103,13 @@ layout: default
         <p class="page-intro__eyebrow">{{ intro_eyebrow }}</p>
         <h1 class="page-intro__title">{{ page.title }}</h1>
         {% if page.description %}<p class="page-intro__description">{{ page.description }}</p>{% endif %}
+        {% if page.collection == "announcements" and page.url != "/announcements/" %}
+          <div class="article-meta">
+            <a class="entry-card__cta" href="{{ site.baseurl }}/announcements/">All Announcements</a>
+            {% if page.date %}<time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%Y.%m.%d" }}</time>{% endif %}
+            {% if page.pinned %}<span class="badge">Pinned</span>{% endif %}
+          </div>
+        {% endif %}
       </header>
     {% endunless %}
   {% endunless %}
