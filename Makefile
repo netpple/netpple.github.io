@@ -1,9 +1,9 @@
-PREVIEW_NAME ?= netpple-preview-sam11
+PREVIEW_NAME ?= netpple-preview
 PREVIEW_PORT ?= 4012
 PREVIEW_URL ?= http://127.0.0.1:$(PREVIEW_PORT)
 PREVIEW_IMAGE ?= jekyll/jekyll:4.2.0
 
-.PHONY: preview-up preview-build preview-smoke preview-responsive preview-overflow preview-overflow-full preview-nav preview-runtime preview-runtime-full preview-a11y preview-linkcheck preview-canonical-links preview-structure preview-style-scope preview-inline-style preview-ids preview-meta preview-terms preview-format preview-headings preview-series-hub preview-series-explorer preview-resources preview-sitemap preview-verify preview-verify-full preview-down preview-recreate preview-info
+.PHONY: preview-up preview-build preview-smoke preview-responsive preview-home-fold preview-overflow preview-overflow-full preview-nav preview-runtime preview-runtime-full preview-a11y preview-linkcheck preview-canonical-links preview-structure preview-style-scope preview-inline-style preview-ids preview-meta preview-terms preview-format preview-headings preview-series-hub preview-series-explorer preview-resources preview-sitemap preview-verify preview-verify-full preview-down preview-recreate preview-info
 
 preview-up:
 	@if docker ps --format '{{.Names}}' | grep -qx '$(PREVIEW_NAME)'; then \
@@ -25,6 +25,9 @@ preview-smoke:
 
 preview-responsive:
 	scripts/responsive_smoke_check.sh $(PREVIEW_URL)
+
+preview-home-fold:
+	scripts/home_first_viewport_check.sh $(PREVIEW_URL)
 
 preview-overflow:
 	scripts/responsive_overflow_check.sh $(PREVIEW_URL)
@@ -86,7 +89,7 @@ preview-resources:
 preview-sitemap:
 	scripts/sitemap_consistency_check.sh _site
 
-preview-verify: preview-build preview-smoke preview-responsive preview-overflow preview-nav preview-runtime preview-a11y preview-linkcheck preview-canonical-links preview-structure preview-style-scope preview-inline-style preview-ids preview-meta preview-terms preview-format preview-headings preview-series-hub preview-series-explorer preview-resources preview-sitemap
+preview-verify: preview-build preview-smoke preview-responsive preview-home-fold preview-overflow preview-nav preview-runtime preview-a11y preview-linkcheck preview-canonical-links preview-structure preview-style-scope preview-inline-style preview-ids preview-meta preview-terms preview-format preview-headings preview-series-hub preview-series-explorer preview-resources preview-sitemap
 
 preview-verify-full: preview-verify preview-overflow-full preview-runtime-full
 
@@ -116,6 +119,7 @@ preview-info:
 	@echo "Build + smoke: make preview-verify"
 	@echo "Comprehensive full-site verify: make preview-verify-full"
 	@echo "Responsive smoke only: make preview-responsive"
+	@echo "Home first-viewport check only: make preview-home-fold"
 	@echo "Responsive overflow only: make preview-overflow"
 	@echo "Responsive overflow full-site: make preview-overflow-full"
 	@echo "Nav consistency only: make preview-nav"
@@ -139,7 +143,7 @@ preview-info:
 	@echo "Sitemap consistency check only: make preview-sitemap"
 	@echo "Stop preview: make preview-down"
 	@echo "Visual checkpoints:"
-	@echo "  1) Hero typography/spacing + CTA alignment"
-	@echo "  2) GNB alignment, hover/active, mobile toggle-close"
-	@echo "  3) Posts/Series card rhythm + footer spacing"
-	@echo "  4) Post/Series entry detail TOC + code/table/image readability"
+	@echo "  1) Home first screen shows value proposition and 2 key metrics first, without an extra featured-series deck"
+	@echo "  2) Home recommendation block stays limited to 2 representative entry cards with clear destination type"
+	@echo "  3) About enters through compact intro, then emphasizes career history and talk credibility"
+	@echo "  4) Posts / Series navigation stays consistent across Home, About, and detail routes"

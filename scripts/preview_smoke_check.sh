@@ -2,6 +2,8 @@
 set -euo pipefail
 
 BASE_URL="${1:-http://127.0.0.1:4012}"
+READY_RETRIES="${PREVIEW_SMOKE_READY_RETRIES:-12}"
+READY_DELAY_SECONDS="${PREVIEW_SMOKE_READY_DELAY_SECONDS:-1}"
 
 routes=(
   "/"
@@ -38,6 +40,33 @@ key_nav_paths=(
 fail() {
   echo "[fail] $1"
   exit 1
+}
+
+wait_for_preview_ready() {
+  local attempt
+  local body_file
+  local http_code
+
+  body_file="$(mktemp)"
+
+  for (( attempt = 1; attempt <= READY_RETRIES; attempt++ )); do
+    http_code="$(
+      curl -sS -o "${body_file}" -w "%{http_code}" "${BASE_URL}/" || true
+    )"
+
+    if [[ "${http_code}" == "200" ]] && grep -Eiq 'netpple|김삼영|기술 블로그' "${body_file}"; then
+      rm -f "${body_file}"
+      echo "[ok] preview ready after ${attempt} attempt(s)"
+      return 0
+    fi
+
+    if (( attempt < READY_RETRIES )); then
+      sleep "${READY_DELAY_SECONDS}"
+    fi
+  done
+
+  rm -f "${body_file}"
+  fail "preview did not become ready at ${BASE_URL}/ after ${READY_RETRIES} attempt(s)"
 }
 
 assert_route_layout() {
@@ -333,7 +362,131 @@ assert_route_pattern_min_count() {
   echo "[ok] ${route} ${description} -> ${actual}"
 }
 
+assert_home_series_count_matches_docs() {
+  local html_file
+  local expected
+  local actual
+
+  html_file="$(mktemp)"
+  curl -fsSL "${BASE_URL}/" > "${html_file}"
+
+  expected="$(
+    find _docs -mindepth 2 -maxdepth 2 -type f -name '*.md' -print \
+      | sed -E 's#^_docs/([^/]+)/.*#\1#' \
+      | sort -u \
+      | wc -l \
+      | tr -d ' '
+  )"
+
+  actual="$(
+    awk '
+      /<p class="home-stats__label">Series<\/p>/ { capture=1; next }
+      capture && /<p class="home-stats__value">/ {
+        line = $0
+        sub(/^.*<p class="home-stats__value">/, "", line)
+        sub(/<\/p>.*$/, "", line)
+        print line
+        exit
+      }
+    ' "${html_file}"
+  )"
+
+  rm -f "${html_file}"
+
+  if [[ -z "${actual}" ]]; then
+    fail "/ missing rendered Series home stat value"
+  fi
+
+  if [[ "${actual}" != "${expected}" ]]; then
+    fail "/ expected Series home stat ${expected} from docs groups but got ${actual}"
+  fi
+
+  echo "[ok] / Series home stat value -> ${actual}"
+}
+
+assert_home_feature_cards() {
+  local html_file
+  local card_count
+  local post_count
+  local series_count
+  local summary_count
+  local cta_count
+
+  html_file="$(mktemp)"
+  curl -fsSL "${BASE_URL}/" > "${html_file}"
+
+  card_count="$(
+    (grep -o 'class="home-feature-card"' "${html_file}" || true) | wc -l | tr -d ' '
+  )"
+  post_count="$(
+    (grep -o '추천 포스트' "${html_file}" || true) | wc -l | tr -d ' '
+  )"
+  series_count="$(
+    (grep -o '추천 시리즈' "${html_file}" || true) | wc -l | tr -d ' '
+  )"
+  summary_count="$(
+    (grep -o 'class="home-feature-card__summary"' "${html_file}" || true) | wc -l | tr -d ' '
+  )"
+  cta_count="$(
+    (grep -Eo '>(포스트 보기|시리즈 보기) →<' "${html_file}" || true) | wc -l | tr -d ' '
+  )"
+
+  rm -f "${html_file}"
+
+  [[ "${card_count}" == "2" ]] || fail "/ expected 2 home feature cards but got ${card_count}"
+  [[ "${post_count}" == "1" ]] || fail "/ expected 1 recommended post card but got ${post_count}"
+  [[ "${series_count}" == "1" ]] || fail "/ expected 1 recommended series card but got ${series_count}"
+  [[ "${summary_count}" == "2" ]] || fail "/ expected 2 feature-card summary lines but got ${summary_count}"
+  [[ "${cta_count}" == "2" ]] || fail "/ expected 2 feature-card CTA labels but got ${cta_count}"
+
+  echo "[ok] / home feature cards -> cards=${card_count}, posts=${post_count}, series=${series_count}"
+}
+
+assert_home_stats() {
+  local html_file
+  local stats_file
+  local stats_count
+
+  html_file="$(mktemp)"
+  stats_file="$(mktemp)"
+  curl -fsSL "${BASE_URL}/" > "${html_file}"
+
+  stats_count="$(
+    (grep -o 'class="home-stats__item"' "${html_file}" || true) | wc -l | tr -d ' '
+  )"
+
+  if [[ "${stats_count}" != "2" ]]; then
+    rm -f "${html_file}" "${stats_file}"
+    fail "/ expected 2 home stats but got ${stats_count}"
+  fi
+
+  awk '
+    /<div class="home-stats">/ { in_stats=1 }
+    in_stats { print }
+    /<\/div>/ {
+      if (in_stats) {
+        depth += gsub(/<div/, "&")
+        depth -= gsub(/<\/div>/, "&")
+        if (depth <= 0) {
+          exit
+        }
+      }
+    }
+  ' "${html_file}" > "${stats_file}"
+
+  if grep -Eiq '방문자|visitor|visitors|analytics' "${stats_file}"; then
+    rm -f "${html_file}" "${stats_file}"
+    fail "/ unexpectedly exposes visitor or analytics copy in home stats"
+  fi
+
+  rm -f "${html_file}" "${stats_file}"
+  echo "[ok] / home stats -> ${stats_count} items without visitor metric"
+}
+
 echo "[smoke] base url: ${BASE_URL}"
+
+echo "[smoke] waiting for preview readiness"
+wait_for_preview_ready
 
 echo "[smoke] checking homepage content marker"
 curl -fsSL "${BASE_URL}/" | grep -Eiq "netpple|김삼영|기술 블로그"
@@ -364,7 +517,12 @@ for route in "${routes[@]}"; do
 done
 
 echo "[smoke] checking key page redesign markers"
-assert_route_contains "/" 'home-hero|home-stats|home-series-grid' "home redesign markers"
+assert_route_contains "/" 'home-hero|home-stats|home-featured-panel' "home redesign markers"
+assert_home_stats
+assert_home_feature_cards
+assert_route_not_contains "/" 'home-series-grid|<h2 class="section-heading__title">주요 시리즈</h2>' "legacy home featured series section"
+assert_route_contains "/" 'href="/2023/k8s-1.26-install/"' "home featured install post link"
+assert_route_contains "/" 'href="/docs/istio-in-action/"' "home featured Istio series link"
 assert_route_contains "/news/" 'entry-card--list' "posts list card markers"
 assert_route_contains "/docs/" 'series-grid|entry-card--list' "series hub markers"
 assert_route_contains "/docs/" 'Series Navigation' "series navigation heading"
@@ -382,17 +540,22 @@ assert_route_pattern_count "/docs/" 'class="entry-card entry-card--list"' "8" "r
 assert_route_pattern_min_count "/docs/" 'data-series-explorer-item' "20" "series explorer items"
 assert_route_not_contains_case_sensitive "/docs/" '>\s*istio in action\s*<' "legacy raw Istio series label on docs hub"
 assert_route_not_contains "/docs/" '>\s*데이터중심 애플리케이션\s*<' "legacy raw data series label on docs hub"
-assert_route_contains "/about/" 'section-heading__kicker\">Interests|chip-row' "about redesign markers"
+assert_route_contains "/about/" 'about-intro|about-evidence-grid' "about redesign markers"
+assert_route_contains "/about/" 'QueryPie CTO' "about current role marker"
+assert_route_contains "/about/" 'if\(kakao\)dev2022' "about talk credibility marker"
+assert_route_contains "/about/" 'linkedin\.com/in/sam0-kim|github\.com/netpple' "about external profile links"
+assert_route_not_contains "/about/" '기술스택|기술 스택' "legacy tech-stack section labels"
+assert_route_not_contains "/about/" '관심영역|관심 영역' "legacy interest section labels"
+assert_route_not_contains "/about/" '>\s*학력\s*<' "legacy education section label"
 assert_route_contains "/search/" 'search-panel|id=\"search-input\"' "search ui markers"
 assert_route_not_contains "/tags/" 'class="tag-nav__link" href="#"' "empty tag navigation links"
 
 echo "[smoke] checking IA terminology markers"
 assert_route_contains "/" '>\s*Posts\s*<' "Posts IA label"
 assert_route_contains "/" '>\s*Series\s*<' "Series IA label"
-assert_route_contains "/" 'home-stats__label\">Series entries<' "Series entry home stat label"
-assert_route_contains "/" '>\s*[0-9]+\s+Series entries\s*<' "Series entry count copy"
-assert_route_not_contains "/" 'home-stats__label\">Series<' "ambiguous Series home stat label"
-assert_route_not_contains "/" '>\s*[0-9]+\s+entries\s*<' "legacy bare entry count copy"
+assert_route_contains "/" 'home-stats__label\">Series<' "Series home stat label"
+assert_route_contains "/" 'home-stats__meta\">대표 학습 경로로 정리한 시리즈<' "Series home stat helper copy"
+assert_home_series_count_matches_docs
 assert_route_not_contains "/" '>\s*News\s*<' "legacy News IA label"
 assert_route_not_contains "/" '>\s*Docs\s*<' "legacy Docs IA label"
 assert_nav_not_contains "/" '>\s*GitHub\s*<' "top-nav GitHub link"

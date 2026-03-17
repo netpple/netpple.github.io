@@ -521,6 +521,49 @@ img {
   background: #fff;
 }
 
+.about-intro {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  background: linear-gradient(140deg, #ffffff 0%, #f4f8ff 100%);
+}
+
+.about-intro__eyebrow {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.about-intro__title {
+  margin: var(--space-3) 0 0;
+  line-height: 1.15;
+  font-size: clamp(1.45rem, 2.2vw, 1.9rem);
+  letter-spacing: -0.02em;
+}
+
+.about-intro__summary {
+  margin: var(--space-3) 0 0;
+  color: var(--color-text-muted);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.about-intro__links {
+  margin: 0;
+  margin-top: var(--space-4);
+}
+
+.about-career-card {
+  grid-column: span 12;
+}
+
+.about-evidence-card {
+  grid-column: span 6;
+}
+
 .chip--button {
   cursor: pointer;
   font: inherit;
@@ -1215,6 +1258,16 @@ img {
   font-size: 0.86rem;
 }
 
+.site-footer__counter {
+  display: inline-flex;
+  align-items: center;
+}
+
+.site-footer__counter-badge {
+  display: block;
+  height: 20px;
+}
+
 @media (min-width: 980px) {
   .entry-card--list {
     grid-column: span 6;
@@ -1322,6 +1375,10 @@ img {
   .article-content .responsive-wrap iframe {
     min-height: 300px;
   }
+
+  .about-evidence-card {
+    grid-column: span 12;
+  }
 }
 
 @media (max-width: 760px) {
@@ -1349,6 +1406,11 @@ img {
   .series-card,
   .series-explorer {
     padding: var(--space-4);
+  }
+
+  .about-intro {
+    padding: var(--space-5);
+    border-radius: var(--radius-md);
   }
 
   .site-footer {
