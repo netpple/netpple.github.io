@@ -188,7 +188,7 @@ Homepage updates are managed through the `_announcements` collection.
 - Site timezone: dates are rendered in `Asia/Seoul`, so `date` and `expires_at` values should be authored in Korea time
 - Home rendering rules: show one active pinned announcement first, then up to two newer active items as secondary links
 - Visibility rules: items with `published: false` or an `expires_at` earlier than the build time are hidden from Home, archive, and search
-- Validation rules: keep at most one `published: true` + `pinned: true` announcement at a time, and ensure `expires_at` is later than `date`
+- Validation rules: keep at most one active `pinned: true` announcement at a time, and ensure `expires_at` is later than `date`
 - Archive path: `/announcements/`
 - Detail path: each announcement is published at `/announcements/<slug>/` and shows its own date, pinned badge, and archive backlink automatically
 - Validation path: `scripts/announcement_content_check.sh _announcements` verifies required fields, boolean flags, date parsing, `expires_at` ordering, unique active pinned announcements, and CTA URL shape before preview/release checks

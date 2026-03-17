@@ -22,6 +22,7 @@ date_fields = %w[date expires_at]
 failed = 0
 total = 0
 active_pinned = []
+build_time = Time.now
 
 Dir.glob(File.join(announcements_dir, "*.md")).sort.each do |path|
   total += 1
@@ -94,7 +95,17 @@ Dir.glob(File.join(announcements_dir, "*.md")).sort.each do |path|
     end
   end
 
-  if data["published"] == true && data["pinned"] == true
+  is_active = false
+  if data["published"] == true
+    begin
+      expires_at_value = data["expires_at"] ? Time.parse(data["expires_at"].to_s) : nil
+      is_active = expires_at_value.nil? || expires_at_value > build_time
+    rescue ArgumentError
+      # Individual date parsing failures are already reported above.
+    end
+  end
+
+  if is_active && data["pinned"] == true
     active_pinned << path
   end
 
@@ -111,7 +122,7 @@ if total.zero?
 end
 
 if active_pinned.length > 1
-  puts "[fail] announcement content check failed: multiple published pinned announcements"
+  puts "[fail] announcement content check failed: multiple active pinned announcements"
   active_pinned.each { |path| puts "       - #{path}" }
   failed += 1
 end

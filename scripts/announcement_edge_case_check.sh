@@ -112,4 +112,24 @@ assert_contains "${none_home}" 'Start Here' "Home still flows directly into Star
 assert_contains "${none_archive}" '현재 노출 중인 공지가 없습니다' "archive shows empty-state message when no announcements are active"
 assert_not_contains "${none_search}" '블로그 리뉴얼 안내' "inactive announcements drop out of search data"
 
+echo "[edge] case 3: expired pinned announcements do not block active pinned validation"
+expired_pinned_dir="${tmp_root}/expired-pinned"
+rsync -a --exclude '.git' "${WORKDIR}/" "${expired_pinned_dir}/" >/dev/null
+cat > "${expired_pinned_dir}/_announcements/expired-pinned.md" <<'EOF'
+---
+title: 만료된 pinned 공지 테스트
+summary: 이 공지는 pinned 상태지만 만료됐기 때문에 active pinned 중복으로 계산되면 안 됩니다.
+date: 2026-03-10 09:00:00 +0900
+expires_at: 2026-03-12 23:59:59 +0900
+cta_label: 만료 공지 보기
+cta_url: /announcements/expired-pinned/
+pinned: true
+published: true
+---
+
+validation only
+EOF
+"${WORKDIR}/scripts/announcement_content_check.sh" "${expired_pinned_dir}/_announcements" >/dev/null
+echo "[ok] expired pinned announcement does not fail active pinned validation"
+
 echo "[pass] announcement edge case check"
