@@ -25,6 +25,7 @@ baseurl: "" # the subpath of your site, e.g. /blog
 
 # This is mostly for testing
 url: "https://netpple.github.io" # the base hostname & protocol for your site
+timezone: "Asia/Seoul"
 
 # Social (First three Required)
 #repo: "https://github.com/netpple/make-container-without-docker"
