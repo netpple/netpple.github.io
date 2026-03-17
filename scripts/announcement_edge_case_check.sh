@@ -166,4 +166,15 @@ EOF
 "${WORKDIR}/scripts/announcement_content_check.sh" "${expired_pinned_dir}/_announcements" >/dev/null
 echo "[ok] expired pinned announcement does not fail active pinned validation"
 
+echo "[edge] case 4: latest active unpinned announcement still appears on Home"
+unpinned_dir="${tmp_root}/unpinned"
+rsync -a --exclude '.git' "${WORKDIR}/" "${unpinned_dir}/" >/dev/null
+find "${unpinned_dir}/_announcements" -name '*.md' -type f -exec perl -0pi -e 's/pinned: true/pinned: false/g' {} +
+build_temp_site "${unpinned_dir}" "_site_edge_unpinned"
+
+unpinned_home="${unpinned_dir}/_site_edge_unpinned/index.html"
+
+assert_contains "${unpinned_home}" 'home-announcement__title|Announcement' "Home still renders compact announcement slot when only unpinned announcements exist"
+assert_not_contains "${unpinned_home}" '>\s*Pinned\s*<' "Home does not show pinned badge when only unpinned announcements exist"
+
 echo "[pass] announcement edge case check"
