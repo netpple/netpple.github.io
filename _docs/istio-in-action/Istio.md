@@ -3,7 +3,7 @@ title: Istio 맛보기
 version: v1.0
 description: 실습으로 istio sidecar proxy 이해하기
 date: 2022-12-16 10:00:00 +09:00
-layout: post  
+layout: page  
 toc: 1  
 categories: network
 label: istio in action

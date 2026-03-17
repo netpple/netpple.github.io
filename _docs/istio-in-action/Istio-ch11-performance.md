@@ -3,7 +3,7 @@ title: Istio Performance
 version: v1.0  
 description: istio in action 11장  
 date: 2023-06-02 17:00:00 +09:00  
-layout: post  
+layout: page  
 toc: 17  
 categories: network
 label: istio in action

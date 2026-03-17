@@ -96,3 +96,96 @@ You can then open your browser to [http://localhost:4000](http://localhost:4000)
 to see the server running.
 
 > Node : changes `baseurl: ""` in _config.yml  when you are running in local and prod according to the requirement.
+
+## Local Preview Smoke Check
+
+For local validation of this project revision, run the preview server and smoke checks below:
+
+```bash
+# 1) Start/reuse preview server
+make preview-up
+
+# 2) Build + smoke checks
+make preview-verify
+
+# 2-1) Optional comprehensive full-site verify
+# (includes preview-verify + overflow-full + runtime-full)
+make preview-verify-full
+
+# 3) Or run smoke checks only
+make preview-smoke
+
+# 3-1) Or run responsive viewport screenshot checks only
+make preview-responsive
+
+# 3-2) Or run responsive overflow checks only (horizontal overflow fails)
+make preview-overflow
+
+# Optional full-site mode (all generated HTML routes in _site)
+make preview-overflow-full
+# Optional timeout/retry tuning for slower environments:
+# OVERFLOW_TIMEOUT_MS=90000 OVERFLOW_RETRIES=4 make preview-overflow-full
+
+# 3-2-1) Or run nav consistency checks only (desktop-min(961)/desktop/tablet/mobile-break(960)/tablet-min(761)/mobile-max/mobile)
+make preview-nav
+
+# 3-2-2) Or run accessibility smoke checks only (skip-link keyboard flow)
+make preview-a11y
+
+# 3-3) Or run internal link checks only (strict: redirects fail)
+make preview-linkcheck
+# optional relaxed mode:
+ALLOW_REDIRECTS=true make preview-linkcheck
+
+# 3-4) Or run structure consistency checks only
+make preview-structure
+
+# 3-5) Or run style scope checks only
+make preview-style-scope
+
+# 3-6) Or run inline-style checks only (core templates/pages)
+make preview-inline-style
+
+# 3-7) Or run HTML id uniqueness checks only
+make preview-ids
+
+# 3-8) Or run metadata consistency checks only
+make preview-meta
+
+# 3-9) Or run runtime console/pageerror/requestfailed checks only
+make preview-runtime
+
+# Optional full-site runtime mode (all generated HTML routes in _site)
+make preview-runtime-full
+# Optional timeout/retry tuning for slower environments:
+# RUNTIME_TIMEOUT_MS=90000 RUNTIME_RETRIES=4 make preview-runtime-full
+
+# optional: print manual visual checkpoints
+make preview-info
+
+# 4) Stop preview server after validation
+make preview-down
+```
+
+Smoke checks cover:
+- Homepage content marker
+- Core routes HTTP 200 status
+- Search route variants (`/search/?q=kubernetes`, `/search/?q=%28`, empty query)
+- Key page redesign markers (Home/News/Docs/About/Search)
+- Tags page empty tag navigation guard (no `href="#"` in `.tag-nav__link`)
+- Responsive viewport rendering smoke check (`desktop-min(961)/desktop/tablet/tablet-min(761)/mobile-break(960)/mobile-max(760)/mobile` screenshots across core + navigation routes incl. search results + docs detail routes)
+- Responsive layout overflow check (`desktop-min(961)/desktop/tablet/tablet-min(761)/mobile-break(960)/mobile-max(760)/mobile`, core routes + docs detail routes with horizontal overflow fail; optional `_site` full-route mode)
+- Runtime nav consistency check (`desktop-min(961)/desktop/tablet/mobile-break(960)/tablet-min(761)/mobile-max(760)/mobile`, GNB height/alignment/hover/active + route-specific active target mapping + toggle visibility/aria-label transitions, keyboard toggle Enter/Space, resize transition, toggle/Escape/outside-click close behavior, and page-wide `target="_blank"` rel safety)
+- Runtime console stability check (core routes console.error/pageerror/requestfailed 없는지 점검, GA/GTM 외부 차단 노이즈 제외)
+- Optional full-site runtime console stability check (`_site` 전체 라우트 대상)
+- Accessibility smoke check (`desktop`, skip-link first-focus visibility + Enter activation hash 이동 + `#main-content` 포커스 전달)
+- Home-only stylesheet loading (`home.css` on `/`, absent on non-home routes)
+- Post/Doc detail template markers
+- Navigation active mapping (`/archive/` -> `News`)
+- Key internal navigation route reachability (Home/News/Docs 대표 링크)
+- Site-wide internal link check from generated `_site` (`href/src`, redirects disallowed by default)
+- Site-wide structure consistency check (`skip-link`, nav toggle/nav ARIA markers, header/main/footer, `#main-content` tabindex, no `autofocus`, single h1, single active nav + `aria-current`, header/footer external blank-target rel safety, home.css scope per HTML page)
+- Source-level style scope check (home-only `home-*` class usage restricted to `pages/index.md`)
+- Source-level core template/page inline-style check (except GTM noscript iframe)
+- Site-wide HTML `id` uniqueness check (duplicate IDs fail)
+- Site-wide metadata consistency check (`title`, description, canonical, og:url/og:title, twitter:title)

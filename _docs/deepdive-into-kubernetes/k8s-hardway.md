@@ -1,5 +1,5 @@
 ---
-title: 1편. 쿠버네티스 hard?way
+title: 1편. 쿠버네티스 hardway
 version: v1.0
 date: 2022-03-16 10:00:00 +09:00
 description: 쿠버네티스 메인 컴포넌트들을 "손"으로 한땀한땀 설치해 봅니다. 

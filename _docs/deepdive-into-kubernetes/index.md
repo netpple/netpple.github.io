@@ -31,14 +31,19 @@ rightpanel: true
 {% assign docs = site.docs | where:'label', '쿠버네티스 딥다이브' %}
 
 {% for post in docs %}
+
 ### [{{ post.title }}]({{ post.url }})
 
-![{{ post.image }}]({{ post.image }}){:width="200"}{:.align-left}
+<div style="overflow: hidden">  
+
+<img src="{{ post.image }}" alt="{{ post.image }}" width="200" class="align-left" />
 
 <span class="badge badge-info">{{ post.version | default: "v1.0" }}</span>
 {% if post.badges %}{% for badge in post.badges %}<span class="badge badge-{{ badge.type }}">{{ badge.tag }}</span>{% endfor %}{% endif %}
-<span class="post-date" style="font-style: italic;">{{ post.date | date: "%m/%d %H:%m, %Y" }}</span>  
-{{ post. description }}
+<span class="post-date" style="font-style: italic;">{{ post.date | date: "%m/%d %H:%m, %Y" }}</span>
 
+<p>{{ post. description }}</p>
+
+</div>
 
 {% endfor %}

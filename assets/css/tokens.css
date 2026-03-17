@@ -1,0 +1,32 @@
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap");
+
+:root {
+  --font-sans: "Manrope", "Noto Sans KR", "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", "SFMono-Regular", "Consolas", monospace;
+  --container-max: 1180px;
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --color-bg: #f4f7fb;
+  --color-bg-soft: #e9eff8;
+  --color-surface: #ffffff;
+  --color-surface-alt: #f7faff;
+  --color-text: #0f1f35;
+  --color-text-muted: #5e6e83;
+  --color-primary: #0f5bd8;
+  --color-primary-strong: #0a47ab;
+  --color-accent: #00a386;
+  --color-border: #d4dfed;
+  --color-border-strong: #b9c8dd;
+  --shadow-sm: 0 8px 24px rgba(15, 31, 53, 0.06);
+  --shadow-md: 0 18px 50px rgba(15, 31, 53, 0.1);
+  --transition-base: 180ms ease;
+}

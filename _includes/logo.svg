@@ -1,17 +1,12 @@
-<?xml version="1.0" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
- "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
-<svg version="1.0" xmlns="http://www.w3.org/2000/svg"
- width="235.000000pt" height="235.000000pt" viewBox="0 0 235.000000 235.000000"
- preserveAspectRatio="xMidYMid meet">
-
-<g transform="translate(0.000000,235.000000) scale(0.100000,-0.100000)"
-fill="#000000" stroke="none">
-<path d="M1018 2057 c-206 -72 -338 -257 -338 -472 1 -87 13 -142 50 -220 59
--123 183 -225 318 -261 37 -9 68 -18 70 -20 2 -1 -96 -200 -217 -443 -122
--242 -221 -443 -221 -446 0 -3 223 -5 495 -5 325 0 495 3 495 10 0 6 -99 208
--220 450 -199 399 -218 440 -198 440 38 1 152 45 199 77 100 69 163 152 201
-262 31 89 30 229 -1 315 -47 130 -141 233 -268 294 -73 35 -85 37 -188 40 -94
-2 -120 -1 -177 -21z"/>
-</g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="netppleLogoGradient" x1="10%" y1="0%" x2="90%" y2="100%">
+      <stop offset="0%" stop-color="#1d5d99"/>
+      <stop offset="55%" stop-color="#2872af"/>
+      <stop offset="100%" stop-color="#3f9bcf"/>
+    </linearGradient>
+  </defs>
+  <rect x="8" y="8" width="112" height="112" rx="28" fill="url(#netppleLogoGradient)"/>
+  <path d="M34 92V36h16l38 42V36h16v56H88L50 50v42H34z" fill="#ffffff"/>
+  <circle cx="96" cy="32" r="7" fill="#a6ddff"/>
 </svg>

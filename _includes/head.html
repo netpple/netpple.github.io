@@ -1,53 +1,50 @@
 <head>
 <meta charset="utf-8">
-<!-- Copyright 2019-2021 Vanessa Sochat-->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="Jekyll">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="{{ site.color | default: '#0f5bd8' }}">
 
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="generator" content="Hugo 0.55.6" />
+{% assign page_title = page.title | default: site.title %}
+{% assign page_description = page.description | default: site.description %}
+<title>{{ page_title }}</title>
+<meta name="description" content="{{ page_description | strip_html | strip_newlines | truncate: 160 }}">
 
-<META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">
-
-<link rel="alternate" type="application/rss&#43;xml" href="/docs/index.xml">
-
-<link rel="shortcut icon" href="{{ site.baseurl }}/assets/favicons/favicon.ico" >
-<link rel="apple-touch-icon" href="{{ site.baseurl }}/assets/favicons/apple-touch-icon-180x180.png" sizes="180x180">
+<link rel="shortcut icon" href="{{ site.baseurl }}/assets/favicons/favicon.ico">
+<link rel="icon" type="image/svg+xml" href="{{ site.baseurl }}/assets/favicons/favicon.svg">
+<link rel="apple-touch-icon" href="{{ site.baseurl }}/assets/favicons/apple-touch-icon.png" sizes="180x180">
 <link rel="icon" type="image/png" href="{{ site.baseurl }}/assets/favicons/favicon-16x16.png" sizes="16x16">
 <link rel="icon" type="image/png" href="{{ site.baseurl }}/assets/favicons/favicon-32x32.png" sizes="32x32">
-<link rel="icon" type="image/png" href="{{ site.baseurl }}/assets/favicons/android-36x36.png" sizes="36x36">
-<link rel="icon" type="image/png" href="{{ site.baseurl }}/assets/favicons/android-48x48.png" sizes="48x48">
-<link rel="icon" type="image/png" href="{{ site.baseurl }}/assets/favicons/android-72x72.png" sizes="72x72">
-<link rel="icon" type="image/png" href="{{ site.baseurl }}/assets/favicons/android-96x196.png" sizes="96x196">
-<link rel="icon" type="image/png" href="{{ site.baseurl }}/assets/favicons/android-144x144.png" sizes="144x144">
-<link rel="icon" type="image/png" href="{{ site.baseurl }}/assets/favicons/android-192x192.png"sizes="192x192">
+<link rel="mask-icon" href="{{ site.baseurl }}/assets/favicons/safari-pinned-tab.svg" color="#1d5d99">
+<link rel="manifest" href="{{ site.baseurl }}/assets/favicons/site.webmanifest">
 
-<title>{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}</title>
-<meta property="og:title" content="{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}" />
-<meta property="og:description" content="{% if page.description %}{{ page.description }}{% else %}{{ site.description }}{% endif %}" />
-{% if page.image %}<meta property="og:image" content="{{ page.image }}" />{% endif %}
-<meta property="og:type" content="website" />
-<meta property="og:url" content="{{ site.url }}{{page.url}}" />
-<meta property="og:site_name" content="{{ site.url }}" />
+<meta property="og:title" content="{{ page_title }}">
+<meta property="og:description" content="{{ page_description | strip_html | strip_newlines | truncate: 160 }}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ site.url }}{{ page.url }}">
+<meta property="og:site_name" content="{{ site.title }}">
+{% if page.image %}<meta property="og:image" content="{{ page.image }}">{% endif %}
 
-<meta itemprop="name" content="{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}">
-<meta itemprop="description" content="{% if page.description %}{{ page.description | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="{{ page_title }}">
+<meta name="twitter:description" content="{{ page_description | strip_html | strip_newlines | truncate: 160 }}">
+{% if page.image %}<meta name="twitter:image" content="{{ page.image }}">{% endif %}
 
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}"/>
-<meta name="twitter:description" content="{% if page.description %}{{ page.description | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}"/>
+<link rel="canonical" href="{{ site.url }}{{ page.url }}">
+<link rel="alternate" type="application/rss+xml" href="{{ site.baseurl }}/feed.xml">
 
-<link rel="stylesheet" href="{{ site.baseurl }}/assets/css/main.css">
+<link rel="stylesheet" href="{{ site.baseurl }}/assets/css/tokens.css">
 <link rel="stylesheet" href="{{ site.baseurl }}/assets/css/palette.css">
-<link rel="stylesheet" href="{{ site.baseurl }}/assets/css/custom.css">
-<script
-  src="{{ site.baseurl }}/assets/js/jquery-3.3.1/jquery-3.3.1.min.js"
-  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-  crossorigin="anonymous"></script>
+<link rel="stylesheet" href="{{ site.baseurl }}/assets/css/site.css">
+{% if page.url == "/" %}
+<link rel="stylesheet" href="{{ site.baseurl }}/assets/css/home.css">
+{% endif %}
 
-    <!-- Google Tag Manager -->
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-5BTZG6C');</script>
-    <!-- End Google Tag Manager -->
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5BTZG6C');</script>
+<!-- End Google Tag Manager -->
 </head>

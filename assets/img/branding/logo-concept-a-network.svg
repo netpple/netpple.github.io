@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="titleA descA">
+  <title id="titleA">netpple concept A</title>
+  <desc id="descA">Network ring with connected nodes.</desc>
+  <defs>
+    <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f4e8a"/>
+      <stop offset="100%" stop-color="#41a5d9"/>
+    </linearGradient>
+  </defs>
+  <circle cx="64" cy="64" r="50" fill="none" stroke="url(#ringGradient)" stroke-width="10"/>
+  <path d="M34 76L54 56L71 69L92 46" fill="none" stroke="#143a62" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="34" cy="76" r="8" fill="#143a62"/>
+  <circle cx="54" cy="56" r="8" fill="#1f6ea8"/>
+  <circle cx="71" cy="69" r="8" fill="#38a1cf"/>
+  <circle cx="92" cy="46" r="8" fill="#5bc7eb"/>
+</svg>

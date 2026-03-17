@@ -1,10 +1,10 @@
-- title: "Posts"
-  url: "news/"
-- title: "Istio IN ACTION"
-  url: docs/istio-in-action
-- title: "도커 없이 컨테이너 만들기"
-  url: docs/make-container-without-docker
-- title: "쿠버네티스 딥다이브"
-  url: "docs/deepdive-into-kubernetes"
-- title: "About Sam"
-  url: about
+- title: "Home"
+  url: "/"
+- title: "News"
+  url: "/news/"
+- title: "Docs"
+  url: "/docs/"
+- title: "About"
+  url: "/about/"
+- title: "GitHub"
+  external_url: "https://github.com/netpple/netpple.github.io"
