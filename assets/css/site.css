@@ -1258,6 +1258,16 @@ img {
   font-size: 0.86rem;
 }
 
+.site-footer__counter {
+  display: inline-flex;
+  align-items: center;
+}
+
+.site-footer__counter-badge {
+  display: block;
+  height: 20px;
+}
+
 @media (min-width: 980px) {
   .entry-card--list {
     grid-column: span 6;

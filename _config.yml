@@ -44,6 +44,7 @@ feedback: true
 # privacy: https://domain.com/privacy
 
 google-analytics: G-PCM193VCGC
+visitor_counter_badge: "https://hitscounter.dev/api/hit?url=https%3A%2F%2Fnetpple.github.io&label=Visits&color=%2330638e"
 # Image and (square) dimension for logo (don't start with /)
 # If commented, will use material hat theme
 # logo: "assets/img/logo/SRCC-square-red.png"

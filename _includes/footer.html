@@ -17,6 +17,17 @@
     <div class="site-footer__bottom">
       <span>© {{ "now" | date: "%Y" }} {{ site.author }}. All rights reserved.</span>
       <span>Since 2021 · GitHub Pages + Jekyll</span>
+      {% if site.visitor_counter_badge %}
+      <span class="site-footer__counter">
+        <img
+          class="site-footer__counter-badge"
+          src="{{ site.visitor_counter_badge }}"
+          alt="Visits counter badge"
+          loading="lazy"
+          decoding="async"
+          referrerpolicy="no-referrer">
+      </span>
+      {% endif %}
     </div>
   </div>
 </footer>
