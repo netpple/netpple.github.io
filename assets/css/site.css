@@ -310,7 +310,8 @@ img {
 .page-home .page-content,
 .page-posts .page-content,
 .page-series .page-content,
-.page-about .page-content {
+.page-about .page-content,
+.page-announcements .page-content {
   max-width: none;
 }
 
@@ -426,6 +427,69 @@ img {
 
 .entry-card--full {
   grid-column: span 12;
+}
+
+.entry-card--feature {
+  grid-column: span 12;
+  padding: clamp(1.5rem, 2.8vw, 2.2rem);
+  border-radius: 22px;
+}
+
+.announcement-page__policy {
+  margin-top: calc(var(--space-5) * -0.35);
+  margin-bottom: var(--space-4);
+  max-width: 760px;
+  font-size: 0.98rem;
+}
+
+.announcement-grid {
+  margin-bottom: var(--space-6);
+}
+
+.announcement-feature {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-5);
+  align-items: end;
+}
+
+.announcement-feature__copy {
+  min-width: 0;
+}
+
+.announcement-feature__title {
+  font-size: clamp(1.55rem, 2.2vw, 2.15rem);
+  line-height: 1.18;
+  letter-spacing: -0.02em;
+}
+
+.announcement-feature__excerpt {
+  margin-top: var(--space-3);
+  max-width: 760px;
+  font-size: 1.02rem;
+  line-height: 1.75;
+}
+
+.announcement-feature__actions {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-3);
+}
+
+.announcement-feature__actions .button {
+  min-width: 180px;
+}
+
+.announcement-feature__hint {
+  margin: 0;
+  max-width: 220px;
+  color: var(--color-text-muted);
+  font-size: 0.86rem;
+  line-height: 1.55;
+}
+
+.announcement-page__secondary-heading {
+  margin-top: var(--space-2);
 }
 
 .series-grid {
@@ -1287,6 +1351,10 @@ img {
 }
 
 @media (max-width: 1080px) {
+  .announcement-feature {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .article-layout {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -1386,6 +1454,21 @@ img {
   .article-shell {
     padding: var(--space-5);
     border-radius: var(--radius-md);
+  }
+
+  .entry-card--feature {
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+  }
+
+  .announcement-feature__title {
+    font-size: clamp(1.35rem, 7vw, 1.8rem);
+  }
+
+  .announcement-feature__excerpt,
+  .announcement-page__policy {
+    font-size: 0.95rem;
+    line-height: 1.65;
   }
 
   .article-content img.align-left {
