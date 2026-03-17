@@ -105,7 +105,7 @@ layout: default
         {% if page.description %}<p class="page-intro__description">{{ page.description }}</p>{% endif %}
         {% if page.collection == "announcements" and page.url != "/announcements/" %}
           <div class="article-meta">
-            <a class="entry-card__cta" href="{{ site.baseurl }}/announcements/">All Announcements</a>
+            <a class="entry-card__cta" href="{{ site.baseurl }}/announcements/">모든 공지 보기</a>
             {% if page.date %}<time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%Y.%m.%d" }}</time>{% endif %}
             {% if page.pinned %}<span class="badge">Pinned</span>{% endif %}
           </div>

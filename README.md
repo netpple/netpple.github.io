@@ -169,9 +169,11 @@ Homepage updates are managed through the `_announcements` collection.
 
 - Required front matter: `title`, `summary`, `date`, `cta_label`, `cta_url`, `pinned`, `published`
 - Optional front matter: `description`, `expires_at`, `excluded_in_search`
+- Site timezone: dates are rendered in `Asia/Seoul`, so `date` and `expires_at` values should be authored in Korea time
 - Home rendering rules: show one active pinned announcement first, then up to two newer active items as secondary links
 - Visibility rules: items with `published: false` or an `expires_at` earlier than the build time are hidden from Home, archive, and search
 - Archive path: `/announcements/`
+- Detail path: each announcement is published at `/announcements/<slug>/` and shows its own date, pinned badge, and archive backlink automatically
 
 ## Deployment Notes
 
